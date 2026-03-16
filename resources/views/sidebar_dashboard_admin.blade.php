@@ -293,8 +293,8 @@
 <nav id="top-navbar" class="fixed top-0 z-50 sm:ml-64" style="width:calc(100% - 16rem)">
     <div class="px-5 py-3 flex items-center justify-between gap-4">
         <div>
-            <h1 class="n-title">@yield('page-title', 'Selamat Datang, Admin <3')</h1>
-            <p class="n-sub">CampLore &rsaquo; <span>@yield('page-title', 'Dashboard')</span></p>
+            <h1 class="n-title">@yield('page-title', 'Selamat Datang, Admin <3')< /h1>
+                    <p class="n-sub">CampLore &rsaquo; <span>@yield('page-title', 'Dashboard')</span></p>
         </div>
         <div class="flex items-center gap-3">
             <div class="n-search hidden md:flex">
@@ -370,49 +370,69 @@
         <div class="s-hr" style="margin-top:10px"></div>
         <p class="s-lbl">Management</p>
 
+        <a href="{{ url('/admin/items/camera') }}"
+            class="s-a {{ request()->is('admin/items/camera') ? 'active' : '' }}">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M4 7h4l2-2h4l2 2h4v12H4z" />
+                <circle cx="12" cy="13" r="3" />
+            </svg>
+            List Barang Camera
+        </a>
+
+        <a href="{{ url('/admin/items/camping') }}"
+            class="s-a {{ request()->is('admin/items/camping') ? 'active' : '' }}">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M3 20l9-16 9 16H3z" />
+            </svg>
+            List Barang Camping
+        </a>
+
+        {{-- MENU LAMA --}}
         <a href="{{ url('/users') }}" class="s-a {{ request()->is('users') ? 'active' : '' }}">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M16 19h4a1 1 0 0 0 1-1v-1a3 3 0 0 0-3-3h-2m-2.236-4a3 3 0 1 0 0-4M3 18v-1a3 3 0 0 1 3-3h4a3 3 0 0 1 3 3v1a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1Zm8-10a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
-            </svg>
-            Users
-        </a>
-        <a href="{{ url('/products') }}" class="s-a {{ request()->is('products') ? 'active' : '' }}">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M9 10V6a3 3 0 0 1 3-3v0a3 3 0 0 1 3 3v4m3-2 .917 11.923A1 1 0 0 1 17.92 21H6.08a1 1 0 0 1-.997-1.077L6 8h12Z" />
-            </svg>
-            Products
-        </a>
-        <a href="{{ url('/login') }}" class="s-a {{ request()->is('login') ? 'active' : '' }}">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M16 12H4m12 0-4 4m4-4-4-4m3-4h2a3 3 0 0 1 3 3v10a3 3 0 0 1-3 3h-2" />
-            </svg>
-            <span class="flex-1">Sign In</span>
-            <span class="s-badge" style="background:rgba(60,160,220,.15);color:#70c0f0;border:.5px solid rgba(60,160,220,.25)">New</span>
-        </a>
 
-        <div class="flex-1"></div>
+            <a href="{{ url('/users') }}" class="s-a {{ request()->is('users') ? 'active' : '' }}">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M16 19h4a1 1 0 0 0 1-1v-1a3 3 0 0 0-3-3h-2m-2.236-4a3 3 0 1 0 0-4M3 18v-1a3 3 0 0 1 3-3h4a3 3 0 0 1 3 3v1a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1Zm8-10a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+                </svg>
+                Users
+            </a>
+            <a href="{{ url('/products') }}" class="s-a {{ request()->is('products') ? 'active' : '' }}">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M9 10V6a3 3 0 0 1 3-3v0a3 3 0 0 1 3 3v4m3-2 .917 11.923A1 1 0 0 1 17.92 21H6.08a1 1 0 0 1-.997-1.077L6 8h12Z" />
+                </svg>
+                Products
+            </a>
+            <a href="{{ url('/login') }}" class="s-a {{ request()->is('login') ? 'active' : '' }}">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M16 12H4m12 0-4 4m4-4-4-4m3-4h2a3 3 0 0 1 3 3v10a3 3 0 0 1-3 3h-2" />
+                </svg>
+                <span class="flex-1">Sign In</span>
+                <span class="s-badge" style="background:rgba(60,160,220,.15);color:#70c0f0;border:.5px solid rgba(60,160,220,.25)">New</span>
+            </a>
 
-        <a href="{{ url('/settings') }}" class="s-a {{ request()->is('settings') ? 'active' : '' }}" style="margin-bottom:10px">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 0 0 2.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 0 0 1.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 0 0-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 0 0-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 0 0-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 0 0-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 0 0 1.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-                <circle cx="12" cy="12" r="3" />
-            </svg>
-            Settings
-        </a>
-        <div class="s-hr"></div>
+            <div class="flex-1"></div>
 
-        {{-- User Card --}}
-        <div class="s-user">
-            <img class="s-avatar" src="{{ Auth::user()->profile_photo_url ?? 'https://ui-avatars.com/api/?name='.urlencode(Auth::user()->name ?? 'User').'&background=3d6e12&color=d4f0a0' }}" alt="Profile">
-            <div class="flex-1 min-w-0">
-                <p style="font-size:12.5px;font-weight:500;color:#c8e898;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ Auth::user()->name ?? 'Lulu Khaira Yudita' }}</p>
-                <p style="font-size:10.5px;color:#6a8a50;margin-top:1px">{{ Auth::user()->email ?? 'Administrator' }}</p>
+            <a href="{{ url('/settings') }}" class="s-a {{ request()->is('settings') ? 'active' : '' }}" style="margin-bottom:10px">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 0 0 2.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 0 0 1.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 0 0-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 0 0-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 0 0-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 0 0-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 0 0 1.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                    <circle cx="12" cy="12" r="3" />
+                </svg>
+                Settings
+            </a>
+            <div class="s-hr"></div>
+
+            {{-- User Card --}}
+            <div class="s-user">
+                <img class="s-avatar" src="{{ Auth::user()->profile_photo_url ?? 'https://ui-avatars.com/api/?name='.urlencode(Auth::user()->name ?? 'User').'&background=3d6e12&color=d4f0a0' }}" alt="Profile">
+                <div class="flex-1 min-w-0">
+                    <p style="font-size:12.5px;font-weight:500;color:#c8e898;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ Auth::user()->name ?? 'Lulu Khaira Yudita' }}</p>
+                    <p style="font-size:10.5px;color:#6a8a50;margin-top:1px">{{ Auth::user()->email ?? 'Administrator' }}</p>
+                </div>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#5a7a40" stroke-width="2">
+                    <circle cx="12" cy="5" r="1" />
+                    <circle cx="12" cy="12" r="1" />
+                    <circle cx="12" cy="19" r="1" />
+                </svg>
             </div>
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#5a7a40" stroke-width="2">
-                <circle cx="12" cy="5" r="1" />
-                <circle cx="12" cy="12" r="1" />
-                <circle cx="12" cy="19" r="1" />
-            </svg>
-        </div>
     </div>
 </aside>
