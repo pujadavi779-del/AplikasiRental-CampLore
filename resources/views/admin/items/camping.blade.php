@@ -293,11 +293,185 @@
     .n-sub span {
         color: #8acc44;
     }
+
+    .content {
+        flex: 1;
+        padding: 30px;
+    }
+
+    table {
+        border-collapse: collapse;
+        margin-top: 10px;
+        background: #111827;
+    }
+
+    th,
+    td {
+        padding: 10px;
+        border: 1px solid #374151;
+    }
+
+    .title {
+        font-size: 28px;
+        font-weight: 600;
+        margin-bottom: 20px;
+    }
+
+    /* Card */
+    .table-card {
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid rgba(106, 170, 42, 0.15);
+        border-radius: 12px;
+        padding: 20px;
+        box-shadow: 0 0 20px rgba(106, 170, 42, 0.08);
+    }
+
+    /* Table */
+    .custom-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 14px;
+    }
+
+    .custom-table thead {
+        background: rgba(106, 170, 42, 0.1);
+    }
+
+    .custom-table th {
+        text-align: left;
+        padding: 12px;
+        color: #d4f0a0;
+        font-weight: 500;
+        border-bottom: 1px solid rgba(106, 170, 42, 0.2);
+    }
+
+    .custom-table td {
+        padding: 12px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    /* Hover effect */
+    .custom-table tbody tr:hover {
+        background: rgba(106, 170, 42, 0.08);
+        transition: 0.2s;
+    }
+
+    /* Badge stok */
+    .badge-stock {
+        background: rgba(106, 170, 42, 0.2);
+        color: #a8e063;
+        padding: 4px 10px;
+        border-radius: 999px;
+        font-size: 12px;
+    }
+
+    /* Header */
+    .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+
+    .title {
+        font-size: 28px;
+        font-weight: 600;
+    }
+
+    /* Button tambah */
+    .btn-add {
+        background: linear-gradient(135deg, #6aaa2a, #4d7c1a);
+        color: #fff;
+        padding: 10px 16px;
+        border-radius: 8px;
+        text-decoration: none;
+        font-size: 13px;
+        transition: 0.2s;
+    }
+
+    .btn-add:hover {
+        box-shadow: 0 0 12px rgba(106, 170, 42, 0.5);
+    }
+
+    /* Card */
+    .table-card {
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid rgba(106, 170, 42, 0.15);
+        border-radius: 12px;
+        padding: 20px;
+    }
+
+    /* Search */
+    .table-top {
+        margin-bottom: 15px;
+    }
+
+    .search-box {
+        width: 250px;
+        padding: 8px 12px;
+        border-radius: 8px;
+        border: 1px solid rgba(106, 170, 42, 0.2);
+        background: transparent;
+        color: white;
+    }
+
+    /* Table */
+    .custom-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 14px;
+    }
+
+    .custom-table thead {
+        background: rgba(106, 170, 42, 0.1);
+    }
+
+    .custom-table th {
+        text-align: left;
+        padding: 12px;
+        color: #d4f0a0;
+    }
+
+    .custom-table td {
+        padding: 12px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .custom-table tbody tr:hover {
+        background: rgba(106, 170, 42, 0.08);
+    }
+
+    /* Badge */
+    .badge-stock {
+        background: rgba(106, 170, 42, 0.2);
+        padding: 4px 10px;
+        border-radius: 999px;
+    }
+
+    /* Button aksi */
+    .btn-edit {
+        background: #3b82f6;
+        color: white;
+        padding: 5px 10px;
+        border-radius: 6px;
+        text-decoration: none;
+        font-size: 12px;
+    }
+
+    .btn-delete {
+        background: #ef4444;
+        color: white;
+        padding: 5px 10px;
+        border-radius: 6px;
+        text-decoration: none;
+        font-size: 12px;
+        margin-left: 5px;
+    }
 </style>
 
-<body style="background:#0f172a; color:white; font-family:sans-serif; padding:30px;">
+<body style="background:#0f172a; color:white; font-family:sans-serif; margin:0; display:flex;">
 
-    <aside id="top-bar-sidebar" class="fixed top-0 left-0 z-40 w-64 h-full transition-transform -translate-x-full sm:translate-x-0" aria-label="Sidebar">
+    <aside id="top-bar-sidebar" style="width:260px; height:100vh;">
         <div class="snav">
             <a href="{{ url('/') }}" class="s-logo">
                 <div class="s-logo-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -311,7 +485,7 @@
             <div class="s-hr"></div>
             <p class="s-lbl">Navigation</p>
 
-            <a href="{{ url('/dashboard') }}" class="s-a {{ request()->is('dashboard') ? 'active' : '' }}">
+            <a href="{{ url('/dashboard_admin') }}" class="s-a {{ request()->is('dashboard') ? 'active' : '' }}">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <path d="M10 6.025A7.5 7.5 0 1 0 17.975 14H10V6.025Z" />
                     <path d="M13.5 3c-.169 0-.334.014-.5.025V11h7.975A7.5 7.5 0 0 0 13.5 3Z" />
@@ -336,8 +510,8 @@
             <div class="s-hr" style="margin-top:10px"></div>
             <p class="s-lbl">Management</p>
 
-            <a href="{{ url('/admin/items/camera') }}"
-                class="s-a {{ request()->is('admin/items/camera') ? 'active' : '' }}">
+            <a href="{{ route('camera.index') }}"
+                class="s-a {{ request()->is('camera*') ? 'active' : '' }}">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <path d="M4 7h4l2-2h4l2 2h4v12H4z" />
                     <circle cx="12" cy="13" r="3" />
@@ -345,8 +519,8 @@
                 List Barang Camera
             </a>
 
-            <a href="{{ url('/admin/items/camping') }}"
-                class="s-a {{ request()->is('admin/items/camping') ? 'active' : '' }}">
+            <a href="{{ route('camping.index') }}"
+                class="s-a {{ request()->is('camping') ? 'active' : '' }}">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <path d="M3 20l9-16 9 16H3z" />
                 </svg>
@@ -403,25 +577,51 @@
         </div>
     </aside>
 
-    <h1>List Barang Camping</h1>
+    <div class="content">
+        <div class="header">
+            <h1 class="title">List Barang Camping</h1>
+            <a href="{{ route('camping.create') }}" class="btn-add">+ Tambah Barang</a>
+        </div>
 
-    <table border="1" cellpadding="10">
+        <div class="table-card">
 
-        <tr>
-            <th>Nama</th>
-            <th>Stok</th>
-            <th>Harga</th>
-        </tr>
+            <!-- SEARCH -->
+            <div class="table-top">
+                <input type="text" placeholder="Cari barang..." class="search-box">
+            </div>
 
-        @foreach($items as $item)
-        <tr>
-            <td>{{ $item->name }}</td>
-            <td>{{ $item->stock }}</td>
-            <td>{{ $item->price }}</td>
-        </tr>
-        @endforeach
+            <!-- TABLE -->
+            <table class="custom-table">
+                <thead>
+                    <tr>
+                        <th>Nama Barang</th>
+                        <th>Stok</th>
+                        <th>Harga</th>
+                        <th>Aksi</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach($items as $item)
+                    <tr>
+                        <td>{{ $item->name }}</td>
+                        <td><span class="badge-stock">{{ $item->stock }}</span></td>
+                        <td>Rp {{ number_format($item->price, 0, ',', '.') }}</td>
+                        <td>
+                            <a href="{{ route('camping.edit', $item->id) }}" class="btn-edit">Edit</a>
 
-    </table>
+                            <form action="{{ route('camping.destroy', $item->id) }}" method="POST" style="display:inline;">
+                                @csrf
+                                @method('DELETE')
+                                <button class="btn-delete">Hapus</button>
+                            </form>
+                        </td>
+                    </tr>
+                    @endforeach
+                </tbody>
+            </table>
+
+        </div>
+    </div>
 
 </body>
 

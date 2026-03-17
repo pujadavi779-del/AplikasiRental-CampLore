@@ -370,8 +370,8 @@
         <div class="s-hr" style="margin-top:10px"></div>
         <p class="s-lbl">Management</p>
 
-        <a href="{{ url('/admin/items/camera') }}"
-            class="s-a {{ request()->is('admin/items/camera') ? 'active' : '' }}">
+        <a href="{{ route('camera.index') }}"
+            class="s-a {{ request()->is('camera*') ? 'active' : '' }}">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M4 7h4l2-2h4l2 2h4v12H4z" />
                 <circle cx="12" cy="13" r="3" />
@@ -379,8 +379,8 @@
             List Barang Camera
         </a>
 
-        <a href="{{ url('/admin/items/camping') }}"
-            class="s-a {{ request()->is('admin/items/camping') ? 'active' : '' }}">
+        <a href="{{ route('camping.index') }}"
+            class="s-a {{ request()->is('camping') ? 'active' : '' }}">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M3 20l9-16 9 16H3z" />
             </svg>
