@@ -32,5 +32,6 @@ Schema::create('items', function (Blueprint $table) {
     $table->string('category'); // camera / camping
     $table->integer('stock');
     $table->integer('price');
+    $table->text('body');
     $table->timestamps();
 });
