@@ -10,7 +10,7 @@ class CampingController extends Controller
     public function index()
     {
         $items = Item::where('category', 'camping')->get();
-        return view('admin.items.camping', compact('items'));
+        return view('admin.camping', compact('items'));
     }
 
     public function create()

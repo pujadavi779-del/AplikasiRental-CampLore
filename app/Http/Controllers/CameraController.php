@@ -10,7 +10,7 @@ class CameraController extends Controller
     public function index()
     {
         $items = Item::where('category', 'camera')->get();
-        return view('admin.items.camera', compact('items'));
+        return view('camera.index', compact('items'));
     }
 
     public function create()

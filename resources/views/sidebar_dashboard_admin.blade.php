@@ -293,7 +293,7 @@
 <nav id="top-navbar" class="fixed top-0 z-50 sm:ml-64" style="width:calc(100% - 16rem)">
     <div class="px-5 py-3 flex items-center justify-between gap-4">
         <div>
-            <h1 class="n-title">@yield('page-title', 'Selamat Datang, Admin <3')< /h1>
+            <h1 class="n-title">@yield('page-title', 'Selamat Datang, Admin <3')
                     <p class="n-sub">CampLore &rsaquo; <span>@yield('page-title', 'Dashboard')</span></p>
         </div>
         <div class="flex items-center gap-3">
@@ -345,7 +345,7 @@
         <div class="s-hr"></div>
         <p class="s-lbl">Navigation</p>
 
-        <a href="{{ url('/dashboard') }}" class="s-a {{ request()->is('dashboard') ? 'active' : '' }}">
+        <a href="{{ url('/dashboard_admin') }}" class="s-a {{ request()->is('dashboard') ? 'active' : '' }}">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M10 6.025A7.5 7.5 0 1 0 17.975 14H10V6.025Z" />
                 <path d="M13.5 3c-.169 0-.334.014-.5.025V11h7.975A7.5 7.5 0 0 0 13.5 3Z" />
