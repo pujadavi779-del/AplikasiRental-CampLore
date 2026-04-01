@@ -1,9 +1,11 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Models\Item;
 use App\Http\Controllers\CampingController;
 use App\Http\Controllers\CameraController;
+
+Route::resource('camping', CampingController::class);
+Route::resource('camera', CameraController::class);
 
 
 Route::get('/dashboard_admin', function () {
@@ -17,11 +19,3 @@ Route::get('/login', function () {
 Route::get('/registrasi', function () {
     return view('registrasi');
 });
-
-Route::get('/camera', function () {
-    return view('camera.index');
-})->name('camera.index');
-
-Route::get('/camping', function () {
-    return view('camping.index');
-})->name('camping.index');

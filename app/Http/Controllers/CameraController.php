@@ -15,7 +15,7 @@ class CameraController extends Controller
 
     public function create()
     {
-        return view('admin.items.create_camera');
+        return view('camera.create_camera');
     }
 
     public function store(Request $request)
@@ -33,7 +33,7 @@ class CameraController extends Controller
     public function edit($id)
     {
         $item = Item::findOrFail($id);
-        return view('admin.items.edit_camera', compact('item'));
+        return view('camera.edit_camera', compact('item'));
     }
 
     public function update(Request $request, $id)

@@ -10,12 +10,12 @@ class CampingController extends Controller
     public function index()
     {
         $items = Item::where('category', 'camping')->get();
-        return view('admin.camping', compact('items'));
+        return view('camping.index', compact('items'));
     }
 
     public function create()
     {
-        return view('admin.items.create');
+        return view('camping.create');
     }
 
     public function store(Request $request)
@@ -33,7 +33,7 @@ class CampingController extends Controller
     public function edit($id)
     {
         $item = Item::findOrFail($id);
-        return view('admin.items.edit', compact('item'));
+        return view('camping.edit', compact('item'));
     }
 
     public function update(Request $request, $id)
