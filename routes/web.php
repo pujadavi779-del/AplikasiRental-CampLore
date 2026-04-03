@@ -3,7 +3,13 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CampingController;
 use App\Http\Controllers\CameraController;
+use App\Http\Controllers\LandingController;
 
+Route::get('/', function () {
+    return view('landing'); // file: resources/views/landing.blade.php
+});
+
+Route::get('/', [LandingController::class, 'index']);
 Route::resource('camping', CampingController::class);
 Route::resource('camera', CameraController::class);
 
