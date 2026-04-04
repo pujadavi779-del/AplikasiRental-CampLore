@@ -1,109 +1,171 @@
 @extends('admin.admin')
 
 @section('title', 'List Barang Camping')
-@section('page-title', 'Peralatan Camping')
 
 @section('content')
-<div class="relative overflow-hidden rounded-2xl border border-[rgba(106,170,42,0.18)] bg-[#0e1a06] p-6 shadow-2xl">
-    {{-- Header Tabel --}}
-    <div class="flex flex-col md:flex-row md:items-center justify-between mb-6 gap-4">
-        <div>
-            <h2 class="text-xl font-semibold text-[#d4f0a0] font-['DM_Serif_Display']">Inventaris Alat Outdoor</h2>
-            <p class="text-sm text-[#6a8a50]">Manajemen stok perlengkapan mendaki dan berkemah.</p>
-        </div>
-        <button class="n-add !w-fit">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                <path d="M12 5v14M5 12h14" />
+<style>
+    /* Reset background agar identik dengan kamera */
+    body,
+    .antialiased,
+    main {
+        background-color: #f8faf6 !important;
+    }
+
+    .font-serif-display {
+        font-family: 'DM Serif Display', serif;
+    }
+
+    /* Navbar presisi */
+    .custom-nav {
+        position: fixed;
+        top: 20px;
+        right: 24px;
+        left: calc(16rem + 24px);
+        z-index: 40;
+    }
+
+    .no-scrollbar::-webkit-scrollbar {
+        display: none;
+    }
+
+    @media (max-width: 640px) {
+        .custom-nav {
+            left: 24px;
+        }
+    }
+</style>
+
+{{-- NAVBAR ATAS --}}
+<div class="custom-nav">
+    <nav class="flex items-center justify-between px-6 py-3 bg-white border border-[#e2e8da] rounded-2xl shadow-sm">
+        <div class="flex items-center gap-2">
+            <span class="text-[#7a8a6e] text-[10px] font-bold uppercase tracking-widest">Management</span>
+            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#7a8a6e" stroke-width="3">
+                <path d="M9 18l6-6-6-6" />
             </svg>
-            Tambah Alat Baru
-        </button>
-    </div>
-
-    {{-- Tabel --}}
-    <div class="overflow-x-auto">
-        <table class="w-full text-left text-sm text-[#a8c880]">
-            <thead class="bg-[#243810] text-[#d4f0a0] uppercase text-xs font-bold tracking-wider">
-                <tr>
-                    <th class="px-6 py-4 rounded-tl-xl">Nama Alat</th>
-                    <th class="px-6 py-4">Kategori</th>
-                    <th class="px-6 py-4">Stok</th>
-                    <th class="px-6 py-4">Harga Sewa</th>
-                    <th class="px-6 py-4">Kondisi</th>
-                    <th class="px-6 py-4 rounded-tr-xl text-center">Aksi</th>
-                </tr>
-            </thead>
-            <tbody class="divide-y divide-[rgba(106,170,42,0.1)]">
-                {{-- Data 1: Tenda --}}
-                <tr class="hover:bg-[#182808] transition-colors">
-                    <td class="px-6 py-4 flex items-center gap-3">
-                        <div class="w-12 h-12 rounded-lg bg-gray-800 border border-[#6aaa2a33] flex items-center justify-center overflow-hidden">
-                             <img src="https://images.unsplash.com/photo-1504280390367-361c6d9f38f4?q=80&w=100" alt="tent">
-                        </div>
-                        <div>
-                            <div class="font-medium text-[#e8f5d0]">Tenda Eiger Guardian 4P</div>
-                            <div class="text-[10px] text-[#6a8a50]">Double Layer / Waterproof</div>
-                        </div>
-                    </td>
-                    <td class="px-6 py-4">Shelter</td>
-                    <td class="px-6 py-4 font-mono">08 unit</td>
-                    <td class="px-6 py-4 text-[#8acc44]">Rp 85.000</td>
-                    <td class="px-6 py-4">
-                        <span class="px-2 py-1 rounded-full text-[10px] bg-[#6aaa2a22] text-[#8acc44] border border-[#6aaa2a44]">Sangat Baik</span>
-                    </td>
-                    <td class="px-6 py-4">
-                        <div class="flex justify-center gap-2">
-                            <button class="p-2 hover:bg-[#6aaa2a22] rounded-lg transition-colors text-[#8acc44]">
-                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg>
-                            </button>
-                            <button class="p-2 hover:bg-red-900/20 rounded-lg transition-colors text-red-400">
-                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
-                            </button>
-                        </div>
-                    </td>
-                </tr>
-
-                {{-- Data 2: Carrier --}}
-                <tr class="hover:bg-[#182808] transition-colors">
-                    <td class="px-6 py-4 flex items-center gap-3">
-                        <div class="w-12 h-12 rounded-lg bg-gray-800 border border-[#6aaa2a33] flex items-center justify-center overflow-hidden">
-                             <img src="https://images.unsplash.com/photo-1622260614153-03223fb72052?q=80&w=100" alt="backpack">
-                        </div>
-                        <div>
-                            <div class="font-medium text-[#e8f5d0]">Carrier Osprey Atmos 65L</div>
-                            <div class="text-[10px] text-[#6a8a50]">Anti-Gravity System</div>
-                        </div>
-                    </td>
-                    <td class="px-6 py-4">Backpack</td>
-                    <td class="px-6 py-4 font-mono text-red-400">02 unit</td>
-                    <td class="px-6 py-4 text-[#8acc44]">Rp 120.000</td>
-                    <td class="px-6 py-4">
-                        <span class="px-2 py-1 rounded-full text-[10px] bg-yellow-500/10 text-yellow-500 border border-yellow-500/30">Butuh Cuci</span>
-                    </td>
-                    <td class="px-6 py-4">
-                        <div class="flex justify-center gap-2">
-                             <button class="p-2 hover:bg-[#6aaa2a22] rounded-lg transition-colors text-[#8acc44]">
-                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg>
-                            </button>
-                            <button class="p-2 hover:bg-red-900/20 rounded-lg transition-colors text-red-400">
-                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
-                            </button>
-                        </div>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
-
-    {{-- Footer --}}
-    <div class="mt-6 flex flex-col sm:flex-row items-center justify-between gap-4">
-        <div class="text-xs text-[#6a8a50]">
-            Menunjukkan stok barang aktif di gudang utama.
+            <span class="text-[#2d3a24] text-[10px] font-bold uppercase tracking-widest">Camping</span>
         </div>
+
         <div class="flex items-center gap-4">
-            <span class="text-xs text-[#a8c880]">Page 1 of 5</span>
-            <div class="flex gap-1">
-                <button class="w-8 h-8 flex items-center justify-center border border-[#6aaa2a44] rounded text-[#8acc44] hover:bg-[#6aaa2a11] transition-all cursor-not-allowed opacity-50">&lt;</button>
-                <button class="w-8 h-8 flex items-center justify-center border border-[#6aaa2a44] rounded text-[#8acc44] hover:bg-[#6aaa2a11] transition-all">&gt;</button>
+            <div class="relative hidden md:block">
+                <span class="absolute inset-y-0 left-3 flex items-center text-[#7a8a6e]">
+                    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <circle cx="11" cy="11" r="8" />
+                        <path d="m21 21-4.3-4.3" />
+                    </svg>
+                </span>
+                <input type="text" placeholder="Cari unit..." class="pl-9 pr-4 py-1.5 bg-[#f4f7f0] border-none rounded-lg text-xs w-40 focus:w-56 transition-all focus:ring-1 focus:ring-[#5d6e4a]">
+            </div>
+            <button class="text-[#5d6e4a] p-1.5 hover:bg-[#f4f7f0] rounded-full transition-colors relative">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 0 1-3.46 0" />
+                </svg>
+                <div class="absolute top-1.5 right-1.5 w-1.5 h-1.5 bg-red-400 rounded-full border border-white"></div>
+            </button>
+        </div>
+    </nav>
+</div>
+
+{{-- AREA KONTEN --}}
+<div class="max-w-full">
+    <div class="bg-white rounded-[28px] border border-[#e2e8da] shadow-sm overflow-hidden">
+
+        {{-- Header Card - Ukuran disamakan dengan Kamera --}}
+        <div class="p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#f0f4e8]">
+            <div>
+                <h2 class="text-2xl font-bold text-[#2d3a24] font-serif-display leading-tight">Data Inventaris Camping</h2>
+                <p class="text-[11px] text-[#7a8a6e]">Pantau dan kelola stok alat camping tersedia.</p>
+            </div>
+            <button class="flex items-center gap-2 bg-[#5d6e4a] hover:bg-[#4a583b] text-white px-5 py-2.5 rounded-xl text-xs font-bold transition-all shadow-sm">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                    <path d="M12 5v14M5 12h14" />
+                </svg>
+                Tambah Camping
+            </button>
+        </div>
+
+        {{-- Tabel --}}
+        <div class="overflow-x-auto no-scrollbar">
+            <table class="w-full text-left border-collapse">
+                <thead class="bg-[#f4f7f0]/60 text-[#5d6e4a] uppercase text-[10px] font-bold tracking-[0.1em]">
+                    <tr>
+                        <th class="px-8 py-4">Alat Camping</th>
+                        <th class="px-6 py-4 text-center">Kategori</th>
+                        <th class="px-6 py-4 text-center">Harga Sewa</th>
+                        <th class="px-6 py-4 text-center">Status</th>
+                        <th class="px-6 py-4 text-center">Aksi</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-[#f0f4e8]">
+                    @foreach($items as $item)
+                    <tr class="hover:bg-[#fcfdfb] transition-colors group">
+                        <td class="px-8 py-5 flex items-center gap-4">
+                            @php
+                            // default = tenda
+                            $image = 'https://images.unsplash.com/photo-1504280390367-361c6d9f38f4?q=80&w=200';
+
+                            if(str_contains(strtolower($item->name), 'backpack')) {
+                            $image = 'https://images.unsplash.com/photo-1622260614153-03223fb72052?q=80&w=200';
+                            }
+                            @endphp
+
+
+                            <div class="w-12 h-12 rounded-xl bg-black overflow-hidden shadow-inner shrink-0 border border-[#e2e8da]">
+                                <img src="{{ $image }}"
+                                    class="object-cover w-full h-full"
+                                    alt="{{ $item->name }}">
+                            </div>
+                            <div>
+                                <div class="font-bold text-[#2d3a24] text-sm leading-none">{{ $item->name }}</div>
+                                <div class="text-[9px] text-[#7a8a6e] mt-1 uppercase tracking-wider">Unit Inventaris</div>
+                            </div>
+                        </td>
+
+                        <td class="px-6 py-5 text-center text-[#5d6e4a] text-xs font-medium uppercase tracking-tighter">{{ $item->category ?? 'Camping' }}</td>
+
+                        <td class="px-6 py-5 text-center">
+                            <span class="font-bold text-[#2d3a24] text-sm">Rp {{ number_format($item->price, 0, ',', '.') }}</span>
+                            <span class="text-[9px] text-gray-300 font-normal ml-0.5">/hari</span>
+                        </td>
+
+                        <td class="px-6 py-5 text-center">
+                            @if($item->stock > 0)
+                            <span class="px-3 py-1 rounded-full text-[9px] font-bold bg-[#eef5e8] text-[#5d6e4a] border border-[#dce8d0]">Tersedia ({{ $item->stock }})</span>
+                            @else
+                            <span class="px-3 py-1 rounded-full text-[9px] font-bold bg-[#fdf2f2] text-[#e67e7e] border border-[#f9e2e2]">Habis</span>
+                            @endif
+                        </td>
+
+                        <td class="px-6 py-5 text-center">
+                            <div class="flex justify-center gap-1">
+                                <a href="{{ route('camping.edit', $item->id) }}" class="p-2 text-gray-400 hover:text-[#5d6e4a] transition-colors"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+                                        <path d="M18.5 2.5a2.121 2.121 0 1 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+                                    </svg></a>
+                                <form action="{{ route('camping.destroy', $item->id) }}" method="POST" class="inline">
+                                    @csrf @method('DELETE')
+                                    <button type="submit" onclick="return confirm('Hapus?')" class="p-2 text-gray-300 hover:text-red-400 transition-colors"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+                                        </svg></button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
+
+        {{-- Footer Card --}}
+        <div class="p-5 bg-[#fcfdfb] border-t border-[#f0f4e8] flex items-center justify-between">
+            <p class="text-[10px] font-bold text-[#7a8a6e] uppercase tracking-widest">Halaman 1 Dari 3</p>
+            <div class="flex gap-2">
+                <button class="w-8 h-8 flex items-center justify-center border border-[#e2e8da] rounded-lg text-[#5d6e4a] bg-white hover:bg-[#f4f7f0] transition-all shadow-sm active:scale-95"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                        <path d="M15 18l-6-6 6-6" />
+                    </svg></button>
+                <button class="w-8 h-8 flex items-center justify-center border border-[#e2e8da] rounded-lg text-[#5d6e4a] bg-white hover:bg-[#f4f7f0] transition-all shadow-sm active:scale-95"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                        <path d="M9 18l6-6-6-6" />
+                    </svg></button>
             </div>
         </div>
     </div>
