@@ -7,6 +7,11 @@ use App\Models\Item;
 
 class CameraController extends Controller
 {
+    public function landing()
+    {
+        $items = Item::where('category', 'camera')->get();
+        return view('camera.camera_LP', compact('items'));
+    }
     public function index()
     {
         $items = Item::where('category', 'camera')->get();

@@ -5,14 +5,13 @@ use App\Http\Controllers\CampingController;
 use App\Http\Controllers\CameraController;
 use App\Http\Controllers\LandingController;
 
-Route::get('/', function () {
-    return view('landing'); // file: resources/views/landing.blade.php
-});
+Route::get('/dashboard/camera', [CameraController::class, 'index'])->name('camera.index');
 
 Route::get('/', [LandingController::class, 'index']);
 Route::resource('camping', CampingController::class);
 Route::resource('camera', CameraController::class);
 
+Route::get('/camera', [CameraController::class, 'landing'])->name('camera.LP');
 
 Route::get('/dashboard_admin', function () {
     return view('dashboard_admin');
