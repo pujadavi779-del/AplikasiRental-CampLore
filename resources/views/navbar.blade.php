@@ -13,7 +13,7 @@
 
             <!-- Menu Tengah (Desktop) -->
             <div class="hidden md:flex space-x-8 font-bold text-xs uppercase tracking-widest text-[#1A392D]">
-                <a href="#hero" class="hover:text-[#FF6B95] transition">About</a>
+                <a href="{{ route('about') }}" class="hover:text-[#FF6B95] transition">About</a>
                 <div class="relative group">
 
                     <!-- tombol -->

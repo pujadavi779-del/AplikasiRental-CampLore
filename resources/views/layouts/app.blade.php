@@ -1,21 +1,24 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Rental App</title>
+    <title>@yield('title', 'Rental App')</title>
     @vite('resources/css/app.css')
+
+    {{-- Styles dari child view (Tailwind, AOS, dll) --}}
+    @stack('styles')
 </head>
 <body>
 
     {{-- Navbar --}}
-    <!-- <nav>
-        <a href="/">Home</a>
-        <a href="/camera">Camera</a>
-    </nav> -->
+    @include('navbar')
 
     <hr>
 
     {{-- Isi halaman --}}
     @yield('content')
+
+    {{-- Scripts dari child view (AOS init, dll) --}}
+    @stack('scripts')
 
 </body>
 </html>
