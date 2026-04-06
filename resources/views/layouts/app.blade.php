@@ -10,7 +10,7 @@
 <body>
 
     {{-- Navbar --}}
-    @include('navbar')
+
 
     <hr>
 

@@ -11,7 +11,12 @@ Route::get('/', [LandingController::class, 'index']);
 Route::resource('camping', CampingController::class);
 Route::resource('camera', CameraController::class);
 
+Route::get('/landing', [LandingController::class, 'index'])->name('landing');
+Route::get('/about', [CameraController::class, 'landing'])->name('about');
 Route::get('/camera', [CameraController::class, 'landing'])->name('camera.LP');
+
+// details camera
+Route::get('/camera/{id}', [CameraController::class, 'show'])->name('camera.show');
 
 Route::get('/dashboard_admin', function () {
     return view('dashboard_admin');

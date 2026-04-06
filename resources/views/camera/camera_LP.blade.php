@@ -146,51 +146,10 @@
         <h1 class="page-title text-5xl text-gray-900" style="letter-spacing:-0.01em;">Camera</h1>
     </div>
 
-    <div class="flex gap-8 px-10 pb-16 max-w-screen-xl mx-auto">
+    <div class="flex gap-8 px-10 pb-16 max-w-screen-x32 mx-auto">
 
         {{-- ─────────── SIDEBAR ─────────── --}}
-        <aside class="w-56 flex-shrink-0 pt-2">
-
-            {{-- Sort --}}
-            <div class="mb-6">
-                <p class="section-label">Sort by</p>
-                <select class="sort-select w-full">
-                    <option>Recommended</option>
-                    <option>Price: Low to High</option>
-                    <option>Price: High to Low</option>
-                    <option>Newest</option>
-                </select>
-            </div>
-
-            <div class="sidebar-divider"></div>
-
-            {{-- Category filters --}}
-            <div>
-                <p class="section-label">Category</p>
-                <div>
-                    @foreach(['DSLR','Mirrorless','Action Cam','Lens','Accessories'] as $cat)
-                    <input type="checkbox" class="filter-checkbox" id="cat-{{ Str::slug($cat) }}">
-                    <label class="filter-label" for="cat-{{ Str::slug($cat) }}">
-                        <span class="custom-check"></span>
-                        {{ $cat }}
-                    </label>
-                    @endforeach
-                </div>
-            </div>
-
-            <div class="sidebar-divider"></div>
-
-            {{-- Price Range --}}
-            <div>
-                <p class="section-label">Price Range</p>
-                <div class="flex gap-2 mt-2">
-                    <input type="number" placeholder="Min" class="w-full px-2 py-1.5 text-xs border border-gray-300 rounded-md bg-white focus:outline-none focus:border-gray-500">
-                    <input type="number" placeholder="Max" class="w-full px-2 py-1.5 text-xs border border-gray-300 rounded-md bg-white focus:outline-none focus:border-gray-500">
-                </div>
-                <button class="mt-3 w-full py-2 text-xs font-semibold tracking-widest uppercase bg-gray-900 text-white rounded-md hover:bg-gray-700 transition">Apply</button>
-            </div>
-
-        </aside>
+        @include('camera.camera_categories.sb_categori_camera')
 
         {{-- ─────────── PRODUCT GRID ─────────── --}}
         <main class="flex-1">
@@ -200,10 +159,10 @@
                 <p class="text-xs text-gray-400 tracking-wide">{{ count($items) }} products</p>
             </div>
 
-            <div class="grid grid-cols-3 gap-5">
+            <div class="grid grid-cols-4 gap-5">
 
                 @foreach($items as $index => $item)
-                <div class="product-card">
+                <a href="{{ route('camera.show', $item->id) }}" class="product-card block">
 
                     {{-- Image area --}}
                     <div class="product-img-wrap">
@@ -239,7 +198,7 @@
                         </div>
                     </div>
 
-                </div>
+                </a>
                 @endforeach
 
             </div>

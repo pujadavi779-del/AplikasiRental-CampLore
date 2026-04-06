@@ -1,3 +1,5 @@
+    
+    
     <!-- Navbar -->
     <nav class="bg-white/95 backdrop-blur-md sticky top-0 z-50 border-b border-pink-100">
         <div class="max-w-7xl mx-auto px-4 h-20 flex justify-between items-center">
@@ -8,7 +10,7 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 012 2H5a2 2 0 01-2-2V9z" />
                     </svg>
                 </div>
-                <a href="#hero" class="text-2xl font-extrabold text-[#1A392D]">Camp<span class="text-[#FF6B95]">lore</span></a>
+                <a href="{{ route('landing') }}" class="text-2xl font-extrabold text-[#1A392D]">Camp<span class="text-[#FF6B95]">lore</span></a>
             </div>
 
             <!-- Menu Tengah (Desktop) -->
