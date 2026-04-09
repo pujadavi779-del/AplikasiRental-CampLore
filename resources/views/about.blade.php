@@ -62,6 +62,7 @@
             to { opacity: 1; transform: translateY(0); }
         }
         .fade-up-anim { animation: fadeUp 0.6s ease forwards; }
+
     </style>
 </head>
 <body class="bg-gray-50 text-gray-900 overflow-x-hidden">
@@ -78,7 +79,7 @@
     <div class="relative z-10 text-center px-4 max-w-3xl" data-aos="zoom-in" data-aos-duration="900">
         <span class="inline-block bg-[#ED64A6] text-white px-4 py-1 rounded-full text-xs font-bold mb-4 tracking-widest uppercase">Our Story</span>
         <h1 class="text-5xl md:text-6xl font-extrabold text-white mb-5 leading-tight tracking-tighter">
-            We Don't Just Rent —<br><span class="text-[#ED64A6]">We Create Adventures.</span>
+            Rent with Ease —<br><span class="text-[#ED64A6]">Camera & Camping Gear in One Place.</span>
         </h1>
         <p class="text-emerald-100 text-lg leading-relaxed max-w-xl mx-auto">
             Dari tenda pegunungan hingga kamera mirrorless profesional — Camplore hadir untuk memastikan setiap momen petualanganmu terabadikan dengan sempurna.
@@ -225,8 +226,7 @@
 
         <!-- Timeline -->
         <div class="relative">
-            <!-- Line -->
-            <div class="hidden md:block absolute top-[72px] left-[16.66%] right-[16.66%] h-[2px] bg-white/20"></div>
+            
 
             <div class="grid md:grid-cols-3 gap-10">
                 <!-- Step 1 -->
@@ -261,13 +261,17 @@
             </div>
         </div>
 
+       
         <!-- Quote -->
+
         <div class="text-center mt-20" data-aos="fade-up" data-aos-delay="200">
             <p class="text-emerald-100 italic text-xl md:text-2xl font-medium max-w-2xl mx-auto leading-relaxed">
                 "Kami tidak hanya menyewakan kamera dan tenda — kami membantu kamu merekam kenangan terbaik di alam bebas."
             </p>
+
         </div>
     </div>
+
 </section>
 
 <!-- ========== TEAM SECTION ========== -->

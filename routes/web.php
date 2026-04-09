@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CampingController;
 use App\Http\Controllers\CameraController;
 use App\Http\Controllers\LandingController;
+use App\Http\Controllers\AuthController;
 
 Route::get('/dashboard/camera', [CameraController::class, 'index'])->name('camera.index');
 
@@ -33,3 +34,10 @@ Route::get('/registrasi', function () {
 Route::get('/about', function () {
     return view('about');
 })->name('about');
+
+// Dashboard (protected)
+Route::middleware('auth')->group(function () {
+    Route::get('/dashboard', function () {
+        return view('dashboard');
+    })->name('dashboard');
+});
