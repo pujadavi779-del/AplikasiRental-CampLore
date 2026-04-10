@@ -6,11 +6,12 @@
 
     {{-- Styles dari child view (Tailwind, AOS, dll) --}}
     @stack('styles')
+    
 </head>
 <body>
 
     {{-- Navbar --}}
-
+    @include('navbar')
 
     <hr>
 

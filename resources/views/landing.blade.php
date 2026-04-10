@@ -37,7 +37,7 @@
 
 <body class="bg-gray-50 text-gray-900 overflow-x-hidden">
 
-   @include('navbar')
+    @include('navbar')
 
     <section id="hero" class="relative min-h-[90vh] flex items-center justify-center bg-[#22543D] text-white overflow-hidden">
         <div class="absolute inset-0 opacity-20 bg-[url('https://images.unsplash.com/photo-1510312305653-8ed496efae75?auto=format&fit=crop&q=80')] bg-cover bg-center"></div>
@@ -46,7 +46,7 @@
         <div class="absolute -bottom-16 -right-16 w-80 h-80 bg-white/10 rounded-full blur-3xl" data-aos="fade-up" data-aos-delay="600"></div>
 
         <div class="relative z-10 text-center px-4 max-w-4xl" data-aos="zoom-in" data-aos-duration="1000">
-            <span class="inline-block bg-[#ED64A6] text-white px-4 py-1 rounded-full text-xs font-bold mb-4 tracking-widest uppercase">The Ultimate Adventure Companion</span>
+            <span class=" text-white px-4 py-1 rounded-full text-xs font-bold mb-4 tracking-widest uppercase">The Ultimate Adventure Companion</span>
             <h1 class="text-5xl md:text-7xl font-extrabold mb-6 leading-tight tracking-tighter">Capture <span class="text-[#ED64A6]">Nature</span>,<br> Experience Freedom.</h1>
             <p class="text-lg md:text-xl text-emerald-100 mb-10 max-w-2xl mx-auto leading-relaxed">
                 Sewakan perlengkapan Camping premium dan Kamera profesional dalam satu tempat. Jelajahi dunia, abadikan momen terbaikmu tanpa beban.
@@ -131,15 +131,6 @@
                     <button class="w-full py-3 bg-[#22543D] text-white rounded-xl font-bold hover:bg-[#ED64A6] transition transform active:scale-95 shadow">Book Gear</button>
                 </div>
                 @endforeach
-            </div>
-
-            <div class="text-center mt-16" data-aos="fade-up">
-                <a href="#" class="inline-flex items-center gap-2 border-2 border-[#22543D] text-[#22543D] px-10 py-3.5 rounded-full font-bold hover:bg-[#22543D] hover:text-white transition group">
-                    View Full Catalog
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                    </svg>
-                </a>
             </div>
         </div>
     </section>

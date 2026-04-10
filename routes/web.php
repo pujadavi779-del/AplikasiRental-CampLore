@@ -41,3 +41,7 @@ Route::middleware('auth')->group(function () {
         return view('dashboard');
     })->name('dashboard');
 });
+
+Route::get('/rental', function () {
+    return view('rental');
+})->name('rental');
