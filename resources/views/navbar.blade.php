@@ -1,5 +1,3 @@
-    
-    
     <!-- Navbar -->
     <nav class="bg-white/95 backdrop-blur-md sticky top-0 z-50 border-b border-pink-100">
         <div class="max-w-7xl mx-auto px-4 h-20 flex justify-between items-center">
@@ -79,13 +77,13 @@
                 </button>
 
                 <!-- Cart Icon with Badge -->
-                <button class="relative p-2 text-[#1A392D] hover:text-[#FF6B95] transition transform hover:scale-110">
+                <a href="rental" class="relative p-2 text-[#1A392D] hover:text-[#FF6B95] transition transform hover:scale-110 inline-block">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
                     </svg>
-                    <!-- Badge Angka (Contoh: 0) -->
-                    <span class="absolute top-0 right-0 bg-[#FF6B95] text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full border-2 border-white">0</span>
-                </button>
+                    <!-- Badge Angka -->
+                    <span class="absolute top-0 right-0 bg-[#FF6B95] text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full border-2 border-white">1</span>
+                </a>
 
                 <!-- Login Button -->
                 <a href="/login" class="bg-[#1A392D] text-white px-6 py-2.5 rounded-full font-bold text-sm hover:bg-[#FF6B95] hover:shadow-lg transition-all transform active:scale-95">
