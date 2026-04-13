@@ -5,6 +5,8 @@ use App\Http\Controllers\CampingController;
 use App\Http\Controllers\CameraController;
 use App\Http\Controllers\LandingController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\Auth\RegisterController;
+
 
 Route::get('/dashboard/camera', [CameraController::class, 'index'])->name('camera.index');
 
@@ -45,3 +47,12 @@ Route::middleware('auth')->group(function () {
 Route::get('/rental', function () {
     return view('rental');
 })->name('rental');
+
+
+// ── Halaman registrasi ─────────────────────────────────────────────────────
+Route::get('/registrasi', [RegisterController::class, 'showForm'])->name('register');
+Route::post('/registrasi', [RegisterController::class, 'register'])->name('register.submit');
+
+// ── OTP ────────────────────────────────────────────────────────────────────
+Route::post('/otp/send',   [RegisterController::class, 'sendOtp'])->name('otp.send');
+Route::post('/otp/verify', [RegisterController::class, 'verifyOtp'])->name('otp.verify');
