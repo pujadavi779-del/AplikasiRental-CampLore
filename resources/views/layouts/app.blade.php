@@ -2,7 +2,7 @@
 <html>
 <head>
     <title>@yield('title', 'Rental App')</title>
-    @vite('resources/css/app.css')
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
 
     {{-- Styles dari child view (Tailwind, AOS, dll) --}}
     @stack('styles')
