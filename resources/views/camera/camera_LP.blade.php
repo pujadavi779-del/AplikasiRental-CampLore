@@ -138,7 +138,7 @@
 </style>
 
 <div class="min-h-screen" style="background:#f5f4f0;">
-    @include('navbar')
+   
     
     {{-- TOP HEADER --}}
     <div class="text-center pt-12 pb-6">
