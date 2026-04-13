@@ -77,6 +77,11 @@ class CameraController extends Controller
     public function show($id)
     {
         $item = Item::findOrFail($id);
-        return view('camera.camera_categories.details_camera', compact('item'));
+
+        $relatedItems = Item::where('id', '!=', $item->id)
+            ->take(5)
+            ->get();
+
+        return view('camera.camera_categories.details_camera', compact('item', 'relatedItems'));
     }
 }
