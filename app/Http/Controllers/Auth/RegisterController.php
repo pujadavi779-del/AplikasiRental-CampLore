@@ -155,6 +155,7 @@ class RegisterController extends Controller
         }
 
         $user = User::create([
+            'name'     => $request->username,
             'username' => $request->username,
             'nik'      => $request->nik,
             'email'    => $request->email,
