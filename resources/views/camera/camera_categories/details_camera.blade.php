@@ -88,7 +88,7 @@
             <p class="text-2xl font-bold text-orange-600 mb-5">Rp {{ number_format($item->price, 0, ',', '.') }}</p>
 
             {{-- Size --}}
-            <p class="text-xs font-bold tracking-widest uppercase text-gray-400 mb-2">Size</p>
+            <p class="text-xs font-bold tracking-widest uppercase text-gray-400 mb-2">Opsi Pengiriman</p>
             <div class="flex gap-2 mb-6">
                 <button onclick="pickSize(this)" class="size-btn flex-1 py-3 px-4 rounded-xl border-2 border-gray-900 bg-white text-[11px] font-bold text-gray-900 ring-1 ring-gray-900 transition-all text-left">
                     📍 AMBIL DI TEMPAT
@@ -99,7 +99,7 @@
             </div>
 
             {{-- Quantity --}}
-            <p class="text-[10px] font-bold tracking-[0.2em] uppercase text-gray-400 mb-3">Quantity</p>
+            <p class="text-[10px] font-bold tracking-[0.2em] uppercase text-gray-400 mb-3">Jumlah</p>
             <div class="flex items-center w-fit border-2 border-gray-100 rounded-xl overflow-hidden mb-8">
                 <button onclick="changeQty(-1)" class="w-12 h-12 flex items-center justify-center bg-white text-xl text-gray-500 hover:bg-gray-50 transition-colors">−</button>
                 <div id="qtyDisplay" class="w-12 h-12 flex items-center justify-center border-x-2 border-gray-100 text-sm font-bold text-gray-900">1</div>
@@ -127,18 +127,18 @@
                 @php
                 $accordions = [
                 [
-                'title' => 'Details',
-                'body' => $item->description ?? 'No product description available.',
+                'title' => 'Tentang Kamera ini',
+                'body' => $item->tentang_kamera ?? 'Deskripsi tidak tersedia.',
                 'open' => true,
                 ],
                 [
-                'title' => 'Shipping & Returns',
-                'body' => 'Standard shipping 3–7 business days. Free shipping on orders over Rp 500.000. Returns accepted within 14 days of delivery.',
+                'title' => 'Highlights',
+                'body' => 'tidak ada highlights untuk produk ini.',
                 'open' => false,
                 ],
                 [
-                'title' => 'Stock Info',
-                'body' => $item->stock > 0 ? 'In stock — '.$item->stock.' units available.' : 'Currently out of stock.',
+                'title' => 'Isi Paket',
+                'body' => $item->isi > 0 ? 'In stock — '.$item->isi.' units available.' : 'Tidak ada informasi isi paket.',
                 'open' => false,
                 ],
                 ];
