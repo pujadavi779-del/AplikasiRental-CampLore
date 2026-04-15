@@ -46,6 +46,7 @@ Route::get('/rental', function () {
     return view('rental');
 })->name('rental');
 
+<<<<<<< Updated upstream
 
 // ── Halaman registrasi ─────────────────────────────────────────────────────
 Route::get('/registrasi', [RegisterController::class, 'showForm'])->name('register');
@@ -80,3 +81,8 @@ Route::get('/dashboard/admin/pembayaran', function () {
 Route::get('/dashboard/admin/pemesanan', function () {
     return view('admin.pemesanan');
 })->name('pemesanan');
+=======
+Route::get('/checkout', function () {
+    return view('checkout');
+});
+>>>>>>> Stashed changes

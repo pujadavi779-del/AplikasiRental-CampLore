@@ -164,20 +164,16 @@
 
     <footer class="bg-[#22543D] text-white pt-24 pb-12 overflow-hidden">
         <div class="max-w-7xl mx-auto px-4 relative">
-
-            <div class="absolute top-10 right-10 w-40 h-40 border-8 border-white/5 rounded-full z-0"></div>
-
             <div class="relative z-10 grid md:grid-cols-5 gap-12 mb-16">
                 <div class="col-span-2 space-y-5">
                     <a href="#" class="flex items-center gap-2">
-                        <div class="w-9 h-9 bg-white rounded-full flex items-center justify-center">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-[#22543D]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 012 2H5a2 2 0 01-2-2V9z" />
-                            </svg>
-                        </div>
-                        <span class="text-2xl font-extrabold text-white">Camp<span class="text-[#ED64A6]">lore</span></span>
+                        <img src="{{ asset('images/logo.png') }}"
+                            alt="Camplore Logo"
+                            class="h-10 w-auto object-contain transition-transform hover:scale-105">
                     </a>
-                    <p class="text-emerald-200 text-sm leading-relaxed max-w-sm">Capture Nature, Experience Freedom. Platform penyewaan Outdoor Gear paling terintegrasi di Indonesia.</p>
+                    <p class="text-emerald-200 text-sm leading-relaxed max-w-sm">
+                        Capture Nature, Experience Freedom. Platform penyewaan Outdoor Gear paling terintegrasi di Indonesia.
+                    </p>
                 </div>
 
                 @php $footerLinks = [

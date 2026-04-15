@@ -3,12 +3,11 @@
         <div class="max-w-7xl mx-auto px-4 h-20 flex justify-between items-center">
             <!-- Logo -->
             <div class="flex items-center gap-2">
-                <div class="w-10 h-10 bg-[#1A392D] rounded-xl flex items-center justify-center rotate-3 shadow-lg">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-[#FF6B95]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 012 2H5a2 2 0 01-2-2V9z" />
-                    </svg>
-                </div>
-                <a href="{{ route('landing') }}" class="text-2xl font-extrabold text-[#1A392D]">Camp<span class="text-[#FF6B95]">lore</span></a>
+                <a href="{{ route('landing') }}" class="flex items-center">
+                    <img src="{{ asset('images/logo.png') }}"
+                        alt="Camplore Logo"
+                        class="h-10 md:h-12 w-auto object-contain transition-transform duration-300 hover:scale-105">
+                </a>
             </div>
 
             <!-- Menu Tengah (Desktop) -->
@@ -81,7 +80,7 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
                     </svg>
                     <!-- Badge Angka -->
-                    <span class="absolute top-0 right-0 bg-[#FF6B95] text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full border-2 border-white">1</span>
+                    <span id="nav-cart-count" class="absolute top-0 right-0 bg-[#FF6B95] text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full border-2 border-white">1</span>
                 </a>
 
                 <!-- Login Button -->
