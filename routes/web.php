@@ -55,9 +55,7 @@ Route::post('/registrasi', [RegisterController::class, 'register'])->name('regis
 Route::post('/otp/send',   [RegisterController::class, 'sendOtp'])->name('otp.send');
 Route::post('/otp/verify', [RegisterController::class, 'verifyOtp'])->name('otp.verify');
 
-Route::get('/dashboard_pelanggan', function () {
-    return view('dashboard_pelanggan');
-})->name('dashboard_pelanggan');
+
 
 
 Route::post('/logout', function (Request $request) {
@@ -68,3 +66,17 @@ Route::post('/logout', function (Request $request) {
     return redirect('/login');
 })->name('logout');
 
+// ── BERANDA SIDEBAR PELANGGAN ─────────────────────────────────────────────────────
+Route::get('/dashboard_pelanggan', function () {
+    return view('dashboard_pelanggan');
+})->name('dashboard_pelanggan');
+
+
+// ── BERANDA SIDEBAR ADMIN ─────────────────────────────────────────────────────
+Route::get('/dashboard/admin/pembayaran', function () {
+    return view('admin.pembayaran');
+})->name('pembayaran');
+
+Route::get('/dashboard/admin/pemesanan', function () {
+    return view('admin.pemesanan');
+})->name('pemesanan');
