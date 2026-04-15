@@ -142,8 +142,8 @@
     
     {{-- TOP HEADER --}}
     <div class="text-center pt-12 pb-6">
-        <p class="section-label">Browse Collection</p>
-        <h1 class="page-title text-5xl text-gray-900" style="letter-spacing:-0.01em;">Camera</h1>
+        <p class="section-label">Jelajahi Koleksi</p>
+        <h1 class="page-title text-5xl text-gray-900" style="letter-spacing:-0.01em;">Kamera</h1>
     </div>
 
     <div class="flex gap-8 px-10 pb-16 max-w-screen-x32 mx-auto">
@@ -156,7 +156,7 @@
 
             {{-- Result count --}}
             <div class="flex items-center justify-between mb-6">
-                <p class="text-xs text-gray-400 tracking-wide">{{ count($items) }} products</p>
+                <p class="text-xs text-gray-400 tracking-wide">{{ count($items) }} produk</p>
             </div>
 
             <div class="grid grid-cols-4 gap-5">
@@ -193,7 +193,7 @@
                                 Rp {{ number_format($item->price) }}
                             </p>
                             <button class="card-action text-xs font-semibold tracking-wider uppercase bg-gray-900 text-white px-3 py-1.5 rounded-full hover:bg-gray-700 transition">
-                                + Add
+                                + Tambah
                             </button>
                         </div>
                     </div>
