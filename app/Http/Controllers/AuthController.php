@@ -9,6 +9,7 @@ class AuthController extends Controller
     public function showLogin()
     {
         return view('login');
+        return redirect()->route('dashboard');
     }
 
     public function login(Request $request)
