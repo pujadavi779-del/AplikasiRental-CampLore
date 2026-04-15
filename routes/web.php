@@ -6,7 +6,8 @@ use App\Http\Controllers\CameraController;
 use App\Http\Controllers\LandingController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\Auth\RegisterController;
-
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 Route::get('/dashboard/camera', [CameraController::class, 'index'])->name('camera.index');
 
@@ -27,11 +28,8 @@ Route::get('/dashboard_admin', function () {
 
 Route::get('/login', function () {
     return view('login');
-});
+})->name('login');
 
-Route::get('/registrasi', function () {
-    return view('registrasi');
-});
 
 Route::get('/about', function () {
     return view('about');
@@ -56,3 +54,17 @@ Route::post('/registrasi', [RegisterController::class, 'register'])->name('regis
 // ── OTP ────────────────────────────────────────────────────────────────────
 Route::post('/otp/send',   [RegisterController::class, 'sendOtp'])->name('otp.send');
 Route::post('/otp/verify', [RegisterController::class, 'verifyOtp'])->name('otp.verify');
+
+Route::get('/dashboard_pelanggan', function () {
+    return view('dashboard_pelanggan');
+})->name('dashboard_pelanggan');
+
+
+Route::post('/logout', function (Request $request) {
+    Auth::logout();
+    $request->session()->invalidate();
+    $request->session()->regenerateToken();
+
+    return redirect('/login');
+})->name('logout');
+
