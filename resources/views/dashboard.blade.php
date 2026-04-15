@@ -88,6 +88,7 @@
 @section('content')
 <div class="min-h-screen bg-gray-50 py-8 px-4">
     <div class="max-w-7xl mx-auto">
+        
 
         {{-- Top greeting banner --}}
         <div class="mb-8 bg-[#22543D] rounded-3xl px-8 py-6 flex items-center justify-between overflow-hidden relative" data-aos="fade-down">

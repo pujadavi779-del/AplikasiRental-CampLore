@@ -64,7 +64,6 @@
                         </div>
                     </div>
                 </div>
-                <a href="#about" class="hover:text-[#FF6B95] transition">Accessories</a>
             </div>
 
             <!-- Bagian Kanan: Search, Cart, Login -->
