@@ -6,10 +6,12 @@ use App\Http\Controllers\CameraController;
 use App\Http\Controllers\LandingController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\Auth\RegisterController;
+use App\Http\Controllers\DeliveryController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 Route::get('/dashboard/camera', [CameraController::class, 'index'])->name('camera.index');
+Route::get('/pengiriman', [DeliveryController::class, 'index'])->name('pengiriman');
 
 Route::get('/', [LandingController::class, 'index']);
 Route::resource('camping', CampingController::class);
@@ -46,7 +48,6 @@ Route::get('/rental', function () {
     return view('rental');
 })->name('rental');
 
-<<<<<<< Updated upstream
 
 // ── Halaman registrasi ─────────────────────────────────────────────────────
 Route::get('/registrasi', [RegisterController::class, 'showForm'])->name('register');
@@ -81,8 +82,8 @@ Route::get('/dashboard/admin/pembayaran', function () {
 Route::get('/dashboard/admin/pemesanan', function () {
     return view('admin.pemesanan');
 })->name('pemesanan');
-=======
+
+// HALAMAN CHECKOUT//
 Route::get('/checkout', function () {
     return view('checkout');
 });
->>>>>>> Stashed changes
