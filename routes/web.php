@@ -9,6 +9,7 @@ use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\DeliveryController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\OrderController;
 
 Route::get('/dashboard/camera', [CameraController::class, 'index'])->name('camera.index');
 Route::get('/pengiriman', [DeliveryController::class, 'index'])->name('pengiriman');
@@ -79,9 +80,14 @@ Route::get('/dashboard/admin/pembayaran', function () {
     return view('admin.pembayaran');
 })->name('pembayaran');
 
+
+
+Route::delete('/admin/orders/{id}', [OrderController::class, 'destroy']);
+
 Route::get('/dashboard/admin/pemesanan', function () {
     return view('admin.pemesanan');
 })->name('pemesanan');
+
 
 // HALAMAN CHECKOUT//
 Route::get('/checkout', function () {
