@@ -76,7 +76,7 @@
                 style="color:#7a8060;">Manajemen Operasional</p>
 
             {{-- Users — users --}}
-            <a href="{{ url('/users') }}"
+            <a href="{{ url('/dashboard/admin/users') }}"
                 class="flex items-center gap-2.5 px-2.5 py-[9px] rounded-[9px] no-underline text-[13px] transition-all duration-150
                       {{ request()->is('users') ? 'bg-white font-semibold shadow-[0_1px_4px_rgba(0,0,0,0.08)]' : 'hover:bg-[#d4d6c4]' }}"
                 style="{{ request()->is('users') ? 'color:#2a3020;' : 'color:#4a5038;' }}">

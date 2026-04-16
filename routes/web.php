@@ -9,6 +9,7 @@ use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\DeliveryController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\Admin\CustomerController;
 
 Route::get('/dashboard/camera', [CameraController::class, 'index'])->name('camera.index');
 Route::get('/pengiriman', [DeliveryController::class, 'index'])->name('pengiriman');
@@ -87,3 +88,11 @@ Route::get('/dashboard/admin/pemesanan', function () {
 Route::get('/checkout', function () {
     return view('checkout');
 });
+
+Route::get('/dashboard/admin/users', function () {
+    $customers = \App\Models\Customer::withCount('rentals')->paginate(10);
+    return view('admin.users', compact('customers'));
+})->name('users');
+
+Route::resource('dashboard/admin/customers', CustomerController::class)
+     ->names('admin.customers');
