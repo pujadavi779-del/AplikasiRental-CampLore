@@ -4,17 +4,16 @@
 
 @section('content')
 
-<div class="fixed top-5 right-6 z-40 left-[calc(16rem+24px)] max-sm:left-6">
+<div class="fixed top-5 right-6 z-40 left-[calc(272px+24px)] max-sm:left-6 animate-fade-up">
     @include('admin.navbar', [
-        'NavParent' => 'Managemen Rental',
-        'section'   => 'Pemesanan'
+    'NavParent' => 'Managemen Rental',
+    'section' => 'Pemesanan'
     ])
 </div>
 
 <div class="max-w-full">
     <div class="bg-white rounded-[28px] border border-[#d7e6de] shadow-sm overflow-hidden">
 
-        {{-- ===== HEADER ===== --}}
         <div class="p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#eef4f0]">
             <div>
                 <h2 class="text-2xl font-bold text-[#22543D] font-serif leading-tight">
@@ -29,20 +28,19 @@
                 type="button"
                 class="inline-flex items-center gap-2 bg-[#22543D] hover:bg-[#1B4332] text-white text-xs font-bold px-5 py-2.5 rounded-xl transition-colors shadow-sm">
                 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24">
-                    <path d="M12 5v14M5 12h14"/>
+                    <path d="M12 5v14M5 12h14" />
                 </svg>
                 Tambah Pesanan
             </button>
         </div>
 
-        {{-- ===== SEARCH + FILTER BAR ===== --}}
         <div class="flex flex-col sm:flex-row gap-3 px-6 py-4 border-b border-[#eef4f0]">
 
             {{-- Search --}}
             <div class="relative flex-1">
                 <div class="pointer-events-none absolute inset-y-0 left-3 flex items-center">
                     <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-4.35-4.35M17 11A6 6 0 1 1 5 11a6 6 0 0 1 12 0z"/>
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-4.35-4.35M17 11A6 6 0 1 1 5 11a6 6 0 0 1 12 0z" />
                     </svg>
                 </div>
                 <input
@@ -66,7 +64,6 @@
             </select>
         </div>
 
-        {{-- ===== TABLE ===== --}}
         <div class="overflow-x-auto">
             <table class="w-full text-left text-sm">
 
@@ -94,9 +91,7 @@
                     </tr>
                 </thead>
 
-                <tbody id="tableBody" class="divide-y divide-[#eef4f0]">
-                    {{-- JS akan mengisi baris di sini --}}
-                </tbody>
+                <tbody id="tableBody" class="divide-y divide-[#eef4f0]"></tbody>
             </table>
         </div>
 
@@ -109,69 +104,188 @@
     </div>
 </div>
 
-{{-- ===== SCRIPT ===== --}}
 <script>
-// -------------------------------------------------------
-// DATA — ganti dengan data dari Laravel jika diperlukan
-// -------------------------------------------------------
-const allData = [
-    { id:'#ORD-001', name:'Andi Pratama',   email:'andi@gmail.com',   av:'AP', products:[{name:'Canon EOS R6',type:'camera'},{name:'Tripod Carbon',type:'camping'}], price:450000, days:3, status:'Aktif',      date:'2026-04-14' },
-    { id:'#ORD-002', name:'Siti Rahayu',    email:'siti@gmail.com',   av:'SR', products:[{name:'Sony A7 III',type:'camera'}],                                         price:350000, days:2, status:'Menunggu',   date:'2026-04-14' },
-    { id:'#ORD-003', name:'Budi Santoso',   email:'budi@gmail.com',   av:'BS', products:[{name:'Tenda Dome 4P',type:'camping'},{name:'Sleeping Bag',type:'camping'}],  price:280000, days:4, status:'Selesai',    date:'2026-04-12' },
-    { id:'#ORD-004', name:'Rina Wulandari', email:'rina@gmail.com',   av:'RW', products:[{name:'GoPro Hero 12',type:'camera'},{name:'Kompor Portable',type:'camping'}],price:520000, days:3, status:'Aktif',      date:'2026-04-13' },
-    { id:'#ORD-005', name:'Fajar Nugroho',  email:'fajar@gmail.com',  av:'FN', products:[{name:'DJI Mini 4 Pro',type:'camera'}],                                      price:600000, days:2, status:'Menunggu',   date:'2026-04-15' },
-    { id:'#ORD-006', name:'Dewi Lestari',   email:'dewi@gmail.com',   av:'DL', products:[{name:'Carrier 60L',type:'camping'},{name:'Matras Gunung',type:'camping'}],   price:180000, days:5, status:'Dibatalkan', date:'2026-04-10' },
-    { id:'#ORD-007', name:'Hendra Kusuma',  email:'hendra@gmail.com', av:'HK', products:[{name:'Canon R5',type:'camera'},{name:'Lensa 24-70mm',type:'camera'}],        price:780000, days:2, status:'Selesai',    date:'2026-04-11' },
-    { id:'#ORD-008', name:'Mega Safitri',   email:'mega@gmail.com',   av:'MS', products:[{name:'Nikon Z6 II',type:'camera'},{name:'Tenda Dome 2P',type:'camping'}],    price:430000, days:3, status:'Aktif',      date:'2026-04-15' },
-];
+    const allData = [{
+            id: '#ORD-001',
+            name: 'Andi Pratama',
+            email: 'andi@gmail.com',
+            av: 'AP',
+            products: [{
+                name: 'Canon EOS R6',
+                type: 'camera'
+            }, {
+                name: 'Tripod Carbon',
+                type: 'camping'
+            }],
+            price: 450000,
+            days: 3,
+            status: 'Aktif',
+            date: '2026-04-14'
+        },
+        {
+            id: '#ORD-002',
+            name: 'Siti Rahayu',
+            email: 'siti@gmail.com',
+            av: 'SR',
+            products: [{
+                name: 'Sony A7 III',
+                type: 'camera'
+            }],
+            price: 350000,
+            days: 2,
+            status: 'Menunggu',
+            date: '2026-04-14'
+        },
+        {
+            id: '#ORD-003',
+            name: 'Budi Santoso',
+            email: 'budi@gmail.com',
+            av: 'BS',
+            products: [{
+                name: 'Tenda Dome 4P',
+                type: 'camping'
+            }, {
+                name: 'Sleeping Bag',
+                type: 'camping'
+            }],
+            price: 280000,
+            days: 4,
+            status: 'Selesai',
+            date: '2026-04-12'
+        },
+        {
+            id: '#ORD-004',
+            name: 'Rina Wulandari',
+            email: 'rina@gmail.com',
+            av: 'RW',
+            products: [{
+                name: 'GoPro Hero 12',
+                type: 'camera'
+            }, {
+                name: 'Kompor Portable',
+                type: 'camping'
+            }],
+            price: 520000,
+            days: 3,
+            status: 'Aktif',
+            date: '2026-04-13'
+        },
+        {
+            id: '#ORD-005',
+            name: 'Fajar Nugroho',
+            email: 'fajar@gmail.com',
+            av: 'FN',
+            products: [{
+                name: 'DJI Mini 4 Pro',
+                type: 'camera'
+            }],
+            price: 600000,
+            days: 2,
+            status: 'Menunggu',
+            date: '2026-04-15'
+        },
+        {
+            id: '#ORD-006',
+            name: 'Dewi Lestari',
+            email: 'dewi@gmail.com',
+            av: 'DL',
+            products: [{
+                name: 'Carrier 60L',
+                type: 'camping'
+            }, {
+                name: 'Matras Gunung',
+                type: 'camping'
+            }],
+            price: 180000,
+            days: 5,
+            status: 'Dibatalkan',
+            date: '2026-04-10'
+        },
+        {
+            id: '#ORD-007',
+            name: 'Hendra Kusuma',
+            email: 'hendra@gmail.com',
+            av: 'HK',
+            products: [{
+                name: 'Canon R5',
+                type: 'camera'
+            }, {
+                name: 'Lensa 24-70mm',
+                type: 'camera'
+            }],
+            price: 780000,
+            days: 2,
+            status: 'Selesai',
+            date: '2026-04-11'
+        },
+        {
+            id: '#ORD-008',
+            name: 'Mega Safitri',
+            email: 'mega@gmail.com',
+            av: 'MS',
+            products: [{
+                name: 'Nikon Z6 II',
+                type: 'camera'
+            }, {
+                name: 'Tenda Dome 2P',
+                type: 'camping'
+            }],
+            price: 430000,
+            days: 3,
+            status: 'Aktif',
+            date: '2026-04-15'
+        },
+    ];
 
-// Warna avatar bergilir
-const avColors = [
-    'bg-emerald-100 text-emerald-700',
-    'bg-blue-100 text-blue-700',
-    'bg-amber-100 text-amber-700',
-    'bg-pink-100 text-pink-700',
-    'bg-purple-100 text-purple-700',
-];
+    const avColors = [
+        'bg-emerald-100 text-emerald-700',
+        'bg-blue-100 text-blue-700',
+        'bg-amber-100 text-amber-700',
+        'bg-pink-100 text-pink-700',
+        'bg-purple-100 text-purple-700',
+    ];
 
-// Badge status
-const statusBadge = {
-    'Aktif':      'bg-emerald-50 text-emerald-700 border border-emerald-200',
-    'Menunggu':   'bg-amber-50 text-amber-700 border border-amber-200',
-    'Selesai':    'bg-gray-100 text-gray-500 border border-gray-200',
-    'Dibatalkan': 'bg-red-50 text-red-600 border border-red-200',
-};
+    const statusBadge = {
+        'Aktif': 'bg-emerald-50 text-emerald-700 border border-emerald-200',
+        'Menunggu': 'bg-amber-50 text-amber-700 border border-amber-200',
+        'Selesai': 'bg-gray-100 text-gray-500 border border-gray-200',
+        'Dibatalkan': 'bg-red-50 text-red-600 border border-red-200',
+    };
 
-const perPage   = 5;
-let currentPage = 1;
-let filtered    = [...allData];
-let sortKey     = 'id';
-let sortAsc     = false;
+    const perPage = 5;
+    let currentPage = 1;
+    let filtered = [...allData];
+    let sortKey = 'id';
+    let sortAsc = false;
 
-function fmt(n) {
-    return 'Rp ' + n.toLocaleString('id-ID');
-}
+    function fmt(n) {
+        return 'Rp ' + n.toLocaleString('id-ID');
+    }
 
-function fmtDate(d) {
-    return new Date(d).toLocaleDateString('id-ID', { day:'2-digit', month:'short', year:'numeric' });
-}
+    function fmtDate(d) {
+        return new Date(d).toLocaleDateString('id-ID', {
+            day: '2-digit',
+            month: 'short',
+            year: 'numeric'
+        });
+    }
 
-function renderRows() {
-    const start  = (currentPage - 1) * perPage;
-    const slice  = filtered.slice(start, start + perPage);
-    const tbody  = document.getElementById('tableBody');
+    function renderRows() {
+        const start = (currentPage - 1) * perPage;
+        const slice = filtered.slice(start, start + perPage);
+        const tbody = document.getElementById('tableBody');
 
-    tbody.innerHTML = slice.map((r, i) => {
-        const avClass = avColors[(start + i) % avColors.length];
-        const badge   = statusBadge[r.status] ?? 'bg-gray-100 text-gray-500';
-        const prods   = r.products.map(p =>
-            `<div class="flex items-center gap-1.5 text-xs text-gray-500 leading-5">
+        tbody.innerHTML = slice.map((r, i) => {
+            const avClass = avColors[(start + i) % avColors.length];
+            const badge = statusBadge[r.status] ?? 'bg-gray-100 text-gray-500';
+            const prods = r.products.map(p =>
+                `<div class="flex items-center gap-1.5 text-xs text-gray-500 leading-5">
                 <span class="w-1.5 h-1.5 rounded-full flex-shrink-0 ${p.type === 'camera' ? 'bg-emerald-400' : 'bg-amber-400'}"></span>
                 ${p.name}
             </div>`
-        ).join('');
+            ).join('');
 
-        return `
+            return `
         <tr class="hover:bg-[#fcfdfb] transition-colors">
             <td class="px-6 py-4">
                 <input type="checkbox" class="row-cb w-4 h-4 rounded border-gray-300 accent-[#22543D] cursor-pointer">
@@ -208,63 +322,77 @@ function renderRows() {
                 </div>
             </td>
         </tr>`;
-    }).join('');
+        }).join('');
 
-    const total = filtered.length;
-    document.getElementById('pageInfo').textContent =
-        `Menampilkan ${start + 1}–${Math.min(start + perPage, total)} dari ${total} pesanan`;
+        const total = filtered.length;
+        document.getElementById('pageInfo').textContent =
+            `Menampilkan ${start + 1}–${Math.min(start + perPage, total)} dari ${total} pesanan`;
 
-    renderPager();
-}
-
-function renderPager() {
-    const total = Math.ceil(filtered.length / perPage);
-    const el    = document.getElementById('pageBtns');
-    el.innerHTML = '';
-
-    for (let i = 1; i <= total; i++) {
-        const btn = document.createElement('button');
-        btn.textContent = i;
-        btn.className = i === currentPage
-            ? 'w-8 h-8 flex items-center justify-center rounded-lg text-xs font-bold bg-[#22543D] text-white'
-            : 'w-8 h-8 flex items-center justify-center rounded-lg text-xs font-medium border border-[#d7e6de] text-[#22543D] hover:bg-[#f1f8f4] transition-colors';
-        btn.onclick = () => { currentPage = i; renderRows(); };
-        el.appendChild(btn);
+        renderPager();
     }
-}
 
-function filterTable() {
-    const q = document.getElementById('searchInput').value.toLowerCase();
-    const s = document.getElementById('statusFilter').value;
-    filtered = allData.filter(r => {
-        const haystack = (r.name + r.email + r.id + r.products.map(p => p.name).join('')).toLowerCase();
-        return (!q || haystack.includes(q)) && (!s || r.status === s);
-    });
-    currentPage = 1;
+    function renderPager() {
+        const total = Math.ceil(filtered.length / perPage);
+        const el = document.getElementById('pageBtns');
+        el.innerHTML = '';
+
+        for (let i = 1; i <= total; i++) {
+            const btn = document.createElement('button');
+            btn.textContent = i;
+            btn.className = i === currentPage ?
+                'w-8 h-8 flex items-center justify-center rounded-lg text-xs font-bold bg-[#22543D] text-white' :
+                'w-8 h-8 flex items-center justify-center rounded-lg text-xs font-medium border border-[#d7e6de] text-[#22543D] hover:bg-[#f1f8f4] transition-colors';
+            btn.onclick = () => {
+                currentPage = i;
+                renderRows();
+            };
+            el.appendChild(btn);
+        }
+    }
+
+    function filterTable() {
+        const q = document.getElementById('searchInput').value.toLowerCase();
+        const s = document.getElementById('statusFilter').value;
+        filtered = allData.filter(r => {
+            const haystack = (r.name + r.email + r.id + r.products.map(p => p.name).join('')).toLowerCase();
+            return (!q || haystack.includes(q)) && (!s || r.status === s);
+        });
+        currentPage = 1;
+        renderRows();
+    }
+
+    function sortTable(key) {
+        if (sortKey === key) sortAsc = !sortAsc;
+        else {
+            sortKey = key;
+            sortAsc = true;
+        }
+        ['id', 'name', 'price', 'date'].forEach(k => {
+            const el = document.getElementById('sort-' + k);
+            if (el) el.textContent = k === key ? (sortAsc ? '↑' : '↓') : '↕';
+        });
+        filtered.sort((a, b) => {
+            let va, vb;
+            if (key === 'price') {
+                va = a.price;
+                vb = b.price;
+            } else if (key === 'date') {
+                va = new Date(a.date);
+                vb = new Date(b.date);
+            } else {
+                va = a[key];
+                vb = b[key];
+            }
+            return va < vb ? (sortAsc ? -1 : 1) : va > vb ? (sortAsc ? 1 : -1) : 0;
+        });
+        renderRows();
+    }
+
+    function toggleAll(cb) {
+        document.querySelectorAll('.row-cb').forEach(c => c.checked = cb.checked);
+    }
+
     renderRows();
-}
-
-function sortTable(key) {
-    if (sortKey === key) sortAsc = !sortAsc; else { sortKey = key; sortAsc = true; }
-    ['id','name','price','date'].forEach(k => {
-        const el = document.getElementById('sort-' + k);
-        if (el) el.textContent = k === key ? (sortAsc ? '↑' : '↓') : '↕';
-    });
-    filtered.sort((a, b) => {
-        let va, vb;
-        if (key === 'price') { va = a.price; vb = b.price; }
-        else if (key === 'date') { va = new Date(a.date); vb = new Date(b.date); }
-        else { va = a[key]; vb = b[key]; }
-        return va < vb ? (sortAsc ? -1 : 1) : va > vb ? (sortAsc ? 1 : -1) : 0;
-    });
-    renderRows();
-}
-
-function toggleAll(cb) {
-    document.querySelectorAll('.row-cb').forEach(c => c.checked = cb.checked);
-}
-
-renderRows();
 </script>
 
 @endsection
