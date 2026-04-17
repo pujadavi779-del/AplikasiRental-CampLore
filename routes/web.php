@@ -98,12 +98,8 @@ Route::get('/checkout', function () {
     return view('checkout');
 });
 
-Route::get('/dashboard/admin/users', function () {
-    $customers = \App\Models\Customer::withCount('rentals')->paginate(10);
-    return view('admin.users', compact('customers'));
-})->name('users');
-
 Route::resource('dashboard/admin/customers', CustomerController::class)
+<<<<<<< Updated upstream
      ->names('admin.customers');
 
      // Profil pelanggan ( Shipping Address )
@@ -114,3 +110,18 @@ Route::put('/shipping-address', [ShippingAddressController::class, 'update'])
      ->name('shipping-address.update');
 
 
+=======
+    ->names('admin.customers');
+
+Route::get('/dashboard/admin/riwayat_produk', function () {
+    return view('admin.riwayat_produk');
+})->name('admin.riwayat_produk');
+
+Route::get('/dashboard/admin/riwayat/kamera', function () {
+    return view('admin.riwayat.kamera');
+})->name('riwayat.kamera');
+
+Route::get('/dashboard/admin/riwayat/camping', function () {
+    return view('admin.riwayat.camping');
+})->name('riwayat.camping');
+>>>>>>> Stashed changes
