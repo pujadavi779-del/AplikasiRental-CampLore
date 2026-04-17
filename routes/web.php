@@ -11,6 +11,10 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\Admin\CustomerController;
+use App\Http\Controllers\ProductController;
+
+Route::get('/produk', [ProductController::class, 'index']);
+
 
 Route::get('/dashboard/camera', [CameraController::class, 'index'])->name('camera.index');
 Route::get('/pengiriman', [DeliveryController::class, 'index'])->name('pengiriman');
