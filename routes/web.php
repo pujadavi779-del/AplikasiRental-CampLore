@@ -11,10 +11,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\Admin\CustomerController;
+use App\Http\Controllers\ShippingAddressController;
 use App\Http\Controllers\ProductController;
-
 Route::get('/produk', [ProductController::class, 'index']);
-
 
 Route::get('/dashboard/camera', [CameraController::class, 'index'])->name('camera.index');
 Route::get('/pengiriman', [DeliveryController::class, 'index'])->name('pengiriman');
@@ -106,3 +105,12 @@ Route::get('/dashboard/admin/users', function () {
 
 Route::resource('dashboard/admin/customers', CustomerController::class)
      ->names('admin.customers');
+
+     // Profil pelanggan ( Shipping Address )
+     
+Route::get('/shipping-address', [ShippingAddressController::class, 'index'])
+     ->name('shipping-address');
+Route::put('/shipping-address', [ShippingAddressController::class, 'update'])
+     ->name('shipping-address.update');
+
+
