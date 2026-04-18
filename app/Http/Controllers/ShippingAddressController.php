@@ -11,7 +11,8 @@ class ShippingAddressController extends Controller
     // Tampilkan form (isi data yang sudah ada jika ada)
     public function index()
     {
-       
+       $address = ShippingAddress::where('user_id', Auth::id())->first();
+    return view('shipping-address', compact('address'));
     }
 
     // Simpan / update alamat

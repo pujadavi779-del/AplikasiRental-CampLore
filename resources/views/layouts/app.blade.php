@@ -10,16 +10,11 @@
 <body>
 
     {{-- Navbar --}}
-    <nav class="bg-white/95 backdrop-blur-md sticky top-0 z-50 border-b border-pink-100">
-        <div class="max-w-7xl mx-auto px-4 h-20 flex justify-between items-center">
-            <!-- Logo -->
-            <div class="flex items-center gap-2">
-                <a href="{{ route('landing') }}" class="flex items-center">
-                    <img src="{{ asset('images/logo.png') }}"
-                        alt="Camplore Logo"
-                        class="h-10 md:h-12 w-auto object-contain transition-transform duration-300 hover:scale-105">
-                </a>
-            </div>
+    @if(!request()->routeIs('shipping-address', 'dashboard'))
+<nav class="bg-white/95 backdrop-blur-md sticky top-0 z-50 border-b border-pink-100">
+    ... isi navbar tetap sama ...
+</nav>
+@endif
 
             <!-- Menu Tengah (Desktop) -->
             <div class="hidden md:flex space-x-8 font-bold text-xs uppercase tracking-widest text-[#1A392D]">

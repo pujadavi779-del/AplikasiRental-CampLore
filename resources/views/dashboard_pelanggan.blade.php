@@ -152,7 +152,7 @@
         background: white;
         border-radius: 18px;
         border: 1.5px solid #E5E7EB;
-        border-left: 4px solid #22543D;
+        border-left: 30px solid #22543D;
         padding: 20px 22px;
         display: flex; align-items: center; gap: 18px;
         margin-bottom: 14px;
