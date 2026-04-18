@@ -1,63 +1,68 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+
+// Controllers
 use App\Http\Controllers\CampingController;
 use App\Http\Controllers\CameraController;
 use App\Http\Controllers\LandingController;
-use App\Http\Controllers\AuthController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\DeliveryController;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\Admin\CustomerController;
 use App\Http\Controllers\ShippingAddressController;
+
+// Models
 use App\Models\Product;
 
+/*
+|--------------------------------------------------------------------------
+| Public Routes
+|--------------------------------------------------------------------------
+*/
 
-Route::get('/dashboard/camera', [CameraController::class, 'index'])->name('camera.index');
+Route::get('/', [LandingController::class, 'index'])->name('landing');
 
-Route::get('/', [LandingController::class, 'index']);
+// Landing & Informasi
+Route::get('/about', function () {
+    return view('about');
+})->name('about');
+
+// Produk
 Route::resource('camping', CampingController::class);
 Route::resource('camera', CameraController::class);
 
-Route::get('/landing', [LandingController::class, 'index'])->name('landing');
-Route::get('/about', [CameraController::class, 'landing'])->name('about');
+// Camera Landing Page
 Route::get('/camera', [CameraController::class, 'landing'])->name('camera.LP');
 
-// details camera
+// Detail Camera
 Route::get('/camera/{id}', [CameraController::class, 'show'])->name('camera.show');
 
-Route::get('/dashboard_admin', function () {
-    return view('dashboard_admin');
-});
+// Rental Page
+Route::get('/rental', function () {
+    return view('rental');
+})->name('rental');
+
+/*
+|--------------------------------------------------------------------------
+| Authentication
+|--------------------------------------------------------------------------
+*/
 
 Route::get('/login', function () {
     return view('login');
 })->name('login');
 
-
-Route::get('/about', function () {
-    return view('about');
-})->name('about');
-
-// Dashboard (protected)
-Route::middleware('auth')->group(function () {
-    Route::get('/dashboard', function () {
-        return view('dashboard');
-    })->name('dashboard');
-});
-
-Route::get('/rental', function () {
-    return view('rental');
-})->name('rental');
-
 Route::get('/registrasi', [RegisterController::class, 'showForm'])->name('register');
 Route::post('/registrasi', [RegisterController::class, 'register'])->name('register.submit');
 
-Route::post('/otp/send',   [RegisterController::class, 'sendOtp'])->name('otp.send');
+// OTP
+Route::post('/otp/send', [RegisterController::class, 'sendOtp'])->name('otp.send');
 Route::post('/otp/verify', [RegisterController::class, 'verifyOtp'])->name('otp.verify');
 
+// Logout
 Route::post('/logout', function (Request $request) {
     Auth::logout();
     $request->session()->invalidate();
@@ -66,88 +71,104 @@ Route::post('/logout', function (Request $request) {
     return redirect('/login');
 })->name('logout');
 
-// ── BERANDA SIDEBAR PELANGGAN
-Route::get('/dashboard_pelanggan', function () {
-    return view('dashboard_pelanggan');
-})->name('dashboard_pelanggan');
+/*
+|--------------------------------------------------------------------------
+| User Dashboard (Auth Required)
+|--------------------------------------------------------------------------
+*/
 
+Route::middleware('auth')->group(function () {
 
-// ── BERANDA SIDEBAR ADMIN
-Route::get('/pembayaran', function () {
-    return view('admin.pembayaran');
-})->name('pembayaran');
+    Route::get('/dashboard', function () {
+        return view('dashboard');
+    })->name('dashboard');
 
-Route::delete('/admin/orders/{id}', [OrderController::class, 'destroy']);
+    Route::get('/dashboard_pelanggan', function () {
+        return view('dashboard_pelanggan');
+    })->name('dashboard_pelanggan');
 
-Route::get('/pemesanan', function () {
-    return view('admin.pemesanan');
-})->name('pemesanan');
+    // Checkout
+    Route::get('/checkout', function () {
+        return view('checkout');
+    })->name('checkout');
 
-Route::get('/pembayaran', function () {
-    $payments = collect(); 
-    return view('admin.pembayaran', compact('payments'));
-})->name('pembayaran');
+    // Shipping Address
+    Route::get('/shipping-address', [ShippingAddressController::class, 'index'])
+        ->name('shipping-address');
 
-Route::get('/pengiriman', [
-    DeliveryController::class,
-    'index'
-])->name('pengiriman');
-
-Route::resource('/customers', CustomerController::class)
-    ->names('admin.customers');
-
-Route::get('/admin/products', function (Request $request) {
-
-    $query = Product::query();
-
-    // FILTER CATEGORY
-    if ($request->category) {
-        $query->where('category', $request->category);
-    }
-
-    $products = $query->paginate(10)->withQueryString();
-
-    return view('admin.products', compact('products'));
-
-    if ($request->search) {
-        $query->where('name', 'like', '%' . $request->search . '%');
-    }
-})->name('admin.products');
-
-Route::get('/pengembalian', function () {
-    return view('admin.pengembalian');
-})->name('admin.pengembalian');
-
-
-
-// HALAMAN CHECKOUT//
-Route::get('/checkout', function () {
-    return view('checkout');
+    Route::put('/shipping-address', [ShippingAddressController::class, 'update'])
+        ->name('shipping-address.update');
 });
 
-Route::resource('dashboard/admin/customers', CustomerController::class)
-<<<<<<< Updated upstream
-     ->names('admin.customers');
+/*
+|--------------------------------------------------------------------------
+| Admin Routes
+|--------------------------------------------------------------------------
+*/
 
-     // Profil pelanggan ( Shipping Address )
-     
-Route::get('/shipping-address', [ShippingAddressController::class, 'index'])
-     ->name('shipping-address');
-Route::put('/shipping-address', [ShippingAddressController::class, 'update'])
-    ->name('shipping-address.update');
+Route::prefix('admin')->name('admin.')->group(function () {
 
+    // Dashboard Admin
+    Route::get('/dashboard', function () {
+        return view('dashboard_admin');
+    })->name('dashboard');
 
-=======
-    ->names('admin.customers');
+    // Pemesanan
+    Route::get('/pemesanan', function () {
+        return view('admin.pemesanan');
+    })->name('pemesanan');
 
-Route::get('/dashboard/admin/riwayat_produk', function () {
-    return view('admin.riwayat_produk');
-})->name('admin.riwayat_produk');
+    // Pembayaran
+    Route::get('/pembayaran', function () {
+        $payments = collect();
+        return view('admin.pembayaran', compact('payments'));
+    })->name('pembayaran');
 
-Route::get('/dashboard/admin/riwayat/kamera', function () {
-    return view('admin.riwayat.kamera');
-})->name('admin.riwayat.kamera');
+    // Pengiriman
+    Route::get('/pengiriman', [DeliveryController::class, 'index'])
+        ->name('pengiriman');
 
-Route::get('/dashboard/admin/riwayat/camping', function () {
-    return view('admin.riwayat.camping');
-})->name('riwayat.camping');
+    // Pengembalian
+    Route::get('/pengembalian', function () {
+        return view('admin.pengembalian');
+    })->name('pengembalian');
+
+    // Produk (dengan filter & search)
+    Route::get('/products', function (Request $request) {
+
+        $query = Product::query();
+
+        if ($request->category) {
+            $query->where('category', $request->category);
+        }
+
+        if ($request->search) {
+            $query->where('name', 'like', '%' . $request->search . '%');
+        }
+
+        $products = $query->paginate(10)->withQueryString();
+
+        return view('admin.products', compact('products'));
+
+    })->name('products');
+
+    // Customers (Resource)
+    Route::resource('/customers', CustomerController::class);
+
+    // Hapus Order
+    Route::delete('/orders/{id}', [OrderController::class, 'destroy'])
+        ->name('orders.destroy');
+
+    // Riwayat
+    Route::get('/riwayat_produk', function () {
+        return view('admin.riwayat_produk');
+    })->name('riwayat_produk');
+
+    Route::get('/riwayat/kamera', function () {
+        return view('admin.riwayat.kamera');
+    })->name('riwayat.kamera');
+
+    Route::get('/riwayat/camping', function () {
+        return view('admin.riwayat.camping');
+    })->name('riwayat.camping');
+});
