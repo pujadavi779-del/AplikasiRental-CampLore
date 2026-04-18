@@ -99,20 +99,16 @@ Route::get('/checkout', function () {
 });
 
 Route::resource('dashboard/admin/customers', CustomerController::class)
-<<<<<<< Updated upstream
-     ->names('admin.customers');
-
-     // Profil pelanggan ( Shipping Address )
-     
-Route::get('/shipping-address', [ShippingAddressController::class, 'index'])
-     ->name('shipping-address');
-Route::put('/shipping-address', [ShippingAddressController::class, 'update'])
-     ->name('shipping-address.update');
-
-
-=======
     ->names('admin.customers');
 
+// Profil pelanggan (Shipping Address)
+Route::get('/shipping-address', [ShippingAddressController::class, 'index'])
+    ->name('shipping-address');
+
+Route::put('/shipping-address', [ShippingAddressController::class, 'update'])
+    ->name('shipping-address.update');
+
+// Riwayat produk admin
 Route::get('/dashboard/admin/riwayat_produk', function () {
     return view('admin.riwayat_produk');
 })->name('admin.riwayat_produk');
@@ -124,4 +120,3 @@ Route::get('/dashboard/admin/riwayat/kamera', function () {
 Route::get('/dashboard/admin/riwayat/camping', function () {
     return view('admin.riwayat.camping');
 })->name('riwayat.camping');
->>>>>>> Stashed changes
