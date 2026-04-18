@@ -38,21 +38,15 @@
 
 <body class="bg-white font-sans text-[#1a1a1a] antialiased">
 
-    {{-- 1. SIDEBAR --}}
     @include('sidebar_dashboard_admin')
 
-    {{-- 2. MAIN CONTENT WRAPPER (Disamakan dengan Dashboard: ml-272px dan pt-32) --}}
-    <main class="sm:ml-[272px] min-h-screen pt-32 pb-10 px-6 bg-[#F8FAF6] transition-all duration-300">
-
-        {{-- 3. NAVBAR AREA (FIXED) - Koordinat disamakan persis --}}
+    <main class="sm:ml-[272px] min-h-screen pt-[95px] pb-10 px-6 bg-[#F8FAF6]">
         <div class="fixed top-5 right-6 z-40 left-[calc(272px+24px)] max-sm:left-6 animate-fade-up">
             @include('admin.navbar', [
             'NavParent' => 'Managemen Operasional',
             'section' => 'Pengiriman'
             ])
         </div>
-
-        {{-- CONTAINER KONTEN (Model Card Putih Dashboard) --}}
         <div class="max-w-full animate-fade-up">
             <div class="bg-white rounded-[28px] border border-[#d7e6de] shadow-sm overflow-hidden">
 

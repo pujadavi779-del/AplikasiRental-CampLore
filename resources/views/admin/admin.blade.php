@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,17 +10,15 @@
 </head>
 
 <body class="bg-[#f8faf6]">
+    <div class="ml-[272px]">
+        @include('sidebar_dashboard_admin')
 
-    @include('sidebar_dashboard_admin')
-
-    
-
-    <div class="antialiased">
-        <main class="p-4 sm:ml-64 pt-24 min-h-screen">
+        {{-- CONTENT --}}
+        <main class="pt-24 px-6">
             @yield('content')
         </main>
     </div>
-
 </body>
+
 </html>
 :::

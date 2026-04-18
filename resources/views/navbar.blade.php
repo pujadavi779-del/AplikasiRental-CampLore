@@ -89,15 +89,13 @@
 
     <div class="flex items-center gap-2">
         <span class="text-[#22543D] text-[10px] font-bold uppercase tracking-widest">
-            {{-- Kalau ada titipan NavParent pakai itu, kalau nggak ada pakai default --}}
-            @yield('NavParent', 'Management Rental')
+            @yield('NavParent') 
         </span>
-        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#22543D" stroke-width="3">
+        <!-- <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#22543D" stroke-width="3">
             <path d="M9 18l6-6-6-6" />
-        </svg>
+        </svg> -->
         <span class="text-[#ED64A6] text-[10px] font-bold uppercase tracking-widest">
-            {{-- Kalau ada titipan section pakai itu, kalau nggak ada pakai default --}}
-            @yield('section', 'Kamera')
+            @yield('section')
         </span>
     </div>
 </nav>
