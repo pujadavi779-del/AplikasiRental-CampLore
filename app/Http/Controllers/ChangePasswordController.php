@@ -3,21 +3,22 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 
 class ChangePasswordController extends Controller
 {
     public function index()
     {
-        return view('pelanggan.ubah_password');
+        return view('pelanggan.change-password');
     }
 
     public function update(Request $request)
     {
         $request->validate([
-            'current_password' => 'required',
-            'new_password' => 'required|min:8|confirmed',
+            'current_password'      => 'required',
+            'new_password'          => 'required|min:8|confirmed',
+            'new_password_confirmation' => 'required',
         ]);
 
         if (!Hash::check($request->current_password, Auth::user()->password)) {
@@ -25,9 +26,9 @@ class ChangePasswordController extends Controller
         }
 
         Auth::user()->update([
-            'password' => Hash::make($request->new_password)
+            'password' => Hash::make($request->new_password),
         ]);
 
-        return back()->with('status', 'Password berhasil diperbarui!');
+        return back()->with('success', 'Password has been updated successfully.');
     }
 }

@@ -135,3 +135,10 @@ Route::get('/dashboard/admin/riwayat/kamera', function () {
 Route::get('/dashboard/admin/riwayat/camping', function () {
     return view('admin.riwayat.camping');
 })->name('riwayat.camping');
+
+use App\Http\Controllers\ChangePasswordController;
+
+Route::get('/change-password', [ChangePasswordController::class, 'index'])
+     ->name('change-password');
+Route::put('/change-password', [ChangePasswordController::class, 'update'])
+     ->name('change-password.update');

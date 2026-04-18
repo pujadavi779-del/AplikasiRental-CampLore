@@ -12,7 +12,7 @@
     {{-- Navbar --}}
     @if(!request()->routeIs('shipping-address', 'dashboard'))
 <nav class="bg-white/95 backdrop-blur-md sticky top-0 z-50 border-b border-pink-100">
-    ... isi navbar tetap sama ...
+    
 </nav>
 @endif
 
