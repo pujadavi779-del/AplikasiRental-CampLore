@@ -12,11 +12,10 @@ use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\Admin\CustomerController;
 use App\Http\Controllers\ShippingAddressController;
-use App\Http\Controllers\ProductController;
-Route::get('/produk', [ProductController::class, 'index']);
+use App\Models\Product;
+
 
 Route::get('/dashboard/camera', [CameraController::class, 'index'])->name('camera.index');
-Route::get('/pengiriman', [DeliveryController::class, 'index'])->name('pengiriman');
 
 Route::get('/', [LandingController::class, 'index']);
 Route::resource('camping', CampingController::class);
@@ -53,17 +52,11 @@ Route::get('/rental', function () {
     return view('rental');
 })->name('rental');
 
-
-// ── Halaman registrasi ─────────────────────────────────────────────────────
 Route::get('/registrasi', [RegisterController::class, 'showForm'])->name('register');
 Route::post('/registrasi', [RegisterController::class, 'register'])->name('register.submit');
 
-// ── OTP ────────────────────────────────────────────────────────────────────
 Route::post('/otp/send',   [RegisterController::class, 'sendOtp'])->name('otp.send');
 Route::post('/otp/verify', [RegisterController::class, 'verifyOtp'])->name('otp.verify');
-
-
-
 
 Route::post('/logout', function (Request $request) {
     Auth::logout();
@@ -73,24 +66,58 @@ Route::post('/logout', function (Request $request) {
     return redirect('/login');
 })->name('logout');
 
-// ── BERANDA SIDEBAR PELANGGAN ─────────────────────────────────────────────────────
+// ── BERANDA SIDEBAR PELANGGAN
 Route::get('/dashboard_pelanggan', function () {
     return view('dashboard_pelanggan');
 })->name('dashboard_pelanggan');
 
 
-// ── BERANDA SIDEBAR ADMIN ─────────────────────────────────────────────────────
-Route::get('/dashboard/admin/pembayaran', function () {
+// ── BERANDA SIDEBAR ADMIN
+Route::get('/pembayaran', function () {
     return view('admin.pembayaran');
 })->name('pembayaran');
 
-
-
 Route::delete('/admin/orders/{id}', [OrderController::class, 'destroy']);
 
-Route::get('/dashboard/admin/pemesanan', function () {
+Route::get('/pemesanan', function () {
     return view('admin.pemesanan');
 })->name('pemesanan');
+
+Route::get('/pembayaran', function () {
+    $payments = collect(); 
+    return view('admin.pembayaran', compact('payments'));
+})->name('pembayaran');
+
+Route::get('/pengiriman', [
+    DeliveryController::class,
+    'index'
+])->name('pengiriman');
+
+Route::resource('/customers', CustomerController::class)
+    ->names('admin.customers');
+
+Route::get('/admin/products', function (Request $request) {
+
+    $query = Product::query();
+
+    // FILTER CATEGORY
+    if ($request->category) {
+        $query->where('category', $request->category);
+    }
+
+    $products = $query->paginate(10)->withQueryString();
+
+    return view('admin.products', compact('products'));
+
+    if ($request->search) {
+        $query->where('name', 'like', '%' . $request->search . '%');
+    }
+})->name('admin.products');
+
+Route::get('/pengembalian', function () {
+    return view('admin.pengembalian');
+})->name('admin.pengembalian');
+
 
 
 // HALAMAN CHECKOUT//
@@ -99,23 +126,27 @@ Route::get('/checkout', function () {
 });
 
 Route::resource('dashboard/admin/customers', CustomerController::class)
-    ->names('admin.customers');
+<<<<<<< Updated upstream
+     ->names('admin.customers');
 
-// Profil pelanggan (Shipping Address)
+     // Profil pelanggan ( Shipping Address )
+     
 Route::get('/shipping-address', [ShippingAddressController::class, 'index'])
-    ->name('shipping-address');
-
+     ->name('shipping-address');
 Route::put('/shipping-address', [ShippingAddressController::class, 'update'])
     ->name('shipping-address.update');
 
-// Riwayat produk admin
+
+=======
+    ->names('admin.customers');
+
 Route::get('/dashboard/admin/riwayat_produk', function () {
     return view('admin.riwayat_produk');
 })->name('admin.riwayat_produk');
 
 Route::get('/dashboard/admin/riwayat/kamera', function () {
     return view('admin.riwayat.kamera');
-})->name('riwayat.kamera');
+})->name('admin.riwayat.kamera');
 
 Route::get('/dashboard/admin/riwayat/camping', function () {
     return view('admin.riwayat.camping');

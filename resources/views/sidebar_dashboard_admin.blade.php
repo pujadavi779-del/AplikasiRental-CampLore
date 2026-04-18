@@ -22,7 +22,7 @@
 
         <p class="px-4 pt-4 pb-1 text-[10px] font-bold text-emerald-400 tracking-widest uppercase font-sans">Manajemen Pesanan</p>
 
-        <a href="{{ url('/dashboard/admin/pemesanan') }}"
+        <a href="{{ url('/pemesanan') }}"
             class="nav-item {{ request()->is('dashboard/admin/pemesanan') ? 'active' : '' }} flex items-center justify-between px-4 py-2.5 rounded-xl text-emerald-100 hover:text-white text-sm font-semibold transition-all">
             <span class="flex items-center gap-3">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -32,7 +32,7 @@
             </span>
         </a>
 
-        <a href="{{ url('/dashboard/admin/pembayaran') }}"
+        <a href="{{ url('/pembayaran') }}"
             class="nav-item {{ request()->is('dashboard/admin/pembayaran') ? 'active' : '' }} flex items-center justify-between px-4 py-2.5 rounded-xl text-emerald-100 hover:text-white text-sm font-semibold transition-all">
             <span class="flex items-center gap-3">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -45,7 +45,7 @@
 
         <p class="px-4 pt-4 pb-1 text-[10px] font-bold text-emerald-400 tracking-widest uppercase font-sans">Manajemen Operasional</p>
 
-        <a href="{{ url('/dashboard/admin/customers') }}"
+        <a href="{{ url('/customers') }}"
             class="nav-item {{ request()->is('dashboard/admin/customers') ? 'active' : '' }} flex items-center gap-3 px-4 py-2.5 rounded-xl text-emerald-100 hover:text-white text-sm font-semibold transition-all">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />
@@ -61,7 +61,7 @@
             Pengiriman
         </a>
 
-        <a href="{{ url('/Pengembalian') }}"
+        <a href="{{ url('/pengembalian') }}"
             class="nav-item {{ request()->is('Pengembalian') ? 'active' : '' }} flex items-center justify-between px-4 py-2.5 rounded-xl text-emerald-100 hover:text-white text-sm font-semibold transition-all">
             <span class="flex items-center gap-3">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -74,23 +74,7 @@
 
         <p class="px-4 pt-4 pb-1 text-[10px] font-bold text-emerald-400 tracking-widest uppercase font-sans">Manajemen Rental</p>
 
-        <a href="{{ route('camera.index') }}"
-            class="nav-item {{ request()->is('camera*') ? 'active' : '' }} flex items-center gap-3 px-4 py-2.5 rounded-xl text-emerald-100 hover:text-white text-sm font-semibold transition-all">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
-            </svg>
-            Data Kamera
-        </a>
-
-        <a href="{{ route('camping.index') }}"
-            class="nav-item {{ request()->is('camping*') ? 'active' : '' }} flex items-center gap-3 px-4 py-2.5 rounded-xl text-emerald-100 hover:text-white text-sm font-semibold transition-all">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a2 2 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-            </svg>
-            Data Camping
-        </a>
-
-        <a href="{{ url('/products') }}"
+        <a href="{{ url('/admin/products') }}"
             class="nav-item {{ request()->is('products') ? 'active' : '' }} flex items-center gap-3 px-4 py-2.5 rounded-xl text-emerald-100 hover:text-white text-sm font-semibold transition-all">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />

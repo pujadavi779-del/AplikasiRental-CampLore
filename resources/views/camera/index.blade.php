@@ -4,21 +4,19 @@
 
 @section('content')
 
-<div class="fixed top-5 right-6 z-40 left-[calc(16rem+24px)] max-sm:left-6">
+<div class="fixed top-5 right-6 z-40 left-[calc(272px+24px)] max-sm:left-6 animate-fade-up">
     @include('admin.navbar', [
     'NavParent' => 'Managemen Rental',
     'section' => 'Kamera'
-])
+    ])
 </div>
 
-
 <div class="bg-[#F8FAF6] min-h-screen">
-
     <div class="max-w-full">
         <div class="bg-white rounded-[28px] border border-[#d7e6de] shadow-sm overflow-hidden">
 
             <div class="p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#eef4f0]">
-                
+
                 <div>
                     <h2 class="text-2xl font-bold text-[#22543D] leading-tight font-serif">
                         Data Inventaris Kamera
@@ -66,8 +64,8 @@
 
                                     @php
                                     $cameraImages = [
-                                        'Canon R6' => 'https://images.unsplash.com/photo-1516035069371-29a1b244cc32?q=80&w=200',
-                                        'Sony A7III' => 'https://images.unsplash.com/photo-1502920917128-1aa500764cbd?q=80&w=200',
+                                    'Canon R6' => 'https://images.unsplash.com/photo-1516035069371-29a1b244cc32?q=80&w=200',
+                                    'Sony A7III' => 'https://images.unsplash.com/photo-1502920917128-1aa500764cbd?q=80&w=200',
                                     ];
 
                                     $displayImage = $cameraImages[$item->name] ?? 'https://images.unsplash.com/photo-1516035069371-29a1b244cc32?q=80&w=200';
@@ -110,13 +108,13 @@
                             <td class="px-6 py-5 text-center">
 
                                 @if($item->stock > 0)
-                                    <span class="px-3 py-1 rounded-full text-[9px] font-bold bg-[#f1f8f4] text-[#22543D] border border-[#d7e6de]">
-                                        Tersedia ({{ $item->stock }})
-                                    </span>
+                                <span class="px-3 py-1 rounded-full text-[9px] font-bold bg-[#f1f8f4] text-[#22543D] border border-[#d7e6de]">
+                                    Tersedia ({{ $item->stock }})
+                                </span>
                                 @else
-                                    <span class="px-3 py-1 rounded-full text-[9px] font-bold bg-[#FDF4F8] text-[#D977A8] border border-[#f3d6e5]">
-                                        Habis
-                                    </span>
+                                <span class="px-3 py-1 rounded-full text-[9px] font-bold bg-[#FDF4F8] text-[#D977A8] border border-[#f3d6e5]">
+                                    Habis
+                                </span>
                                 @endif
 
                             </td>

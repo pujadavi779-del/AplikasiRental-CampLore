@@ -1,3 +1,4 @@
+@extends('admin.admin')
 <!DOCTYPE html>
 <html lang="id">
 
@@ -50,7 +51,6 @@
 
 <body class="bg-white font-sans text-[#1a1a1a] antialiased">
 
-    @include('sidebar_dashboard_admin')
 
     <main class="sm:ml-[272px] min-h-screen pt-32 pb-10 px-6 transition-all duration-300">
 

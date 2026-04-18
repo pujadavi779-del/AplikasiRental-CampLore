@@ -11,7 +11,7 @@
         <a href="/" class="hover:text-gray-900 transition-colors">HOME</a>
         <span>/</span>
         <a href="{{ route('camera.LP') }}" class="hover:text-gray-900 transition-colors">Camera</a>
-        <span>/</span>
+        <span>/</xspan>
         <span class="text-orange-600 font-medium">{{ $item->name }}</span>
     </nav>
 

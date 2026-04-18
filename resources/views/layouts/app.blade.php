@@ -62,7 +62,6 @@
                 </div>
             </div>
 
-            <!-- Bagian Kanan: Search & Cart (Login dihapus) -->
             <div class="flex items-center gap-2">
                 <!-- Search -->
                 <button class="w-10 h-10 flex items-center justify-center rounded-xl border border-gray-200 bg-white text-[#1A392D] hover:text-[#FF6B95] hover:border-pink-200 hover:bg-pink-50 transition-all duration-200">
@@ -80,12 +79,8 @@
             </div>
         </div>
     </nav>
-
-    
-    {{-- Isi halaman --}}
     @yield('content')
 
-    {{-- Scripts dari child view (AOS init, dll) --}}
     @stack('scripts')
 
 
