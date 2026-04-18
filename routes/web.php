@@ -83,6 +83,11 @@ Route::get('/pemesanan', function () {
     return view('admin.pemesanan');
 })->name('pemesanan');
 
+Route::get('/pembayaran', function () {
+    $payments = collect(); 
+    return view('admin.pembayaran', compact('payments'));
+})->name('pembayaran');
+
 Route::get('/pengiriman', [
     DeliveryController::class,
     'index'
