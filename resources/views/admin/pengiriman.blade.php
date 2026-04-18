@@ -41,13 +41,13 @@
     @include('sidebar_dashboard_admin')
 
     <main class="sm:ml-[272px] min-h-screen pt-[95px] pb-10 px-6 bg-[#F8FAF6]">
-        <div class="fixed top-5 right-6 z-40 left-[calc(272px+24px)] max-sm:left-6 animate-fade-up">
+        <div class="fixed top-5 right-6 z-40 left-[calc(272px+24px)] max-sm:left-6">
             @include('admin.navbar', [
             'NavParent' => 'Managemen Operasional',
             'section' => 'Pengiriman'
             ])
         </div>
-        <div class="max-w-full animate-fade-up">
+        <div class="max-w-full">
             <div class="bg-white rounded-[28px] border border-[#d7e6de] shadow-sm overflow-hidden">
 
                 {{-- Header Halaman --}}

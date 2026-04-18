@@ -109,6 +109,10 @@ Route::get('/admin/products', function (Request $request) {
     }
 })->name('admin.products');
 
+Route::get('/pengembalian', function () {
+    return view('admin.pengembalian');
+})->name('admin.pengembalian');
+
 
 
 // HALAMAN CHECKOUT//

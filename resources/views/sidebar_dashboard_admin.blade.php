@@ -61,7 +61,7 @@
             Pengiriman
         </a>
 
-        <a href="{{ url('/Pengembalian') }}"
+        <a href="{{ url('/pengembalian') }}"
             class="nav-item {{ request()->is('Pengembalian') ? 'active' : '' }} flex items-center justify-between px-4 py-2.5 rounded-xl text-emerald-100 hover:text-white text-sm font-semibold transition-all">
             <span class="flex items-center gap-3">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
