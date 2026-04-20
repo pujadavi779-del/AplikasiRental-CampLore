@@ -2,44 +2,32 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\ShippingAddress;
 use Illuminate\Http\Request;
+use App\Models\ShippingAddress; // Sesuaikan dengan model kamu
 use Illuminate\Support\Facades\Auth;
 
 class ShippingAddressController extends Controller
 {
-    // Tampilkan form (isi data yang sudah ada jika ada)
     public function index()
     {
-       $address = ShippingAddress::where('user_id', Auth::id())->first();
-    return view('shipping-address', compact('address'));
+        // Ambil data alamat user yang sedang login (jika ada)
+        $address = Auth::user()->shippingAddress ?? null;
+
+        return view('pelanggan.alamat_pengiriman', compact('address'));
     }
 
-    // Simpan / update alamat
     public function update(Request $request)
     {
         $request->validate([
-            'full_address' => 'required|string|max:500',
-            'city'         => 'required|string|max:100',
-            'province'     => 'required|string|max:100',
-            'postal_code'  => 'required|string|max:10',
-            'district'     => 'required|string|max:100',
-            'notes'        => 'nullable|string|max:255',
+            'full_address' => 'required|string',
+            'city' => 'required',
+            'province' => 'required',
+            'postal_code' => 'required',
+            'district' => 'required',
         ]);
 
-        ShippingAddress::updateOrCreate(
-            ['user_id' => Auth::id()],
-            [
-                'full_address' => $request->full_address,
-                'city'         => $request->city,
-                'province'     => $request->province,
-                'postal_code'  => $request->postal_code,
-                'district'     => $request->district,
-                'notes'        => $request->notes,
-            ]
-        );
+        // Logika update database kamu di sini...
 
-        return redirect()->route('shipping-address')
-            ->with('success', 'Alamat berhasil diperbarui.');
+        return back()->with('success', 'Alamat pengiriman berhasil diperbarui!');
     }
 }

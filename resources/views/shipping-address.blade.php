@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('admin.admin')
 
 @section('title', 'Shipping Address - Camplore')
 

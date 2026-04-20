@@ -38,7 +38,7 @@
 
 <body class="bg-white font-sans text-[#1a1a1a] antialiased">
 
-    @include('sidebar_dashboard_admin')
+    @include('admin.admin')
 
     <main class="sm:ml-[272px] min-h-screen pt-[95px] pb-10 px-6 bg-[#F8FAF6]">
         <div class="fixed top-5 right-6 z-40 left-[calc(272px+24px)] max-sm:left-6">

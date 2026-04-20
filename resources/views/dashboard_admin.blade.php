@@ -1,4 +1,3 @@
-@extends('admin.admin')
 <!DOCTYPE html>
 <html lang="id">
 
@@ -6,9 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard - CampLore</title>
+
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script>
         tailwind.config = {
@@ -40,6 +38,7 @@
             }
         }
     </script>
+
     <style>
         #map {
             height: 100%;
@@ -47,10 +46,14 @@
             z-index: 1;
         }
     </style>
+
+
+    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 </head>
 
 <body class="bg-white font-sans text-[#1a1a1a] antialiased">
-
+    @include('admin.admin')
 
     <main class="sm:ml-[272px] min-h-screen pt-32 pb-10 px-6 transition-all duration-300">
 
