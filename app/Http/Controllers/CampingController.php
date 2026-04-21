@@ -3,57 +3,50 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Camping;
 use App\Models\Item;
 
 class CampingController extends Controller
 {
+    // 🔹 TAMPIL DATA (INDEX)
     public function index()
     {
+        $items = Camping::all();
+        return view('admin.camping.camping_LP', compact('items'));
+    }
+
+    // 🔹 HALAMAN USER (LANDING)
+    public function landing()
+    {
         $items = Item::where('category', 'camping')->get();
-        return view('camping.index', compact('items'));
-    }
 
-    public function create()
-    {
-        return view('camping.create');
-    }
-
-    public function store(Request $request)
-    {
-        Item::create([
-            'name' => $request->name,
-            'stock' => $request->stock,
-            'price' => $request->price,
-            'category' => 'camping'
+        // 🔹 dummy brand (sementara)
+        $campingBrands = collect([
+            (object)['name' => 'Eiger', 'slug' => 'eiger', 'image' => null],
+            (object)['name' => 'Consina', 'slug' => 'consina', 'image' => null],
+            (object)['name' => 'Rei', 'slug' => 'rei', 'image' => null],
+            (object)['name' => 'Naturehike', 'slug' => 'naturehike', 'image' => null],
+            (object)['name' => 'Arei', 'slug' => 'arei', 'image' => null],
+            (object)['name' => 'Avtech', 'slug' => 'avtech', 'image' => null],
         ]);
 
-        return redirect()->route('camping.index');
+        return view('camping.camping_LP', compact('items', 'campingBrands'));
     }
 
+    // 🔹 EDIT
     public function edit($id)
     {
-        $item = Item::findOrFail($id);
-        return view('camping.edit', compact('item'));
+        $item = Camping::findOrFail($id);
+        return view('admin.camping.edit', compact('item'));
     }
 
-    public function update(Request $request, $id)
-    {
-        $item = Item::findOrFail($id);
-
-        $item->update([
-            'name' => $request->name,
-            'stock' => $request->stock,
-            'price' => $request->price,
-        ]);
-
-        return redirect()->route('camping.index');
-    }
-
+    // 🔹 DELETE
     public function destroy($id)
     {
-        $item = Item::findOrFail($id);
+        $item = Camping::findOrFail($id);
         $item->delete();
 
-        return redirect()->route('camping.index');
+        return redirect()->route('camping.index')
+            ->with('success', 'Data berhasil dihapus');
     }
 }

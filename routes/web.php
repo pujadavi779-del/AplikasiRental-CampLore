@@ -25,7 +25,7 @@ use App\Models\Product;
 */
 
 Route::get('/', [LandingController::class, 'index'])->name('landing');
-
+Route::get('/camping', [CampingController::class, 'index'])->name('camping.LP');
 // Landing & Informasi
 Route::get('/about', function () {
     return view('about');
@@ -35,8 +35,11 @@ Route::get('/about', function () {
 Route::resource('camping', CampingController::class);
 Route::resource('camera', CameraController::class);
 
+
+
 // Camera Landing Page
 Route::get('/camera', [CameraController::class, 'landing'])->name('camera.LP');
+Route::get('/camping', [CampingController::class, 'landing'])->name('camping.LP');
 
 // Detail Camera
 Route::get('/camera/{id}', [CameraController::class, 'show'])->name('camera.show');

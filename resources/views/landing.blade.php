@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="id">
 
@@ -37,7 +38,8 @@
 
 <body class="bg-gray-50 text-gray-900 overflow-x-hidden">
 
-    @include('navbar')
+    @include('layouts.navbar_LP')
+    @yield('content')
 
     <section id="hero" class="relative min-h-[90vh] flex items-center justify-center bg-[#22543D] text-white overflow-hidden">
         <div class="absolute inset-0 opacity-20 bg-[url('https://images.unsplash.com/photo-1510312305653-8ed496efae75?auto=format&fit=crop&q=80')] bg-cover bg-center"></div>

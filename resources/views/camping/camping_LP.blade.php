@@ -13,15 +13,14 @@
             Jelajahi Koleksi
         </p>
         <h1 class="text-5xl text-gray-900 font-serif tracking-tight">
-            Kamera
+            Camping
         </h1>
     </div>
 
     <div class="flex gap-8 px-10 pb-16 max-w-[1400px] mx-auto">
 
         {{-- SIDEBAR --}}
-        @include('components.catalog.sidebar_camera')
-        
+        @include('components.catalog.sidebar_camping')
 
         {{-- PRODUCT GRID --}}
         <main class="flex-1">
@@ -37,7 +36,7 @@
             <div class="grid grid-cols-4 gap-5">
 
                 @foreach($items as $item)
-                <a href="{{ route('camera.show', $item->id) }}"
+                <a href="{{ route('camping.show', $item->id) }}"
                    class="group bg-[#ededea] rounded-2xl overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-xl">
 
                     {{-- IMAGE --}}
@@ -91,7 +90,7 @@
             {{-- EMPTY --}}
             @if(count($items) === 0)
             <div class="text-center py-24 text-gray-400">
-                <p class="text-4xl mb-3">📷</p>
+                <p class="text-4xl mb-3">🏕️</p>
                 <p class="text-sm font-medium">Tidak ada produk yang ditemukan.</p>
             </div>
             @endif
