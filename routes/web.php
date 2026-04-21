@@ -14,6 +14,7 @@ use App\Http\Controllers\OrderController;
 use App\Http\Controllers\Admin\CustomerController;
 use App\Http\Controllers\ShippingAddressController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\CustomerCatalogController;
 
 // Models
 use App\Models\Product;
@@ -55,9 +56,12 @@ Route::get('/rental', function () {
 |--------------------------------------------------------------------------
 */
 
+//login
 Route::get('/login', function () {
     return view('login');
 })->name('login');
+
+
 
 Route::get('/registrasi', [RegisterController::class, 'showForm'])->name('register');
 Route::post('/registrasi', [RegisterController::class, 'register'])->name('register.submit');
@@ -205,3 +209,9 @@ Route::get('/settings', function () {
 Route::get('/alamat_pengiriman', function () {
     return view('pelanggan.alamat_pengiriman');
 })->name('alamat_pengiriman');
+
+// Dashboard setelah masuk si costumer
+Route::get('/home', [CustomerCatalogController::class, 'home'])->name('home');
+Route::get('/catalog/camera', [CustomerCatalogController::class, 'camera'])->name('catalog.camera');
+Route::get('/catalog/camping', [CustomerCatalogController::class, 'camping'])->name('catalog.camping');
+Route::get('/product/{id}', [CustomerCatalogController::class, 'detail'])->name('product.detail');

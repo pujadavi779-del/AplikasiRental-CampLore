@@ -170,7 +170,7 @@
 
         <h1 class="card-title">Masuk</h1>
 
-        <form action="/login" method="POST">
+        
             @csrf
 
             <div class="field">
@@ -194,7 +194,7 @@
                 </div>
             </div>
 
-            <button type="submit" class="btn-login">Masuk</button>
+           <a href="/home" class="btn-login">Masuk</a>
         </form>
 
         <div class="forgot-row">
