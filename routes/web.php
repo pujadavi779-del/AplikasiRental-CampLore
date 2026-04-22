@@ -28,8 +28,8 @@ use App\Models\Product;
 Route::get('/', [LandingController::class, 'index'])->name('landing');
 Route::get('/camping', [CampingController::class, 'index'])->name('camping.LP');
 // Landing & Informasi
-Route::get('/about', function () {
-    return view('about');
+Route::get('/landing/about', function () {
+    return view('pages.landing.about');
 })->name('about');
 
 // Produk
@@ -58,7 +58,7 @@ Route::get('/rental', function () {
 
 //login
 Route::get('/login', function () {
-    return view('login');
+    return view('pages.login.login');
 })->name('login');
 
 

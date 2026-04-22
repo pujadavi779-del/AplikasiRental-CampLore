@@ -32,7 +32,7 @@ class CustomerCatalogController extends Controller
     {
         $cameras  = array_slice($this->cameras(), 0, 2);
         $campings = array_slice($this->campings(), 0, 2);
-        return view('pelanggan.home', compact('cameras', 'campings'));
+        return view('.pages.pelanggan.home', compact('cameras', 'campings'));
     }
 
     public function camera()
@@ -46,12 +46,12 @@ class CustomerCatalogController extends Controller
         $products = $this->campings();
         return view('pelanggan.catalog-camping', compact('products'));
     }
-
+//lulu jahat 
     public function detail($id)
     {
         $all = array_merge($this->cameras(), $this->campings());
         $product = collect($all)->firstWhere('id', (int)$id);
         abort_if(!$product, 404);
-        return view('pelanggan.product-detail', compact('product'));
+        return view('pages.pelanggan.product-detail', compact('product'));
     }
 }
