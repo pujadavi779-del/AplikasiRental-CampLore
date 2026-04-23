@@ -14,7 +14,8 @@ use App\Http\Controllers\OrderController;
 use App\Http\Controllers\Admin\CustomerController;
 use App\Http\Controllers\ShippingAddressController;
 use App\Http\Controllers\ProfileController;
-
+use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\ChangePasswordController;
 // Models
 use App\Models\Product;
 
@@ -24,16 +25,20 @@ use App\Models\Product;
 |--------------------------------------------------------------------------
 */
 
+// LOGIN
+Route::get('/login', [LoginController::class, 'showLogin'])->name('login');
+Route::post('/login', [LoginController::class, 'login']);
+
+// LOGOUT
+Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
+
+
 Route::get('/', [LandingController::class, 'index'])->name('landing');
 Route::get('/camping', [CampingController::class, 'index'])->name('camping.LP');
 // Landing & Informasi
 Route::get('/landing/about', function () {
     return view('pages.landing.about');
 })->name('about');
-
-// Produk
-Route::resource('camping', CampingController::class);
-Route::resource('camera', CameraController::class);
 
 
 
@@ -55,25 +60,12 @@ Route::get('/rental', function () {
 |--------------------------------------------------------------------------
 */
 
-Route::get('/login', function () {
-    return view('pages.login.login');
-})->name('login');
-
 Route::get('/registrasi', [RegisterController::class, 'showForm'])->name('register');
 Route::post('/registrasi', [RegisterController::class, 'register'])->name('register.submit');
 
 // OTP
 Route::post('/otp/send', [RegisterController::class, 'sendOtp'])->name('otp.send');
 Route::post('/otp/verify', [RegisterController::class, 'verifyOtp'])->name('otp.verify');
-
-// Logout
-Route::post('/logout', function (Request $request) {
-    Auth::logout();
-    $request->session()->invalidate();
-    $request->session()->regenerateToken();
-
-    return redirect('/login');
-})->name('logout');
 
 /*
 |--------------------------------------------------------------------------
@@ -192,9 +184,21 @@ Route::get('/profil', function () {
     return view('pelanggan.profil');
 })->name('profil');
 
-Route::get('/ubah_password', function () {
-    return view('pelanggan.ubah_password');
-})->name('ubah_password');
+
+
+// ... (di dalam atau di luar middleware auth, pastikan bisa diakses pelanggan)
+
+Route::middleware('auth')->group(function () {
+    
+    // Menampilkan halaman form ganti password
+    Route::get('/change-password', [ChangePasswordController::class, 'index'])
+        ->name('change-password');
+
+    // Menangani proses update password (ini yang tadi error karena tidak ada)
+    Route::put('/change-password/update', [ChangePasswordController::class, 'update'])
+        ->name('pages.pelanggan.change-password.update');
+        
+});
 
 // Route Pengaturan / Settings
 Route::get('/settings', function () {

@@ -85,7 +85,56 @@
                     <!-- Badge Angka -->
                     <span id="nav-cart-count" class="absolute -top-1.5 -right-1.5 bg-[#FF6B95] text-white text-[10px] font-bold min-w-[18px] h-[18px] px-1 flex items-center justify-center rounded-full border-2 border-white">1</span>
                 </a>
+                <div class="relative group">
 
+                    @guest
+                    <!-- Tombol Login -->
+                    <a href="{{ route('login') }}"
+                        class="text-[#1A392D] bg-gray-200 border border-[#1A392D] hover:bg-[#1A392D] hover:text-white px-4 py-2 rounded inline-block text-sm font-bold">
+                        Login
+                    </a>
+                    @endguest
+
+                    @auth
+                    <!-- Trigger (nama / icon user) -->
+                    <button class="flex items-center gap-2 px-3 py-2 rounded-xl border border-gray-200 hover:bg-gray-50">
+                        <span class="text-sm font-semibold text-[#1A392D]">
+                            {{ auth()->user()->name }}
+                        </span>
+                    </button>
+
+                    <!-- Dropdown -->
+                    <div class="absolute right-0 top-12 w-52 bg-white rounded-2xl shadow-xl border border-gray-100
+            opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+
+                        <div class="px-4 py-3 border-b border-gray-100">
+                            <p class="text-sm font-bold text-gray-800">{{ auth()->user()->name }}</p>
+                            <p class="text-xs text-gray-400 truncate">{{ auth()->user()->email }}</p>
+                        </div>
+
+                        <div class="py-2">
+                            <a href="{{ route('dashboard') }}" class="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-pink-50 hover:text-[#ED64A6] transition">
+                                Rent History
+                            </a>
+
+                            <a href="{{ route('shipping-address') }}" class="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-pink-50 hover:text-[#ED64A6] transition">
+                                Shipping Address
+                            </a>
+
+                            <div class="border-t border-gray-100 mt-1 pt-1">
+                                <form method="POST" action="{{ route('logout') }}">
+                                    @csrf
+                                    <button type="submit" class="w-full text-left px-4 py-2 text-sm text-red-500 hover:bg-red-50">
+                                        Logout
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+
+                    </div>
+                    @endauth
+
+                </div>
             </div>
         </div>
 

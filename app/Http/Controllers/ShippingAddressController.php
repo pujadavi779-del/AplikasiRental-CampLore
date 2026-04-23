@@ -13,7 +13,7 @@ class ShippingAddressController extends Controller
         // Ambil data alamat user yang sedang login (jika ada)
         $address = Auth::user()->shippingAddress ?? null;
 
-        return view('pelanggan.alamat_pengiriman', compact('address'));
+        return view('pages.pelanggan.alamat_pengiriman', compact('address'));
     }
 
     public function update(Request $request)

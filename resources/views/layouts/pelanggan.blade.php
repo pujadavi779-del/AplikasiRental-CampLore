@@ -48,12 +48,12 @@
 <body class="antialiased">
 
     <div class="fixed top-0 left-0 right-0 z-50 p-5">
-        @include('pelanggan.navbar')
+        @include('pages.pelanggan.navbar')
     </div>
 
     <div class="flex">
         <div class="fixed left-8 top-[125px] w-[300px] bottom-8 z-40 hidden lg:block">
-            @include('pelanggan.sidebar')
+            @include('pages.pelanggan.sidebar')
         </div>
 
         <main class="flex-1 lg:ml-[340px] pt-[135px] pr-8 pb-10 min-h-screen">

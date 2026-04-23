@@ -155,7 +155,7 @@ class RegisterController extends Controller
         }
 
         $user = User::create([
-            'name'     => $request->username,
+            'name'     => $request->username, 
             'username' => $request->username,
             'nik'      => $request->nik,
             'email'    => $request->email,
@@ -171,6 +171,6 @@ class RegisterController extends Controller
         // Auto-login setelah daftar
         auth()->login($user);
 
-        return redirect()->route('home')->with('success', 'Akun berhasil dibuat! Selamat datang di Camplore.');
+       return redirect()->route('login')->with('success', 'Registrasi berhasil! Silakan login.');
     }
 }

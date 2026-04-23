@@ -149,14 +149,15 @@
             <div class="s-dot" id="dot4">4</div>
         </div>
 
-        {{-- Server-side error (step 1 / final submit) --}}
+        {{-- Server-side error (final submit only) --}}
         @if ($errors->any())
             <div class="alert alert-err show">
                 {{ $errors->first() }}
             </div>
         @endif
 
-        <form action="{{ route('register.submit') }}" method="POST" id="regForm">
+        {{-- onsubmit="return false;" mencegah Enter trigger submit ke server --}}
+        <form action="{{ route('register.submit') }}" method="POST" id="regForm" onsubmit="return false;">
             @csrf
 
             <!-- ============================================================
@@ -194,6 +195,7 @@
 
             <!-- ============================================================
                  STEP 2 – Verifikasi OTP Email
+                 CATATAN: Tidak ada tombol Back di sini (sesuai permintaan)
             ============================================================ -->
             <div class="form-step" id="step2">
 
@@ -231,8 +233,8 @@
                 </div>
                 <div class="timer-bar-wrap"><div id="timer_bar"></div></div>
 
-                <div class="btn-row">
-                    <button type="button" class="btn-prev" onclick="prevStep(2)">←</button>
+                {{-- Tombol verifikasi — TANPA tombol back --}}
+                <div class="btn-row" style="margin-top: 16px;">
                     <button type="button" class="btn-next" id="btn_verify" onclick="doVerifyOtp()">Verifikasi →</button>
                 </div>
             </div>
@@ -282,7 +284,7 @@
                 </div>
 
                 <div class="btn-row">
-                    <button type="button" class="btn-prev" onclick="prevStep(3)">←</button>
+                    
                     <button type="button" class="btn-next" onclick="nextStep(3)">Selanjutnya →</button>
                 </div>
             </div>
@@ -300,14 +302,14 @@
                     <div><span style="color:var(--text-sub);min-width:110px;display:inline-block;">NIK</span> <strong id="sum_nik">—</strong></div>
                     <div><span style="color:var(--text-sub);min-width:110px;display:inline-block;">Email</span> <strong id="sum_email">—</strong></div>
                     <div>
-                        <span style="color:var(--text-sub);min-width:110px;display:inline-block;">Email</span>
-                        <span style="font-size:11px;background:#e6f7ef;color:var(--green);padding:2px 8px;border-radius:20px;">✓ Terverifikasi</span>
+                        <span style="color:var(--text-sub);min-width:110px;display:inline-block;">Status</span>
+                        <span style="font-size:11px;background:#e6f7ef;color:var(--green);padding:2px 8px;border-radius:20px;">✓ Email Terverifikasi</span>
                     </div>
                 </div>
 
                 <div class="btn-row">
                     <button type="button" class="btn-prev" onclick="prevStep(4)">←</button>
-                    <button type="submit" class="btn-submit">Daftar</button>
+                    <button type="button" class="btn-submit" onclick="submitForm()">Daftar</button>
                 </div>
             </div>
 
@@ -358,7 +360,6 @@ function nextStep(from) {
         if (pw !== pw2)    { showErr('e_pw2', 'reg_pw2'); ok = false; } else clrErr('e_pw2', 'reg_pw2');
         if (!ok) return;
 
-        // Isi ringkasan step 4
         document.getElementById('sum_username').textContent = document.getElementById('reg_username').value;
         document.getElementById('sum_nik').textContent      = document.getElementById('reg_nik').value;
         document.getElementById('sum_email').textContent    = document.getElementById('reg_email').value;
@@ -369,6 +370,14 @@ function nextStep(from) {
 function prevStep(from) {
     if (from === 2) { clearInterval(timerInterval); }
     goStep(from - 1);
+}
+
+// ── Submit form final (step 4 - tombol Daftar) ────────────────────────────
+function submitForm() {
+    // Lepas onsubmit sementara lalu submit
+    const form = document.getElementById('regForm');
+    form.onsubmit = null;
+    form.submit();
 }
 
 // ── Step 1 → OTP: validasi lalu kirim OTP via AJAX ────────────────────────
@@ -488,11 +497,16 @@ async function resendOtp() {
             },
             body: JSON.stringify({ email: email }),
         });
-        const data = await res.json();
-        if (!res.ok || !data.success) {
-            showAlert('otp_alert_err', data.message || 'Gagal mengirim ulang OTP.');
-            return;
-        }
+        const text = await res.text();
+console.log("RESPONSE:", text);
+
+let data;
+try {
+    data = JSON.parse(text);
+} catch (e) {
+    console.error("INI ERROR LARAVEL:", text);
+    throw e;
+}
         document.querySelectorAll('.otp-digit').forEach(i => { i.value = ''; i.classList.remove('filled'); });
         showAlert('otp_alert_ok', 'Kode OTP baru telah dikirim.');
         startTimer();
@@ -523,11 +537,11 @@ function updateTimerUI() {
     el.textContent = timerLeft;
     el.className   = timerLeft <= 10 ? 'danger' : '';
     const pct = Math.round((timerLeft / 60) * 100);
-    bar.style.width    = pct + '%';
+    bar.style.width      = pct + '%';
     bar.style.background = timerLeft <= 10 ? '#e53e3e' : timerLeft <= 20 ? '#f6ad55' : '#22543D';
 }
 
-// ── OTP box auto-focus ─────────────────────────────────────────────────────
+// ── OTP box auto-focus & Enter ─────────────────────────────────────────────
 document.querySelectorAll('.otp-digit').forEach((inp, i, arr) => {
     inp.addEventListener('input', () => {
         const v = inp.value.replace(/\D/g, '');
@@ -536,6 +550,11 @@ document.querySelectorAll('.otp-digit').forEach((inp, i, arr) => {
         if (v && i < arr.length - 1) arr[i + 1].focus();
     });
     inp.addEventListener('keydown', e => {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            doVerifyOtp();
+            return;
+        }
         if (e.key === 'Backspace' && !inp.value && i > 0) arr[i - 1].focus();
     });
     inp.addEventListener('paste', e => {
