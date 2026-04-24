@@ -3,13 +3,14 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Item;
+use App\Models\Product; // 1. Ganti dari Item ke Product
 
 class CameraController extends Controller
 {
     public function landing()
     {
-        $items = Item::where('category', 'camera')->get();
+        // 2. Ambil dari Product, kategori 'Kamera' (sesuai isi database tadi)
+        $items = Product::where('category', 'Kamera')->get();
 
         $ipCategories = collect([
             (object)['name' => 'Canon',    'slug' => 'canon',    'image' => null],
@@ -24,9 +25,11 @@ class CameraController extends Controller
 
         return view('camera.camera_LP', compact('items', 'ipCategories'));
     }
+
     public function index()
     {
-        $items = Item::where('category', 'camera')->get();
+        // Ganti ke Product
+        $items = Product::where('category', 'Kamera')->get();
         return view('camera.index', compact('items'));
     }
 
@@ -37,11 +40,14 @@ class CameraController extends Controller
 
     public function store(Request $request)
     {
-        Item::create([
+        // 3. Sesuaikan dengan kolom baru: price_per_day, image, dan body
+        Product::create([
             'name' => $request->name,
             'stock' => $request->stock,
-            'price' => $request->price,
-            'category' => 'camera'
+            'price_per_day' => $request->price, // Ganti ke price_per_day
+            'category' => 'Kamera',
+            'image'         => $request->image,
+            'body' => $request->body, // Tambahkan kolom body yang kita buat tadi
         ]);
 
         return redirect()->route('camera.index');
@@ -49,18 +55,20 @@ class CameraController extends Controller
 
     public function edit($id)
     {
-        $item = Item::findOrFail($id);
+        $item = Product::findOrFail($id);
         return view('camera.edit_camera', compact('item'));
     }
 
     public function update(Request $request, $id)
     {
-        $item = Item::findOrFail($id);
+        $item = Product::findOrFail($id);
 
+        // Update sesuai nama kolom di tabel products
         $item->update([
             'name' => $request->name,
             'stock' => $request->stock,
-            'price' => $request->price,
+            'price_per_day' => $request->price,
+            'body' => $request->body,
         ]);
 
         return redirect()->route('camera.index');
@@ -68,7 +76,7 @@ class CameraController extends Controller
 
     public function destroy($id)
     {
-        $item = Item::findOrFail($id);
+        $item = Product::findOrFail($id);
         $item->delete();
 
         return redirect()->route('camera.index');
@@ -76,9 +84,11 @@ class CameraController extends Controller
 
     public function show($id)
     {
-        $item = Item::findOrFail($id);
+        $item = Product::findOrFail($id);
 
-        $relatedItems = Item::where('id', '!=', $item->id)
+        // Ambil produk terkait dari kategori yang sama di tabel products
+        $relatedItems = Product::where('category', 'Kamera')
+            ->where('id', '!=', $item->id)
             ->take(5)
             ->get();
 

@@ -37,7 +37,7 @@
 
                 @foreach($items as $item)
                 <a href="{{ route('camping.show', $item->id) }}"
-                   class="group bg-[#ededea] rounded-2xl overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-xl">
+                    class="group bg-[#ededea] rounded-2xl overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-xl">
 
                     {{-- IMAGE --}}
                     <div class="relative bg-[#e8e7e3] aspect-square flex items-center justify-center overflow-hidden">
@@ -45,22 +45,24 @@
                         {{-- BADGES --}}
                         <div class="absolute top-3 left-3 flex gap-2 z-10">
                             @if($item->is_new ?? false)
-                                <span class="text-[9px] font-bold uppercase tracking-widest bg-black text-white px-2 py-1 rounded">
-                                    New
-                                </span>
+                            <span class="text-[9px] font-bold uppercase tracking-widest bg-black text-white px-2 py-1 rounded">
+                                New
+                            </span>
                             @endif
-                            @if($item->is_out_of_stock ?? false)
-                                <span class="text-[9px] font-semibold uppercase tracking-wide border border-gray-400 text-gray-600 px-2 py-1 rounded">
-                                    Out of Stock
+
+                            {{-- Ganti logika Out of Stock menggunakan kolom stock --}}
+                            @if($item->stock <= 0)
+                                <span class="text-[9px] font-semibold uppercase tracking-wide bg-red-500 text-white px-2 py-1 rounded">
+                                Out of Stock
                                 </span>
-                            @endif
+                                @endif
                         </div>
 
                         <img
-                            src="https://images.unsplash.com/photo-1516035069371-29a1b244cc32?w=400&q=80"
+                            src="{{ $item->image }}"
                             alt="{{ $item->name }}"
-                            class="w-[70%] h-[70%] object-contain transition-transform duration-300 group-hover:scale-105"
-                        >
+                            {{-- Tip: Gunakan object-cover agar gambar HD tidak gepeng --}}
+                            class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105">
                     </div>
 
                     {{-- INFO --}}
@@ -71,17 +73,16 @@
 
                         <div class="flex justify-between items-end mt-2">
                             <p class="text-sm font-bold text-gray-900">
-                                Rp {{ number_format($item->price) }}
+                                {{-- Ganti dari price ke price_per_day --}}
+                                Rp {{ number_format($item->price_per_day) }}
                             </p>
 
-                            {{-- BUTTON --}}
                             <button
                                 class="opacity-0 translate-y-1 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-200 text-xs font-semibold uppercase tracking-wider bg-gray-900 text-white px-3 py-1.5 rounded-full hover:bg-gray-700">
                                 + Tambah
                             </button>
                         </div>
                     </div>
-
                 </a>
                 @endforeach
 

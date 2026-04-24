@@ -7,11 +7,12 @@
 <div class="max-w-6xl mx-auto px-10 pb-20" style="font-family:'DM Sans',sans-serif;">
 
     {{-- Breadcrumb --}}
+    {{-- Breadcrumb --}}
     <nav class="flex items-center gap-2 py-5 text-xs text-gray-400">
         <a href="/" class="hover:text-gray-900 transition-colors">HOME</a>
         <span>/</span>
         <a href="{{ route('camera.LP') }}" class="hover:text-gray-900 transition-colors">Camera</a>
-        <span>/</xspan>
+        <span>/</span>
         <span class="text-orange-600 font-medium">{{ $item->name }}</span>
     </nav>
 
@@ -25,20 +26,13 @@
                            text-xs text-gray-400 hover:border-gray-500 hover:text-gray-700 transition-colors shrink-0">▲</button>
 
             <div id="thumbList" class="flex flex-col gap-2 overflow-hidden" style="max-height:400px;">
-                @php $imgs = [
-                $item->image ? asset('storage/'.$item->image) : 'https://images.unsplash.com/photo-1516035069371-29a1b244cc32?w=800&q=80',
-                'https://images.unsplash.com/photo-1502920917128-1aa500764cbd?w=800&q=80',
-                'https://images.unsplash.com/photo-1608236415053-8b2c36886875?w=800&q=80',
-                'https://images.unsplash.com/photo-1617005082133-548c4dd27f35?w=800&q=80',
-                'https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=800&q=80',
-                ]; @endphp
-
                 @foreach($relatedItems as $related)
                 <a href="{{ route('camera.show', $related->id) }}"
                     class="block rounded-lg overflow-hidden border-2 border-gray-200 hover:border-gray-900 transition-all"
                     style="width:72px; height:72px;">
 
-                    <img src="{{ asset('storage/'.$related->image) }}"
+                    {{-- Logika: Jika link (http), tampilkan langsung. Jika bukan, ambil dari storage --}}
+                    <img src="{{ str_starts_with($related->image, 'http') ? $related->image : asset('storage/'.$related->image) }}"
                         class="w-full h-full object-cover">
 
                 </a>
@@ -53,9 +47,10 @@
         {{-- ── Main image — strict 1:1 ── --}}
         <div class="flex-1 rounded-2xl overflow-hidden bg-gray-100 group" style="aspect-ratio:1/1; min-width:0;">
             <img id="mainImg"
-                src="{{ asset('storage/'.$item->image) }}"
+                src="{{ str_starts_with($item->image, 'http') ? $item->image : asset('storage/'.$item->image) }}"
                 alt="{{ $item->name }}"
-                class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
+                class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                loading="lazy">
         </div>
 
         {{-- ── Info column ── --}}
@@ -84,7 +79,7 @@
             <h1 class="text-xl font-bold text-gray-900 leading-snug mb-1">{{ $item->name }}</h1>
 
             {{-- Price --}}
-            <p class="text-2xl font-bold text-orange-600 mb-5">Rp {{ number_format($item->price, 0, ',', '.') }}</p>
+            <p class="text-2xl font-bold text-orange-600 mb-5">Rp {{ number_format($item->price_per_day, 0, ',', '.') }}</p>
 
             {{-- Size --}}
             <p class="text-xs font-bold tracking-widest uppercase text-gray-400 mb-2">Opsi Pengiriman</p>
@@ -127,17 +122,17 @@
                 $accordions = [
                 [
                 'title' => 'Tentang Kamera ini',
-                'body' => $item->tentang_kamera ?? 'Deskripsi tidak tersedia.',
+                'body' => $item->body ?? 'Deskripsi tidak tersedia.',
                 'open' => true,
                 ],
                 [
                 'title' => 'Highlights',
-                'body' => 'tidak ada highlights untuk produk ini.',
+                'body' => 'Spesifikasi unggulan untuk ' . $item->name . '.',
                 'open' => false,
                 ],
                 [
                 'title' => 'Isi Paket',
-                'body' => $item->isi > 0 ? 'In stock — '.$item->isi.' units available.' : 'Tidak ada informasi isi paket.',
+                'body' => $item->stock > 0 ? 'Tersedia — '.$item->stock.' unit siap disewa.' : 'Maaf, stok unit ini sedang kosong.',
                 'open' => false,
                 ],
                 ];

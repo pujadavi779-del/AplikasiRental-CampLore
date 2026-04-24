@@ -37,10 +37,9 @@
                 <a href="{{ route('camping.show', $related->id) }}"
                     class="block rounded-lg overflow-hidden border-2 border-gray-200 hover:border-gray-900 transition-all"
                     style="width:72px; height:72px;">
-
-                    <img src="{{ asset('storage/'.$related->image) }}"
+                    {{-- Update SRC --}}
+                    <img src="{{ str_starts_with($related->image, 'http') ? $related->image : asset('storage/'.$related->image) }}"
                         class="w-full h-full object-cover">
-
                 </a>
                 @endforeach
             </div>
@@ -53,7 +52,8 @@
         {{-- ── Main image — strict 1:1 ── --}}
         <div class="flex-1 rounded-2xl overflow-hidden bg-gray-100 group" style="aspect-ratio:1/1; min-width:0;">
             <img id="mainImg"
-                src="{{ asset('storage/'.$item->image) }}"
+                {{-- Update SRC --}}
+                src="{{ str_starts_with($item->image, 'http') ? $item->image : asset('storage/'.$item->image) }}"
                 alt="{{ $item->name }}"
                 class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
         </div>
@@ -84,7 +84,7 @@
             <h1 class="text-xl font-bold text-gray-900 leading-snug mb-1">{{ $item->name }}</h1>
 
             {{-- Price --}}
-            <p class="text-2xl font-bold text-orange-600 mb-5">Rp {{ number_format($item->price, 0, ',', '.') }}</p>
+            <p class="text-2xl font-bold text-orange-600 mb-5">Rp {{ number_format($item->price_per_day, 0, ',', '.') }}</p>
 
             {{-- Size --}}
             <p class="text-xs font-bold tracking-widest uppercase text-gray-400 mb-2">Opsi Pengiriman</p>
@@ -127,17 +127,17 @@
                 $accordions = [
                 [
                 'title' => 'Tentang Kamera ini',
-                'body' => $item->tentang_kamera ?? 'Deskripsi tidak tersedia.',
+                'body' => $item->description ?? 'Deskripsi alat camping ini belum tersedia.',
                 'open' => true,
                 ],
                 [
                 'title' => 'Highlights',
-                'body' => 'tidak ada highlights untuk produk ini.',
+                'body' => 'Kualitas premium untuk perlengkapan outdoor ' . $item->name . '.',
                 'open' => false,
                 ],
                 [
                 'title' => 'Isi Paket',
-                'body' => $item->isi > 0 ? 'In stock — '.$item->isi.' units available.' : 'Tidak ada informasi isi paket.',
+                'body' => $item->stock > 0 ? 'Tersedia — '.$item->stock.' unit siap disewa.' : 'Maaf, produk ini sedang habis disewa.',
                 'open' => false,
                 ],
                 ];

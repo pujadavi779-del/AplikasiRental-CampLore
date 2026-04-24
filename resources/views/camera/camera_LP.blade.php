@@ -50,16 +50,16 @@
                                     New
                                 </span>
                             @endif
-                            @if($item->is_out_of_stock ?? false)
-                                <span class="text-[9px] font-semibold uppercase tracking-wide border border-gray-400 text-gray-600 px-2 py-1 rounded">
-                                    Out of Stock
+                            {{-- Ganti logika Out of Stock menggunakan kolom stock --}}
+                            @if($item->stock <= 0)
+                                <span class="text-[9px] font-semibold uppercase tracking-wide bg-red-500 text-white px-2 py-1 rounded">
+                                Out of Stock
                                 </span>
-                            @endif
+                                @endif
                         </div>
 
                         <img
-                            src="https://images.unsplash.com/photo-1516035069371-29a1b244cc32?w=400&q=80"
-                            alt="{{ $item->name }}"
+                            src="{{ $item->image }}" alt="{{ $item->name }}"
                             class="w-[70%] h-[70%] object-contain transition-transform duration-300 group-hover:scale-105"
                         >
                     </div>
@@ -72,7 +72,7 @@
 
                         <div class="flex justify-between items-end mt-2">
                             <p class="text-sm font-bold text-gray-900">
-                                Rp {{ number_format($item->price) }}
+                                Rp {{ number_format($item->price_per_day) }}
                             </p>
 
                             {{-- BUTTON --}}
