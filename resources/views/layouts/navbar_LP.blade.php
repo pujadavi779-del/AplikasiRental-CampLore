@@ -31,37 +31,42 @@
                 <div class="relative group">
 
                     <!-- tombol -->
-                    <a href="#" class="hover:text-[#FF6B95] transition flex items-center gap-1">
-                        Catalog ▼
+                    <a href="#"
+                        class="flex items-center gap-1 font-mediumhover:text-[#FF6B95] transition">
+                        Catalog
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 text-black transition-transform duration-300 group-hover:rotate-180"
+                            fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                stroke-width="2" d="M19 9l-7 7-7-7" />
+                        </svg>
                     </a>
 
-                    <div class="fixed left-0 top-[80px] w-full bg-white shadow-2xl border-t border-pink-100 
-            opacity-0 invisible group-hover:opacity-100 group-hover:visible 
-            transition-all duration-300 z-40">
+                    <!-- mega menu -->
+                    <div class="fixed left-0 top-[80px] w-full bg-white shadow-2xl border-t border-pink-100
+                opacity-0 invisible
+                group-hover:opacity-100 group-hover:visible
+                transition-all duration-300 z-40">
 
-                        <!-- CENTER FIX -->
                         <div class="w-full flex justify-center">
-
                             <div class="w-full max-w-6xl px-6 py-10">
-
-                                <div class="grid grid-cols-4 gap-8 text-center justify-center">
+                                <div class="grid grid-cols-4 gap-8 text-center">
 
                                     <a href="{{ route('camera.LP') }}" class="group">
                                         <img src="https://images.unsplash.com/photo-1516035069371-29a1b244cc32"
-                                            class="w-full h-32 object-cover rounded-xl mb-3 group-hover:scale-105 transition">
+                                            class="w-full h-32 object-cover rounded-xl mb-3
+                                   group-hover:scale-105 transition">
                                         <p class="text-sm font-semibold">Camera</p>
                                     </a>
 
                                     <a href="{{ route('camping.LP') }}" class="group">
                                         <img src="https://images.unsplash.com/photo-1504280390367-361c6d9f38f4"
-                                            class="w-full h-32 object-cover rounded-xl mb-3 group-hover:scale-105 transition">
+                                            class="w-full h-32 object-cover rounded-xl mb-3
+                                   group-hover:scale-105 transition">
                                         <p class="text-sm font-semibold">Camping</p>
                                     </a>
 
                                 </div>
-
                             </div>
-
                         </div>
                     </div>
                 </div>

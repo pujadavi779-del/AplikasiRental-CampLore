@@ -52,7 +52,7 @@ Route::get('/camping', [CampingController::class, 'landing'])->name('camping.LP'
 
 // Detail Camera
 Route::get('/camera/{id}', [CameraController::class, 'show'])->name('camera.show');
-
+Route::get('/camping/{id}', [CampingController::class, 'show'])->name('camping.show');
 // Rental Page
 Route::get('/rental', function () {
     return view('rental');

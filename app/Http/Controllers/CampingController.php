@@ -49,4 +49,15 @@ class CampingController extends Controller
         return redirect()->route('camping.index')
             ->with('success', 'Data berhasil dihapus');
     }
+
+    public function show($id)
+    {
+        $item = Item::findOrFail($id);
+
+        $relatedItems = Item::where('id', '!=', $item->id)
+            ->take(5)
+            ->get();
+
+        return view('camping.camping_categories.details_camping', compact('item', 'relatedItems'));
+    }
 }

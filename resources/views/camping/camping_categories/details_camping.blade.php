@@ -10,8 +10,8 @@
     <nav class="flex items-center gap-2 py-5 text-xs text-gray-400">
         <a href="/" class="hover:text-gray-900 transition-colors">HOME</a>
         <span>/</span>
-        <a href="{{ route('camera.LP') }}" class="hover:text-gray-900 transition-colors">Camera</a>
-        <span>/</xspan>
+        <a href="{{ route('camping.LP') }}" class="hover:text-gray-900 transition-colors">Camping</a>
+        <span>/</span>
         <span class="text-orange-600 font-medium">{{ $item->name }}</span>
     </nav>
 
@@ -34,7 +34,7 @@
                 ]; @endphp
 
                 @foreach($relatedItems as $related)
-                <a href="{{ route('camera.show', $related->id) }}"
+                <a href="{{ route('camping.show', $related->id) }}"
                     class="block rounded-lg overflow-hidden border-2 border-gray-200 hover:border-gray-900 transition-all"
                     style="width:72px; height:72px;">
 
