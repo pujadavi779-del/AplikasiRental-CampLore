@@ -25,6 +25,10 @@ use App\Models\Product;
 |--------------------------------------------------------------------------
 */
 
+//PROFILE
+Route::get('/profile', [ProfileController::class, 'index'])->middleware('auth');
+Route::post('/profile', [ProfileController::class, 'update'])->middleware('auth');
+
 // LOGIN
 Route::get('/login', [LoginController::class, 'showLogin'])->name('login');
 Route::post('/login', [LoginController::class, 'login']);
@@ -89,9 +93,6 @@ Route::middleware('auth')->group(function () {
     })->name('checkout');
 
 
-    // Shipping Address
-    Route::get('/shipping-address', [ShippingAddressController::class, 'index'])
-        ->name('shipping-address');
 
     Route::get('/pembayaran', function () {
         $payments = collect();
@@ -102,6 +103,10 @@ Route::middleware('auth')->group(function () {
     Route::put('/shipping-address', [ShippingAddressController::class, 'update'])
         ->name('shipping-address.update');
 });
+
+Route::post('/address/save', [\App\Http\Controllers\ShippingAddressController::class, 'store'])
+    ->middleware('auth')
+    ->name('address.save');
 
 /*
 |--------------------------------------------------------------------------
@@ -201,11 +206,20 @@ Route::middleware('auth')->group(function () {
 });
 
 // Route Pengaturan / Settings
-Route::get('/settings', function () {
-    return view('pelanggan.settings');
-})->name('settings');
+Route::middleware('auth')->group(function () {
+
+    // TAMPIL HALAMAN SETTINGS
+    Route::get('/settings', [ProfileController::class, 'index'])
+        ->name('pages.pelanggan.settings');
+
+    // UPDATE PROFILE
+    Route::put('/settings', [ProfileController::class, 'update_profile'])
+        ->name('profil.update_profile');
+
+});
+
 
 // Route Alamat Pengiriman
 Route::get('/alamat_pengiriman', function () {
-    return view('pelanggan.alamat_pengiriman');
-})->name('alamat_pengiriman');
+    return view('pages.pelanggan.alamat_pengiriman');
+})->name('pages.pelanggan.alamat_pengiriman');

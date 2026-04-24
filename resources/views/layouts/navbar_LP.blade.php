@@ -12,7 +12,7 @@
 <body>
 
     {{-- Navbar --}}
-    @if(!request()->routeIs('shipping-address', 'dashboard'))
+    @if(!request()->routeIs('alamat_pengiriman', 'dashboard'))
     <!-- Navbar -->
     <nav class="bg-white/95 backdrop-blur-md sticky top-0 z-50 border-b border-pink-100">
         <div class="max-w-7xl mx-auto px-4 h-20 flex justify-between items-center">
@@ -105,32 +105,27 @@
 
                     <!-- Dropdown -->
                     <div class="absolute right-0 top-12 w-52 bg-white rounded-2xl shadow-xl border border-gray-100
-            opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+                        opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
 
                         <div class="px-4 py-3 border-b border-gray-100">
                             <p class="text-sm font-bold text-gray-800">{{ auth()->user()->name }}</p>
                             <p class="text-xs text-gray-400 truncate">{{ auth()->user()->email }}</p>
                         </div>
 
-                        <div class="py-2">
-                            <a href="{{ route('dashboard') }}" class="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-pink-50 hover:text-[#ED64A6] transition">
-                                Rent History
-                            </a>
+                        <!-- PROFILE -->
+                        <a href="{{ route('dashboard_pelanggan') }}"
+                            class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
+                            Profile
+                        </a>
 
-                            <a href="{{ route('shipping-address') }}" class="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-pink-50 hover:text-[#ED64A6] transition">
-                                Shipping Address
-                            </a>
-
-                            <div class="border-t border-gray-100 mt-1 pt-1">
-                                <form method="POST" action="{{ route('logout') }}">
-                                    @csrf
-                                    <button type="submit" class="w-full text-left px-4 py-2 text-sm text-red-500 hover:bg-red-50">
-                                        Logout
-                                    </button>
-                                </form>
-                            </div>
-                        </div>
-
+                        <!-- LOGOUT -->
+                        <form method="POST" action="{{ route('logout') }}">
+                            @csrf
+                            <button type="submit"
+                                class="w-full text-left px-4 py-2 text-sm text-red-500 hover:bg-red-50">
+                                Logout
+                            </button>
+                        </form>
                     </div>
                     @endauth
 

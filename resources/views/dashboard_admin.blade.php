@@ -55,7 +55,7 @@
 <body class="bg-white font-sans text-[#1a1a1a] antialiased">
     @include('admin.admin')
 
-    <main class="sm:ml-[272px] min-h-screen pt-32 pb-10 px-6 transition-all duration-300">
+    <main class="sm:ml-[272px] min-h-screen  pb-10 px-6 transition-all duration-300">
 
         <div class="fixed top-5 right-6 z-40 left-[calc(272px+24px)] max-sm:left-6 animate-fade-up">
             @include('admin.navbar', [

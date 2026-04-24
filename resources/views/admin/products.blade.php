@@ -7,7 +7,7 @@
 <div class="fixed top-5 right-6 z-40 left-[calc(272px+24px)] max-sm:left-6">
     @include('admin.navbar', [
     'NavParent' => 'Product Management',
-    'section' => 'Products'
+    'section' => 'Produk'
     ])
 </div>
 
@@ -16,7 +16,7 @@
 
         <div class="p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#eef4f0]">
             <div>
-                <h2 class="text-2xl font-bold text-[#22543D] font-serif">Products</h2>
+                <h2 class="text-2xl font-bold text-[#22543D] font-serif">Produk</h2>
                 <div class="flex items-center gap-2 mt-1">
                     <span class="text-[11px] text-[#7c8b84]">Kelola inventaris kamera dan alat camping</span>
                     <span class="bg-emerald-100 text-[#22543D] text-[10px] font-bold px-2 py-0.5 rounded-full border border-emerald-200">

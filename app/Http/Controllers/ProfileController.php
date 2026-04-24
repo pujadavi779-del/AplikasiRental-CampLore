@@ -12,7 +12,7 @@ class ProfileController extends Controller
         // Jika sudah pakai login, ambil data user yang sedang login
         $pelanggan = Auth::user();
 
-        return view('pelanggan.profil', compact('pelanggan'));
+        return view('pages.pelanggan.settings', compact('pelanggan'));
     }
 }
 

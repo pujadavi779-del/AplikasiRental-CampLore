@@ -30,4 +30,32 @@ class ShippingAddressController extends Controller
 
         return back()->with('success', 'Alamat pengiriman berhasil diperbarui!');
     }
+
+    public function store(Request $request)
+    {
+        $request->validate([
+            'full_address' => 'required',
+            'city' => 'required',
+            'province' => 'required',
+            'postal_code' => 'required',
+            'district' => 'required',
+        ]);
+
+        $address = ShippingAddress::updateOrCreate(
+            ['user_id' => auth()->id()],
+            [
+                'full_address' => $request->full_address,
+                'city' => $request->city,
+                'province' => $request->province,
+                'postal_code' => $request->postal_code,
+                'district' => $request->district,
+                'notes' => $request->notes,
+            ]
+        );
+
+        return response()->json([
+            'success' => true,
+            'address' => $address
+        ]);
+    }F
 }

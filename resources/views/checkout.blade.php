@@ -38,7 +38,7 @@
 
 <body class="text-gray-800 pb-20">
 
-    @include('navbar')
+    @include('layouts.navbar_LP')
 
     <main class="max-w-5xl mx-auto px-4 py-8">
         <h1 class="text-2xl font-black text-[#1A392D] mb-8 flex items-center gap-2">

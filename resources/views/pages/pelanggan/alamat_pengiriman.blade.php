@@ -10,7 +10,7 @@
 @endpush
 
 @section('content')
-<div class="max-w-3xl mx-auto">
+<div class="mmt-8 ml-84 min-h-screen bg-[#EEF3F0] px-9 pt-9 pb-16">
     
     {{-- Notifikasi --}}
     @if(session('success'))
@@ -23,7 +23,7 @@
     @endif
 
     <div class="mb-8 anim" style="animation-delay: 0.1s">
-        <h1 class="text-3xl font-extrabold text-[#22543D] tracking-tight">Shipping Address</h1>
+        <h1 class="text-3xl font-extrabold text-[#22543D] tracking-tight">Alamat pengiriman</h1>
         <p class="text-gray-500 mt-1">Lengkapi alamat agar pengiriman gear camping kamu lancar.</p>
     </div>
 

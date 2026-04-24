@@ -5,44 +5,13 @@
 @push('styles')
 <script src="https://cdn.tailwindcss.com"></script>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<style>
-    * { box-sizing: border-box; }
-    body { font-family: 'Plus Jakarta Sans', sans-serif; }
-
-    /* Sidebar gradient (tidak tersedia di Tailwind base CDN) */
-    .sidebar-gradient {
-        background: linear-gradient(170deg, #22543D 0%, #1B4332 60%, #163527 100%);
-    }
-    /* Avatar gradient ring */
-    .avatar-ring {
-        background: linear-gradient(135deg, #ED64A6, #22543D);
-    }
-
-    /* Status badge classes */
-    .badge-pending    { @apply bg-yellow-100 text-yellow-800; }
-    .badge-processing { @apply bg-green-100 text-green-800; }
-    .badge-shipped    { @apply bg-blue-100 text-blue-800; }
-    .badge-arrive     { @apply bg-emerald-100 text-emerald-800; }
-    .badge-cancelled  { @apply bg-red-100 text-red-800; }
-    .badge-returned   { @apply bg-purple-100 text-purple-800; }
-
-    /* Fade-slide animation */
-    @keyframes fadeSlide {
-        from { opacity: 0; transform: translateY(12px); }
-        to   { opacity: 1; transform: translateY(0); }
-    }
-    .anim    { animation: fadeSlide 0.4s ease forwards; }
-    .anim-d1 { animation-delay: 0.05s; opacity: 0; }
-    .anim-d2 { animation-delay: 0.12s; opacity: 0; }
-    .anim-d3 { animation-delay: 0.18s; opacity: 0; }
-</style>
 @endpush
 
 @section('content')
 
 
 {{-- ====== MAIN CONTENT ====== --}}
-<main class="ml-30 min-h-screen bg-[#EEF3F0] px-9 pt-9 pb-16">
+<main class="mt-8 ml-84 min-h-screen bg-[#EEF3F0] px-9 pt-9 pb-16">
 
     {{-- Flash --}}
     @if(session('success'))
@@ -58,21 +27,22 @@
 
     {{-- Header --}}
     <div class="anim anim-d1">
-        <h1 class="text-3xl font-extrabold text-green-800 tracking-tight">Rent History</h1>
-        <p class="text-gray-500 text-sm mt-1">Review all your rental transactions based on their status.</p>
+        <h1 class="text-3xl font-extrabold text-green-800 tracking-tight">Pesanan Saya</h1>
+        <p class="text-gray-500 text-sm mt-1">Tinjau semua transaksi penyewaan Anda berdasarkan statusnya.</p>
     </div>
 
     {{-- Filter pills --}}
     @php
         $activeStatus = request('status', 'all');
         $filters = [
-            ['label' => 'All',        'value' => 'all'],
-            ['label' => 'Pending',    'value' => 'pending'],
-            ['label' => 'Processing', 'value' => 'processing'],
-            ['label' => 'Shipped',    'value' => 'shipped'],
-            ['label' => 'Arrive',     'value' => 'arrive'],
-            ['label' => 'Cancelled',  'value' => 'cancelled'],
-            ['label' => 'Returned',   'value' => 'returned'],
+            ['label' => 'Semua',        'value' => 'semua'],
+            ['label' => 'Belum Bayar',    'value' => 'belum_bayar'],
+            ['label' => 'Dikemas', 'value' => 'dikemas'],
+            ['label' => 'Dikirim',    'value' => 'Dikirim'],
+            ['label' => 'Selesai',     'value' => 'selesai'],
+            ['label' => 'Pengembalian',   'value' => 'pengembealian'],
+            ['label' => 'Dibatalkan',  'value' => 'Dibatalkan'],
+            
         ];
     @endphp
     <div class="flex flex-wrap gap-2 mt-5 mb-7 anim anim-d2">
@@ -95,12 +65,12 @@
         @php
             $status = strtolower($rental->status ?? 'pending');
             $badgeClass = match($status) {
-                'pending'    => 'badge-pending',
-                'processing' => 'badge-processing',
-                'shipped'    => 'badge-shipped',
-                'arrive'     => 'badge-arrive',
-                'cancelled'  => 'badge-cancelled',
-                'returned'   => 'badge-returned',
+                'Dibatalkan'    => 'badge-pending',
+                'dikemas' => 'badge-processing',
+                'Dikirim'    => 'badge-shipped',
+                'Selesai'     => 'badge-arrive',
+                'Dibatalkan'  => 'badge-cancelled',
+                'Dikembalikan'   => 'badge-returned',
                 default      => 'badge-pending',
             };
         @endphp
@@ -155,9 +125,6 @@
                 </svg>
             </div>
             <div class="text-xl font-extrabold text-green-800 mb-2">Belum Ada Riwayat Sewa</div>
-            <div class="text-gray-400 text-sm max-w-[280px] mx-auto mb-6 leading-relaxed">
-                Kamu belum pernah menyewa gear apapun. Yuk mulai petualanganmu sekarang!
-            </div>
             <a href="{{ url('/catalog') }}"
                class="inline-flex items-center gap-2 bg-green-800 text-white px-7 py-3 rounded-full font-bold text-sm no-underline transition-all duration-200 shadow-[0_4px_14px_rgba(34,84,61,0.25)] hover:bg-pink-500 hover:shadow-[0_4px_14px_rgba(237,100,166,0.3)]">
                 <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">

@@ -1,52 +1,21 @@
-<!DOCTYPE html>
-<html lang="id">
+@extends('admin.admin')
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pengiriman - CampLore</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: {
-                        sans: ['DM Sans', 'sans-serif'],
-                        serif: ['DM Serif Display', 'serif'],
-                    },
-                    keyframes: {
-                        fadeUp: {
-                            from: {
-                                opacity: '0',
-                                transform: 'translateY(10px)'
-                            },
-                            to: {
-                                opacity: '1',
-                                transform: 'translateY(0)'
-                            },
-                        }
-                    },
-                    animation: {
-                        'fade-up': 'fadeUp .4s ease both',
-                    }
-                }
-            }
-        }
-    </script>
-</head>
+@section('title', 'Pengiriman - Camplore Admin')
 
-<body class="bg-white font-sans text-[#1a1a1a] antialiased">
+@section('content')
+
+
 
     @include('admin.admin')
+    <div class="fixed top-5 right-6 z-40 left-[calc(272px+24px)] max-sm:left-6">
+        @include('admin.navbar', [
+        'NavParent' => 'Manajemen Operasional',
+        'section' => 'Pengiriman'
+        ])
+    </div>
+    
+    <main class="sm:ml-[272px] min-h-screen pb-10 px-6  transition-all duration-300">
 
-    <main class="sm:ml-[272px] min-h-screen pt-[95px] pb-10 px-6 bg-[#F8FAF6]">
-        <div class="fixed top-5 right-6 z-40 left-[calc(272px+24px)] max-sm:left-6">
-            @include('admin.navbar', [
-            'NavParent' => 'Managemen Operasional',
-            'section' => 'Pengiriman'
-            ])
-        </div>
         <div class="max-w-full">
             <div class="bg-white rounded-[28px] border border-[#d7e6de] shadow-sm overflow-hidden">
 
@@ -54,7 +23,7 @@
                 <div class="p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#eef4f0]">
                     <div>
                         <h2 class="text-2xl font-bold text-[#22543D] font-serif leading-tight">
-                            Data Pengiriman Unit
+                            Data Pengiriman
                         </h2>
                         <p class="text-[11px] text-[#7c8b84] mt-0.5">
                             Pantau dan kelola semua status logistik pengiriman barang.
@@ -198,6 +167,5 @@
             closeModal();
         }
     </script>
-</body>
 
-</html>
+

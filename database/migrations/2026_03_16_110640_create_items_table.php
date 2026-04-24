@@ -13,6 +13,11 @@ return new class extends Migration
     {
         Schema::create('items', function (Blueprint $table) {
             $table->id();
+            $table->string('name');
+            $table->string('category'); // Ini kolom yang dicari-cari tadi
+            $table->integer('stock');
+            $table->integer('price');
+            $table->text('body');
             $table->timestamps();
         });
     }
@@ -25,13 +30,3 @@ return new class extends Migration
         Schema::dropIfExists('items');
     }
 };
-
-Schema::create('items', function (Blueprint $table) {
-    $table->id();
-    $table->string('name');
-    $table->string('category'); // camera / camping
-    $table->integer('stock');
-    $table->integer('price');
-    $table->text('body');
-    $table->timestamps();
-});

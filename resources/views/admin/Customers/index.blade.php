@@ -1,6 +1,6 @@
 @extends('admin.admin')
 
-@section('title', 'Customer')
+@section('title', 'Pengguna - Camplore Admin')
 
 @section('content')
 
@@ -8,7 +8,7 @@
 <div class="fixed top-5 right-6 z-40 left-[calc(272px+24px)] max-sm:left-6 animate-fade-up">
     @include('admin.navbar', [
     'NavParent' => 'Manajemen Operasional',
-    'section' => 'Customer'
+    'section' => 'Pengguna'
     ])
 </div>
 
@@ -19,7 +19,7 @@
         <div class="p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#eef4f0]">
             <div>
                 <h2 class="text-2xl font-bold text-[#22543D] font-serif leading-tight">
-                    Data Customer
+                    Data Pengguna
                 </h2>
                 <p class="text-[11px] text-[#7c8b84] mt-0.5">
                     Kelola semua data customer yang terdaftar

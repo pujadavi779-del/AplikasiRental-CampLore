@@ -35,7 +35,7 @@
                 <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
                 </svg>
-                Rent History
+                Pesanan Saya
             </a>
 
             {{-- Change Password --}}
@@ -47,31 +47,31 @@
                 <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
                 </svg>
-                Change Password
+                Ubah Kata Sandi
             </a>
 
             {{-- Settings --}}
-            <a href="#"
+            <a  href="{{ route('pages.pelanggan.settings') }}"
                class="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold transition-all duration-200 border-l-4
-                      {{ request()->is('settings*')
+                      {{ request()->routeIs('pages.pelanggan.settings')
                         ? 'bg-pink-50 text-pink-600 border-pink-500 shadow-sm'
                         : 'text-gray-500 border-transparent hover:bg-gray-50 hover:text-green-600 hover:border-green-400' }}">
                 <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
                 </svg>
-                Settings
+                Pengaturan
             </a>
 
             {{-- Shipping Address --}}
-            <a href="{{ route('shipping-address') }}"
+            <a href="{{ route('pages.pelanggan.alamat_pengiriman') }}"
                class="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold transition-all duration-200 border-l-4
-                      {{ request()->routeIs('shipping-address')
+                      {{ request()->routeIs('pages.pelanggan.alamat_pengiriman')
                         ? 'bg-pink-50 text-pink-600 border-pink-500 shadow-sm'
                         : 'text-gray-500 border-transparent hover:bg-gray-50 hover:text-green-600 hover:border-green-400' }}">
                 <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a2 2 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
                 </svg>
-                Shipping Address
+                Alamat pengiriman
             </a>
         </nav>
     </div>

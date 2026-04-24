@@ -10,11 +10,16 @@ use Illuminate\Notifications\Notifiable;
 
 class User extends Authenticatable
 {
-   protected $fillable = [
-    'username',
-    'nik',
-    'name',
-    'email',
-    'password',
-];
+    protected $fillable = [
+        'username',
+        'nik',
+        'name',
+        'email',
+        'password',
+    ];
+
+    public function shippingAddress()
+    {
+        return $this->hasOne(ShippingAddress::class);
+    }
 }
