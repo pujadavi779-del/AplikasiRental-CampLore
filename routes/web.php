@@ -19,6 +19,8 @@ use App\Http\Controllers\ChangePasswordController;
 // Models
 use App\Models\Product;
 
+//ADMIN
+use App\Http\Controllers\AdminAuthController;
 /*
 |--------------------------------------------------------------------------
 | Public Routes
@@ -114,7 +116,7 @@ Route::post('/address/save', [\App\Http\Controllers\ShippingAddressController::c
 |--------------------------------------------------------------------------
 */
 
-Route::prefix('admin')->name('admin.')->group(function () {
+Route::prefix('admin')->middleware('admin.auth')->name('admin.')->group(function () {
 
     // Dashboard
     Route::get('/dashboard_admin', function () {
@@ -223,3 +225,9 @@ Route::middleware('auth')->group(function () {
 Route::get('/alamat_pengiriman', function () {
     return view('pages.pelanggan.alamat_pengiriman');
 })->name('pages.pelanggan.alamat_pengiriman');
+
+
+// LOGIN ADMIN
+Route::get('/admin/login', [AdminAuthController::class, 'showLogin'])->name('admin.login');
+Route::post('/admin/login', [AdminAuthController::class, 'login'])->name('admin.login.post');
+Route::post('/admin/logout', [AdminAuthController::class, 'logout'])->name('admin.logout');
