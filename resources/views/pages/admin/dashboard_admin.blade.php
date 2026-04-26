@@ -58,7 +58,7 @@
     <main class="sm:ml-[272px] min-h-screen  pb-10 px-6 transition-all duration-300">
 
         <div class="fixed top-5 right-6 z-40 left-[calc(272px+24px)] max-sm:left-6 animate-fade-up">
-            @include('admin.navbar', [
+            @include('components.navbar_judul_LP', [
             'NavParent' => 'Managemen Operasional',
             'section' => 'Beranda'
             ])
