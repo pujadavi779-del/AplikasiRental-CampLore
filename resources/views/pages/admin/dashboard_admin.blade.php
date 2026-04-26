@@ -53,7 +53,7 @@
 </head>
 
 <body class="bg-white font-sans text-[#1a1a1a] antialiased">
-    @include('admin.admin')
+    @include('layouts.admin')
 
     <main class="sm:ml-[272px] min-h-screen  pb-10 px-6 transition-all duration-300">
 

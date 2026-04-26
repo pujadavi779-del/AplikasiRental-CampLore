@@ -19,6 +19,6 @@ class DeliveryController extends Controller
             ]
         ];
 
-        return view('admin.pengiriman', compact('pengiriman'));
+        return view('pages.admin.pengiriman', compact('pengiriman'));
     }
 }

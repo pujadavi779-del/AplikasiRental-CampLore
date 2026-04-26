@@ -1,13 +1,13 @@
-@extends('admin.admin')
+@extends('layouts.admin')
 
 @section('title', 'Manajemen Pengembalian - CampLore')
 
 @section('content')
 
 <div class="fixed top-5 right-6 z-40 left-[calc(272px+24px)] max-sm:left-6">
-    @include('admin.navbar', [
-    'NavParent' => 'Transaction Management',
-    'section' => 'Returns'
+    @include('components.navbar_judul_LP', [
+    'NavParent' => 'Manajemen Operasional',
+    'section' => 'Pengembalian'
     ])
 </div>
 

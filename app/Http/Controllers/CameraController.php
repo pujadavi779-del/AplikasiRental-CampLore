@@ -23,7 +23,7 @@ class CameraController extends Controller
             (object)['name' => 'DJI',      'slug' => 'dji',      'image' => null],
         ]);
 
-        return view('camera.camera_LP', compact('items', 'ipCategories'));
+        return view('pages.landing.kategori.camera_LP', compact('items', 'ipCategories'));
     }
 
     public function index()
@@ -40,14 +40,13 @@ class CameraController extends Controller
 
     public function store(Request $request)
     {
-        // 3. Sesuaikan dengan kolom baru: price_per_day, image, dan body
         Product::create([
             'name' => $request->name,
             'stock' => $request->stock,
-            'price_per_day' => $request->price, // Ganti ke price_per_day
+            'price_per_day' => $request->price,
             'category' => 'Kamera',
             'image'         => $request->image,
-            'body' => $request->body, // Tambahkan kolom body yang kita buat tadi
+            'body' => $request->body,
         ]);
 
         return redirect()->route('camera.index');
@@ -86,12 +85,11 @@ class CameraController extends Controller
     {
         $item = Product::findOrFail($id);
 
-        // Ambil produk terkait dari kategori yang sama di tabel products
         $relatedItems = Product::where('category', 'Kamera')
             ->where('id', '!=', $item->id)
             ->take(5)
             ->get();
 
-        return view('camera.camera_categories.details_camera', compact('item', 'relatedItems'));
+        return view('pages.landing.kategori.details_camera', compact('item', 'relatedItems'));
     }
 }

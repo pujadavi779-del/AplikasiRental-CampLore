@@ -38,7 +38,7 @@
 
 <body class="bg-gray-50 text-gray-900 overflow-x-hidden">
 
-    @include('layouts.navbar_LP')
+    @include('layouts.landingpage')
     @yield('content')
 
     <section id="hero" class="relative min-h-[90vh] flex items-center justify-center bg-[#22543D] text-white overflow-hidden">
@@ -55,7 +55,7 @@
             </p>
             <div class="flex flex-col sm:flex-row gap-4 justify-center">
                 <a href="#catalog" class="bg-[#ED64A6] text-white px-10 py-4 rounded-full font-bold text-lg hover:bg-white hover:text-[#22543D] transition-all shadow-lg transform hover:scale-105">Browse Gear</a>
-                <a href="{{ route('about') }}" class="bg-white/10 backdrop-blur-sm border border-white/20 text-white px-10 py-4 rounded-full font-semibold text-lg hover:bg-white/20 transition">Our Story</a>
+                <a href="{{ route('pages.landing.about') }}" class="bg-white/10 backdrop-blur-sm border border-white/20 text-white px-10 py-4 rounded-full font-semibold text-lg hover:bg-white/20 transition">Our Story</a>
             </div>
         </div>
     </section>

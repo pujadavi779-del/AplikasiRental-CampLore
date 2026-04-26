@@ -8,6 +8,11 @@ class LandingController extends Controller
 {
     public function index()
     {
-        return view('landing'); // file: resources/views/landing.blade.php
+        return view('pages.landing.landing');
+    }
+
+    public function rental()
+    {
+        return view('pages.landing.rental');
     }
 }

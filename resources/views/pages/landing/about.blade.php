@@ -65,7 +65,7 @@
 
 <body class="bg-gray-50 text-gray-900 overflow-x-hidden font-[Plus_Jakarta_Sans,sans-serif]">
 
-    @include('layouts.navbar_LP')
+    @include('layouts.landingpage')
     @yield('content')
 
     <!-- ========== HERO ABOUT ========== -->

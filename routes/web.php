@@ -27,6 +27,14 @@ use App\Http\Controllers\AdminAuthController;
 |--------------------------------------------------------------------------
 */
 
+//LANDING PAGE
+Route::get('/rental', function () {
+    return view('pages.landing.rental');
+})->name('pages.landing.rental');
+
+
+
+
 //PROFILE
 Route::get('/profile', [ProfileController::class, 'index'])->middleware('auth');
 Route::post('/profile', [ProfileController::class, 'update'])->middleware('auth');
@@ -39,12 +47,12 @@ Route::post('/login', [LoginController::class, 'login']);
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
 
-Route::get('/', [LandingController::class, 'index'])->name('landing');
-Route::get('/camping', [CampingController::class, 'index'])->name('camping.LP');
+Route::get('/', [LandingController::class, 'index'])->name('pages.landing.landing');
+Route::get('/camping', [CampingController::class, 'index'])->name('pages.camping.landing');
 // Landing & Informasi
 Route::get('/landing/about', function () {
     return view('pages.landing.about');
-})->name('about');
+})->name('pages.landing.about');
 
 
 
@@ -56,9 +64,7 @@ Route::get('/camping', [CampingController::class, 'landing'])->name('camping.LP'
 Route::get('/camera/{id}', [CameraController::class, 'show'])->name('camera.show');
 Route::get('/camping/{id}', [CampingController::class, 'show'])->name('camping.show');
 // Rental Page
-Route::get('/rental', function () {
-    return view('rental');
-})->name('rental');
+
 
 /*
 |--------------------------------------------------------------------------
@@ -86,12 +92,12 @@ Route::middleware('auth')->group(function () {
     })->name('dashboard');
 
     Route::get('/dashboard_pelanggan', function () {
-        return view('dashboard_pelanggan');
+        return view('pages.pelanggan.dashboard.pesanan_saya');
     })->name('dashboard_pelanggan');
 
     // Checkout
     Route::get('/checkout', function () {
-        return view('checkout');
+        return view('pages.pelanggan.checkout');
     })->name('checkout');
 
 
@@ -120,18 +126,18 @@ Route::prefix('admin')->middleware('admin.auth')->name('admin.')->group(function
 
     // Dashboard
     Route::get('/dashboard_admin', function () {
-        return view('dashboard_admin');
+        return view('pages.admin.dashboard_admin');
     })->name('dashboard');
 
     // Pemesanan
     Route::get('/pemesanan', function () {
-        return view('admin.pemesanan');
+        return view('pages.admin.pemesanan');
     })->name('pemesanan');
 
     // Pembayaran
     Route::get('/pembayaran', function () {
         $payments = collect();
-        return view('admin.pembayaran', compact('payments'));
+        return view('pages.admin.pembayaran', compact('payments'));
     })->name('pembayaran');
 
     // Pengiriman
@@ -140,7 +146,7 @@ Route::prefix('admin')->middleware('admin.auth')->name('admin.')->group(function
 
     // Pengembalian
     Route::get('/pengembalian', function () {
-        return view('admin.pengembalian');
+        return view('pages.admin.pengembalian');
     })->name('pengembalian');
 
     // Products
@@ -158,7 +164,7 @@ Route::prefix('admin')->middleware('admin.auth')->name('admin.')->group(function
 
         $products = $query->paginate(10)->withQueryString();
 
-        return view('admin.products', compact('products'));
+        return view('pages.admin.products', compact('products'));
     })->name('products');
 
     // Orders
@@ -169,11 +175,11 @@ Route::prefix('admin')->middleware('admin.auth')->name('admin.')->group(function
 
 
     Route::get('/riwayat/kamera', function () {
-        return view('admin.riwayat.kamera');
+        return view('pages.admin.riwayat.kamera');
     })->name('riwayat.kamera');
 
     Route::get('/riwayat/camping', function () {
-        return view('admin.riwayat.camping');
+        return view('pages.admin.riwayat.camping');
     })->name('riwayat.camping');
 
 
@@ -223,7 +229,7 @@ Route::middleware('auth')->group(function () {
 
 // Route Alamat Pengiriman
 Route::get('/alamat_pengiriman', function () {
-    return view('pages.pelanggan.alamat_pengiriman');
+    return view('pages.pelanggan.dashboard.alamat_pengiriman');
 })->name('pages.pelanggan.alamat_pengiriman');
 
 

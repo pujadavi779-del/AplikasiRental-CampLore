@@ -1,12 +1,12 @@
-@extends('admin.admin')
+@extends('layouts.admin')
 
 @section('title', 'Data Pemesanan Rental')
 
 @section('content')
 
 <div class="fixed top-5 right-6 z-40 left-[calc(272px+24px)] max-sm:left-6 animate-fade-up">
-    @include('admin.navbar', [
-    'NavParent' => 'Managemen Rental',
+    @include('components.navbar_judul_LP', [
+    'NavParent' => 'Manajemen Pesanan',
     'section' => 'Pemesanan'
     ])
 </div>

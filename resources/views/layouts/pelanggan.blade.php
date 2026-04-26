@@ -48,7 +48,7 @@
 <body class="antialiased">
 
     <div class="overflow-x-hidden ">
-        @include('layouts.navbar_LP')
+        @include('layouts.landingpage')
     </div>
 
     <div class="flex">

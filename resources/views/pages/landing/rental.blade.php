@@ -34,7 +34,8 @@
 
 <body class="text-gray-800 pb-32">
 
-    @include('layouts.navbar_LP')
+    @include('layouts.landingpage')
+    
 
     <main class="max-w-6xl mx-auto px-4 py-8">
         <h2 class="text-2xl font-bold text-[#1A392D] mb-6">Keranjang Rental</h2>

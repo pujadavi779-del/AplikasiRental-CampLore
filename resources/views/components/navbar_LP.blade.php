@@ -18,7 +18,7 @@
         <div class="max-w-7xl mx-auto px-4 h-20 flex justify-between items-center">
             <!-- Logo -->
             <div class="flex items-center gap-2">
-                <a href="{{ route('landing') }}" class="flex items-center">
+                <a href="{{ route('pages.landing.landing') }}" class="flex items-center">
                     <img src="{{ asset('images/logo.png') }}"
                         alt="Camplore Logo"
                         class="h-10 md:h-12 w-auto object-contain transition-transform duration-300 hover:scale-105">
@@ -27,13 +27,13 @@
 
             <!-- Menu Tengah (Desktop) -->
             <div class="hidden md:flex space-x-8 font-bold text-xs uppercase tracking-widest text-[#1A392D]">
-                <a href="{{ route('about') }}" class="hover:text-[#FF6B95] transition">About</a>
+                <a href="{{ route('pages.landing.about') }}" class="hover:text-[#FF6B95] transition">About</a>
                 <div class="relative group">
 
                     <!-- tombol -->
                     <a href="#"
                         class="flex items-center gap-1 font-mediumhover:text-[#FF6B95] transition">
-                        Catalog
+                        Kategori
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 text-black transition-transform duration-300 group-hover:rotate-180"
                             fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round"
@@ -49,7 +49,7 @@
 
                         <div class="w-full flex justify-center">
                             <div class="w-full max-w-6xl px-6 py-10">
-                                <div class="grid grid-cols-4 gap-8 text-center">
+                                <div class="grid grid-cols-2 gap-12 text-center justify-center max-w-xl mx-auto">
 
                                     <a href="{{ route('camera.LP') }}" class="group">
                                         <img src="https://images.unsplash.com/photo-1516035069371-29a1b244cc32"
@@ -83,7 +83,7 @@
                 </button>
 
                 <!-- Cart Icon with Badge -->
-                <a href="rental" class="relative w-10 h-10 flex items-center justify-center rounded-xl border border-gray-200 bg-white text-[#1A392D] hover:text-[#FF6B95] hover:border-pink-200 hover:bg-pink-50 transition-all duration-200">
+                <a href="{{ route('pages.landing.rental') }}" class="relative w-10 h-10 flex items-center justify-center rounded-xl border border-gray-200 bg-white text-[#1A392D] hover:text-[#FF6B95] hover:border-pink-200 hover:bg-pink-50 transition-all duration-200">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
                     </svg>

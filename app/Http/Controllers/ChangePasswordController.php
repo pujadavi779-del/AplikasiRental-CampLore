@@ -10,7 +10,7 @@ class ChangePasswordController extends Controller
 {
     public function index()
     {
-        return view('pages.pelanggan.change-password');
+        return view('pages.pelanggan.dashboard.ubahsandi');
     }
 
     public function update(Request $request)

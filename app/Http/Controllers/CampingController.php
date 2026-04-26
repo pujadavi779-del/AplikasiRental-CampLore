@@ -31,7 +31,7 @@ class CampingController extends Controller
             (object)['name' => 'Avtech', 'slug' => 'avtech', 'image' => null],
         ]);
 
-        return view('camping.camping_LP', compact('items', 'campingBrands'));
+        return view('pages.landing.kategori.camping_LP', compact('items', 'campingBrands'));
     }
 
     // 🔹 EDIT
@@ -65,6 +65,6 @@ class CampingController extends Controller
             ->take(5)
             ->get();
 
-        return view('camping.camping_categories.details_camping', compact('item', 'relatedItems'));
+        return view('pages.landing.kategori.details_camping', compact('item', 'relatedItems'));
     }
 }

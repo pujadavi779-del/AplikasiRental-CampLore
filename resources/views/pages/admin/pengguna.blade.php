@@ -1,4 +1,4 @@
-@extends('admin.admin')
+@extends('layouts.admin')
 
 @section('title', 'Pengguna - Camplore Admin')
 
@@ -6,7 +6,7 @@
 
 {{-- Navbar --}}
 <div class="fixed top-5 right-6 z-40 left-[calc(272px+24px)] max-sm:left-6 animate-fade-up">
-    @include('admin.navbar', [
+    @include('components.navbar_judul_LP', [
     'NavParent' => 'Manajemen Operasional',
     'section' => 'Pengguna'
     ])

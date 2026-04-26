@@ -21,7 +21,7 @@ class CustomerController extends Controller
             ->latest()
             ->paginate(15);
 
-        return view('admin.customers.index', compact('customers'));
+        return view('pages.admin.pengguna', compact('customers'));
     }
 
     // ── CREATE FORM ───────────────────────────────────

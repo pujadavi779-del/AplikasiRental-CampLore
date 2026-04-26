@@ -1,13 +1,13 @@
-@extends('admin.admin')
+@extends('layouts.admin')
 
 @section('title', 'Transaksi Pembayaran - CampLore')
 
 @section('content')
 
 <div class="fixed top-5 right-6 z-40 left-[calc(272px+24px)] max-sm:left-6 animate-fade-up">
-    @include('admin.navbar', [
-    'NavParent' => 'Transaction Management',
-    'section' => 'Payments'
+    @include('components.navbar_judul_LP', [
+    'NavParent' => 'Manajemen Pesanan',
+    'section' => 'Transaksi Pembayaran'
     ])
 </div>
 
@@ -17,7 +17,7 @@
         <div class="p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#eef4f0]">
             <div>
                 <h2 class="text-2xl font-bold text-[#22543D] font-serif leading-tight">
-                    Payments
+                    Pembayaran
                 </h2>
                 <p class="text-[11px] text-[#7c8b84] mt-0.5">
                     Daftar semua transaksi pembayaran sewa unit.

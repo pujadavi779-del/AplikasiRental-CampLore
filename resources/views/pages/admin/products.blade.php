@@ -1,12 +1,12 @@
-@extends('admin.admin')
+@extends('layouts.admin')
 
 @section('title', 'Manajemen Produk - CampLore')
 
 @section('content')
 
 <div class="fixed top-5 right-6 z-40 left-[calc(272px+24px)] max-sm:left-6">
-    @include('admin.navbar', [
-    'NavParent' => 'Product Management',
+    @include('components.navbar_judul_LP', [
+    'NavParent' => 'Manajemen Rental',
     'section' => 'Produk'
     ])
 </div>

@@ -1,12 +1,12 @@
-@extends('admin.admin')
+@extends('layouts.admin')
 
 @section('title', 'Riwayat Produk Kamera')
 
 @section('content')
 
 <div class="fixed top-5 left-6 right-6 sm:left-[296px] z-40">
-    @include('admin.navbar', [
-    'NavParent' => 'Managemen Rental',
+    @include('components.navbar_judul_LP', [
+    'NavParent' => 'Manajemen Rental',
     'section' => 'Riwayat Kamera'
     ])
 </div>
