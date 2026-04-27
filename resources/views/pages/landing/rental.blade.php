@@ -1,257 +1,468 @@
-<!DOCTYPE html>
-<html lang="id">
+@extends('components.navbar_LP')
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Keranjang Saya - Camplore</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap');
+@section('content')
 
-        body {
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            background-color: #f8fafc;
-        }
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
 
-        .text-camplore-pink {
-            color: #FF6B95;
-        }
+<style>
+    body {
+        font-family: 'Plus Jakarta Sans', sans-serif;
+    }
 
-        .bg-camplore-pink {
-            background-color: #FF6B95;
-        }
+    input[type=checkbox] {
+        accent-color: #FF6B95;
+    }
 
-        .bg-camplore-green {
-            background-color: #1A392D;
-        }
+    input[type=date]::-webkit-calendar-picker-indicator {
+        cursor: pointer;
+        opacity: 0.6;
+    }
+</style>
 
-        .accent-camplore-pink {
-            accent-color: #FF6B95;
-        }
-    </style>
-</head>
+<div class="max-w-4xl mx-auto px-4 py-8 pb-36 bg-white min-h-screen">
 
-<body class="text-gray-800 pb-32">
+    <h2 class="text-2xl font-extrabold text-gray-900 mb-6">Keranjang Rental</h2>
 
-    @include('layouts.landingpage')
-    
+    {{-- Header tabel --}}
+    <div class="hidden md:grid grid-cols-[auto_1fr_160px_120px_140px_48px] gap-4 px-4 pb-2 border-b border-gray-200 mb-1">
+        <div class="w-5"></div>
+        <p class="text-xs font-bold text-gray-400 uppercase tracking-widest">Item Rental</p>
+        <p class="text-xs font-bold text-gray-400 uppercase tracking-widest text-center">Harga /Hari</p>
+        <p class="text-xs font-bold text-gray-400 uppercase tracking-widest text-center">Unit</p>
+        <p class="text-xs font-bold text-gray-400 uppercase tracking-widest text-right">Subtotal</p>
+        <div></div>
+    </div>
 
-    <main class="max-w-6xl mx-auto px-4 py-8">
-        <h2 class="text-2xl font-bold text-[#1A392D] mb-6">Keranjang Rental</h2>
+    <div id="cartContainer" class="flex flex-col">
 
-        <div class="bg-white p-4 rounded-t-xl shadow-sm flex items-center text-gray-400 text-xs font-bold uppercase tracking-wider hidden md:flex border-b border-gray-100">
-            <div class="w-[5%] flex justify-center">
-                <input type="checkbox" id="selectAllTop" class="w-4 h-4 accent-camplore-pink cursor-pointer">
-            </div>
-            <div class="w-[45%]">Item Rental</div>
-            <div class="w-[15%] text-center">Harga /Hari</div>
-            <div class="w-[15%] text-center">Unit</div>
-            <div class="w-[15%] text-center">Subtotal</div>
-            <div class="w-[5%] text-center">Aksi</div>
-        </div>
+        @forelse($carts as $cart)
+        @php
+        $days = ($cart->start_date && $cart->end_date)
+        ? max(1, \Carbon\Carbon::parse($cart->start_date)->diffInDays($cart->end_date))
+        : 1;
+        $subtotal = ($cart->item->price ?? 0) * $cart->quantity * $days;
+        @endphp
 
-        <div class="bg-white rounded-b-xl shadow-sm mb-4 overflow-hidden border border-gray-100">
-            <div id="cart-items">
-                <div class="p-5 flex flex-wrap md:flex-nowrap items-center border-b last:border-b-0 item-card transition hover:bg-gray-50/50" data-name="sony alpha a7 iii">
-                    <div class="w-[5%] flex justify-center">
-                        <input type="checkbox" checked class="item-checkbox w-4 h-4 accent-camplore-pink cursor-pointer" data-price="250000">
+        <div class="card-item border-b border-gray-100"
+            data-id="{{ $cart->id }}"
+            data-price="{{ $cart->item->price ?? 0 }}">
+
+            {{-- Baris utama --}}
+            <div class="grid grid-cols-[auto_1fr_160px_120px_140px_48px] gap-4 items-center px-4 py-5">
+
+                {{-- Checkbox --}}
+                <input type="checkbox" checked
+                    class="item-checkbox w-5 h-5 cursor-pointer flex-shrink-0"
+                    onchange="updateSummary()">
+
+                {{-- Thumbnail + Nama --}}
+                <div class="flex items-center gap-3 min-w-0">
+                    <div class="w-14 h-14 rounded-xl bg-gray-100 flex items-center justify-center flex-shrink-0 overflow-hidden text-2xl">
+                        @if($cart->item && $cart->item->image)
+                        <img src="{{ str_starts_with($cart->item->image, 'http') ? $cart->item->image : asset('storage/'.$cart->item->image) }}"
+                            class="w-full h-full object-cover" alt="{{ $cart->item->name }}">
+                        @else
+                        📦
+                        @endif
                     </div>
-                    <div class="w-full md:w-[45%] flex gap-4 mt-2 md:mt-0">
-                        <div class="w-20 h-20 bg-gray-100 rounded-lg overflow-hidden flex-shrink-0">
-                            <img src="https://images.unsplash.com/photo-1516035069371-29a1b244cc32?w=200" class="w-full h-full object-cover">
-                        </div>
-                        <div class="flex flex-col justify-center">
-                            <h3 class="text-sm font-bold text-[#1A392D]">Sony Alpha A7 III</h3>
-                            <p class="text-[11px] text-pink-400 font-semibold uppercase tracking-tighter mt-1">Kategori: Kamera</p>
-                        </div>
-                    </div>
-                    <div class="w-1/3 md:w-[15%] text-center text-sm font-semibold mt-4 md:mt-0 text-gray-600">Rp250.000</div>
-                    <div class="w-1/3 md:w-[15%] flex justify-center mt-4 md:mt-0">
-                        <div class="flex items-center border border-gray-200 rounded-lg h-8 bg-white overflow-hidden">
-                            <button onclick="changeQty(this, -1)" class="px-3 hover:bg-gray-100 text-[#1A392D] font-bold">-</button>
-                            <span class="qty-val px-3 text-sm font-bold text-gray-700">1</span>
-                            <button onclick="changeQty(this, 1)" class="px-3 hover:bg-gray-100 text-[#1A392D] font-bold">+</button>
-                        </div>
-                    </div>
-                    <div class="w-1/3 md:w-[15%] text-center text-sm text-camplore-pink font-bold mt-4 md:mt-0">
-                        Rp<span class="row-total">250.000</span>
-                    </div>
-                    <div class="w-full md:w-[5%] text-right md:text-center mt-2 md:mt-0">
-                        <button onclick="removeItem(this)" class="p-2 text-gray-300 hover:text-red-500 transition">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                            </svg>
-                        </button>
+                    <div class="min-w-0">
+                        <p class="text-sm font-bold text-gray-900 truncate">{{ $cart->item->name ?? '-' }}</p>
+                        <p class="text-[11px] font-semibold text-[#FF6B95] uppercase tracking-wide mt-0.5">
+                            Kategori: {{ $cart->item->category ?? '-' }}
+                        </p>
                     </div>
                 </div>
 
-                <div class="p-5 flex flex-wrap md:flex-nowrap items-center border-b last:border-b-0 item-card transition hover:bg-gray-50/50" data-name="tenda arpenaz 4.1">
-                    <div class="w-[5%] flex justify-center">
-                        <input type="checkbox" checked class="item-checkbox w-4 h-4 accent-camplore-pink cursor-pointer" data-price="150000">
-                    </div>
-                    <div class="w-full md:w-[45%] flex gap-4 mt-2 md:mt-0">
-                        <div class="w-20 h-20 bg-gray-100 rounded-lg overflow-hidden flex-shrink-0">
-                            <img src="https://images.unsplash.com/photo-1504280390367-361c6d9f38f4?w=200" class="w-full h-full object-cover">
-                        </div>
-                        <div class="flex flex-col justify-center">
-                            <h3 class="text-sm font-bold text-[#1A392D]">Tenda Arpenaz 4.1</h3>
-                            <p class="text-[11px] text-pink-400 font-semibold uppercase tracking-tighter mt-1">Kategori: Camping</p>
-                        </div>
-                    </div>
-                    <div class="w-1/3 md:w-[15%] text-center text-sm font-semibold mt-4 md:mt-0 text-gray-600">Rp150.000</div>
-                    <div class="w-1/3 md:w-[15%] flex justify-center mt-4 md:mt-0">
-                        <div class="flex items-center border border-gray-200 rounded-lg h-8 bg-white overflow-hidden">
-                            <button onclick="changeQty(this, -1)" class="px-3 hover:bg-gray-100 text-[#1A392D] font-bold">-</button>
-                            <span class="qty-val px-3 text-sm font-bold text-gray-700">1</span>
-                            <button onclick="changeQty(this, 1)" class="px-3 hover:bg-gray-100 text-[#1A392D] font-bold">+</button>
-                        </div>
-                    </div>
-                    <div class="w-1/3 md:w-[15%] text-center text-sm text-camplore-pink font-bold mt-4 md:mt-0">
-                        Rp<span class="row-total">150.000</span>
-                    </div>
-                    <div class="w-full md:w-[5%] text-right md:text-center mt-2 md:mt-0">
-                        <button onclick="removeItem(this)" class="p-2 text-gray-300 hover:text-red-500 transition">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                            </svg>
-                        </button>
-                    </div>
+                {{-- Harga/hari --}}
+                <div class="text-center">
+                    <p class="text-sm font-bold text-gray-700">
+                        Rp{{ number_format($cart->item->price ?? 0, 0, ',', '.') }}
+                    </p>
                 </div>
-            </div>
-        </div>
 
-        <div class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 shadow-[0_-5px_20px_rgba(0,0,0,0.05)] z-40">
-            <div class="max-w-6xl mx-auto p-4 flex flex-col md:flex-row items-center justify-between gap-4">
-                <div class="flex items-center gap-6 w-full md:w-auto">
-                    <label class="flex items-center gap-3 cursor-pointer group">
-                        <input type="checkbox" id="selectAllBottom" class="w-5 h-5 accent-camplore-pink cursor-pointer">
-                        <span class="text-sm font-bold text-gray-600 group-hover:text-camplore-pink transition">
-                            Pilih Semua (<span id="total-checked-count">0</span>)
+                {{-- Qty --}}
+                <div class="flex items-center justify-center">
+                    <div class="flex items-center border border-gray-200 rounded-xl h-8 overflow-hidden">
+                        <button onclick="changeQty(this, -1)"
+                            class="w-7 h-8 flex items-center justify-center text-gray-600 font-bold text-sm hover:bg-gray-100 transition">
+                            −
+                        </button>
+                        <span class="qty-val px-2 text-sm font-bold text-gray-800 min-w-[24px] text-center">
+                            {{ $cart->quantity }}
                         </span>
-                    </label>
-                    <button onclick="removeAllChecked()" class="text-sm font-bold text-gray-400 hover:text-red-500 transition uppercase underline">Hapus</button>
+                        <button onclick="changeQty(this, 1)"
+                            class="w-7 h-8 flex items-center justify-center text-gray-600 font-bold text-sm hover:bg-gray-100 transition">
+                            +
+                        </button>
+                    </div>
                 </div>
 
-                <div class="flex items-center justify-between md:justify-end gap-8 w-full md:w-auto">
-                    <div class="text-right">
-                        <div class="text-sm text-gray-500 font-semibold">Total Sewa (<span id="count-items">0</span> Item)</div>
-                        <div class="text-camplore-pink font-black text-2xl md:text-3xl" id="totalPrice">Rp0</div>
-                    </div>
-                    <button onclick="goToCheckout()" class="bg-[#FF6B95] text-white px-10 md:px-16 py-4 rounded-2xl font-bold hover:bg-[#e05a82] transition-all shadow-lg active:scale-95 uppercase tracking-widest text-xs">
-                        Checkout
+                {{-- Subtotal --}}
+                <div class="text-right">
+                    <p class="text-sm font-bold text-[#FF6B95]">
+                        Rp<span class="subtotal-detail">{{ number_format($subtotal, 0, ',', '.') }}</span>
+                    </p>
+                </div>
+
+                {{-- Hapus --}}
+                <div class="flex justify-center">
+                    <button onclick="removeItem(this)"
+                        class="p-1.5 text-gray-300 hover:text-red-500 transition">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                        </svg>
                     </button>
                 </div>
+
             </div>
+
+            {{-- Strip tanggal --}}
+            <div class="flex items-center justify-between px-4 py-2.5 border-t border-gray-100 cursor-pointer hover:bg-gray-50 transition"
+                onclick="toggleDate(this)">
+                <div class="flex items-center gap-2 flex-wrap">
+                    <svg class="w-4 h-4 text-gray-300 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <rect x="3" y="4" width="18" height="18" rx="2" stroke-width="2" />
+                        <path stroke-width="2" d="M16 2v4M8 2v4M3 10h18" />
+                    </svg>
+                    <span class="text-[11px] text-gray-400 font-medium">Tanggal sewa:</span>
+                    <span class="date-summary text-[11px] font-bold text-[#FF6B95]">
+                        @if($cart->start_date && $cart->end_date)
+                        {{ \Carbon\Carbon::parse($cart->start_date)->format('d/m/Y') }}
+                        –
+                        {{ \Carbon\Carbon::parse($cart->end_date)->format('d/m/Y') }}
+                        @else
+                        <span class="text-gray-300 font-normal">— Belum ada tanggal</span>
+                        @endif
+                    </span>
+                    @if($cart->start_date && $cart->end_date)
+                    <span class="strip-pill bg-pink-100 text-[#FF6B95] text-[10px] font-bold px-2.5 py-0.5 rounded-full">
+                        {{ $days }} hari
+                    </span>
+                    @endif
+                </div>
+                <svg class="toggle-arrow w-3.5 h-3.5 text-gray-400 transition-transform flex-shrink-0"
+                    fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7" />
+                </svg>
+            </div>
+
+            {{-- Panel edit tanggal (collapsible) --}}
+            <div class="date-row hidden border-t border-gray-100 px-4 py-4 bg-gray-50">
+                <div class="flex flex-col sm:flex-row gap-3 max-w-lg">
+                    <div class="flex-1">
+                        <label class="block text-[10px] font-bold uppercase text-gray-400 tracking-widest mb-1.5">Mulai</label>
+                        <input type="date"
+                            class="start-date w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm text-gray-800 focus:border-[#FF6B95] focus:outline-none transition bg-white"
+                            value="{{ $cart->start_date ? \Carbon\Carbon::parse($cart->start_date)->format('Y-m-d') : '' }}"
+                            onchange="onDateChange(this)">
+                    </div>
+                    <div class="flex-1">
+                        <label class="block text-[10px] font-bold uppercase text-gray-400 tracking-widest mb-1.5">Selesai</label>
+                        <input type="date"
+                            class="end-date w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm text-gray-800 focus:border-[#FF6B95] focus:outline-none transition bg-white"
+                            value="{{ $cart->end_date ? \Carbon\Carbon::parse($cart->end_date)->format('Y-m-d') : '' }}"
+                            onchange="onDateChange(this)">
+                    </div>
+                </div>
+
+                <div class="flex items-center justify-between mt-3 max-w-lg flex-wrap gap-2">
+                    <div class="flex items-center gap-2">
+                        <span class="days-badge bg-pink-100 text-[#FF6B95] text-[11px] font-bold px-3 py-1.5 rounded-lg
+                            {{ $cart->start_date && $cart->end_date ? '' : 'hidden' }}">
+                            {{ $days }} hari
+                        </span>
+                        <span class="date-error hidden text-xs text-red-500">Tanggal tidak valid</span>
+                    </div>
+                    <div class="text-right">
+                        <p class="text-[10px] text-gray-400 font-semibold mb-0.5">Subtotal</p>
+                        <p class="text-sm font-bold text-gray-900">
+                            Rp<span class="subtotal-detail-panel">{{ number_format($subtotal, 0, ',', '.') }}</span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+
         </div>
-    </main>
+        @empty
+        <div class="py-20 text-center text-gray-400 italic">Keranjang kosong.</div>
+        @endforelse
 
-    <script>
-        function updateSummary() {
-            const checkboxes = document.querySelectorAll('.item-checkbox');
-            const allCards = document.querySelectorAll('.item-card');
-            let totalHarga = 0;
-            let checkedCount = 0;
+    </div>
+</div>
 
-            checkboxes.forEach(cb => {
-                const card = cb.closest('.item-card');
-                const qty = parseInt(card.querySelector('.qty-val').innerText);
-                const price = parseInt(cb.getAttribute('data-price'));
-                const rowTotalValue = qty * price;
+{{-- Bottom bar --}}
+<div class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 z-50 shadow-[0_-4px_20px_rgba(0,0,0,0.06)]">
+    <div class="max-w-4xl mx-auto px-4 py-3 flex items-center justify-between gap-4">
 
-                // Update teks subtotal per baris
-                card.querySelector('.row-total').innerText = rowTotalValue.toLocaleString('id-ID');
+        <div class="flex items-center gap-4">
+            <label class="flex items-center gap-2 cursor-pointer">
+                <input type="checkbox" id="selectAll" class="w-5 h-5 cursor-pointer" onchange="selAllChange(this)">
+                <span class="text-sm font-bold text-gray-600">
+                    Pilih Semua (<span id="totalChecked">0</span>)
+                </span>
+            </label>
+            <button onclick="removeAllChecked()"
+                class="text-xs font-bold text-gray-400 hover:text-red-500 uppercase underline transition">
+                Hapus
+            </button>
+        </div>
 
-                if (cb.checked) {
-                    totalHarga += rowTotalValue;
-                    checkedCount++;
-                }
-            });
+        <div class="flex items-center gap-4">
+            <div class="text-right">
+                <p class="text-xs text-gray-500 font-semibold">
+                    Total Sewa (<span id="countItems">0</span> Item)
+                </p>
+                <p class="text-2xl font-extrabold text-[#FF6B95]" id="grandTotal">Rp0</p>
+            </div>
+            <button onclick="goToCheckout()"
+                class="bg-[#FF6B95] hover:bg-[#ff5282] text-white
+                       px-7 py-3 rounded-xl font-bold text-xs uppercase tracking-widest transition-all active:scale-95 whitespace-nowrap">
+                Checkout
+            </button>
+        </div>
 
-            // Update Bottom Bar
-            document.getElementById('totalPrice').innerText = `Rp${totalHarga.toLocaleString('id-ID')}`;
-            document.getElementById('count-items').innerText = checkedCount;
-            document.getElementById('total-checked-count').innerText = checkedCount;
+    </div>
+</div>
 
-            // Update Badge Navbar (Sesuai ID di navbar.blade.php kamu)
-            const navBadge = document.getElementById('nav-cart-count') || document.getElementById('cart-badge');
-            if (navBadge) {
-                navBadge.innerText = allCards.length;
-                navBadge.style.display = allCards.length > 0 ? 'block' : 'none';
+<script>
+    const today = new Date().toISOString().split('T')[0];
+
+    function getDays(card) {
+        const s = card.querySelector('.start-date')?.value;
+        const e = card.querySelector('.end-date')?.value;
+        if (!s || !e) return 1;
+        const diff = Math.round((new Date(e) - new Date(s)) / 86400000);
+        return diff > 0 ? diff : 1;
+    }
+
+    function recalcCard(card) {
+        const price = parseInt(card.dataset.price) || 0;
+        const qty = parseInt(card.querySelector('.qty-val').textContent) || 1;
+        const days = getDays(card);
+        const subtotal = price * qty * days;
+        const fmt = subtotal.toLocaleString('id-ID');
+        card.querySelector('.subtotal-detail').textContent = fmt;
+        const panel = card.querySelector('.subtotal-detail-panel');
+        if (panel) panel.textContent = fmt;
+    }
+
+    function updateSummary() {
+        let total = 0,
+            count = 0;
+        document.querySelectorAll('.card-item').forEach(card => {
+            const cb = card.querySelector('.item-checkbox');
+            if (cb && cb.checked) {
+                const price = parseInt(card.dataset.price) || 0;
+                const qty = parseInt(card.querySelector('.qty-val')?.textContent) || 1;
+                const days = getDays(card);
+                total += price * qty * days;
+                count++;
             }
-
-            // Sync Checkbox Master
-            const selectAllTop = document.getElementById('selectAllTop');
-            const selectAllBottom = document.getElementById('selectAllBottom');
-            const allChecked = Array.from(checkboxes).every(c => c.checked) && checkboxes.length > 0;
-
-            if (selectAllTop) selectAllTop.checked = allChecked;
-            if (selectAllBottom) selectAllBottom.checked = allChecked;
-        }
-
-        function changeQty(btn, delta) {
-            const span = btn.parentElement.querySelector('.qty-val');
-            let val = parseInt(span.innerText) + delta;
-            if (val < 1) val = 1;
-            span.innerText = val;
-            updateSummary();
-        }
-
-        function removeItem(btn) {
-            if (confirm('Hapus item ini?')) {
-                btn.closest('.item-card').remove();
-                updateSummary();
-                checkEmptyCart();
-            }
-        }
-
-        function removeAllChecked() {
-            const checked = document.querySelectorAll('.item-checkbox:checked');
-            if (checked.length === 0) return;
-            if (confirm(`Hapus ${checked.length} item?`)) {
-                checked.forEach(cb => cb.closest('.item-card').remove());
-                updateSummary();
-                checkEmptyCart();
-            }
-        }
-
-        function checkEmptyCart() {
-            const container = document.getElementById('cart-items');
-            if (container.querySelectorAll('.item-card').length === 0) {
-                container.innerHTML = `<div class="p-20 text-center text-gray-400 italic">Keranjang kosong.</div>`;
-            }
-        }
-
-        function goToCheckout() {
-            const selectedItems = [];
-            document.querySelectorAll('.item-checkbox:checked').forEach(cb => {
-                const card = cb.closest('.item-card');
-                selectedItems.push({
-                    name: card.getAttribute('data-name'),
-                    qty: card.querySelector('.qty-val').innerText
-                });
-            });
-
-            if (selectedItems.length === 0) {
-                alert("Pilih barang dulu!");
-                return;
-            }
-            const dataString = encodeURIComponent(JSON.stringify(selectedItems));
-            window.location.href = `/checkout?items=${dataString}`;
-        }
-
-        // Event Listeners
-        document.addEventListener('change', (e) => {
-            if (e.target.id === 'selectAllTop' || e.target.id === 'selectAllBottom') {
-                const state = e.target.checked;
-                document.querySelectorAll('.item-checkbox').forEach(cb => cb.checked = state);
-            }
-            updateSummary();
         });
+        document.getElementById('grandTotal').textContent = 'Rp' + total.toLocaleString('id-ID');
+        document.getElementById('countItems').textContent = count;
+        document.getElementById('totalChecked').textContent = count;
+        const all = document.querySelectorAll('.item-checkbox');
+        const allCked = all.length > 0 && Array.from(all).every(c => c.checked);
+        document.getElementById('selectAll').checked = allCked;
+    }
 
-        // Inisialisasi saat halaman dibuka
-        window.onload = updateSummary;
-    </script>
-</body>
+    function toggleDate(strip) {
+        const card = strip.closest('.card-item');
+        const panel = card.querySelector('.date-row');
+        const arrow = strip.querySelector('.toggle-arrow');
+        panel.classList.toggle('hidden');
+        arrow.classList.toggle('rotate-180');
+    }
 
-</html>
+    function onDateChange(input) {
+        const card = input.closest('.card-item');
+        const sEl = card.querySelector('.start-date');
+        const eEl = card.querySelector('.end-date');
+        const badge = card.querySelector('.days-badge');
+        const errEl = card.querySelector('.date-error');
+        const dsum = card.querySelector('.date-summary');
+        const s = sEl.value;
+        const e = eEl.value;
+
+        badge.classList.add('hidden');
+        errEl.classList.add('hidden');
+        if (s) eEl.min = s;
+        if (!s || !e) {
+            recalcCard(card);
+            updateSummary();
+            return;
+        }
+
+        const diff = Math.round((new Date(e) - new Date(s)) / 86400000);
+        if (diff <= 0) {
+            errEl.classList.remove('hidden');
+            recalcCard(card);
+            updateSummary();
+            return;
+        }
+
+        badge.textContent = diff + ' hari';
+        badge.classList.remove('hidden');
+
+        const fmt = d => {
+            const [y, m, dy] = d.split('-');
+            return `${dy}/${m}/${y}`;
+        };
+        dsum.textContent = `${fmt(s)} – ${fmt(e)}`;
+
+        let stripPill = card.querySelector('.strip-pill');
+        if (!stripPill) {
+            stripPill = document.createElement('span');
+            stripPill.className = 'strip-pill bg-pink-100 text-[#FF6B95] text-[10px] font-bold px-2.5 py-0.5 rounded-full';
+            dsum.insertAdjacentElement('afterend', stripPill);
+        }
+        stripPill.textContent = diff + ' hari';
+
+        recalcCard(card);
+
+        // Update tanggal atau qty — ganti X-HTTP-Method-Override jadi PUT biasa
+        fetch(`/cart/${card.dataset.id}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+            },
+            body: JSON.stringify({
+                start_date: s,
+                end_date: e
+            })
+        }).catch(() => showToast('Gagal menyimpan tanggal'));
+
+        // Bulk delete — ganti ke route baru
+        fetch('/cart/bulk-delete', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+            },
+            body: JSON.stringify({
+                ids
+            })
+        })
+
+        updateSummary();
+    }
+
+    function changeQty(btn, delta) {
+        const card = btn.closest('.card-item');
+        const span = card.querySelector('.qty-val');
+        let val = parseInt(span.textContent) + delta;
+        if (val < 1) val = 1;
+        span.textContent = val;
+        recalcCard(card);
+
+        fetch(`/cart/${card.dataset.id}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+            },
+            body: JSON.stringify({
+                quantity: val
+            })
+        }).catch(() => showToast('Gagal menyimpan jumlah'));
+
+        updateSummary();
+    }
+
+    function removeItem(btn) {
+        if (!confirm('Hapus item ini?')) return;
+        const card = btn.closest('.card-item');
+        fetch(`/cart/${card.dataset.id}`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                }
+            })
+            .then(r => r.json())
+            .then(data => {
+                if (data.success) {
+                    card.remove();
+                    updateSummary();
+                    checkEmpty();
+                }
+            })
+            .catch(() => showToast('Gagal menghapus item'));
+    }
+
+    function removeAllChecked() {
+        const checked = document.querySelectorAll('.item-checkbox:checked');
+        if (!checked.length) return;
+        if (!confirm(`Hapus ${checked.length} item?`)) return;
+        const ids = Array.from(checked).map(cb => cb.closest('.card-item').dataset.id);
+        fetch('/cart/bulk-delete', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                },
+                body: JSON.stringify({
+                    ids
+                })
+            })
+            .then(r => r.json())
+            .then(data => {
+                if (data.success) {
+                    checked.forEach(cb => cb.closest('.card-item').remove());
+                    updateSummary();
+                    checkEmpty();
+                }
+            })
+            .catch(() => showToast('Gagal menghapus item'));
+    }
+
+    function selAllChange(src) {
+        document.querySelectorAll('.item-checkbox').forEach(cb => cb.checked = src.checked);
+        updateSummary();
+    }
+
+    function checkEmpty() {
+        const container = document.getElementById('cartContainer');
+        if (!container.querySelector('.card-item')) {
+            container.innerHTML = '<div class="py-20 text-center text-gray-400 italic">Keranjang kosong.</div>';
+        }
+    }
+
+    function goToCheckout() {
+        const checked = document.querySelectorAll('.item-checkbox:checked');
+        if (!checked.length) {
+            alert('Pilih barang dulu!');
+            return;
+        }
+        const params = Array.from(checked).map(cb => `ids[]=${cb.closest('.card-item').dataset.id}`).join('&');
+        window.location.href = `/checkout?${params}`;
+    }
+
+    function showToast(msg) {
+        const t = document.createElement('div');
+        t.textContent = msg;
+        t.className = 'fixed bottom-24 left-1/2 -translate-x-1/2 bg-gray-800 text-white text-xs px-4 py-2 rounded-xl z-[999] opacity-0 transition-opacity duration-300';
+        document.body.appendChild(t);
+        setTimeout(() => t.style.opacity = '1', 10);
+        setTimeout(() => {
+            t.style.opacity = '0';
+            setTimeout(() => t.remove(), 300);
+        }, 2500);
+    }
+
+    window.addEventListener('load', () => {
+        document.querySelectorAll('.start-date').forEach(el => el.min = today);
+        document.querySelectorAll('.card-item').forEach(card => {
+            const s = card.querySelector('.start-date')?.value;
+            const eEl = card.querySelector('.end-date');
+            if (s && eEl) eEl.min = s;
+            recalcCard(card);
+        });
+        updateSummary();
+    });
+</script>
+
+@endsection
