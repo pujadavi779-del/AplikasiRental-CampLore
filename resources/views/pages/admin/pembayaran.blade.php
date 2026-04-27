@@ -23,13 +23,6 @@
                     Daftar semua transaksi pembayaran sewa unit.
                 </p>
             </div>
-
-            <button class="bg-[#22543D] hover:bg-[#1B4332] text-white px-5 py-2.5 rounded-xl text-xs font-bold transition-all shadow-sm flex items-center gap-2">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
-                    <path d="M12 5v14M5 12h14" />
-                </svg>
-                Tambah Pembayaran
-            </button>
         </div>
 
         {{-- SEARCH BAR --}}
