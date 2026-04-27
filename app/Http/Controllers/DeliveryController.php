@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use App\Models\Pemesanan;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\BarangTibaMail;
+
 
 class DeliveryController extends Controller
 {
@@ -20,5 +23,23 @@ class DeliveryController extends Controller
         ];
 
         return view('pages.admin.pengiriman', compact('pengiriman'));
+    }
+
+    public function tandaiSudahTiba($id)
+    {
+        $pesanan = Pemesanan::findOrFail($id);
+
+        $pesanan->update([
+            'status' => 'disewa'
+        ]);
+
+        try {
+            Mail::to($pesanan->user->email)->send(new BarangTibaMail($pesanan));
+        } catch (\Exception $e) {
+            // Jika gagal kirim email (misal internet mati), tetap lanjut tapi beri pesan
+            return redirect()->back()->with('warning', 'Status diupdate, tapi email gagal terkirim.');
+        }
+
+        return redirect()->back()->with('success', 'Barang tiba! Data telah dipindahkan ke Pengembalian.');
     }
 }

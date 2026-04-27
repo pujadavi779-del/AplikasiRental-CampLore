@@ -13,7 +13,7 @@ class CustomerController extends Controller
     public function index(Request $request)
     {
         $customers = Customer::query()
-            ->withCount('rentals')
+            // ->withCount('rentals')  ← hapus baris ini
             ->when($request->search, fn($q, $s) => $q->where('name', 'like', "%$s%")
                 ->orWhere('nik', 'like', "%$s%")
                 ->orWhere('phone', 'like', "%$s%"))
@@ -49,9 +49,15 @@ class CustomerController extends Controller
         ]);
 
         $data = $request->only([
-            'nik', 'name', 'phone', 'address',
-            'customer_type', 'gender', 'is_member',
-            'discount', 'document_type',
+            'nik',
+            'name',
+            'phone',
+            'address',
+            'customer_type',
+            'gender',
+            'is_member',
+            'discount',
+            'document_type',
         ]);
 
         $data['status'] = $request->has('status') ? 'aktif' : 'nonaktif';
@@ -75,7 +81,7 @@ class CustomerController extends Controller
     // ── SHOW ──────────────────────────────────────────
     public function show(Customer $customer)
     {
-        $customer->loadCount('rentals');
+        // $customer->loadCount('rentals');  ← hapus baris ini
         return view('admin.customers.show', compact('customer'));
     }
 
@@ -89,7 +95,7 @@ class CustomerController extends Controller
     public function update(Request $request, Customer $customer)
     {
         $request->validate([
-            'nik'           => 'required|string|max:20|unique:customers,nik,'.$customer->id,
+            'nik'           => 'required|string|max:20|unique:customers,nik,' . $customer->id,
             'name'          => 'required|string|max:100',
             'phone'         => 'required|string|max:20',
             'address'       => 'required|string',
@@ -104,9 +110,15 @@ class CustomerController extends Controller
         ]);
 
         $data = $request->only([
-            'nik', 'name', 'phone', 'address',
-            'customer_type', 'gender', 'is_member',
-            'discount', 'document_type',
+            'nik',
+            'name',
+            'phone',
+            'address',
+            'customer_type',
+            'gender',
+            'is_member',
+            'discount',
+            'document_type',
         ]);
 
         $data['status'] = $request->has('status') ? 'aktif' : 'nonaktif';

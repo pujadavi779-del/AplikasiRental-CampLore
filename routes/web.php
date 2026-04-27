@@ -10,12 +10,16 @@ use App\Http\Controllers\CameraController;
 use App\Http\Controllers\LandingController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\DeliveryController;
+use App\Http\Controllers\PengembalianController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\Admin\CustomerController;
 use App\Http\Controllers\ShippingAddressController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\ChangePasswordController;
+use App\Http\Controllers\Admin\PemesananController;
+use App\Http\Controllers\Admin\ProductController;
+use App\Http\Controllers\Admin\CreateProductController;
 // Models
 use App\Models\Product;
 
@@ -101,7 +105,6 @@ Route::middleware('auth')->group(function () {
     })->name('checkout');
 
 
-
     Route::get('/pembayaran', function () {
         $payments = collect();
         return view('admin.pembayaran', compact('payments'));
@@ -112,7 +115,7 @@ Route::middleware('auth')->group(function () {
         ->name('shipping-address.update');
 });
 
-Route::post('/address/save', [\App\Http\Controllers\ShippingAddressController::class, 'store'])
+Route::post('/address/save', [ShippingAddressController::class, 'store'])
     ->middleware('auth')
     ->name('address.save');
 
@@ -141,39 +144,46 @@ Route::prefix('admin')->middleware('admin.auth')->name('admin.')->group(function
     })->name('pembayaran');
 
     // Pengiriman
-    Route::get('/pengiriman', [DeliveryController::class, 'index'])
-        ->name('pengiriman');
+    Route::get('/pengiriman', [PemesananController::class, 'pengiriman'])->name('pengiriman');
+    Route::patch('/pengiriman/{id}/tiba', [PemesananController::class, 'tandaiSudahTiba'])->name('pengiriman.tiba');
 
     // Pengembalian
     Route::get('/pengembalian', function () {
         return view('pages.admin.pengembalian');
     })->name('pengembalian');
 
+    Route::get('/pengembalian', [PengembalianController::class, 'index'])
+        ->name('pengembalian');
+
     // Products
     Route::get('/products', function (Request $request) {
-
         $query = Product::query();
+        if ($request->category) $query->where('category', $request->category);
 
-        if ($request->category) {
-            $query->where('category', $request->category);
-        }
-
-        if ($request->search) {
-            $query->where('name', 'like', '%' . $request->search . '%');
-        }
+        if ($request->search) $query->where('name', 'like', '%' . $request->search . '%');
 
         $products = $query->paginate(10)->withQueryString();
 
         return view('pages.admin.products', compact('products'));
     })->name('products');
 
+    //tambah produk
+    Route::get('/products/create', function () {
+        return view('admin.products.create');
+    })->name('products.create');
+
+    Route::post('/products', [CreateProductController::class, 'store'])->name('products.store');
+
+    Route::get('/products/{id}/edit', [ProductController::class, 'edit'])->name('products.edit');
+    Route::put('/products/{id}',      [ProductController::class, 'update'])->name('products.update');
+    Route::delete('/products/{id}',   [ProductController::class, 'destroy'])->name('products.destroy');
+
+
     // Orders
     Route::delete('/orders/{id}', [OrderController::class, 'destroy'])
         ->name('orders.destroy');
 
     // Riwayat
-
-
     Route::get('/riwayat/kamera', function () {
         return view('pages.admin.riwayat.kamera');
     })->name('riwayat.kamera');
@@ -202,7 +212,7 @@ Route::get('/profil', function () {
 // ... (di dalam atau di luar middleware auth, pastikan bisa diakses pelanggan)
 
 Route::middleware('auth')->group(function () {
-    
+
     // Menampilkan halaman form ganti password
     Route::get('/change-password', [ChangePasswordController::class, 'index'])
         ->name('change-password');
@@ -210,7 +220,6 @@ Route::middleware('auth')->group(function () {
     // Menangani proses update password (ini yang tadi error karena tidak ada)
     Route::put('/change-password/update', [ChangePasswordController::class, 'update'])
         ->name('pages.pelanggan.change-password.update');
-        
 });
 
 // Route Pengaturan / Settings
@@ -223,7 +232,6 @@ Route::middleware('auth')->group(function () {
     // UPDATE PROFILE
     Route::put('/settings', [ProfileController::class, 'update_profile'])
         ->name('profil.update_profile');
-
 });
 
 
@@ -237,3 +245,15 @@ Route::get('/alamat_pengiriman', function () {
 Route::get('/admin/login', [AdminAuthController::class, 'showLogin'])->name('admin.login');
 Route::post('/admin/login', [AdminAuthController::class, 'login'])->name('admin.login.post');
 Route::post('/admin/logout', [AdminAuthController::class, 'logout'])->name('admin.logout');
+
+/*
+|--------------------------------------------------------------------------
+| Edit Pemesanan Admin
+|--------------------------------------------------------------------------
+*/
+Route::prefix('admin')->group(function () {
+    Route::get('/pemesanan', [PemesananController::class, 'index'])->name('admin.orders.index');
+    Route::get('/pemesanan/{id}/edit', [PemesananController::class, 'edit'])->name('admin.orders.edit');
+    Route::put('/pemesanan/{id}', [PemesananController::class, 'update'])->name('admin.orders.update');
+    // Route::delete('/pemesanan/{id}', [PemesananController::class, 'destroy'])->name('admin.orders.destroy');
+});

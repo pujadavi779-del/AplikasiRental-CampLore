@@ -42,7 +42,7 @@ class ShippingAddressController extends Controller
         ]);
 
         $address = ShippingAddress::updateOrCreate(
-            ['user_id' => auth()->id()],
+            ['user_id' => Auth::id()],
             [
                 'full_address' => $request->full_address,
                 'city' => $request->city,
@@ -57,5 +57,5 @@ class ShippingAddressController extends Controller
             'success' => true,
             'address' => $address
         ]);
-    }F
+    }
 }

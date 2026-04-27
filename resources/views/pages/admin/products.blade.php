@@ -12,6 +12,12 @@
 </div>
 
 <div class="max-w-full">
+    @if(session('success'))
+    <div class="mb-4 p-4 bg-emerald-100 border border-emerald-200 text-[#22543D] rounded-xl text-xs font-bold">
+        {{ session('success') }}
+    </div>
+    @endif
+
     <div class="bg-white rounded-[28px] border border-[#d7e6de] shadow-sm overflow-hidden">
 
         <div class="p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#eef4f0]">
@@ -24,12 +30,12 @@
                     </span>
                 </div>
             </div>
-            <button class="bg-[#22543D] hover:bg-[#1B4332] text-white px-5 py-2.5 rounded-xl text-xs font-bold transition-all shadow-sm flex items-center gap-2">
+            <a href="{{ route('admin.products.create') }}" class="bg-[#22543D] hover:bg-[#1B4332] text-white px-5 py-2.5 rounded-xl text-xs font-bold transition-all shadow-sm flex items-center gap-2">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
                     <path d="M12 5v14M5 12h14" />
                 </svg>
-                New Product
-            </button>
+                Tambah Produk
+            </a>
         </div>
 
         {{-- TABLE CONTAINER --}}
@@ -91,7 +97,7 @@
                         <td class="px-6 py-4"><input type="checkbox" class="accent-[#22543D] rounded"></td>
                         <td class="px-4 py-4">
                             <div class="w-12 h-12 rounded-xl bg-gray-100 border border-[#d7e6de] overflow-hidden shadow-sm">
-                                <img src="{{ $product->image }}"
+                                <img src="{{ asset('storage/' . $product->image) }}"
                                     onerror="this.src='https://via.placeholder.com/100?text=No+Image'">
                             </div>
                         </td>
@@ -111,13 +117,15 @@
                         </td>
                         <td class="px-6 py-4 text-right">
                             <div class="flex justify-end gap-2">
-                                <button class="text-[#ED64A6] hover:bg-[#ED64A6]/10 px-3 py-1.5 rounded-lg transition-colors font-bold text-[11px] flex items-center gap-1 border border-transparent hover:border-[#ED64A6]/20">
+                                <a href="{{ route('admin.products.edit', $product->id) }}"
+                                    class="text-[#ED64A6] hover:bg-[#ED64A6]/10 px-3 py-1.5 rounded-lg transition-colors
+                                    font-bold text-[11px] flex items-center gap-1 border border-transparent hover:border-[#ED64A6]/20">
                                     <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
                                         <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
                                         <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
                                     </svg>
                                     Edit
-                                </button>
+                                </a>
                                 <button class="text-red-400 hover:bg-red-50 px-3 py-1.5 rounded-lg transition-colors font-bold text-[11px] flex items-center gap-1 border border-transparent hover:border-red-100">
                                     <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
                                         <path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />

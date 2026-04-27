@@ -53,36 +53,43 @@
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-[#eef4f0]">
+                    @forelse ($data_pengembalian as $item)
                     <tr class="hover:bg-gray-50 transition-colors">
-                        <td class="px-6 py-4 border-r border-[#eef4f0] whitespace-normal break-words">
-                            <div class="text-sm font-bold text-[#22543D]">Andi Pratama</div>
-                            <div class="text-[10px] text-gray-400 uppercase">INV-2026001</div>
+                        <td class="px-6 py-4 border-r border-[#eef4f0]">
+                            <div class="text-sm font-bold text-[#22543D]">{{ $item->user->name }}</div>
+                            <div class="text-[10px] text-gray-400 uppercase">INV-{{ $item->id }}</div>
                         </td>
                         <td class="px-4 py-4 text-center border-r border-[#eef4f0]">
-                            <span class="text-[11px] font-mono text-gray-600">0812-3456-7890</span>
+                            <span class="text-[11px] font-mono text-gray-600">{{ $item->user->no_hp ?? '-' }}</span>
                         </td>
-                        {{-- Class whitespace-normal dan break-words membuat teks turun ke bawah --}}
-                        <td class="px-4 py-4 border-r border-[#eef4f0] whitespace-normal break-words">
+                        <td class="px-4 py-4 border-r border-[#eef4f0]">
                             <div class="text-[11px] text-gray-600 leading-relaxed">
-                                Jl. Sungai Langkai No. 19, Sagulung, Kota Batam, Kepulauan Riau, ID 29439
+                                {{ $item->alamat }} {{-- Sesuaikan nama kolom alamat di database kamu --}}
                             </div>
                         </td>
-                        <td class="px-4 py-4 border-r border-[#eef4f0] whitespace-normal break-words">
-                            <div class="text-xs font-medium text-[#22543D]">Canon EOS R6 + Tripod Takara</div>
+                        <td class="px-4 py-4 border-r border-[#eef4f0]">
+                            <div class="text-xs font-medium text-[#22543D]">{{ $item->product->name }}</div>
                         </td>
                         <td class="px-4 py-4 text-center border-r border-[#eef4f0] text-xs text-gray-600 uppercase">
-                            18 Apr 2026
+                            {{ $item->tanggal_kembali ?? 'N/A' }}
                         </td>
                         <td class="px-4 py-4 text-center border-r border-[#eef4f0]">
                             <span class="text-xs font-bold text-red-500 tracking-tight">IDR 0.00</span>
                         </td>
                         <td class="px-6 py-4 text-center">
-                            <button onclick="openModal('Tandai Sudah Dikembalikan', 'Canon EOS R6')"
+                            <button onclick="openModal('{{ $item->user->name }}', '{{ $item->product->name }}')"
                                 class="inline-flex items-center justify-center w-full px-2 py-2 bg-[#f1f8f4] hover:bg-[#22543D] hover:text-white border border-[#d7e6de] text-[#22543D] rounded-lg text-[9px] font-black transition-all active:scale-95 shadow-sm uppercase">
                                 Tandai Kembali
                             </button>
                         </td>
                     </tr>
+                    @empty
+                    <tr>
+                        <td colspan="7" class="text-center py-10 text-gray-400 text-xs uppercase tracking-widest font-bold">
+                            Tidak ada barang yang sedang disewa
+                        </td>
+                    </tr>
+                    @endforelse
                 </tbody>
             </table>
         </div>
@@ -90,7 +97,7 @@
         {{-- Pagination / Footer --}}
         <div class="p-5 bg-[#fcfdfb] border-t border-[#eef4f0] flex items-center justify-between">
             <p class="text-[10px] font-bold text-[#22543D] uppercase tracking-widest">
-                Menampilkan {{ count($pengiriman ?? []) }} data pengiriman
+                Menampilkan {{ $data_pengembalian->count() }} data pengembalian
             </p>
             <div class="flex gap-1.5">
                 <button class="w-9 h-9 flex items-center justify-center border border-gray-100 rounded-xl text-gray-400 hover:bg-gray-50 transition">
