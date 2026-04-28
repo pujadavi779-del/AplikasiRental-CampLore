@@ -1,4 +1,4 @@
-@extends('components.navbar_LP')
+@extends('layouts.landingpage')
 
 @section('content')
 

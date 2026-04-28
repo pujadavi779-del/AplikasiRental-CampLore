@@ -1,4 +1,4 @@
-<footer class="py-8">
+<!-- <footer class="py-8">
     <div class="flex flex-col md:flex-row items-center justify-between gap-4">
 
         {{-- Logo & Brand --}}
@@ -21,5 +21,12 @@
             All Rights Reserved
         </p>
 
+    </div>
+</footer> -->
+
+<footer class="bg-[#1e3d2f] text-[#7aad8a] text-xs text-center py-5 mt-auto">
+    <div class="flex items-center justify-center gap-2">
+        <img src="{{ asset('images/logo.png') }}" alt="Camplore" class="h-4 w-auto opacity-60 brightness-200">
+        <span>© 2026 Camplore Adventure Ltd. Batam, Indonesia. All rights reserved.</span>
     </div>
 </footer>

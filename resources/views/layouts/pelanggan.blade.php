@@ -157,10 +157,11 @@
                 @yield('content')
             </div>
 
-            {{-- FOOTER (Berada di bawah konten utama) --}}
+            {{-- FOOTER (Berada di bawah konten utama) 
             <div class="mt-20 px-8 w-full border-t border-gray-100 bg-white/50 backdrop-blur-sm lg:ml-0">
                  @include('components.footer')
             </div>
+            --}}
 
         </main>
     </div>

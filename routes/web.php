@@ -57,7 +57,7 @@ Route::post('/login', [LoginController::class, 'login']);
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
 Route::get('/', [LandingController::class, 'index'])->name('pages.landing.landing');
-Route::get('/camping', [CampingController::class, 'index'])->name('pages.camping.landing');
+// Route::get('/camping', [CampingController::class, 'index'])->name('pages.camping.landing');
 
 Route::get('/landing/about', function () {
     return view('pages.landing.about');
