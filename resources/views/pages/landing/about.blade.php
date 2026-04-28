@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>About Us - Camplore</title>
+    <title>Tentang Kami - Camplore</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
@@ -78,9 +78,9 @@
         <div class="absolute bottom-0 left-0 w-72 h-72 bg-white/5 rounded-full blur-3xl"></div>
 
         <div class="relative z-10 text-center px-4 max-w-3xl" data-aos="zoom-in" data-aos-duration="900">
-            <span class="inline-block bg-[#ED64A6] text-white px-4 py-1 rounded-full text-xs font-bold mb-4 tracking-widest uppercase">Our Story</span>
+            <span class="inline-block bg-[#ED64A6] text-white px-4 py-1 rounded-full text-xs font-bold mb-4 tracking-widest uppercase">Kisah Kami</span>
             <h1 class="text-5xl md:text-6xl font-extrabold text-white mb-5 leading-tight tracking-tighter">
-                Rent with Ease —<br><span class="text-[#ED64A6]">Camera & Camping Gear in One Place.</span>
+                Sewa dengan Mudah —<br><span class="text-[#ED64A6]">Kamera & Camping di Satu Tempat.</span>
             </h1>
             <p class="text-emerald-100 text-lg leading-relaxed max-w-xl mx-auto">
                 Dari tenda pegunungan hingga kamera mirrorless profesional — Camplore hadir untuk memastikan setiap momen petualanganmu terabadikan dengan sempurna.
@@ -245,7 +245,7 @@
         <div class="max-w-7xl mx-auto px-4 relative z-10">
             <div class="text-center mb-16" data-aos="fade-up">
                 <span class="text-[#ED64A6] font-bold tracking-widest uppercase text-sm">Perjalanan Kami</span>
-                <h2 class="text-4xl md:text-5xl font-extrabold text-white mt-2 tracking-tighter">Our Journey</h2>
+                <h2 class="text-4xl md:text-5xl font-extrabold text-white mt-2 tracking-tighter">Perjalanan Kita</h2>
                 <p class="text-emerald-200 mt-4 max-w-xl mx-auto">Temukan bagaimana kami mengubah semangat petualangan menjadi layanan nyata bagi para explorer.</p>
             </div>
 
@@ -338,15 +338,15 @@
                     data-aos="fade-up" data-aos-delay="0">
                     <div class="w-28 h-28 mx-auto mb-5 rounded-full border-4 border-[#22543D] overflow-hidden shadow-lg
                             transition duration-300 group-hover:border-[#ED64A6] group-hover:shadow-[0_0_0_4px_rgba(237,100,166,0.2)]">
-                        <img src="{{ asset('images/lulu.jpg') }}" class="w-full h-full object-cover" alt="Lulu Khaira Yudita">
+                        <img src="{{ asset('images/lulu.png') }}" class="w-full h-full object-cover" alt="Lulu Khaira Yudita">
                     </div>
                     <h3 class="font-extrabold text-gray-900 text-xl mb-1">Lulu Khaira Yudita</h3>
-                    <p class="text-[#ED64A6] font-semibold text-sm mb-3">Designer & Frontend Dev</p>
+                    <p class="text-[#ED64A6] font-semibold text-sm mb-3">FullStack</p>
                     <div class="w-10 h-1 bg-[#ED64A6] rounded-full mx-auto mb-4"></div>
-                    <p class="text-gray-500 text-sm italic leading-relaxed">"ex ketua"</p>
+                    <p class="text-gray-500 text-sm italic leading-relaxed">"3312501002"</p>
                 </div>
 
-                <!-- Team 2 (featured/elevated) -->
+                <!-- Team 2 -->
                 <div class="group bg-[#22543D] rounded-3xl p-8 border border-[#22543D] shadow-xl text-center -mt-4
                         transition duration-[350ms] ease-[cubic-bezier(.34,1.56,.64,1)]
                         hover:-translate-y-2.5 hover:scale-[1.02] hover:shadow-[0_24px_48px_rgba(34,84,61,0.15)]"
@@ -356,9 +356,9 @@
                         <img src="{{ asset('images/rizka.jpg') }}" class="w-full h-full object-cover" alt="Rizka Nur Azizah">
                     </div>
                     <h3 class="font-extrabold text-white text-xl mb-1">Rizka Nur Azizah</h3>
-                    <p class="text-[#ED64A6] font-semibold text-sm mb-3">Project Lead & UI/UX</p>
+                    <p class="text-[#ED64A6] font-semibold text-sm mb-3">Leader Team</p>
                     <div class="w-10 h-1 bg-[#ED64A6] rounded-full mx-auto mb-4"></div>
-                    <p class="text-emerald-200 text-sm italic leading-relaxed">"ketua"</p>
+                    <p class="text-emerald-200 text-sm italic leading-relaxed">"3312501004"</p>
                 </div>
 
                 <!-- Team 3 -->
@@ -368,12 +368,12 @@
                     data-aos="fade-up" data-aos-delay="300">
                     <div class="w-28 h-28 mx-auto mb-5 rounded-full border-4 border-[#22543D] overflow-hidden shadow-lg
                             transition duration-300 group-hover:border-[#ED64A6] group-hover:shadow-[0_0_0_4px_rgba(237,100,166,0.2)]">
-                        <img src="{{ asset('images/puja.jpg') }}" class="w-full h-full object-cover" alt="Puja Davi">
+                        <img src="{{ asset('images/puja.png') }}" class="w-full h-full object-cover" alt="Puja Davi">
                     </div>
                     <h3 class="font-extrabold text-gray-900 text-xl mb-1">Puja Davi</h3>
-                    <p class="text-[#ED64A6] font-semibold text-sm mb-3">Backend Engineer</p>
+                    <p class="text-[#ED64A6] font-semibold text-sm mb-3">FullStack</p>
                     <div class="w-10 h-1 bg-[#ED64A6] rounded-full mx-auto mb-4"></div>
-                    <p class="text-gray-500 text-sm italic leading-relaxed">"bobok manis"</p>
+                    <p class="text-gray-500 text-sm italic leading-relaxed">"3312501020"</p>
                 </div>
             </div>
         </div>
@@ -387,9 +387,9 @@
                 <div class="absolute -bottom-10 -left-10 w-40 h-40 bg-white/5 rounded-full blur-2xl"></div>
                 <span class="relative z-10 inline-block bg-[#ED64A6] text-white px-4 py-1 rounded-full text-xs font-bold mb-4 tracking-widest uppercase">Mulai Sekarang</span>
                 <h2 class="relative z-10 text-3xl md:text-4xl font-extrabold text-white mb-4 tracking-tighter">Siap Memulai Petualanganmu?</h2>
-                <p class="relative z-10 text-emerald-100 mb-8 leading-relaxed max-w-lg mx-auto">Jelajahi koleksi kamera dan alat camping kami. Booking mudah, Progress cepat, momen tak terlupakan.</p>
+                <p class="relative z-10 text-emerald-100 mb-8 leading-relaxed max-w-lg mx-auto">Jelajahi koleksi kamera dan alat camping kami. Pemesanan mudah, Progress cepat, momen tak terlupakan.</p>
                 <div class="relative z-10 flex flex-col sm:flex-row gap-4 justify-center">
-                    <a href="#" class="bg-[#ED64A6] text-white px-10 py-4 rounded-full font-bold hover:bg-white hover:text-[#22543D] transition shadow-lg hover:scale-105 transform">Browse Catalog</a>
+                    <a href="#" class="bg-[#ED64A6] text-white px-10 py-4 rounded-full font-bold hover:bg-white hover:text-[#22543D] transition shadow-lg hover:scale-105 transform">Telusuri Katalog</a>
                     <a href="#" class="bg-white/10 border border-white/20 text-white px-10 py-4 rounded-full font-semibold hover:bg-white/20 transition">Hubungi Kami</a>
                 </div>
             </div>
@@ -409,35 +409,25 @@
                         </div>
                         <span class="text-2xl font-extrabold">Camp<span class="text-[#ED64A6]">lore</span></span>
                     </a>
-                    <p class="text-emerald-200 text-sm leading-relaxed max-w-sm">Capture Nature, Experience Freedom. Platform penyewaan Outdoor Gear paling terintegrasi di Indonesia.</p>
+                    <p class="text-emerald-200 text-sm leading-relaxed max-w-sm">Setiap Momen Layak Diabadikan, Setiap Perjalanan Layak Dinikmati. Solusi sewa kamera dan perlengkapan camping dalam satu platform.</p>
                 </div>
                 <div>
-                    <h4 class="font-bold mb-5 text-white">Gear</h4>
+                    <h4 class="font-bold mb-5 text-white">Perlengkapan</h4>
                     <ul class="space-y-3 text-emerald-200 text-sm">
-                        <li><a href="#" class="hover:text-[#ED64A6] transition">Cameras</a></li>
-                        <li><a href="#" class="hover:text-[#ED64A6] transition">Tents</a></li>
+                        <li><a href="#" class="hover:text-[#ED64A6] transition">Kamera</a></li>
+                        <li><a href="#" class="hover:text-[#ED64A6] transition">Camping</a></li>
                     </ul>
                 </div>
-                <div>
-                    <h4 class="font-bold mb-5 text-white">Company</h4>
-                    <ul class="space-y-3 text-emerald-200 text-sm">
-                        <li><a href="#" class="hover:text-[#ED64A6] transition">About Us</a></li>
-                        <li><a href="#" class="hover:text-[#ED64A6] transition">Careers</a></li>
-                        <li><a href="#" class="hover:text-[#ED64A6] transition">Policy</a></li>
-                        <li><a href="#" class="hover:text-[#ED64A6] transition">Contact</a></li>
-                    </ul>
-                </div>
+                
                 <div>
                     <h4 class="font-bold mb-5 text-white">Support</h4>
                     <ul class="space-y-3 text-emerald-200 text-sm">
-                        <li><a href="#" class="hover:text-[#ED64A6] transition">WhatsApp</a></li>
-                        <li><a href="#" class="hover:text-[#ED64A6] transition">FAQ</a></li>
                         <li><a href="#" class="hover:text-[#ED64A6] transition">Store Location</a></li>
                     </ul>
                 </div>
             </div>
             <div class="border-t border-white/10 pt-8 text-center text-xs text-emerald-300">
-                <p>&copy; 2026 Camplore Adventure Ltd. Batam, Indonesia. All rights reserved.</p>
+                <p>&copy; 2026 Camplore Adventure Ltd. Batam, Indonesia. Seluruh hak dilindungi undang-undang.</p>
             </div>
         </div>
     </footer>

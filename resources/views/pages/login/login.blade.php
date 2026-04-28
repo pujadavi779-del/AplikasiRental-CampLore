@@ -4,188 +4,61 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CAMPLORE – Masuk</title>
+    <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
-    <style>
-        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-
-        :root {
-            --green:       #22543D;
-            --green-mid:   #2d6b50;
-            --green-light: #38856a;
-            --pink:        #ED64A6;
-            --pink-dark:   #d4528f;
-            --gray-bg:     #f7f7f5;
-            --border:      #e2e2de;
-            --text:        #1a1a18;
-            --text-sub:    #999990;
-        }
-
-        html, body {
-            height: 100%;
-            font-family: 'Jost', sans-serif;
-            background: #fff;
-            color: var(--text);
-        }
-
-        /* NAVBAR */
-        .navbar {
-            position: fixed; top: 0; left: 0; right: 0;
-            height: 58px;
-            display: flex; align-items: center; justify-content: center;
-            border-bottom: 1px solid var(--border);
-            background: #fff; z-index: 100;
-        }
-
-        .nav-logo {
-            font-family: 'Cormorant Garamond', serif;
-            font-size: 21px; font-weight: 700;
-            letter-spacing: 6px; text-transform: uppercase;
-            color: var(--green); text-decoration: none;
-        }
-
-        .nav-logo img {
-            height: 200px;
-            width: auto;
-            display: block;
-        }
-
-        /* PAGE */
-        .page {
-            min-height: 100vh;
-            display: flex; align-items: center; justify-content: center;
-            padding: 90px 20px 60px;
-        }
-
-        .card { width: 100%; max-width: 380px; }
-
-        .card-title {
-            font-family: 'Cormorant Garamond', serif;
-            font-size: 26px; font-weight: 600;
-            letter-spacing: 3px; text-transform: uppercase;
-            color: var(--green); text-align: center;
-            margin-bottom: 30px;
-        }
-
-        /* INPUTS */
-        .field { margin-bottom: 12px; }
-
-        .field input {
-            width: 100%; padding: 13px 16px;
-            border: 1px solid var(--border); border-radius: 3px;
-            font-family: 'Jost', sans-serif;
-            font-size: 14px; font-weight: 300;
-            color: var(--text); background: var(--gray-bg);
-            outline: none; transition: border-color 0.2s, background 0.2s;
-            letter-spacing: 0.3px;
-        }
-
-        .field input::placeholder { color: #bebebA; }
-
-        .field input:focus {
-            border-color: var(--green-light); background: #fff;
-        }
-
-        .pw-wrap { position: relative; }
-        .pw-wrap input { padding-right: 42px; }
-
-        .pw-btn {
-            position: absolute; right: 12px; top: 50%;
-            transform: translateY(-50%);
-            background: none; border: none; cursor: pointer;
-            color: #ccc; display: flex; padding: 0;
-            transition: color 0.2s;
-        }
-        .pw-btn:hover { color: var(--green-mid); }
-
-        /* SUBMIT */
-        .btn-login {
-            width: 100%; padding: 14px; margin-top: 6px;
-            background: var(--green); color: #fff;
-            border: none; border-radius: 3px;
-            font-family: 'Jost', sans-serif;
-            font-size: 12px; font-weight: 500;
-            letter-spacing: 3px; text-transform: uppercase;
-            cursor: pointer; transition: background 0.2s;
-        }
-        .btn-login:hover { background: var(--green-mid); }
-
-        /* FORGOT */
-        .forgot-row { text-align: center; margin-top: 16px; }
-        .forgot-row a {
-            font-size: 12px; font-weight: 300;
-            color: var(--text-sub); text-decoration: underline;
-            text-underline-offset: 3px; transition: color 0.2s;
-        }
-        .forgot-row a:hover { color: var(--green); }
-
-        /* DIVIDER */
-        .divider {
-            display: flex; align-items: center; gap: 14px;
-            margin: 26px 0;
-        }
-        .divider-line { flex: 1; height: 1px; background: var(--border); }
-        .divider span { font-size: 11px; color: #d0d0cc; letter-spacing: 1.5px; text-transform: uppercase; }
-
-        /* REGISTER */
-        .register-note {
-            text-align: center; font-size: 12px;
-            font-weight: 300; color: var(--text-sub);
-            margin-bottom: 10px; letter-spacing: 0.2px;
-        }
-
-        .btn-register {
-            display: block; width: 100%; padding: 13px;
-            background: transparent;
-            border: 1.5px solid var(--pink);
-            border-radius: 3px;
-            font-family: 'Jost', sans-serif;
-            font-size: 12px; font-weight: 500;
-            letter-spacing: 3px; text-transform: uppercase;
-            color: var(--pink); text-align: center;
-            text-decoration: none;
-            transition: background 0.2s, color 0.2s;
-        }
-        .btn-register:hover { background: var(--pink); color: #fff; }
-
-        /* FOOTER BAR */
-        .footer-bar {
-            position: fixed; bottom: 0; left: 0; right: 0;
-            height: 3px;
-            background: linear-gradient(90deg, var(--green) 65%, var(--pink) 100%);
-        }
-    </style>
 </head>
-<body>
+<body class="font-['Jost',sans-serif] bg-white text-[#1a1a18] h-full">
 
-<nav class="navbar">
-    <a href="/" class="nav-logo">
-        <img src="{{ asset('images/Black_Summer_Camp_Adventure_Logo-removebg-preview.png') }}" alt="Camplore Logo">
+{{-- NAVBAR --}}
+<nav class="fixed top-0 left-0 right-0 h-[58px] flex items-center justify-center border-b border-[#e2e2de] bg-white z-[100]">
+    <a href="/">
+        <img src="{{ asset('images/Black_Summer_Camp_Adventure_Logo-removebg-preview.png') }}" alt="Camplore Logo" class="h-[200px] w-auto block">
     </a>
 </nav>
 
-<div class="page">
-    <div class="card">
+{{-- PAGE --}}
+<div class="min-h-screen flex items-center justify-center px-5 pt-[90px] pb-[60px]">
+    <div class="w-full max-w-[380px]">
 
-        <h1 class="card-title">Masuk</h1>
+        <h1 class="font-['Cormorant_Garamond',serif] text-[26px] font-semibold tracking-[3px] uppercase text-[#22543D] text-center mb-8">Masuk</h1>
+
+        {{-- Success alert --}}
+        @if(session('success'))
+            <div class="px-3.5 py-2.5 rounded text-xs bg-[#f0fff4] border border-[#c6f6d5] text-[#276749] mb-4">
+                {{ session('success') }}
+            </div>
+        @endif
+
+        {{-- Error alert --}}
+        @if($errors->any())
+            <div class="px-3.5 py-2.5 rounded text-xs bg-[#fff5f5] border border-[#fed7d7] text-[#c53030] mb-4">
+                {{ $errors->first() }}
+            </div>
+        @endif
 
         <form action="/login" method="POST">
             @csrf
 
-            <div class="field">
+            {{-- Username --}}
+            <div class="mb-3">
                 <input type="text" name="username" id="username"
                     placeholder="Username"
                     value="{{ old('username') }}"
-                    autocomplete="username">
+                    autocomplete="username"
+                    class="w-full px-4 py-3 border border-[#e2e2de] rounded-[3px] text-sm font-light text-[#1a1a18] bg-[#f7f7f5] outline-none transition focus:border-[#38856a] focus:bg-white placeholder-[#bebeba] tracking-[0.3px]">
             </div>
 
-            <div class="field">
-                <div class="pw-wrap">
+            {{-- Password --}}
+            <div class="mb-3">
+                <div class="relative">
                     <input type="password" name="password" id="password"
                         placeholder="Kata sandi"
-                        autocomplete="current-password">
-                    <button type="button" class="pw-btn" onclick="togglePw('password', this)">
+                        autocomplete="current-password"
+                        class="w-full px-4 py-3 pr-10 border border-[#e2e2de] rounded-[3px] text-sm font-light text-[#1a1a18] bg-[#f7f7f5] outline-none transition focus:border-[#38856a] focus:bg-white placeholder-[#bebeba]">
+                    <button type="button" onclick="togglePw('password', this)"
+                        class="absolute right-3 top-1/2 -translate-y-1/2 bg-transparent border-none cursor-pointer text-[#ccc] hover:text-[#2d6b50] transition p-0">
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
                             <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
                             <circle cx="12" cy="12" r="3"/>
@@ -194,26 +67,37 @@
                 </div>
             </div>
 
-            <button type="submit" class="btn-login">Masuk</button>
+            <button type="submit"
+                class="w-full py-3.5 mt-1.5 bg-[#22543D] text-white border-none rounded-[3px] text-xs font-medium tracking-[3px] uppercase cursor-pointer hover:bg-[#2d6b50] transition">
+                Masuk
+            </button>
         </form>
 
-        <div class="forgot-row">
-            <a href="#">Lupa kata sandi?</a>
+        {{-- Lupa password --}}
+        <div class="text-center mt-4">
+            <a href="#" class="text-xs font-light text-[#999990] underline underline-offset-[3px] hover:text-[#22543D] transition">
+                Lupa kata sandi?
+            </a>
         </div>
 
-        <div class="divider">
-            <div class="divider-line"></div>
-            <span>atau</span>
-            <div class="divider-line"></div>
+        {{-- Divider --}}
+        <div class="flex items-center gap-3.5 my-6">
+            <div class="flex-1 h-px bg-[#e2e2de]"></div>
+            <span class="text-[11px] text-[#d0d0cc] tracking-[1.5px] uppercase">atau</span>
+            <div class="flex-1 h-px bg-[#e2e2de]"></div>
         </div>
 
-        <p class="register-note">Belum punya akun?</p>
-        <a href="/registrasi" class="btn-register">Daftar Sekarang</a>
+        <p class="text-center text-xs font-light text-[#999990] mb-2.5 tracking-[0.2px]">Belum punya akun?</p>
+        <a href="/registrasi"
+            class="block w-full py-3 bg-transparent border-[1.5px] border-[#ED64A6] rounded-[3px] text-xs font-medium tracking-[3px] uppercase text-[#ED64A6] text-center no-underline hover:bg-[#ED64A6] hover:text-white transition">
+            Daftar Sekarang
+        </a>
 
     </div>
 </div>
 
-<div class="footer-bar"></div>
+{{-- Footer bar --}}
+<div class="fixed bottom-0 left-0 right-0 h-[3px] bg-gradient-to-r from-[#22543D] from-[65%] to-[#ED64A6]"></div>
 
 <script>
 function togglePw(id, btn) {
@@ -225,18 +109,6 @@ function togglePw(id, btn) {
         : `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>`;
 }
 </script>
-
-@if(session('success'))
-    <div style="background:#e6fffa; color:#065f46; padding:10px; border-radius:5px; margin-bottom:10px;">
-        {{ session('success') }}
-    </div>
-@endif
-
-@if($errors->any())
-    <div style="color:red; margin-bottom:10px;">
-        {{ $errors->first() }}
-    </div>
-@endif
 
 </body>
 </html>

@@ -16,7 +16,7 @@
 
             <!-- Menu Tengah (Desktop) -->
             <div class="hidden md:flex space-x-8 font-bold text-xs uppercase tracking-widest text-[#1A392D]">
-                <a href="{{ route('pages.landing.about') }}" class="hover:text-[#FF6B95] transition">About</a>
+                <a href="{{ route('pages.landing.about') }}" class="hover:text-[#FF6B95] transition">Tentang Kami</a>
                 <div class="relative group">
 
                     <!-- tombol -->
@@ -44,7 +44,7 @@
                                         <img src="https://images.unsplash.com/photo-1516035069371-29a1b244cc32"
                                             class="w-full h-32 object-cover rounded-xl mb-3
                                    group-hover:scale-105 transition">
-                                        <p class="text-sm font-semibold">Camera</p>
+                                        <p class="text-sm font-semibold">Kamera</p>
                                     </a>
 
                                     <a href="{{ route('camping.LP') }}" class="group">
@@ -85,7 +85,7 @@
                     <!-- Tombol Login -->
                     <a href="{{ route('login') }}"
                         class="text-[#1A392D] bg-gray-200 border border-[#1A392D] hover:bg-[#1A392D] hover:text-white px-4 py-2 rounded inline-block text-sm font-bold">
-                        Login
+                        Masuk
                     </a>
                     @endguest
 
@@ -109,7 +109,7 @@
                         <!-- PROFILE -->
                         <a href="{{ route('dashboard_pelanggan') }}"
                             class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
-                            Profile
+                            Profil
                         </a>
 
                         <!-- LOGOUT -->
@@ -117,7 +117,7 @@
                             @csrf
                             <button type="submit"
                                 class="w-full text-left px-4 py-2 text-sm text-red-500 hover:bg-red-50">
-                                Logout
+                                Keluar
                             </button>
                         </form>
                     </div>

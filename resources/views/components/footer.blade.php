@@ -27,6 +27,6 @@
 <footer class="bg-[#1e3d2f] text-[#7aad8a] text-xs text-center py-5 mt-auto">
     <div class="flex items-center justify-center gap-2">
         <img src="{{ asset('images/logo.png') }}" alt="Camplore" class="h-4 w-auto opacity-60 brightness-200">
-        <span>© 2026 Camplore Adventure Ltd. Batam, Indonesia. All rights reserved.</span>
+        <span>© 2026 Camplore Adventure Ltd. Batam, Indonesia. Seluruh hak dilindungi undang-undang.</span>
     </div>
 </footer>

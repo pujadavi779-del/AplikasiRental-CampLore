@@ -95,7 +95,7 @@
                                     <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4m4-5l5-5 5 5m-5-5v12" />
                                 </svg>
                             </div>
-                            <p class="text-sm font-bold text-[#22543D]">Klik untuk Upload</p>
+                            <p class="text-sm font-bold text-[#22543D]">Klik untuk Mengunggah</p>
                             <p class="text-[10px] text-[#7c8b84] mt-1 uppercase tracking-wider">PNG, JPG, JPEG (Max 2MB)</p>
                         </div>
 

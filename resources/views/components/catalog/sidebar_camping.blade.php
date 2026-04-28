@@ -32,7 +32,7 @@
     {{-- BRAND / TIPE --}}
     <div>
         <p class="text-xs font-bold tracking-[0.14em] uppercase text-gray-400 mb-3">
-            Brand / Tipe
+            Merek / Tipe
         </p>
 
         <div class="grid grid-cols-3 gap-3">

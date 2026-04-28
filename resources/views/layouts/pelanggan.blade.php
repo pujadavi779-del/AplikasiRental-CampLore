@@ -65,7 +65,7 @@
 
             {{-- Nav Links --}}
             <div class="hidden md:flex space-x-8 font-bold text-xs uppercase tracking-widest text-[#1A392D]">
-                <a href="{{ route('pages.landing.about') }}" class="hover:text-[#FF6B95] transition">About</a>
+                <a href="{{ route('pages.landing.about') }}" class="hover:text-[#FF6B95] transition">Tentang Kami</a>
                 <div class="relative group">
                     <a href="#" class="flex items-center gap-1 hover:text-[#FF6B95] transition">
                         Kategori
@@ -83,7 +83,7 @@
                                     <a href="{{ route('camera.LP') }}" class="group">
                                         <img src="https://images.unsplash.com/photo-1516035069371-29a1b244cc32"
                                             class="w-full h-32 object-cover rounded-xl mb-3 group-hover:scale-105 transition">
-                                        <p class="text-sm font-semibold uppercase tracking-widest">Camera</p>
+                                        <p class="text-sm font-semibold uppercase tracking-widest">Kamera</p>
                                     </a>
                                     <a href="{{ route('camping.LP') }}" class="group">
                                         <img src="https://images.unsplash.com/photo-1504280390367-361c6d9f38f4"
@@ -114,7 +114,7 @@
 
                 <div class="relative group">
                     @guest
-                    <a href="{{ route('login') }}" class="text-[#1A392D] border border-[#1A392D] px-4 py-2 rounded text-sm font-bold hover:bg-[#1A392D] hover:text-white transition">Login</a>
+                    <a href="{{ route('login') }}" class="text-[#1A392D] border border-[#1A392D] px-4 py-2 rounded text-sm font-bold hover:bg-[#1A392D] hover:text-white transition">Masuk</a>
                     @endguest
 
                     @auth
@@ -127,10 +127,10 @@
                             <p class="text-sm font-bold text-gray-800">{{ auth()->user()->name }}</p>
                             <p class="text-xs text-gray-400 truncate">{{ auth()->user()->email }}</p>
                         </div>
-                        <a href="{{ route('dashboard_pelanggan') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">Profile</a>
+                        <a href="{{ route('dashboard_pelanggan') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">Profil</a>
                         <form method="POST" action="{{ route('logout') }}">
                             @csrf
-                            <button type="submit" class="w-full text-left px-4 py-2 text-sm text-red-500 hover:bg-red-50">Logout</button>
+                            <button type="submit" class="w-full text-left px-4 py-2 text-sm text-red-500 hover:bg-red-50">Keluar</button>
                         </form>
                     </div>
                     @endauth

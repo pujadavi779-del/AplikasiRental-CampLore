@@ -90,7 +90,7 @@
             </div>
 
             <div class="p-5 rounded-2xl animate-fade-up-4" style="background:#fff5f5; border:1px solid #f5b5b5;">
-                <p class="text-[11px] font-bold tracking-widest uppercase mb-2 text-[#dc2626]">Rental Overdue</p>
+                <p class="text-[11px] font-bold tracking-widest uppercase mb-2 text-[#dc2626]">Rental Terlambat</p>
                 <p class="font-serif text-4xl text-[#991b1b]">6</p>
                 <div class="flex items-center gap-2 mt-3">
                     <span class="text-[10px] font-bold px-2 py-1 rounded-lg bg-red-50 text-red-700 border border-red-100 uppercase">Perlu Tindakan</span>

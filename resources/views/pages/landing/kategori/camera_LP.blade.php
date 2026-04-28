@@ -47,13 +47,13 @@
                         <div class="absolute top-3 left-3 flex gap-2 z-10">
                             @if($item->is_new ?? false)
                                 <span class="text-[9px] font-bold uppercase tracking-widest bg-black text-white px-2 py-1 rounded">
-                                    New
+                                    Baru
                                 </span>
                             @endif
                             {{-- Ganti logika Out of Stock menggunakan kolom stock --}}
                             @if($item->stock <= 0)
                                 <span class="text-[9px] font-semibold uppercase tracking-wide bg-red-500 text-white px-2 py-1 rounded">
-                                Out of Stock
+                                    Habis
                                 </span>
                                 @endif
                         </div>

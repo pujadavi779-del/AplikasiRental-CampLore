@@ -7,29 +7,10 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Checkout - Camplore</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap');
-
-        body {
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            background-color: #fff;
-        }
-
-        .text-camplore-pink {
-            color: #FF6B95;
-        }
-
-        .bg-camplore-pink {
-            background-color: #FF6B95;
-        }
-
-        .modal-active {
-            display: flex !important;
-        }
-    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">\
 </head>
 
-<body class="text-gray-800 pb-32">
+<body class="text-gray-800 pb-32 font-['Plus_Jakarta_Sans'] bg-white">
 
     @include('layouts.landingpage')
 
@@ -300,7 +281,7 @@
                 Kamu belum menambahkan nomor KTP. Lengkapi data diri dulu sebelum melanjutkan pesanan.
             </p>
             <div class="flex gap-3">
-                <button onclick="document.getElementById('ktpWarningModal').classList.remove('modal-active')"
+                <button onclick="document.getElementById('ktpWarningModal').classList.remove('!flex')"
                     class="flex-1 py-3 border border-gray-200 rounded-xl font-bold text-gray-400 text-sm">
                     Nanti Saja
                 </button>
@@ -339,11 +320,11 @@
             document.getElementById('input-name').value = document.getElementById('display-name').innerText;
             document.getElementById('input-phone').value = phone === '— Belum ada no. HP' ? '' : phone;
             document.getElementById('input-address').value = address === 'Masukkan alamat pengiriman kamu' ? '' : address;
-            document.getElementById('addressModal').classList.add('modal-active');
+            document.getElementById('addressModal').classList.add('!flex');
         }
 
         function closeAddressModal() {
-            document.getElementById('addressModal').classList.remove('modal-active');
+            document.getElementById('addressModal').classList.remove('!flex');
         }
 
         function saveAddress() {
@@ -364,7 +345,7 @@
 
         function handleCheckout() {
             if (!ktpSudahAda) {
-                document.getElementById('ktpWarningModal').classList.add('modal-active');
+                document.getElementById('ktpWarningModal').classList.add('!flex');
                 return;
             }
             window.location.href = '/success';

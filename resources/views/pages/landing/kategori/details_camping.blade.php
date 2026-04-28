@@ -8,7 +8,7 @@
 
     {{-- Breadcrumb --}}
     <nav class="flex items-center gap-2 py-5 text-xs text-gray-400">
-        <a href="/" class="hover:text-gray-900 transition-colors">HOME</a>
+        <a href="/" class="hover:text-gray-900 transition-colors">BERANDA</a>
         <span>/</span>
         <a href="{{ route('camping.LP') }}" class="hover:text-gray-900 transition-colors">Camping</a>
         <span>/</span>
@@ -66,7 +66,7 @@
 
             {{-- Badge --}}
             @if($item->is_new ?? false)
-            <span class="mb-3 self-start bg-gray-900 text-white text-xs font-bold tracking-widest uppercase px-3 py-1 rounded">New</span>
+            <span class="mb-3 self-start bg-gray-900 text-white text-xs font-bold tracking-widest uppercase px-3 py-1 rounded">Baru</span>
             @endif
 
             {{-- Name --}}
@@ -129,7 +129,7 @@
                     id="addToCartBtn"
                     class="flex-1 py-4 rounded-xl bg-gray-900 text-white text-xs font-black tracking-widest uppercase
                            hover:bg-gray-700 active:scale-95 transition-all duration-200">
-                    Add to Cart
+                    Tambahkan ke Keranjang
                 </button>
                 <button onclick="rentNow({{ $item->id }})"
                     class="flex-1 py-4 rounded-xl bg-[#ED64A6] text-white text-xs font-black tracking-widest uppercase

@@ -75,9 +75,6 @@
                             {{ $loop->iteration + (isset($customers->currentPage) ? ($customers->currentPage() - 1) * $customers->perPage() : 0) }}
                         </td>
 
-                        {{-- ISI TETAP --}}
-                        {{-- (lanjutan kamu ga usah diubah lagi, sudah benar) --}}
-
                     </tr>
                     @empty
                     <tr>

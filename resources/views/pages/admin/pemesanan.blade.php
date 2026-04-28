@@ -41,7 +41,7 @@
                     <tr>
                         <th class="px-6 py-3 w-10"><input type="checkbox" class="w-4 h-4 rounded border-gray-300 accent-[#22543D]"></th>
                         <th class="px-4 py-3">ID</th>
-                        <th class="px-4 py-3">User</th>
+                        <th class="px-4 py-3">Pengguna</th>
                         <th class="px-4 py-3">Produk</th>
                         <th class="px-4 py-3">Total Harga</th>
                         <th class="px-4 py-3">Status</th>

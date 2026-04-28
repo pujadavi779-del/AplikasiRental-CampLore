@@ -48,8 +48,8 @@
         <div class="absolute -bottom-16 -right-16 w-80 h-80 bg-white/10 rounded-full blur-3xl" data-aos="fade-up" data-aos-delay="600"></div>
 
         <div class="relative z-10 text-center px-4 max-w-4xl" data-aos="zoom-in" data-aos-duration="1000">
-            <span class=" text-white px-4 py-1 rounded-full text-xs font-bold mb-4 tracking-widest uppercase">The Ultimate Adventure Companion</span>
-            <h1 class="text-5xl md:text-7xl font-extrabold mb-6 leading-tight tracking-tighter">Capture <span class="text-[#ED64A6]">Nature</span>,<br> Experience Freedom.</h1>
+            <span class=" text-white px-4 py-1 rounded-full text-xs font-bold mb-4 tracking-widest uppercase">Lengkapi Petualanganmu dengan Kamera & Peralatan Camping Terbaik</span>
+            <h1 class="text-5xl md:text-7xl font-extrabold mb-6 leading-tight tracking-tighter">Abadikan<span class="text-[#ED64A6]">Keindahan Alam</span>,<br> Rasakan Kebebasan.</h1>
             <p class="text-lg md:text-xl text-emerald-100 mb-10 max-w-2xl mx-auto leading-relaxed">
                 Sewakan perlengkapan Camping premium dan Kamera profesional dalam satu tempat. Jelajahi dunia, abadikan momen terbaikmu tanpa beban.
             </p>
@@ -76,8 +76,8 @@
             </div>
 
             <div data-aos="fade-left" data-aos-duration="1200">
-                <span class="text-[#ED64A6] font-bold tracking-widest uppercase text-sm mb-2 block">All-in-One Rental</span>
-                <h2 class="text-4xl md:text-5xl font-extrabold text-[#22543D] mb-6 tracking-tighter leading-tight">Gears for <span class="italic text-[#ED64A6]">Creators</span> & Explorers.</h2>
+                <span class="text-[#ED64A6] font-bold tracking-widest uppercase text-sm mb-2 block">Sewa Serba Ada</span>
+                <h2 class="text-4xl md:text-5xl font-extrabold text-[#22543D] mb-6 tracking-tighter leading-tight">Perlengkapan untuk <span class="italic text-[#ED64A6]">Para Kreator</span> & Penjelajah.</h2>
                 <p class="text-gray-600 mb-10 leading-relaxed text-lg">Camplore hadir untuk memudahkan petualanganmu. Tidak perlu membeli alat mahal untuk sekali pakai. Kami menyediakan kamera mirrorless terbaru,
                     alat berkemah seperti tenda, sleeping bag, dan peralatan masak outdoor dengan kualitas terbaik.</p>
 
@@ -108,8 +108,8 @@
         <div class="max-w-7xl mx-auto px-4 relative">
 
             <div class="text-center mb-16 max-w-2xl mx-auto" data-aos="fade-up">
-                <span class="text-[#ED64A6] font-bold tracking-widest uppercase text-sm">Our Gear Library</span>
-                <h2 class="text-4xl md:text-5xl font-extrabold text-[#22543D] mt-2 tracking-tighter">Featured Adventures Kit</h2>
+                <span class="text-[#ED64A6] font-bold tracking-widest uppercase text-sm">Semua Peralatan Kami</span>
+                <h2 class="text-4xl md:text-5xl font-extrabold text-[#22543D] mt-2 tracking-tighter">Perlengkapan Petualangan Unggulan</h2>
                 <p class="text-gray-600 mt-5 leading-relaxed">Peralatan terpopuler yang siap menemani perjalananmu minggu ini.</p>
             </div>
 
@@ -130,7 +130,7 @@
                     </div>
                     <h3 class="font-bold text-lg text-gray-800 leading-tight">{{ $item['name'] }}</h3>
                     <p class="text-[#ED64A6] font-extrabold mt-1 mb-5 text-xl">{{ $item['price'] }}</p>
-                    <button class="w-full py-3 bg-[#22543D] text-white rounded-xl font-bold hover:bg-[#ED64A6] transition transform active:scale-95 shadow">Book Gear</button>
+                    <button class="w-full py-3 bg-[#22543D] text-white rounded-xl font-bold hover:bg-[#ED64A6] transition transform active:scale-95 shadow">Perlengkapan</button>
                 </div>
                 @endforeach
             </div>
@@ -138,14 +138,14 @@
     </section>
 
     <section id="faq" class="py-24 max-w-3xl mx-auto px-4 overflow-hidden">
-        <h2 class="text-4xl font-extrabold text-center text-[#22543D] mb-16 tracking-tighter" data-aos="fade-up">Got Questions?</h2>
+        <h2 class="text-4xl font-extrabold text-center text-[#22543D] mb-16 tracking-tighter" data-aos="fade-up">Pertanyaan Umum</h2>
         <div class="space-y-5">
 
             @php $faqs = [
-            ['q' => 'How does the rental process work?', 'a' => 'Pilih alat di website, isi form booking, unggah KTP. Alat bisa diambil di store kami atau dikirim ke lokasi Anda.'],
-            ['q' => 'Is a deposit required?', 'a' => 'Ya, kami membutuhkan deposit berupa uang jaminan atau menahan kartu identitas asli (SIM/Paspor) selama masa sewa untuk item premium.'],
-            ['q' => 'What if the gear gets damaged?', 'a' => 'Kami menyarankan penambahan asuransi sewa kecil di awal. Jika tidak berasuransi, penyewa bertanggung jawab penuh atas biaya perbaikan kerusakan alat.'],
-            ['q' => 'Do you deliver to camp sites?', 'a' => 'Tentu! Kami melayani pengiriman ke area basecamp gunung atau pantai populer di wilayah operasional kami.']
+            ['q' => 'Bagaimana proses penyewaan bekerja?', 'a' => 'Pilih alat di website, isi form booking, unggah KTP. Alat bisa diambil di store kami atau dikirim ke lokasi Anda.'],
+            ['q' => 'Apakah diperlukan deposit?', 'a' => 'Ya, kami membutuhkan deposit berupa uang jaminan atau menahan kartu identitas asli (SIM/Paspor) selama masa sewa untuk item premium.'],
+            ['q' => 'Apa yang terjadi jika peralatan rusak?', 'a' => 'Kami menyarankan penambahan asuransi sewa kecil di awal. Jika tidak berasuransi, penyewa bertanggung jawab penuh atas biaya perbaikan kerusakan alat.'],
+            ['q' => 'Apakah Anda mengirim ke lokasi basecamp?', 'a' => 'Tentu! Kami melayani pengiriman ke area basecamp gunung atau pantai populer di wilayah operasional kami.']
             ]; @endphp
 
             @foreach($faqs as $index => $faq)
@@ -174,7 +174,7 @@
                             class="h-10 w-auto object-contain transition-transform hover:scale-105">
                     </a>
                     <p class="text-emerald-200 text-sm leading-relaxed max-w-sm">
-                        Capture Nature, Experience Freedom. Platform penyewaan Outdoor Gear paling terintegrasi di Indonesia.
+                        Abadikan Keindahan Alam, Rasakan Kebebasan. Platform penyewaan Outdoor Gear paling terintegrasi di Indonesia.
                     </p>
                 </div>
 
@@ -197,7 +197,7 @@
             </div>
 
             <div class="border-t border-white/10 pt-10 text-center text-xs text-emerald-300 relative z-10">
-                <p>&copy; 2026 Camplore Adventure Ltd. Batam, Indonesia. All rights reserved.</p>
+                <p>&copy; 2026 Camplore Adventure Ltd. Batam, Indonesia. Seluruh hak dilindungi undang-undang.</p>
             </div>
         </div>
     </footer>

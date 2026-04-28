@@ -12,15 +12,15 @@
 
 <div class="flex items-center justify-between mb-6">
     <div>
-        <h2 class="text-xl font-extrabold text-gray-800">Daftar Customer</h2>
-        <p class="text-gray-400 text-sm mt-0.5">Kelola semua data customer yang terdaftar</p>
+        <h2 class="text-xl font-extrabold text-gray-800">Daftar Pelanggan</h2>
+        <p class="text-gray-400 text-sm mt-0.5">Kelola semua data pelanggan yang terdaftar</p>
     </div>
     <a href="{{ route('admin.customers.create') }}"
        class="flex items-center gap-2 bg-[#22543D] text-white px-5 py-2.5 rounded-xl font-bold text-sm hover:bg-[#ED64A6] transition shadow-sm">
         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
         </svg>
-        + Tambah Customer
+        + Tambah Pelanggan
     </a>
 </div>
 
@@ -93,7 +93,7 @@
                             </span>
                         @else
                             <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-red-100 text-red-600">
-                                <span class="w-1.5 h-1.5 rounded-full bg-red-500"></span> NONAKTIF
+                                <span class="w-1.5 h-1.5 rounded-full bg-red-500"></span> TIDAK AKTIF
                             </span>
                         @endif
                     </td>
@@ -128,7 +128,7 @@
                             <div class="w-16 h-16 bg-gray-50 rounded-2xl flex items-center justify-center mb-3">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
                             </div>
-                            <p class="text-gray-400 font-semibold">Belum ada data customer</p>
+                            <p class="text-gray-400 font-semibold">Belum ada data pelanggan</p>
                             <a href="{{ route('admin.customers.create') }}" class="mt-3 text-[#22543D] text-sm font-bold hover:underline">+ Tambah sekarang</a>
                         </div>
                     </td>

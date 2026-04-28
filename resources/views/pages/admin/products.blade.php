@@ -84,11 +84,11 @@
                 <thead>
                     <tr class="bg-[#fcfdfb] border-b border-[#f1f8f4]">
                         <th class="px-6 py-4 w-10"><input type="checkbox" class="accent-[#22543D] rounded"></th>
-                        <th class="px-4 py-4 text-[10px] font-black text-gray-400 uppercase tracking-widest">Image</th>
-                        <th class="px-4 py-4 text-[10px] font-black text-gray-400 uppercase tracking-widest">Product Name</th>
-                        <th class="px-4 py-4 text-[10px] font-black text-gray-400 uppercase tracking-widest text-center">Category</th>
-                        <th class="px-4 py-4 text-[10px] font-black text-gray-400 uppercase tracking-widest">Price/Day</th>
-                        <th class="px-6 py-4 text-[10px] font-black text-gray-400 uppercase tracking-widest text-right">Actions</th>
+                        <th class="px-4 py-4 text-[10px] font-black text-gray-400 uppercase tracking-widest">Gambar</th>
+                        <th class="px-4 py-4 text-[10px] font-black text-gray-400 uppercase tracking-widest">Nama Produk</th>
+                        <th class="px-4 py-4 text-[10px] font-black text-gray-400 uppercase tracking-widest text-center">Kategori</th>
+                        <th class="px-4 py-4 text-[10px] font-black text-gray-400 uppercase tracking-widest">Harga/Perhari</th>
+                        <th class="px-6 py-4 text-[10px] font-black text-gray-400 uppercase tracking-widest text-right">Tindakan</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-[#f1f8f4]">
@@ -130,7 +130,7 @@
                                     <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
                                         <path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
                                     </svg>
-                                    Delete
+                                    Hapus
                                 </button>
                             </div>
                         </td>

@@ -5,329 +5,258 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>CAMPLORE – Daftar</title>
+    <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
-    <style>
-        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-
-        :root {
-            --green:       #22543D;
-            --green-mid:   #2d6b50;
-            --green-light: #38856a;
-            --pink:        #ED64A6;
-            --gray-bg:     #f7f7f5;
-            --border:      #e2e2de;
-            --text:        #1a1a18;
-            --text-sub:    #999990;
-        }
-
-        html, body { font-family: 'Jost', sans-serif; background: #fff; color: var(--text); }
-
-        /* NAVBAR */
-        .navbar {
-            position: fixed; top: 0; left: 0; right: 0;
-            height: 58px;
-            display: flex; align-items: center; justify-content: center;
-            border-bottom: 1px solid var(--border);
-            background: #fff; z-index: 100;
-        }
-        .nav-logo img { height: 200px; width: auto; display: block; }
-
-        /* PAGE */
-        .page { min-height: 100vh; display: flex; align-items: flex-start; justify-content: center; padding: 90px 20px 60px; }
-        .card { width: 100%; max-width: 380px; padding-top: 20px; }
-
-        .card-title { font-family: 'Cormorant Garamond', serif; font-size: 26px; font-weight: 600; letter-spacing: 3px; text-transform: uppercase; color: var(--green); text-align: center; margin-bottom: 8px; }
-        .card-sub { text-align: center; font-size: 12px; font-weight: 300; color: var(--text-sub); letter-spacing: 0.3px; margin-bottom: 28px; }
-
-        /* STEP BAR */
-        .step-bar { display: flex; align-items: center; margin-bottom: 28px; }
-        .s-dot { width: 24px; height: 24px; border-radius: 50%; border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; font-size: 11px; color: #ccc; flex-shrink: 0; transition: all 0.3s; }
-        .s-dot.active { background: var(--green); border-color: var(--green); color: #fff; }
-        .s-dot.done { border-color: var(--green-light); color: var(--green-mid); }
-        .s-line { flex: 1; height: 1px; background: var(--border); transition: background 0.3s; }
-        .s-line.filled { background: var(--green-light); }
-
-        /* FORM STEPS */
-        .form-step { display: none; }
-        .form-step.active { display: block; }
-
-        /* INPUTS */
-        .field { margin-bottom: 12px; }
-        .field label { display: block; font-size: 10px; font-weight: 500; letter-spacing: 1.5px; text-transform: uppercase; color: var(--text-sub); margin-bottom: 6px; }
-        .field input { width: 100%; padding: 13px 16px; border: 1px solid var(--border); border-radius: 3px; font-family: 'Jost', sans-serif; font-size: 14px; font-weight: 300; color: var(--text); background: var(--gray-bg); outline: none; transition: border-color 0.2s, background 0.2s; }
-        .field input::placeholder { color: #bebeba; }
-        .field input:focus { border-color: var(--green-light); background: #fff; }
-        .field input.err { border-color: #e53e3e; }
-        .ferr { font-size: 11px; color: #e53e3e; margin-top: 4px; display: none; }
-        .ferr.show { display: block; }
-
-        /* PASSWORD */
-        .pw-wrap { position: relative; }
-        .pw-wrap input { padding-right: 42px; }
-        .pw-btn { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; color: #ccc; display: flex; padding: 0; transition: color 0.2s; }
-        .pw-btn:hover { color: var(--green-mid); }
-        .pw-strength { display: flex; gap: 3px; align-items: center; margin-top: 6px; }
-        .pw-bar { flex: 1; height: 2px; border-radius: 2px; background: var(--border); transition: background 0.3s; }
-        .pw-bar.weak { background: #fc8181; }
-        .pw-bar.mid  { background: #f6ad55; }
-        .pw-bar.strong { background: var(--green-light); }
-        .pw-lbl { font-size: 10px; color: var(--text-sub); min-width: 55px; text-align: right; }
-
-        /* BUTTONS */
-        .btn-row { display: flex; gap: 8px; margin-top: 16px; }
-        .btn-next, .btn-submit { flex: 1; padding: 13px; background: var(--green); color: #fff; border: none; border-radius: 3px; font-family: 'Jost', sans-serif; font-size: 12px; font-weight: 500; letter-spacing: 3px; text-transform: uppercase; cursor: pointer; transition: background 0.2s, opacity .2s; }
-        .btn-next:hover { background: var(--green-mid); }
-        .btn-next:disabled { opacity: .6; cursor: not-allowed; }
-        .btn-submit { background: var(--pink); }
-        .btn-submit:hover { background: #d4528f; }
-        .btn-prev { flex: 0 0 auto; padding: 13px 16px; background: none; border: 1px solid var(--border); border-radius: 3px; font-family: 'Jost', sans-serif; font-size: 13px; color: var(--text-sub); cursor: pointer; transition: border-color 0.2s; }
-        .btn-prev:hover { border-color: var(--green-light); color: var(--green); }
-
-        /* OTP SECTION */
-        .otp-sent-info { background: #f0f7f4; border: 1px solid #c6dfd5; border-radius: 4px; padding: 11px 14px; margin-bottom: 14px; font-size: 13px; color: var(--green-mid); line-height: 1.6; }
-        .otp-sent-info strong { color: var(--green); }
-
-        .otp-boxes { display: flex; gap: 10px; justify-content: center; margin: 14px 0; }
-        .otp-boxes input { width: 46px; height: 54px; text-align: center; font-size: 22px; font-weight: 500; border: 1.5px solid var(--border); border-radius: 5px; font-family: 'Jost', sans-serif; background: var(--gray-bg); color: var(--text); outline: none; transition: border-color .2s; }
-        .otp-boxes input:focus { border-color: var(--green-light); background: #fff; }
-        .otp-boxes input.filled { border-color: var(--green-mid); }
-        .otp-boxes input.err { border-color: #e53e3e; }
-
-        .timer-row { display: flex; align-items: center; justify-content: space-between; margin-top: 8px; }
-        .timer-badge { display: flex; align-items: center; gap: 5px; font-size: 12px; color: var(--text-sub); }
-        #timer_num { font-weight: 500; color: var(--green); transition: color .3s; }
-        #timer_num.danger { color: #e53e3e; }
-        .timer-bar-wrap { height: 3px; background: var(--border); border-radius: 2px; margin-top: 8px; overflow: hidden; }
-        #timer_bar { height: 3px; background: var(--green); border-radius: 2px; width: 100%; transition: width 1s linear, background .3s; }
-
-        .resend-btn { font-size: 12px; background: none; border: none; cursor: pointer; color: var(--text-sub); padding: 0; font-family: 'Jost', sans-serif; }
-        .resend-btn:not(:disabled) { color: var(--green); text-decoration: underline; cursor: pointer; }
-        .resend-btn:disabled { cursor: default; }
-
-        /* ALERT */
-        .alert { padding: 10px 14px; border-radius: 3px; font-size: 12px; margin-bottom: 10px; display: none; }
-        .alert.show { display: block; }
-        .alert-err { background: #fff5f5; border: 1px solid #fed7d7; color: #c53030; }
-        .alert-ok  { background: #f0fff4; border: 1px solid #c6f6d5; color: #276749; }
-
-        /* DIVIDER */
-        .divider { display: flex; align-items: center; gap: 14px; margin: 24px 0; }
-        .divider-line { flex: 1; height: 1px; background: var(--border); }
-        .divider span { font-size: 11px; color: #d0d0cc; letter-spacing: 1.5px; text-transform: uppercase; }
-
-        .login-note { text-align: center; font-size: 12px; font-weight: 300; color: var(--text-sub); margin-bottom: 10px; }
-        .btn-login-alt { display: block; width: 100%; padding: 13px; background: transparent; border: 1.5px solid var(--pink); border-radius: 3px; font-family: 'Jost', sans-serif; font-size: 12px; font-weight: 500; letter-spacing: 3px; text-transform: uppercase; color: var(--pink); text-align: center; text-decoration: none; transition: background .2s, color .2s; }
-        .btn-login-alt:hover { background: var(--pink); color: #fff; }
-
-        .footer-bar { position: fixed; bottom: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, var(--green) 65%, var(--pink) 100%); }
-    </style>
 </head>
-<body>
+<body class="font-['Jost',sans-serif] bg-white text-[#1a1a18]">
 
-<nav class="navbar">
-    <a href="/" class="nav-logo">
-        <img src="{{ asset('images/Black_Summer_Camp_Adventure_Logo-removebg-preview.png') }}" alt="Camplore Logo">
+{{-- NAVBAR --}}
+<nav class="fixed top-0 left-0 right-0 h-[58px] flex items-center justify-center border-b border-[#e2e2de] bg-white z-[100]">
+    <a href="/">
+        <img src="{{ asset('images/Black_Summer_Camp_Adventure_Logo-removebg-preview.png') }}" alt="Camplore Logo" class="h-[200px] w-auto block">
     </a>
 </nav>
 
-<div class="page">
-    <div class="card">
+{{-- PAGE --}}
+<div class="min-h-screen flex items-start justify-center px-5 pt-[90px] pb-[60px]">
+    <div class="w-full max-w-[380px] pt-5">
 
-        <h1 class="card-title">Buat Akun</h1>
-        <p class="card-sub">Isi data berikut untuk mendaftar</p>
+        <h1 class="font-['Cormorant_Garamond',serif] text-[26px] font-semibold tracking-[3px] uppercase text-[#22543D] text-center mb-2">Buat Akun</h1>
+        <p class="text-center text-xs font-light text-[#999990] tracking-[0.3px] mb-7">Isi data berikut untuk mendaftar</p>
 
-        <!-- Step bar (4 step) -->
-        <div class="step-bar">
-            <div class="s-dot active" id="dot1">1</div>
-            <div class="s-line" id="ln1"></div>
-            <div class="s-dot" id="dot2">2</div>
-            <div class="s-line" id="ln2"></div>
-            <div class="s-dot" id="dot3">3</div>
-            <div class="s-line" id="ln3"></div>
-            <div class="s-dot" id="dot4">4</div>
+        {{-- STEP BAR --}}
+        <div class="flex items-center mb-7">
+            <div class="w-6 h-6 rounded-full border flex items-center justify-center text-[11px] shrink-0 transition-all bg-[#22543D] border-[#22543D] text-white" id="dot1">1</div>
+            <div class="flex-1 h-px bg-[#e2e2de] transition-all" id="ln1"></div>
+            <div class="w-6 h-6 rounded-full border border-[#e2e2de] flex items-center justify-center text-[11px] text-[#ccc] shrink-0 transition-all" id="dot2">2</div>
+            <div class="flex-1 h-px bg-[#e2e2de] transition-all" id="ln2"></div>
+            <div class="w-6 h-6 rounded-full border border-[#e2e2de] flex items-center justify-center text-[11px] text-[#ccc] shrink-0 transition-all" id="dot3">3</div>
+            <div class="flex-1 h-px bg-[#e2e2de] transition-all" id="ln3"></div>
+            <div class="w-6 h-6 rounded-full border border-[#e2e2de] flex items-center justify-center text-[11px] text-[#ccc] shrink-0 transition-all" id="dot4">4</div>
         </div>
 
-        {{-- Server-side error (final submit only) --}}
+        {{-- Server-side error --}}
         @if ($errors->any())
-            <div class="alert alert-err show">
+            <div class="px-3.5 py-2.5 rounded text-xs bg-[#fff5f5] border border-[#fed7d7] text-[#c53030] mb-3">
                 {{ $errors->first() }}
             </div>
         @endif
 
-        {{-- onsubmit="return false;" mencegah Enter trigger submit ke server --}}
         <form action="{{ route('register.submit') }}" method="POST" id="regForm" onsubmit="return false;">
             @csrf
 
-            <!-- ============================================================
-                 STEP 1 – Identitas
-            ============================================================ -->
-            <div class="form-step active" id="step1">
-                <div class="field">
-                    <label>Username</label>
+            {{-- ============ STEP 1 – Identitas ============ --}}
+            <div class="block" id="step1">
+
+                <div class="mb-3">
+                    <label class="block text-[10px] font-medium tracking-[1.5px] uppercase text-[#999990] mb-1.5">Username</label>
                     <input type="text" id="reg_username" name="username"
                         placeholder="Pilih username unik"
-                        value="{{ old('username') }}" autocomplete="username">
-                    <p class="ferr" id="e_username">Username minimal 3 karakter</p>
+                        value="{{ old('username') }}" autocomplete="username"
+                        class="w-full px-4 py-3 border border-[#e2e2de] rounded-[3px] text-sm font-light text-[#1a1a18] bg-[#f7f7f5] outline-none transition focus:border-[#38856a] focus:bg-white placeholder-[#bebeba]">
+                    <p class="hidden text-[11px] text-red-600 mt-1" id="e_username">Username minimal 3 karakter</p>
                 </div>
 
-                <div class="field">
-                    <label>NIK</label>
+                <div class="mb-3">
+                    <label class="block text-[10px] font-medium tracking-[1.5px] uppercase text-[#999990] mb-1.5">NIK</label>
                     <input type="text" id="reg_nik" name="nik"
                         placeholder="16 digit NIK"
-                        value="{{ old('nik') }}" maxlength="16" inputmode="numeric">
-                    <p class="ferr" id="e_nik">NIK harus 16 digit angka</p>
+                        value="{{ old('nik') }}" maxlength="16" inputmode="numeric"
+                        class="w-full px-4 py-3 border border-[#e2e2de] rounded-[3px] text-sm font-light text-[#1a1a18] bg-[#f7f7f5] outline-none transition focus:border-[#38856a] focus:bg-white placeholder-[#bebeba]">
+                    <p class="hidden text-[11px] text-red-600 mt-1" id="e_nik">NIK harus 16 digit angka</p>
                 </div>
 
-                <div class="field">
-                    <label>Email</label>
+                <div class="mb-3">
+                    <label class="block text-[10px] font-medium tracking-[1.5px] uppercase text-[#999990] mb-1.5">Email</label>
                     <input type="email" id="reg_email" name="email"
                         placeholder="email@anda.com"
-                        value="{{ old('email') }}" autocomplete="email">
-                    <p class="ferr" id="e_email">Masukkan email yang valid</p>
+                        value="{{ old('email') }}" autocomplete="email"
+                        class="w-full px-4 py-3 border border-[#e2e2de] rounded-[3px] text-sm font-light text-[#1a1a18] bg-[#f7f7f5] outline-none transition focus:border-[#38856a] focus:bg-white placeholder-[#bebeba]">
+                    <p class="hidden text-[11px] text-red-600 mt-1" id="e_email">Masukkan email yang valid</p>
                 </div>
 
-                <div class="btn-row">
-                    <button type="button" class="btn-next" id="btn_step1" onclick="goToOtp()">Selanjutnya →</button>
+                <div class="flex gap-2 mt-4">
+                    <button type="button" id="btn_step1" onclick="goToOtp()"
+                        class="flex-1 py-3 bg-[#22543D] text-white border-none rounded-[3px] text-xs font-medium tracking-[3px] uppercase cursor-pointer hover:bg-[#2d6b50] disabled:opacity-60 disabled:cursor-not-allowed transition">
+                        Selanjutnya →
+                    </button>
                 </div>
             </div>
 
-            <!-- ============================================================
-                 STEP 2 – Verifikasi OTP Email
-                 CATATAN: Tidak ada tombol Back di sini (sesuai permintaan)
-            ============================================================ -->
-            <div class="form-step" id="step2">
+            {{-- ============ STEP 2 – Verifikasi OTP ============ --}}
+            <div class="hidden" id="step2">
 
-                <div class="otp-sent-info">
+                {{-- Info OTP --}}
+                <div class="bg-[#f0f7f4] border border-[#c6dfd5] rounded-[4px] px-3.5 py-3 mb-3.5 text-[13px] text-[#2d6b50] leading-relaxed">
                     Kode OTP dikirim ke email<br>
-                    <strong id="show_email">—</strong>
+                    <strong class="text-[#22543D]" id="show_email">—</strong>
                 </div>
 
-                <div class="alert alert-err" id="otp_alert_err"></div>
-                <div class="alert alert-ok"  id="otp_alert_ok"></div>
+                {{-- Alert --}}
+                <div class="hidden px-3.5 py-2.5 rounded text-xs bg-[#fff5f5] border border-[#fed7d7] text-[#c53030] mb-2.5" id="otp_alert_err"></div>
+                <div class="hidden px-3.5 py-2.5 rounded text-xs bg-[#f0fff4] border border-[#c6f6d5] text-[#276749] mb-2.5" id="otp_alert_ok"></div>
 
-                <p style="font-size:12px;color:var(--text-sub);text-align:center;margin-bottom:8px;">
-                    Masukkan 6 digit kode OTP
-                </p>
+                <p class="text-xs text-[#999990] text-center mb-2">Masukkan 6 digit kode OTP</p>
 
-                <div class="otp-boxes">
-                    <input type="text" maxlength="1" inputmode="numeric" class="otp-digit" id="d0">
-                    <input type="text" maxlength="1" inputmode="numeric" class="otp-digit" id="d1">
-                    <input type="text" maxlength="1" inputmode="numeric" class="otp-digit" id="d2">
-                    <input type="text" maxlength="1" inputmode="numeric" class="otp-digit" id="d3">
-                    <input type="text" maxlength="1" inputmode="numeric" class="otp-digit" id="d4">
-                    <input type="text" maxlength="1" inputmode="numeric" class="otp-digit" id="d5">
+                {{-- OTP Boxes --}}
+                <div class="flex gap-2.5 justify-center my-3.5">
+                    <input type="text" maxlength="1" inputmode="numeric" id="d0"
+                        class="otp-digit w-[46px] h-[54px] text-center text-[22px] font-medium border-[1.5px] border-[#e2e2de] rounded-[5px] bg-[#f7f7f5] text-[#1a1a18] outline-none transition focus:border-[#38856a] focus:bg-white">
+                    <input type="text" maxlength="1" inputmode="numeric" id="d1"
+                        class="otp-digit w-[46px] h-[54px] text-center text-[22px] font-medium border-[1.5px] border-[#e2e2de] rounded-[5px] bg-[#f7f7f5] text-[#1a1a18] outline-none transition focus:border-[#38856a] focus:bg-white">
+                    <input type="text" maxlength="1" inputmode="numeric" id="d2"
+                        class="otp-digit w-[46px] h-[54px] text-center text-[22px] font-medium border-[1.5px] border-[#e2e2de] rounded-[5px] bg-[#f7f7f5] text-[#1a1a18] outline-none transition focus:border-[#38856a] focus:bg-white">
+                    <input type="text" maxlength="1" inputmode="numeric" id="d3"
+                        class="otp-digit w-[46px] h-[54px] text-center text-[22px] font-medium border-[1.5px] border-[#e2e2de] rounded-[5px] bg-[#f7f7f5] text-[#1a1a18] outline-none transition focus:border-[#38856a] focus:bg-white">
+                    <input type="text" maxlength="1" inputmode="numeric" id="d4"
+                        class="otp-digit w-[46px] h-[54px] text-center text-[22px] font-medium border-[1.5px] border-[#e2e2de] rounded-[5px] bg-[#f7f7f5] text-[#1a1a18] outline-none transition focus:border-[#38856a] focus:bg-white">
+                    <input type="text" maxlength="1" inputmode="numeric" id="d5"
+                        class="otp-digit w-[46px] h-[54px] text-center text-[22px] font-medium border-[1.5px] border-[#e2e2de] rounded-[5px] bg-[#f7f7f5] text-[#1a1a18] outline-none transition focus:border-[#38856a] focus:bg-white">
                 </div>
 
-                <div class="timer-row">
-                    <div class="timer-badge">
+                {{-- Timer --}}
+                <div class="flex items-center justify-between mt-2">
+                    <div class="flex items-center gap-1.5 text-xs text-[#999990]">
                         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
                         </svg>
-                        Berlaku &nbsp;<span id="timer_num">60</span>s
+                        Berlaku &nbsp;<span id="timer_num" class="font-medium text-[#22543D]">60</span>s
                     </div>
-                    <button type="button" class="resend-btn" id="resend_btn" disabled onclick="resendOtp()">
+                    <button type="button" id="resend_btn" disabled onclick="resendOtp()"
+                        class="text-xs bg-none border-none cursor-default text-[#999990] font-['Jost'] disabled:cursor-default enabled:text-[#22543D] enabled:underline enabled:cursor-pointer">
                         Kirim ulang
                     </button>
                 </div>
-                <div class="timer-bar-wrap"><div id="timer_bar"></div></div>
 
-                {{-- Tombol verifikasi — TANPA tombol back --}}
-                <div class="btn-row" style="margin-top: 16px;">
-                    <button type="button" class="btn-next" id="btn_verify" onclick="doVerifyOtp()">Verifikasi →</button>
+                {{-- Timer bar --}}
+                <div class="h-[3px] bg-[#e2e2de] rounded-sm mt-2 overflow-hidden">
+                    <div id="timer_bar" class="h-[3px] bg-[#22543D] rounded-sm w-full transition-all"></div>
+                </div>
+
+                <div class="flex gap-2 mt-4">
+                    <button type="button" id="btn_verify" onclick="doVerifyOtp()"
+                        class="flex-1 py-3 bg-[#22543D] text-white border-none rounded-[3px] text-xs font-medium tracking-[3px] uppercase cursor-pointer hover:bg-[#2d6b50] disabled:opacity-60 disabled:cursor-not-allowed transition">
+                        Verifikasi →
+                    </button>
                 </div>
             </div>
 
-            <!-- ============================================================
-                 STEP 3 – Password
-            ============================================================ -->
-            <div class="form-step" id="step3">
-                <div class="field">
-                    <label>Kata Sandi</label>
-                    <div class="pw-wrap">
+            {{-- ============ STEP 3 – Password ============ --}}
+            <div class="hidden" id="step3">
+
+                <div class="mb-3">
+                    <label class="block text-[10px] font-medium tracking-[1.5px] uppercase text-[#999990] mb-1.5">Kata Sandi</label>
+                    <div class="relative">
                         <input type="password" id="reg_pw" name="password"
                             placeholder="Buat kata sandi yang kuat"
                             oninput="checkStrength(this.value)"
-                            autocomplete="new-password">
-                        <button type="button" class="pw-btn" onclick="togglePw('reg_pw',this)">
+                            autocomplete="new-password"
+                            class="w-full px-4 py-3 pr-10 border border-[#e2e2de] rounded-[3px] text-sm font-light text-[#1a1a18] bg-[#f7f7f5] outline-none transition focus:border-[#38856a] focus:bg-white placeholder-[#bebeba]">
+                        <button type="button" onclick="togglePw('reg_pw',this)"
+                            class="absolute right-3 top-1/2 -translate-y-1/2 bg-transparent border-none cursor-pointer text-[#ccc] hover:text-[#2d6b50] transition p-0">
                             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
                                 <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
                                 <circle cx="12" cy="12" r="3"/>
                             </svg>
                         </button>
                     </div>
-                    <div class="pw-strength" id="pwBar" style="display:none">
-                        <div class="pw-bar" id="b1"></div>
-                        <div class="pw-bar" id="b2"></div>
-                        <div class="pw-bar" id="b3"></div>
-                        <div class="pw-bar" id="b4"></div>
-                        <span class="pw-lbl" id="pwLbl"></span>
+                    {{-- Password strength --}}
+                    <div class="hidden flex gap-1 items-center mt-1.5" id="pwBar">
+                        <div class="flex-1 h-[2px] rounded-sm bg-[#e2e2de]" id="b1"></div>
+                        <div class="flex-1 h-[2px] rounded-sm bg-[#e2e2de]" id="b2"></div>
+                        <div class="flex-1 h-[2px] rounded-sm bg-[#e2e2de]" id="b3"></div>
+                        <div class="flex-1 h-[2px] rounded-sm bg-[#e2e2de]" id="b4"></div>
+                        <span class="text-[10px] text-[#999990] min-w-[55px] text-right" id="pwLbl"></span>
                     </div>
-                    <p class="ferr" id="e_pw">Kata sandi minimal 8 karakter</p>
+                    <p class="hidden text-[11px] text-red-600 mt-1" id="e_pw">Kata sandi minimal 8 karakter</p>
                 </div>
 
-                <div class="field">
-                    <label>Konfirmasi Kata Sandi</label>
-                    <div class="pw-wrap">
+                <div class="mb-3">
+                    <label class="block text-[10px] font-medium tracking-[1.5px] uppercase text-[#999990] mb-1.5">Konfirmasi Kata Sandi</label>
+                    <div class="relative">
                         <input type="password" id="reg_pw2" name="password_confirmation"
                             placeholder="Ulangi kata sandi"
-                            autocomplete="new-password">
-                        <button type="button" class="pw-btn" onclick="togglePw('reg_pw2',this)">
+                            autocomplete="new-password"
+                            class="w-full px-4 py-3 pr-10 border border-[#e2e2de] rounded-[3px] text-sm font-light text-[#1a1a18] bg-[#f7f7f5] outline-none transition focus:border-[#38856a] focus:bg-white placeholder-[#bebeba]">
+                        <button type="button" onclick="togglePw('reg_pw2',this)"
+                            class="absolute right-3 top-1/2 -translate-y-1/2 bg-transparent border-none cursor-pointer text-[#ccc] hover:text-[#2d6b50] transition p-0">
                             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
                                 <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
                                 <circle cx="12" cy="12" r="3"/>
                             </svg>
                         </button>
                     </div>
-                    <p class="ferr" id="e_pw2">Kata sandi tidak cocok</p>
+                    <p class="hidden text-[11px] text-red-600 mt-1" id="e_pw2">Kata sandi tidak cocok</p>
                 </div>
 
-                <div class="btn-row">
-                    
-                    <button type="button" class="btn-next" onclick="nextStep(3)">Selanjutnya →</button>
+                <div class="flex gap-2 mt-4">
+                    <button type="button" onclick="nextStep(3)"
+                        class="flex-1 py-3 bg-[#22543D] text-white border-none rounded-[3px] text-xs font-medium tracking-[3px] uppercase cursor-pointer hover:bg-[#2d6b50] transition">
+                        Selanjutnya →
+                    </button>
                 </div>
             </div>
 
-            <!-- ============================================================
-                 STEP 4 – Konfirmasi & Daftar
-            ============================================================ -->
-            <div class="form-step" id="step4">
-                <p style="font-size:13px;color:var(--text-sub);margin-bottom:16px;line-height:1.7;">
+            {{-- ============ STEP 4 – Konfirmasi ============ --}}
+            <div class="hidden" id="step4">
+
+                <p class="text-[13px] text-[#999990] mb-4 leading-relaxed">
                     Periksa kembali data kamu sebelum mendaftar.
                 </p>
 
-                <div style="background:var(--gray-bg);border:1px solid var(--border);border-radius:4px;padding:14px 16px;margin-bottom:16px;font-size:13px;line-height:2;">
-                    <div><span style="color:var(--text-sub);min-width:110px;display:inline-block;">Username</span> <strong id="sum_username">—</strong></div>
-                    <div><span style="color:var(--text-sub);min-width:110px;display:inline-block;">NIK</span> <strong id="sum_nik">—</strong></div>
-                    <div><span style="color:var(--text-sub);min-width:110px;display:inline-block;">Email</span> <strong id="sum_email">—</strong></div>
+                <div class="bg-[#f7f7f5] border border-[#e2e2de] rounded-[4px] px-4 py-3.5 mb-4 text-[13px] leading-loose">
                     <div>
-                        <span style="color:var(--text-sub);min-width:110px;display:inline-block;">Status</span>
-                        <span style="font-size:11px;background:#e6f7ef;color:var(--green);padding:2px 8px;border-radius:20px;">✓ Email Terverifikasi</span>
+                        <span class="text-[#999990] inline-block min-w-[110px]">Username</span>
+                        <strong id="sum_username">—</strong>
+                    </div>
+                    <div>
+                        <span class="text-[#999990] inline-block min-w-[110px]">NIK</span>
+                        <strong id="sum_nik">—</strong>
+                    </div>
+                    <div>
+                        <span class="text-[#999990] inline-block min-w-[110px]">Email</span>
+                        <strong id="sum_email">—</strong>
+                    </div>
+                    <div>
+                        <span class="text-[#999990] inline-block min-w-[110px]">Status</span>
+                        <span class="text-[11px] bg-[#e6f7ef] text-[#22543D] px-2 py-0.5 rounded-full">✓ Email Terverifikasi</span>
                     </div>
                 </div>
 
-                <div class="btn-row">
-                    <button type="button" class="btn-prev" onclick="prevStep(4)">←</button>
-                    <button type="button" class="btn-submit" onclick="submitForm()">Daftar</button>
+                <div class="flex gap-2 mt-4">
+                    <button type="button" onclick="prevStep(4)"
+                        class="py-3 px-4 bg-transparent border border-[#e2e2de] rounded-[3px] text-[13px] text-[#999990] cursor-pointer hover:border-[#38856a] hover:text-[#22543D] transition">
+                        ←
+                    </button>
+                    <button type="button" onclick="submitForm()"
+                        class="flex-1 py-3 bg-[#ED64A6] text-white border-none rounded-[3px] text-xs font-medium tracking-[3px] uppercase cursor-pointer hover:bg-[#d4528f] transition">
+                        Daftar
+                    </button>
                 </div>
             </div>
 
         </form>
 
-        <div class="divider">
-            <div class="divider-line"></div>
-            <span>atau</span>
-            <div class="divider-line"></div>
+        {{-- DIVIDER --}}
+        <div class="flex items-center gap-3.5 my-6">
+            <div class="flex-1 h-px bg-[#e2e2de]"></div>
+            <span class="text-[11px] text-[#d0d0cc] tracking-[1.5px] uppercase">atau</span>
+            <div class="flex-1 h-px bg-[#e2e2de]"></div>
         </div>
 
-        <p class="login-note">Sudah punya akun?</p>
-        <a href="/login" class="btn-login-alt">Masuk</a>
+        <p class="text-center text-xs font-light text-[#999990] mb-2.5">Sudah punya akun?</p>
+        <a href="/login"
+            class="block w-full py-3 bg-transparent border-[1.5px] border-[#ED64A6] rounded-[3px] text-xs font-medium tracking-[3px] uppercase text-[#ED64A6] text-center no-underline hover:bg-[#ED64A6] hover:text-white transition">
+            Masuk
+        </a>
 
     </div>
 </div>
 
-<div class="footer-bar"></div>
+{{-- Footer bar --}}
+<div class="fixed bottom-0 left-0 right-0 h-[3px] bg-gradient-to-r from-[#22543D] from-[65%] to-[#ED64A6]"></div>
 
 <script>
 let cur = 1;
@@ -336,18 +265,34 @@ let timerLeft = 60;
 
 // ── Step navigation ────────────────────────────────────────────────────────
 function goStep(n) {
-    document.getElementById('step' + cur).classList.remove('active');
+    document.getElementById('step' + cur).classList.add('hidden');
     cur = n;
-    document.getElementById('step' + n).classList.add('active');
+    document.getElementById('step' + n).classList.remove('hidden');
+
     for (let i = 1; i <= 4; i++) {
         const d = document.getElementById('dot' + i);
-        d.classList.remove('active', 'done');
-        if (i < cur) d.classList.add('done');
-        else if (i === cur) d.classList.add('active');
+        d.classList.remove('bg-[#22543D]', 'border-[#22543D]', 'text-white', 'border-[#38856a]', 'text-[#2d6b50]');
+        d.classList.add('text-[#ccc]', 'border-[#e2e2de]');
+        if (i < cur) {
+            d.classList.remove('text-[#ccc]', 'border-[#e2e2de]');
+            d.classList.add('border-[#38856a]', 'text-[#2d6b50]');
+        } else if (i === cur) {
+            d.classList.remove('text-[#ccc]', 'border-[#e2e2de]');
+            d.classList.add('bg-[#22543D]', 'border-[#22543D]', 'text-white');
+        }
     }
+
     for (let i = 1; i <= 3; i++) {
         const l = document.getElementById('ln' + i);
-        if (l) l.classList.toggle('filled', i < cur);
+        if (l) {
+            if (i < cur) {
+                l.classList.remove('bg-[#e2e2de]');
+                l.classList.add('bg-[#38856a]');
+            } else {
+                l.classList.remove('bg-[#38856a]');
+                l.classList.add('bg-[#e2e2de]');
+            }
+        }
     }
 }
 
@@ -372,24 +317,22 @@ function prevStep(from) {
     goStep(from - 1);
 }
 
-// ── Submit form final (step 4 - tombol Daftar) ────────────────────────────
 function submitForm() {
-    // Lepas onsubmit sementara lalu submit
     const form = document.getElementById('regForm');
     form.onsubmit = null;
     form.submit();
 }
 
-// ── Step 1 → OTP: validasi lalu kirim OTP via AJAX ────────────────────────
+// ── Step 1 → OTP ──────────────────────────────────────────────────────────
 async function goToOtp() {
     const u   = document.getElementById('reg_username').value.trim();
     const nik = document.getElementById('reg_nik').value.trim();
     const e   = document.getElementById('reg_email').value.trim();
     let ok = true;
 
-    if (u.length < 3)                              { showErr('e_username', 'reg_username'); ok = false; } else clrErr('e_username', 'reg_username');
-    if (!/^\d{16}$/.test(nik))                     { showErr('e_nik', 'reg_nik'); ok = false; }          else clrErr('e_nik', 'reg_nik');
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e))    { showErr('e_email', 'reg_email'); ok = false; }       else clrErr('e_email', 'reg_email');
+    if (u.length < 3)                           { showErr('e_username', 'reg_username'); ok = false; } else clrErr('e_username', 'reg_username');
+    if (!/^\d{16}$/.test(nik))                  { showErr('e_nik', 'reg_nik'); ok = false; }          else clrErr('e_nik', 'reg_nik');
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e)) { showErr('e_email', 'reg_email'); ok = false; }       else clrErr('e_email', 'reg_email');
     if (!ok) return;
 
     const btn = document.getElementById('btn_step1');
@@ -397,21 +340,16 @@ async function goToOtp() {
     btn.textContent = 'Mengirim OTP…';
 
     try {
-        const res = await fetch('{{ route("otp.send") }}', {
+        const res  = await fetch('{{ route("otp.send") }}', {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
-            },
+            headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content },
             body: JSON.stringify({ email: e }),
         });
-
         const data = await res.json();
 
         if (!res.ok || !data.success) {
             showErr('e_email', 'reg_email');
             document.getElementById('e_email').textContent = data.message || 'Gagal mengirim OTP.';
-            document.getElementById('e_email').classList.add('show');
             return;
         }
 
@@ -419,7 +357,6 @@ async function goToOtp() {
         clrErr('e_email', 'reg_email');
         goStep(2);
         startTimer();
-
     } catch (err) {
         alert('Terjadi kesalahan koneksi. Coba lagi.');
     } finally {
@@ -428,7 +365,7 @@ async function goToOtp() {
     }
 }
 
-// ── Verifikasi OTP via AJAX ────────────────────────────────────────────────
+// ── Verifikasi OTP ────────────────────────────────────────────────────────
 async function doVerifyOtp() {
     const digits = Array.from(document.querySelectorAll('.otp-digit')).map(i => i.value).join('');
     const email  = document.getElementById('reg_email').value.trim();
@@ -436,36 +373,26 @@ async function doVerifyOtp() {
     hideAlert('otp_alert_err');
     hideAlert('otp_alert_ok');
 
-    if (digits.length < 6) {
-        showAlert('otp_alert_err', 'Masukkan semua 6 digit kode OTP.');
-        return;
-    }
-    if (timerLeft <= 0) {
-        showAlert('otp_alert_err', 'Kode OTP sudah kedaluwarsa. Klik "Kirim ulang".');
-        return;
-    }
+    if (digits.length < 6) { showAlert('otp_alert_err', 'Masukkan semua 6 digit kode OTP.'); return; }
+    if (timerLeft <= 0)    { showAlert('otp_alert_err', 'Kode OTP sudah kedaluwarsa. Klik "Kirim ulang".'); return; }
 
     const btn = document.getElementById('btn_verify');
     btn.disabled = true;
     btn.textContent = 'Memverifikasi…';
 
     try {
-        const res = await fetch('{{ route("otp.verify") }}', {
+        const res  = await fetch('{{ route("otp.verify") }}', {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
-            },
-            body: JSON.stringify({ email: email, otp: digits }),
+            headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content },
+            body: JSON.stringify({ email, otp: digits }),
         });
-
         const data = await res.json();
 
         if (!res.ok || !data.success) {
             showAlert('otp_alert_err', data.message || 'Kode OTP salah.');
             document.querySelectorAll('.otp-digit').forEach(i => {
-                i.classList.add('err');
-                setTimeout(() => i.classList.remove('err'), 1200);
+                i.classList.add('!border-red-400');
+                setTimeout(() => i.classList.remove('!border-red-400'), 1200);
             });
             return;
         }
@@ -473,7 +400,6 @@ async function doVerifyOtp() {
         clearInterval(timerInterval);
         showAlert('otp_alert_ok', 'Email berhasil diverifikasi! ✓');
         setTimeout(() => goStep(3), 800);
-
     } catch (err) {
         showAlert('otp_alert_err', 'Terjadi kesalahan koneksi. Coba lagi.');
     } finally {
@@ -489,25 +415,17 @@ async function resendOtp() {
     hideAlert('otp_alert_ok');
 
     try {
-        const res = await fetch('{{ route("otp.send") }}', {
+        const res  = await fetch('{{ route("otp.send") }}', {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
-            },
-            body: JSON.stringify({ email: email }),
+            headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content },
+            body: JSON.stringify({ email }),
         });
         const text = await res.text();
-console.log("RESPONSE:", text);
+        console.log("RESPONSE:", text);
+        let data;
+        try { data = JSON.parse(text); } catch (e) { console.error("INI ERROR LARAVEL:", text); throw e; }
 
-let data;
-try {
-    data = JSON.parse(text);
-} catch (e) {
-    console.error("INI ERROR LARAVEL:", text);
-    throw e;
-}
-        document.querySelectorAll('.otp-digit').forEach(i => { i.value = ''; i.classList.remove('filled'); });
+        document.querySelectorAll('.otp-digit').forEach(i => { i.value = ''; i.classList.remove('!border-[#2d6b50]'); });
         showAlert('otp_alert_ok', 'Kode OTP baru telah dikirim.');
         startTimer();
     } catch (err) {
@@ -524,10 +442,7 @@ function startTimer() {
     timerInterval = setInterval(() => {
         timerLeft--;
         updateTimerUI();
-        if (timerLeft <= 0) {
-            clearInterval(timerInterval);
-            document.getElementById('resend_btn').disabled = false;
-        }
+        if (timerLeft <= 0) { clearInterval(timerInterval); document.getElementById('resend_btn').disabled = false; }
     }, 1000);
 }
 
@@ -535,7 +450,7 @@ function updateTimerUI() {
     const el  = document.getElementById('timer_num');
     const bar = document.getElementById('timer_bar');
     el.textContent = timerLeft;
-    el.className   = timerLeft <= 10 ? 'danger' : '';
+    el.style.color = timerLeft <= 10 ? '#e53e3e' : '#22543D';
     const pct = Math.round((timerLeft / 60) * 100);
     bar.style.width      = pct + '%';
     bar.style.background = timerLeft <= 10 ? '#e53e3e' : timerLeft <= 20 ? '#f6ad55' : '#22543D';
@@ -546,22 +461,18 @@ document.querySelectorAll('.otp-digit').forEach((inp, i, arr) => {
     inp.addEventListener('input', () => {
         const v = inp.value.replace(/\D/g, '');
         inp.value = v;
-        inp.classList.toggle('filled', v !== '');
+        inp.classList.toggle('!border-[#2d6b50]', v !== '');
         if (v && i < arr.length - 1) arr[i + 1].focus();
     });
     inp.addEventListener('keydown', e => {
-        if (e.key === 'Enter') {
-            e.preventDefault();
-            doVerifyOtp();
-            return;
-        }
+        if (e.key === 'Enter') { e.preventDefault(); doVerifyOtp(); return; }
         if (e.key === 'Backspace' && !inp.value && i > 0) arr[i - 1].focus();
     });
     inp.addEventListener('paste', e => {
         e.preventDefault();
         const txt = (e.clipboardData || window.clipboardData).getData('text').replace(/\D/g, '');
         txt.split('').slice(0, 6).forEach((ch, j) => {
-            if (arr[i + j]) { arr[i + j].value = ch; arr[i + j].classList.add('filled'); }
+            if (arr[i + j]) { arr[i + j].value = ch; arr[i + j].classList.add('!border-[#2d6b50]'); }
         });
         arr[Math.min(i + txt.length, 5)].focus();
     });
@@ -570,18 +481,17 @@ document.querySelectorAll('.otp-digit').forEach((inp, i, arr) => {
 // ── Password strength ─────────────────────────────────────────────────────
 function checkStrength(v) {
     const bar = document.getElementById('pwBar');
-    bar.style.display = v.length ? 'flex' : 'none';
+    if (v.length) bar.classList.remove('hidden'); else { bar.classList.add('hidden'); return; }
     let s = 0;
     if (v.length >= 8)          s++;
     if (/[A-Z]/.test(v))        s++;
     if (/[0-9]/.test(v))        s++;
     if (/[^A-Za-z0-9]/.test(v)) s++;
-    const cls = ['', 'weak', 'weak', 'mid', 'strong'];
-    const lbl = ['', 'Lemah', 'Cukup', 'Kuat', 'Sangat Kuat'];
+    const colors = ['', '#fc8181', '#fc8181', '#f6ad55', '#38856a'];
+    const lbl    = ['', 'Lemah', 'Cukup', 'Kuat', 'Sangat Kuat'];
     ['b1','b2','b3','b4'].forEach((id, i) => {
         const b = document.getElementById(id);
-        b.className = 'pw-bar';
-        if (i < s) b.classList.add(cls[s]);
+        b.style.background = i < s ? colors[s] : '#e2e2de';
     });
     document.getElementById('pwLbl').textContent = lbl[s] || '';
 }
@@ -597,20 +507,20 @@ function togglePw(id, btn) {
 
 // ── Helpers ───────────────────────────────────────────────────────────────
 function showErr(eid, iid) {
-    document.getElementById(eid).classList.add('show');
-    if (iid) document.getElementById(iid).classList.add('err');
+    document.getElementById(eid).classList.remove('hidden');
+    if (iid) document.getElementById(iid).classList.add('!border-red-500');
 }
 function clrErr(eid, iid) {
-    document.getElementById(eid).classList.remove('show');
-    if (iid) document.getElementById(iid).classList.remove('err');
+    document.getElementById(eid).classList.add('hidden');
+    if (iid) document.getElementById(iid).classList.remove('!border-red-500');
 }
 function showAlert(id, msg) {
     const el = document.getElementById(id);
     el.textContent = msg;
-    el.classList.add('show');
+    el.classList.remove('hidden');
 }
 function hideAlert(id) {
-    document.getElementById(id).classList.remove('show');
+    document.getElementById(id).classList.add('hidden');
 }
 </script>
 

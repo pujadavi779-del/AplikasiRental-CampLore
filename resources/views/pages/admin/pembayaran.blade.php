@@ -44,12 +44,12 @@
                 <thead class="bg-[#f1f8f4] text-[#22543D] uppercase text-[10px] font-bold tracking-widest border-b border-[#e4f0ea]">
                     <tr>
                         <th class="px-6 py-4 w-10 border-r border-[#e4f0ea]"><input type="checkbox" class="accent-[#22543D]"></th>
-                        <th class="px-4 py-4 border-r border-[#e4f0ea] w-[15%]">Order ID</th>
-                        <th class="px-4 py-4 border-r border-[#e4f0ea] w-[30%]">Midtrans Order ID</th>
+                        <th class="px-4 py-4 border-r border-[#e4f0ea] w-[15%]">ID Pesanan</th>
+                        <th class="px-4 py-4 border-r border-[#e4f0ea] w-[30%]">Midtrans ID Pesanan</th>
                         <th class="px-4 py-4 border-r border-[#e4f0ea] w-[12%] text-center">Status</th>
-                        <th class="px-4 py-4 border-r border-[#e4f0ea] w-[15%]">Paid Price</th>
-                        <th class="px-4 py-4 border-r border-[#e4f0ea] w-[18%]">Created</th>
-                        <th class="px-6 py-4 text-center w-[10%]">Actions</th>
+                        <th class="px-4 py-4 border-r border-[#e4f0ea] w-[15%]">Harga yang Dibayar</th>
+                        <th class="px-4 py-4 border-r border-[#e4f0ea] w-[18%]">Dibuat</th>
+                        <th class="px-6 py-4 text-center w-[10%]">Tindakan</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-[#eef4f0]">
@@ -62,7 +62,7 @@
 
                         <td class="px-4 py-4 text-center border-r border-[#eef4f0]">
                             <span class="inline-block px-3 py-1 bg-emerald-100 text-[#22543D] text-[10px] font-bold rounded-lg border border-emerald-200">
-                                Paid
+                                Dibayar
                             </span>
                         </td>
 
@@ -88,7 +88,7 @@
 
                         <td class="px-4 py-4 text-center border-r border-[#eef4f0]">
                             <span class="inline-block px-3 py-1 bg-[#ED64A6]/10 text-[#ED64A6] text-[10px] font-black rounded-lg border border-[#ED64A6]/20 shadow-inner">
-                                Pending
+                                Tertunda
                             </span>
                         </td>
 

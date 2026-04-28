@@ -4,20 +4,6 @@
 
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
 
-<style>
-    body {
-        font-family: 'Plus Jakarta Sans', sans-serif;
-    }
-
-    input[type=checkbox] {
-        accent-color: #FF6B95;
-    }
-
-    input[type=date]::-webkit-calendar-picker-indicator {
-        cursor: pointer;
-        opacity: 0.6;
-    }
-</style>
 
 <div class="max-w-4xl mx-auto px-4 py-8 pb-36 bg-white min-h-screen">
 
@@ -28,7 +14,7 @@
         <div class="w-5"></div>
         <p class="text-xs font-bold text-gray-400 uppercase tracking-widest">Item Rental</p>
         <p class="text-xs font-bold text-gray-400 uppercase tracking-widest text-center">Harga /Hari</p>
-        <p class="text-xs font-bold text-gray-400 uppercase tracking-widest text-center">Unit</p>
+        <p class="text-xs font-bold text-gray-400 uppercase tracking-widest text-center">Satuan</p>
         <p class="text-xs font-bold text-gray-400 uppercase tracking-widest text-right">Subtotal</p>
         <div></div>
     </div>
@@ -52,7 +38,7 @@
 
                 {{-- Checkbox --}}
                 <input type="checkbox" checked
-                    class="item-checkbox w-5 h-5 cursor-pointer flex-shrink-0"
+                class="item-checkbox w-5 h-5 cursor-pointer flex-shrink-0 accent-[#FF6B95]"
                     onchange="updateSummary()">
 
                 {{-- Thumbnail + Nama --}}
@@ -153,14 +139,14 @@
                     <div class="flex-1">
                         <label class="block text-[10px] font-bold uppercase text-gray-400 tracking-widest mb-1.5">Mulai</label>
                         <input type="date"
-                            class="start-date w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm text-gray-800 focus:border-[#FF6B95] focus:outline-none transition bg-white"
+                            class="start-date w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm text-gray-800 focus:border-[#FF6B95] focus:outline-none transition bg-white [&::-webkit-calendar-picker-indicator]:cursor-pointer [&::-webkit-calendar-picker-indicator]:opacity-60"
                             value="{{ $cart->start_date ? \Carbon\Carbon::parse($cart->start_date)->format('Y-m-d') : '' }}"
                             onchange="onDateChange(this)">
                     </div>
                     <div class="flex-1">
                         <label class="block text-[10px] font-bold uppercase text-gray-400 tracking-widest mb-1.5">Selesai</label>
                         <input type="date"
-                            class="end-date w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm text-gray-800 focus:border-[#FF6B95] focus:outline-none transition bg-white"
+                            class="end-date w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm text-gray-800 focus:border-[#FF6B95] focus:outline-none transition bg-white [&::-webkit-calendar-picker-indicator]:cursor-pointer [&::-webkit-calendar-picker-indicator]:opacity-60"
                             value="{{ $cart->end_date ? \Carbon\Carbon::parse($cart->end_date)->format('Y-m-d') : '' }}"
                             onchange="onDateChange(this)">
                     </div>
@@ -197,7 +183,7 @@
 
         <div class="flex items-center gap-4">
             <label class="flex items-center gap-2 cursor-pointer">
-                <input type="checkbox" id="selectAll" class="w-5 h-5 cursor-pointer" onchange="selAllChange(this)">
+                <input type="checkbox" id="selectAll" class="w-5 h-5 cursor-pointer accent-[#FF6B95]" onchange="selAllChange(this)">
                 <span class="text-sm font-bold text-gray-600">
                     Pilih Semua (<span id="totalChecked">0</span>)
                 </span>

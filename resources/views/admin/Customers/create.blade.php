@@ -5,9 +5,9 @@
 
 @section('breadcrumb')
     <span class="text-gray-300">/</span>
-    <a href="{{ route('admin.customers.index') }}" class="hover:text-[#22543D]">Customer</a>
+    <a href="{{ route('admin.customers.index') }}" class="hover:text-[#22543D]">Pelanggan</a>
     <span class="text-gray-300">/</span>
-    <span class="text-[#22543D] font-semibold">Tambah Customer</span>
+    <span class="text-[#22543D] font-semibold">Tambah Pelanggan</span>
 @endsection
 
 @section('content')
@@ -22,8 +22,8 @@
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-[#22543D]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"/></svg>
             </div>
             <div>
-                <h2 class="font-extrabold text-gray-800">Tambah Customer</h2>
-                <p class="text-xs text-gray-400 mt-0.5">Isi semua data customer dengan lengkap</p>
+                <h2 class="font-extrabold text-gray-800">Tambah Pelanggan</h2>
+                <p class="text-xs text-gray-400 mt-0.5">Isi semua data pelanggan dengan lengkap</p>
             </div>
         </div>
 
@@ -43,7 +43,7 @@
                              class="w-24 h-24 rounded-2xl bg-gray-100 border-2 border-dashed border-gray-300 flex items-center justify-center overflow-hidden cursor-pointer hover:border-[#22543D] transition">
                             <div id="photoPlaceholder" class="flex flex-col items-center gap-1 text-gray-400">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
-                                <span class="text-[10px]">NO IMAGE</span>
+                                <span class="text-[10px]">TIDAK ADA GAMBAR</span>
                             </div>
                             <img id="photoImg" class="w-full h-full object-cover hidden">
                         </div>
