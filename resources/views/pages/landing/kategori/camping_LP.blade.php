@@ -2,6 +2,8 @@
 
 @section('content')
 
+
+
 {{-- Google Fonts --}}
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
 
@@ -100,5 +102,6 @@
     </div>
 
 </div>
-@include('components.footer')
+ @include('layouts.footer_biasa')
 @endsection
+

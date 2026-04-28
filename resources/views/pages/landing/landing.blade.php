@@ -164,54 +164,10 @@
         </div>
     </section>
 
-    <footer class="bg-[#22543D] text-white pt-24 pb-12 overflow-hidden">
-        <div class="max-w-7xl mx-auto px-4 relative">
-            <div class="relative z-10 grid md:grid-cols-5 gap-12 mb-16">
-                <div class="col-span-2 space-y-5">
-                    <a href="#" class="flex items-center gap-2">
-                        <img src="{{ asset('images/logo.png') }}"
-                            alt="Camplore Logo"
-                            class="h-10 w-auto object-contain transition-transform hover:scale-105">
-                    </a>
-                    <p class="text-emerald-200 text-sm leading-relaxed max-w-sm">
-                        Abadikan Keindahan Alam, Rasakan Kebebasan. Platform penyewaan Outdoor Gear paling terintegrasi di Indonesia.
-                    </p>
-                </div>
+   
 
-                @php $footerLinks = [
-                ['title' => 'Gear', 'links' => ['Cameras', 'Tents']],
-                ['title' => 'Company', 'links' => ['About Us', 'Careers', 'Policy', 'Contact']],
-                ['title' => 'Support', 'links' => ['WhatsApp', 'FAQ', 'Store Location']]
-                ]; @endphp
 
-                @foreach($footerLinks as $section)
-                <div>
-                    <h4 class="font-bold mb-6 text-white text-lg tracking-tight">{{ $section['title'] }}</h4>
-                    <ul class="space-y-3 text-emerald-200 text-sm">
-                        @foreach($section['links'] as $link)
-                        <li><a href="#" class="hover:text-[#ED64A6] transition">{{ $link }}</a></li>
-                        @endforeach
-                    </ul>
-                </div>
-                @endforeach
-            </div>
-
-            <div class="border-t border-white/10 pt-10 text-center text-xs text-emerald-300 relative z-10">
-                <p>&copy; 2026 Camplore Adventure Ltd. Batam, Indonesia. Seluruh hak dilindungi undang-undang.</p>
-            </div>
-        </div>
-    </footer>
-
-    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
-    <script>
-        // Initialize AOS
-        AOS.init({
-            duration: 800, // Durasi animasi standar (800ms)
-            easing: 'ease-in-out', // Efek easing
-            once: true, // Animasi hanya berjalan sekali saat di-scroll
-        });
-    </script>
-
+@vite('resources/js/landing.js')
 </body>
-
+ @include('layouts.footer_lp')
 </html>

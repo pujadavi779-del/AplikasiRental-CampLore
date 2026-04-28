@@ -18,6 +18,7 @@
     },
     "dependencies": {
         "@tailwindcss/postcss": "^4.2.2",
+        "aos": "^2.3.4",
         "esbuild": "^0.28.0",
         "flowbite": "^4.0.1"
     }

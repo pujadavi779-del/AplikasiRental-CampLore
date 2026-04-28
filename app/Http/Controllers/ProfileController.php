@@ -9,10 +9,24 @@ class ProfileController extends Controller
 {
     public function index()
     {
-        // Jika sudah pakai login, ambil data user yang sedang login
         $pelanggan = Auth::user();
-
         return view('pages.pelanggan.dashboard.pengaturan', compact('pelanggan'));
     }
-}
 
+    public function update_profile(Request $request)
+    {
+        // validasi input
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email',
+        ]);
+
+        // update user login
+        $user = Auth::user();
+        $user->name  = $request->name;
+        $user->email = $request->email;
+        $user->save();
+
+        return redirect()->back()->with('success', 'Profil berhasil diperbarui');
+    }
+}

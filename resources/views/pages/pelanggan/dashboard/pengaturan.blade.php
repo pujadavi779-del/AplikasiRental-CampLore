@@ -50,7 +50,7 @@
             reader.readAsDataURL(file);
         }
     }
-}" class="mmt-8 ml-84 min-h-screen bg-[#EEF3F0] px-9 pt-9 pb-16">
+}" class="px-9 pt-9 pb-16">
 
     {{-- Judul --}}
     <div class="mb-8 anim">

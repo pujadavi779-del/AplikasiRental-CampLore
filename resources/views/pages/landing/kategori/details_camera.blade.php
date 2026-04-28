@@ -414,5 +414,6 @@
         }
     }
 </script>
-@include('components.footer')
+
+ @include('layouts.footer_biasa')
 @endsection

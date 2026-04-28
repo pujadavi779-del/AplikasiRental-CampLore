@@ -175,10 +175,12 @@
 </div>
 
 <script>
+    // ── State ──────────────────────────────────────────────
     let thumbOffset = 0;
     let qty = 1;
-    const PRICE_PER_DAY = {{ $item->price_per_day }};
-    const MAX_STOCK = {{ $item->stock ?? 99 }};
+    const PRICE_PER_DAY = {{ $item -> price_per_day }};
+
+    const MAX_STOCK = {{ $item -> stock ?? 99 }};
 
     // ── Accordion ──────────────────────────────────────────
     function toggleAcc(button) {
@@ -223,16 +225,6 @@
         qty = next;
         document.getElementById('qtyDisplay').textContent = qty;
         updatePrice();
-    }
-
-    // ── Delivery option ────────────────────────────────────
-    function pickSize(el) {
-        document.querySelectorAll('.size-btn').forEach(b => {
-            b.classList.remove('border-gray-900', 'ring-1', 'ring-gray-900', 'text-gray-900');
-            b.classList.add('border-gray-200', 'text-gray-400');
-        });
-        el.classList.remove('border-gray-200', 'text-gray-400');
-        el.classList.add('border-gray-900', 'ring-1', 'ring-gray-900', 'text-gray-900');
     }
 
     // ── Date helpers ───────────────────────────────────────
@@ -387,8 +379,11 @@
             })
             .then(r => r.json())
             .then(data => {
-                if (data.success) window.location.href = '/checkout';
-                else showToast(data.message ?? 'Gagal, coba lagi', 'error');
+                if (data.success) {
+                    window.location.href = '/checkout?ids[]=' + data.cart_id;
+                } else {
+                    showToast(data.message ?? 'Gagal, coba lagi', 'error');
+                }
             })
             .catch(() => showToast('Terjadi kesalahan, coba lagi', 'error'));
     }
@@ -419,5 +414,5 @@
         }
     }
 </script>
-@include('components.footer')
+ @include('layouts.footer_biasa')
 @endsection

@@ -7,7 +7,7 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Checkout - Camplore</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">\
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
 </head>
 
 <body class="text-gray-800 pb-32 font-['Plus_Jakarta_Sans'] bg-white">
@@ -178,29 +178,47 @@
             $d = ($cart->start_date && $cart->end_date)
             ? max(1, \Carbon\Carbon::parse($cart->start_date)->diffInDays($cart->end_date))
             : 1;
+
             $sub = ($cart->item->price ?? 0) * $cart->quantity * $d;
             @endphp
+
             <div class="flex justify-between text-sm text-gray-500 mb-2">
                 <span>{{ $cart->item->name ?? '-' }} ({{ $d }} hari)</span>
-                <span class="font-semibold text-gray-700">Rp{{ number_format($sub, 0, ',', '.') }}</span>
+                <span class="font-semibold text-gray-700">
+                    Rp{{ number_format($sub, 0, ',', '.') }}
+                </span>
             </div>
             @endforeach
+
+            @php
+            $biayaLayanan = 2000;
+            $ongkir = 10000;
+            $totalBayar = $totalSubtotal + $biayaLayanan + $ongkir;
+            @endphp
 
             <div class="border-t border-gray-100 mt-3 pt-4 space-y-2">
                 <div class="flex justify-between text-sm text-gray-500">
                     <span>Subtotal Sewa Produk</span>
-                    <span class="font-bold text-gray-700">Rp{{ number_format($totalSubtotal, 0, ',', '.') }}</span>
+                    <span class="font-bold text-gray-700">
+                        Rp{{ number_format($totalSubtotal, 0, ',', '.') }}
+                    </span>
                 </div>
+
                 <div class="flex justify-between text-sm text-gray-500">
                     <span>Biaya Layanan Aplikasi</span>
                     <span class="font-bold text-gray-700">Rp2.000</span>
+                </div>
+
+                <div class="flex justify-between text-sm text-gray-500">
+                    <span>Biaya Ongkir(seluruh batam)</span>
+                    <span class="font-bold text-gray-700">Rp10.000</span>
                 </div>
             </div>
 
             <div class="flex justify-between items-center mt-4 pt-4 border-t border-gray-200">
                 <span class="text-base font-bold text-gray-900">Total Pembayaran</span>
                 <span class="text-2xl font-black text-[#FF6B95]" id="total-pembayaran">
-                    Rp{{ number_format($totalSubtotal  + 2000, 0, ',', '.') }}
+                    Rp{{ number_format($totalBayar, 0, ',', '.') }}
                 </span>
             </div>
         </div>
@@ -267,7 +285,7 @@
         </div>
     </div>
 
-    {{-- Modal Peringatan KTP --}}
+    <!-- {{-- Modal Peringatan KTP --}}
     <div id="ktpWarningModal" class="fixed inset-0 bg-black/50 hidden items-center justify-center z-[80] px-4">
         <div class="bg-white w-full max-w-sm rounded-2xl p-6 text-center shadow-2xl">
             <div class="w-14 h-14 bg-red-50 rounded-full flex items-center justify-center mx-auto mb-4">
@@ -291,12 +309,16 @@
                 </button>
             </div>
         </div>
-    </div>
+    </div> -->
 
     <script>
         let currentShipping = 30000;
         const serviceFee = 2000;
-        const baseSubtotal = {{ $totalSubtotal }};
+        const baseSubtotal = {
+            {
+                $totalSubtotal
+            }
+        };
 
         function updateTotals() {
             const total = baseSubtotal + currentShipping + serviceFee;

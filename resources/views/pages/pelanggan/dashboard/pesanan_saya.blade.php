@@ -11,7 +11,7 @@
 
 
 {{-- ====== MAIN CONTENT ====== --}}
-<main class="mt-8 ml-84 min-h-screen bg-[#EEF3F0] px-9 pt-9 pb-16">
+<main class="px-9 pt-9 pb-16">
 
     {{-- Flash --}}
     @if(session('success'))
