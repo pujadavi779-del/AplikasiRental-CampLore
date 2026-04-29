@@ -1,3 +1,55 @@
+     <!-- ========== MAP SECTION ========== -->
+<section class="py-8 bg-white">
+    <div class="max-w-7xl mx-auto px-4">
+        <div class="text-center mb-4">
+            <h2 class="text-3xl font-extrabold text-[#22543D] mb-2">Temukan Kami</h2>
+            <p class="text-gray-500 text-sm">Kunjungi kami di Politeknik Negeri Batam, Kepulauan Riau</p>
+        </div>
+
+        <div class="rounded-2xl overflow-hidden shadow-lg border border-gray-100" style="height: 220px;" id="map"></div>
+        <div class="mt-6 flex flex-col sm:flex-row items-center justify-center gap-4 text-sm text-gray-600">
+            <div class="flex items-center gap-2">
+                <svg class="w-5 h-5 text-[#22543D]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+                </svg>
+                <span>429X+F9 Tlk. Tering, Politeknik Negeri Batam, Batam Kota, Kepulauan Riau</span>
+            </div>
+        </div>
+    </div>
+</section>
+    
+<!-- Leaflet CSS & JS -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+<script>
+    const map = L.map('map').setView([1.1187205, 104.0484566], 17);
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© <a href="https://www.openstreetmap.org/">OpenStreetMap</a>',
+        maxZoom: 19,
+    }).addTo(map);
+
+    const icon = L.divIcon({
+        html: `<div style="background:#22543D;width:16px;height:16px;border-radius:50%;border:3px solid white;box-shadow:0 2px 6px rgba(0,0,0,0.4)"></div>`,
+        iconSize: [16, 16],
+        iconAnchor: [8, 8],
+        className: ''
+    });
+
+    L.marker([1.1187205, 104.0484566], { icon })
+        .addTo(map)
+        .bindPopup(`
+            <div style="font-family:'Plus Jakarta Sans',sans-serif;padding:4px">
+                <strong style="color:#22543D">📍 Camplore</strong><br>
+                <span style="font-size:12px;color:#555">Politeknik Negeri Batam<br>Batam Kota, Kepulauan Riau</span>
+            </div>
+        `)
+        .openPopup();
+</script>
     <!-- ========== FOOTER ========== -->
     <footer class="bg-[#22543D] text-white pt-20 pb-10 overflow-hidden">
         <div class="max-w-7xl mx-auto px-4">

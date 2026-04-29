@@ -341,9 +341,9 @@
                         <img src="{{ asset('images/lulu.png') }}" class="w-full h-full object-cover" alt="Lulu Khaira Yudita">
                     </div>
                     <h3 class="font-extrabold text-gray-900 text-xl mb-1">Lulu Khaira Yudita</h3>
-                    <p class="text-[#ED64A6] font-semibold text-sm mb-3">FullStack</p>
+                    <p class="text-[#ED64A6] font-semibold text-sm mb-3">Anggota</p>
                     <div class="w-10 h-1 bg-[#ED64A6] rounded-full mx-auto mb-4"></div>
-                    <p class="text-gray-500 text-sm italic leading-relaxed">"3312501002"</p>
+                    <p class="text-gray-500 text-sm italic leading-relaxed"></p>
                 </div>
 
                 <!-- Team 2 -->
@@ -353,12 +353,12 @@
                     data-aos="fade-up" data-aos-delay="150">
                     <div class="w-28 h-28 mx-auto mb-5 rounded-full border-4 border-[#ED64A6] overflow-hidden shadow-lg
                             transition duration-300 group-hover:shadow-[0_0_0_4px_rgba(237,100,166,0.2)]">
-                        <img src="{{ asset('images/rizka.jpg') }}" class="w-full h-full object-cover" alt="Rizka Nur Azizah">
+                        <img src="{{ asset('images/rizka.png') }}" class="w-full h-full object-cover" alt="Rizka Nur Azizah">
                     </div>
                     <h3 class="font-extrabold text-white text-xl mb-1">Rizka Nur Azizah</h3>
-                    <p class="text-[#ED64A6] font-semibold text-sm mb-3">Leader Team</p>
+                    <p class="text-[#ED64A6] font-semibold text-sm mb-3">Ketua</p>
                     <div class="w-10 h-1 bg-[#ED64A6] rounded-full mx-auto mb-4"></div>
-                    <p class="text-emerald-200 text-sm italic leading-relaxed">"3312501004"</p>
+                    <p class="text-emerald-200 text-sm italic leading-relaxed"></p>
                 </div>
 
                 <!-- Team 3 -->
@@ -371,9 +371,9 @@
                         <img src="{{ asset('images/puja.png') }}" class="w-full h-full object-cover" alt="Puja Davi">
                     </div>
                     <h3 class="font-extrabold text-gray-900 text-xl mb-1">Puja Davi</h3>
-                    <p class="text-[#ED64A6] font-semibold text-sm mb-3">FullStack</p>
+                    <p class="text-[#ED64A6] font-semibold text-sm mb-3">Anggota</p>
                     <div class="w-10 h-1 bg-[#ED64A6] rounded-full mx-auto mb-4"></div>
-                    <p class="text-gray-500 text-sm italic leading-relaxed">"3312501020"</p>
+                    <p class="text-gray-500 text-sm italic leading-relaxed"></p>
                 </div>
             </div>
         </div>
