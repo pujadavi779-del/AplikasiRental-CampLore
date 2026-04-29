@@ -1,172 +1,38 @@
 <!DOCTYPE html>
 <html lang="id">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>@yield('title') - Camplore</title>
+    <title>@yield('title', 'Camplore')</title>
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-
-    <style>
-        body {
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            background-color: #EEF3F0;
-            margin: 0;
-        }
-
-        /* Animasi Transisi Konten */
-        .anim {
-            animation: fadeUp 0.4s ease both;
-        }
-
-        @keyframes fadeUp {
-            from {
-                opacity: 0;
-                transform: translateY(10px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        /* Menghilangkan Scrollbar */
-        .no-scrollbar::-webkit-scrollbar {
-            display: none;
-        }
-
-        .no-scrollbar {
-            -ms-overflow-style: none;
-            /* IE/Edge */
-            scrollbar-width: none;
-            /* Firefox */
-        }
-    </style>
     @stack('styles')
 </head>
 
-<body class="antialiased no-scrollbar min-h-screen flex flex-col">
+<body class="min-h-screen flex flex-col">
 
-    {{-- 1. NAVBAR (Sticky Top) --}}
-    <nav class="bg-white/95 backdrop-blur-md sticky top-0 z-50 border-b border-pink-100 h-20 flex-shrink-0">
-        <div class="max-w-7xl mx-auto px-4 h-full flex justify-between items-center">
-            <div class="flex items-center gap-2">
-                <a href="{{ route('pages.landing.landing') }}" class="flex items-center">
-                    <img src="{{ asset('images/logo.png') }}" alt="Camplore Logo"
-                        class="h-10 md:h-12 w-auto object-contain transition-transform duration-300 hover:scale-105">
-                </a>
-            </div>
+    {{-- NAVBAR --}}
+    @include('components.navbar_LP')
 
-            {{-- Nav Links --}}
-            <div class="hidden md:flex space-x-8 font-bold text-xs uppercase tracking-widest text-[#1A392D]">
-                <a href="{{ route('pages.landing.about') }}" class="hover:text-[#FF6B95] transition">Tentang Kami</a>
-                <div class="relative group">
-                    <a href="#" class="flex items-center gap-1 hover:text-[#FF6B95] transition">
-                        Kategori
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 transition-transform duration-300 group-hover:rotate-180"
-                            fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                        </svg>
-                    </a>
-                    {{-- Megamenu Dropdown --}}
-                    <div class="fixed left-0 top-[80px] w-full bg-white shadow-2xl border-t border-pink-100
-                        opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-40">
-                        <div class="w-full flex justify-center">
-                            <div class="w-full max-w-6xl px-6 py-10">
-                                <div class="grid grid-cols-2 gap-12 text-center max-w-xl mx-auto">
-                                    <a href="{{ route('camera.LP') }}" class="group">
-                                        <img src="https://images.unsplash.com/photo-1516035069371-29a1b244cc32"
-                                            class="w-full h-32 object-cover rounded-xl mb-3 group-hover:scale-105 transition">
-                                        <p class="text-sm font-semibold uppercase tracking-widest">Kamera</p>
-                                    </a>
-                                    <a href="{{ route('camping.LP') }}" class="group">
-                                        <img src="https://images.unsplash.com/photo-1504280390367-361c6d9f38f4"
-                                            class="w-full h-32 object-cover rounded-xl mb-3 group-hover:scale-105 transition">
-                                        <p class="text-sm font-semibold uppercase tracking-widest">Camping</p>
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            {{-- Action Buttons --}}
-            <div class="flex items-center gap-2">
-                <button class="w-10 h-10 flex items-center justify-center rounded-xl border border-gray-200 bg-white text-[#1A392D] hover:text-[#FF6B95] transition-all duration-200">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                    </svg>
-                </button>
-
-                <a href="{{ route('pages.landing.rental') }}" class="relative w-10 h-10 flex items-center justify-center rounded-xl border border-gray-200 bg-white text-[#1A392D] hover:text-[#FF6B95] transition-all duration-200">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
-                    </svg>
-                    <span class="absolute -top-1.5 -right-1.5 bg-[#FF6B95] text-white text-[10px] font-bold min-w-[18px] h-[18px] px-1 flex items-center justify-center rounded-full border-2 border-white">1</span>
-                </a>
-
-                <div class="relative group">
-                    @guest
-                    <a href="{{ route('login') }}" class="text-[#1A392D] border border-[#1A392D] px-4 py-2 rounded text-sm font-bold hover:bg-[#1A392D] hover:text-white transition">Masuk</a>
-                    @endguest
-
-                    @auth
-                    <button class="flex items-center gap-2 px-3 py-2 rounded-xl border border-gray-200 hover:bg-gray-50 transition">
-                        <span class="text-sm font-semibold text-[#1A392D]">{{ auth()->user()->name }}</span>
-                    </button>
-                    {{-- User Dropdown --}}
-                    <div class="absolute right-0 top-12 w-52 bg-white rounded-2xl shadow-xl border border-gray-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 overflow-hidden">
-                        <div class="px-4 py-3 border-b border-gray-100 bg-gray-50/50">
-                            <p class="text-sm font-bold text-gray-800">{{ auth()->user()->name }}</p>
-                            <p class="text-xs text-gray-400 truncate">{{ auth()->user()->email }}</p>
-                        </div>
-                        <a href="{{ route('dashboard_pelanggan') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">Profil</a>
-                        <form method="POST" action="{{ route('logout') }}">
-                            @csrf
-                            <button type="submit" class="w-full text-left px-4 py-2 text-sm text-red-500 hover:bg-red-50">Keluar</button>
-                        </form>
-                    </div>
-                    @endauth
-                </div>
-            </div>
-        </div>
-    </nav>
-
-    {{-- 2. MAIN LAYOUT WRAPPER --}}
+    {{-- MAIN WRAPPER --}}
     <div class="flex flex-1 relative">
 
-        {{-- SIDEBAR (Fixed Position) --}}
+        {{-- SIDEBAR --}}
         <aside class="fixed left-8 top-[100px] w-[280px] bottom-8 z-40 hidden lg:block">
             <div class="h-full no-scrollbar overflow-y-auto">
                 @include('pages.pelanggan.sidebar')
             </div>
         </aside>
 
-        {{-- CONTENT AREA --}}
-        <main class="flex-1 flex flex-col lg:ml-[320px] min-h-full">
-
-            {{-- User Content --}}
-            <div class="px-8 pt-8 flex-1 anim">
+        {{-- CONTENT --}}
+        <main class="flex-1 lg:ml-[320px]">
+            <div class="px-8 pt-8 anim">
                 @yield('content')
             </div>
-
-            {{-- FOOTER (Berada di bawah konten utama) 
-            <div class="mt-20 px-8 w-full border-t border-gray-100 bg-white/50 backdrop-blur-sm lg:ml-0">
-                 @include('components.footer')
-            </div>
-            --}}
-
         </main>
+
     </div>
 
-    @stack('scripts')
 </body>
-
 </html>

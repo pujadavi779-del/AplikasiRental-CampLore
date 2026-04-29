@@ -10,19 +10,19 @@ class CartController extends Controller
 {
     public function index()
     {
-        $carts = Cart::with('item')
+        $carts = Cart::with('product')
             ->where('user_id', Auth::id())
             ->get();
 
-        return view('pages.landing.cart', compact('carts'));
+        return view('pages.landing.keranjang', compact('carts'));
     }
 
     public function add(Request $request)
     {
         $cart = Cart::updateOrCreate(
             [
-                'user_id' => auth()->id(),
-                'item_id' => $request->item_id,
+                'user_id'    => auth()->id(),
+                'product_id' => $request->product_id,  // 'item_id' → 'product_id'
             ],
             [
                 'quantity'   => $request->quantity,

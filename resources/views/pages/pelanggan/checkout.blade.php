@@ -50,7 +50,7 @@
                 <div class="flex items-center gap-4">
                     <p class="text-sm font-bold text-gray-900">Produk Dipesan</p>
                     @php
-                    $itemNames = $carts->map(fn($c) => $c->item->name ?? '')->filter()->join(', ');
+                    $itemNames = $carts->map(fn($c) => $c->product->name ?? '')->filter()->join(', ');
                     $waText = urlencode('Halo Admin Camplore, saya ingin tanya pesanan: ' . $itemNames);
                     @endphp
                     <a href="https://wa.me/6281276903211?text={{ $waText }}" target="_blank"
@@ -75,7 +75,7 @@
             $days = ($cart->start_date && $cart->end_date)
             ? max(1, \Carbon\Carbon::parse($cart->start_date)->diffInDays($cart->end_date))
             : 1;
-            $subtotal = ($cart->item->price ?? 0) * $cart->quantity * $days;
+            $subtotal = ($cart->product->price_per_day ?? 0) * $cart->quantity * $days;
             $totalSubtotal += $subtotal;
             @endphp
 
@@ -85,21 +85,21 @@
                 <div class="grid grid-cols-[1fr_120px_60px_100px] gap-4 items-center px-5 py-4">
                     <div class="flex items-center gap-3 min-w-0">
                         <div class="w-12 h-12 rounded-xl bg-gray-100 flex items-center justify-center flex-shrink-0 overflow-hidden text-xl">
-                            @if($cart->item && $cart->item->image)
-                            <img src="{{ str_starts_with($cart->item->image, 'http') ? $cart->item->image : asset('storage/'.$cart->item->image) }}"
-                                class="w-full h-full object-cover" alt="{{ $cart->item->name }}">
+                            @if($cart->product && $cart->product->image)
+                            <img src="{{ str_starts_with($cart->product->image, 'http') ? $cart->product->image : asset('storage/'.$cart->product->image) }}"
+                                class="w-full h-full object-cover" alt="{{ $cart->product->name }}">
                             @else
                             📦
                             @endif
                         </div>
                         <div class="min-w-0">
-                            <p class="text-sm font-bold text-gray-900 truncate">{{ $cart->item->name ?? '-' }}</p>
-                            <p class="text-[11px] font-semibold text-[#FF6B95] mt-0.5">Kategori: {{ $cart->item->category ?? '-' }}</p>
+                            <p class="text-sm font-bold text-gray-900 truncate">{{ $cart->product->name ?? '-' }}</p>
+                            <p class="text-[11px] font-semibold text-[#FF6B95] mt-0.5">Kategori: {{ $cart->product->category ?? '-' }}</p>
                         </div>
                     </div>
 
                     <div class="text-center">
-                        <p class="text-sm font-bold text-gray-700">Rp{{ number_format($cart->item->price ?? 0, 0, ',', '.') }}</p>
+                        <p class="text-sm font-bold text-gray-700">Rp{{ number_format($cart->product->price_per_day ?? 0, 0, ',', '.') }}</p>
                         <p class="text-[10px] text-gray-400">/ hari</p>
                     </div>
 
@@ -179,11 +179,11 @@
             ? max(1, \Carbon\Carbon::parse($cart->start_date)->diffInDays($cart->end_date))
             : 1;
 
-            $sub = ($cart->item->price ?? 0) * $cart->quantity * $d;
+            $sub = ($cart->product->price_per_day ?? 0) * $cart->quantity * $d;
             @endphp
 
             <div class="flex justify-between text-sm text-gray-500 mb-2">
-                <span>{{ $cart->item->name ?? '-' }} ({{ $d }} hari)</span>
+                <span>{{ $cart->product->name ?? '-' }} ({{ $d }} hari)</span>
                 <span class="font-semibold text-gray-700">
                     Rp{{ number_format($sub, 0, ',', '.') }}
                 </span>

@@ -37,13 +37,13 @@ use App\Http\Controllers\AdminAuthController;
 */
 
 // Landing Page
-Route::get('/rental', function () {
+Route::get('/keranjang', function () {
     $carts = [];
     if (Auth::check()) {
         $carts = Cart::where('user_id', Auth::id())->get();
     }
-    return view('pages.landing.rental', compact('carts'));
-})->name('pages.landing.rental');
+    return view('pages.landing.keranjang', compact('carts'));
+})->name('pages.landing.keranjang');
 
 // Profile
 Route::get('/profile', [ProfileController::class, 'index'])->middleware('auth');

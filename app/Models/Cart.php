@@ -6,9 +6,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class Cart extends Model
 {
-    protected $fillable = [
+protected $table = 'keranjang';    
+protected $fillable = [
         'user_id',
-        'item_id',
+        'product_id',
         'quantity',
         'start_date',
         'end_date'
@@ -19,9 +20,9 @@ class Cart extends Model
         'end_date'   => 'date',
     ];
 
-    public function item()
+    public function product()
     {
-        return $this->belongsTo(Item::class, 'item_id');
+        return $this->belongsTo(Product::class, 'product_id');
     }
 
     public function getDaysAttribute(): int
@@ -32,7 +33,10 @@ class Cart extends Model
 
     public function getSubtotalAttribute(): int
     {
-        if (!$this->item) return 0;
-        return $this->item->price_per_day * $this->days * $this->quantity;
+        if (!$this->product) return 0;
+
+        return $this->product->price_per_day
+            * $this->days
+            * $this->quantity;
     }
 }

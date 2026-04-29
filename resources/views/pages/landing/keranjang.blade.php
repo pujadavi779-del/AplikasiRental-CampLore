@@ -23,25 +23,24 @@
 
         @forelse($carts as $cart)
         @php
-            $days = ($cart->start_date && $cart->end_date)
-                ? max(1, \Carbon\Carbon::parse($cart->start_date)->diffInDays($cart->end_date))
-                : 1;
-            $subtotal = ($cart->item->price ?? 0) * $cart->quantity * $days;
+        $days = ($cart->start_date && $cart->end_date)
+        ? max(1, \Carbon\Carbon::parse($cart->start_date)->diffInDays($cart->end_date))
+        : 1;
 
-            // FIX: trim whitespace/hidden chars dari URL gambar
-            $rawImage  = $cart->item->image ?? null;
-            $cleanImage = $rawImage ? trim($rawImage) : null;
-            $imgSrc = null;
-            if ($cleanImage) {
-                $imgSrc = str_starts_with($cleanImage, 'http')
-                    ? $cleanImage
-                    : asset('storage/' . $cleanImage);
-            }
+        $subtotal = ($cart->product->price_per_day ?? 0) * $cart->quantity * $days;
+
+        $rawImage = $cart->product->image ?? null;
+        $cleanImage = $rawImage ? trim($rawImage) : null;
+        $imgSrc = $cleanImage
+        ? (str_starts_with($cleanImage, 'http')
+        ? $cleanImage
+        : asset('storage/' . $cleanImage))
+        : null;
         @endphp
 
-        <div class="card-item border-b border-gray-100"
+        <div class="card-item"
             data-id="{{ $cart->id }}"
-            data-price="{{ $cart->item->price ?? 0 }}">
+            data-price="{{ $cart->product->price_per_day ?? 0 }}">
 
             {{-- Baris utama --}}
             <div class="grid grid-cols-[auto_1fr_160px_120px_140px_48px] gap-4 items-center px-4 py-5">
@@ -55,27 +54,27 @@
                 <div class="flex items-center gap-3 min-w-0">
                     <div class="w-14 h-14 rounded-xl bg-gray-100 flex items-center justify-center flex-shrink-0 overflow-hidden shadow-sm">
                         @if($imgSrc)
-                            <img src="{{ $imgSrc }}"
-                                class="w-full h-full object-cover"
-                                alt="{{ $cart->item->name ?? '' }}"
-                                onerror="this.onerror=null; this.src='https://ui-avatars.com/api/?name={{ urlencode($cart->item->name ?? '?') }}&background=FF6B95&color=fff';">
+                        <img src="{{ $imgSrc }}"
+                            class="w-full h-full object-cover"
+                            alt="{{ $cart->product->name ?? '' }}"
+                            onerror="this.onerror=null; this.src='https://ui-avatars.com/api/?name={{ urlencode($cart->product->name ?? '?') }}&background=FF6B95&color=fff';">
                         @else
-                            <div class="bg-pink-100 text-[#FF6B95] w-full h-full flex items-center justify-center font-bold text-xs">
-                                {{ substr($cart->item->name ?? '?', 0, 1) }}
-                            </div>
+                        <div class="bg-pink-100 text-[#FF6B95] w-full h-full flex items-center justify-center font-bold text-xs">
+                            {{ substr($cart->product->name ?? '?', 0, 1) }}
+                        </div>
                         @endif
                     </div>
                     <div class="min-w-0">
-                        <p class="text-sm font-bold text-gray-900 truncate">{{ $cart->item->name ?? '-' }}</p>
+                        <p class="text-sm font-bold text-gray-900 truncate">{{ $cart->product->name ?? '-' }}</p>
 
                         {{-- Kategori --}}
                         <p class="text-[11px] font-semibold text-[#FF6B95] uppercase tracking-wide mt-0.5">
-                            Kategori: {{ $cart->item->category ?? '-' }}
+                            Kategori: {{ $cart->product->category ?? '-' }}
                         </p>
 
                         {{-- Merek (dari kolom body) --}}
                         <p class="text-[10px] font-medium text-gray-500 uppercase tracking-wide">
-                            Merek: {{ $cart->item->body ?? '-' }}
+                            Merek: {{ $cart->product->body ?? '-' }}
                         </p>
                     </div>
                 </div>
@@ -83,7 +82,7 @@
                 {{-- Harga/hari --}}
                 <div class="text-center">
                     <p class="text-sm font-bold text-gray-700">
-                        Rp{{ number_format($cart->item->price ?? 0, 0, ',', '.') }}
+                        Rp{{ number_format($cart->product->price_per_day ?? 0, 0, ',', '.') }}
                     </p>
                 </div>
 
@@ -135,11 +134,11 @@
                     <span class="text-[11px] text-gray-400 font-medium">Tanggal sewa:</span>
                     <span class="date-summary text-[11px] font-bold text-[#FF6B95]">
                         @if($cart->start_date && $cart->end_date)
-                            {{ \Carbon\Carbon::parse($cart->start_date)->format('d/m/Y') }}
-                            –
-                            {{ \Carbon\Carbon::parse($cart->end_date)->format('d/m/Y') }}
+                        {{ \Carbon\Carbon::parse($cart->start_date)->format('d/m/Y') }}
+                        –
+                        {{ \Carbon\Carbon::parse($cart->end_date)->format('d/m/Y') }}
                         @else
-                            <span class="text-gray-300 font-normal">— Belum ada tanggal</span>
+                        <span class="text-gray-300 font-normal">— Belum ada tanggal</span>
                         @endif
                     </span>
                     @if($cart->start_date && $cart->end_date)
@@ -181,12 +180,12 @@
                         </span>
                         <span class="date-error hidden text-xs text-red-500">Tanggal tidak valid</span>
                     </div>
-                    <div class="text-right">
+                    <!-- <div class="text-right">
                         <p class="text-[10px] text-gray-400 font-semibold mb-0.5">Subtotal</p>
                         <p class="text-sm font-bold text-gray-900">
                             Rp<span class="subtotal-detail-panel">{{ number_format($subtotal, 0, ',', '.') }}</span>
                         </p>
-                    </div>
+                    </div> -->
                 </div>
             </div>
 
@@ -229,6 +228,8 @@
             </button>
         </div>
 
+        
+
     </div>
 </div>
 
@@ -239,39 +240,32 @@
         const s = card.querySelector('.start-date')?.value;
         const e = card.querySelector('.end-date')?.value;
         if (!s || !e) return 1;
-        const diff = Math.round((new Date(e) - new Date(s)) / 86400000);
-        return diff > 0 ? diff : 1;
+        const d = Math.floor((new Date(e) - new Date(s)) / 86400000);
+        return d > 0 ? d : 1;
     }
 
     function recalcCard(card) {
-        const price = parseInt(card.dataset.price) || 0;
+        const price = parseFloat(card.dataset.price) || 0;
         const qty = parseInt(card.querySelector('.qty-val').textContent) || 1;
-        const days = getDays(card);
-        const subtotal = price * qty * days;
-        const fmt = subtotal.toLocaleString('id-ID');
-        card.querySelector('.subtotal-detail').textContent = fmt;
-        const panel = card.querySelector('.subtotal-detail-panel');
-        if (panel) panel.textContent = fmt;
+        const subtotal = price * qty * getDays(card);
+        card.querySelector('.subtotal-detail').textContent = subtotal.toLocaleString('id-ID');
     }
 
     function updateSummary() {
-        let total = 0, count = 0;
+        let total = 0,
+            count = 0;
         document.querySelectorAll('.card-item').forEach(card => {
             const cb = card.querySelector('.item-checkbox');
-            if (cb && cb.checked) {
-                const price = parseInt(card.dataset.price) || 0;
-                const qty = parseInt(card.querySelector('.qty-val')?.textContent) || 1;
-                const days = getDays(card);
-                total += price * qty * days;
+            if (cb.checked) {
+                const price = parseFloat(card.dataset.price) || 0;
+                const qty = parseInt(card.querySelector('.qty-val').textContent) || 1;
+                total += price * qty * getDays(card);
                 count++;
             }
         });
         document.getElementById('grandTotal').textContent = 'Rp' + total.toLocaleString('id-ID');
         document.getElementById('countItems').textContent = count;
         document.getElementById('totalChecked').textContent = count;
-        const all = document.querySelectorAll('.item-checkbox');
-        const allCked = all.length > 0 && Array.from(all).every(c => c.checked);
-        document.getElementById('selectAll').checked = allCked;
     }
 
     function toggleDate(strip) {
@@ -335,7 +329,10 @@
                 'Content-Type': 'application/json',
                 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
             },
-            body: JSON.stringify({ start_date: s, end_date: e })
+            body: JSON.stringify({
+                start_date: s,
+                end_date: e
+            })
         }).catch(() => showToast('Gagal menyimpan tanggal'));
 
         updateSummary();
@@ -355,7 +352,9 @@
                 'Content-Type': 'application/json',
                 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
             },
-            body: JSON.stringify({ quantity: val })
+            body: JSON.stringify({
+                quantity: val
+            })
         }).catch(() => showToast('Gagal menyimpan jumlah'));
 
         updateSummary();
@@ -365,21 +364,21 @@
         if (!confirm('Hapus item ini?')) return;
         const card = btn.closest('.card-item');
         fetch(`/cart/${card.dataset.id}`, {
-            method: 'DELETE',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
-            }
-        })
-        .then(r => r.json())
-        .then(data => {
-            if (data.success) {
-                card.remove();
-                updateSummary();
-                checkEmpty();
-            }
-        })
-        .catch(() => showToast('Gagal menghapus item'));
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                }
+            })
+            .then(r => r.json())
+            .then(data => {
+                if (data.success) {
+                    card.remove();
+                    updateSummary();
+                    checkEmpty();
+                }
+            })
+            .catch(() => showToast('Gagal menghapus item'));
     }
 
     function removeAllChecked() {
@@ -388,22 +387,24 @@
         if (!confirm(`Hapus ${checked.length} item?`)) return;
         const ids = Array.from(checked).map(cb => cb.closest('.card-item').dataset.id);
         fetch('/cart/bulk-delete', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
-            },
-            body: JSON.stringify({ ids })
-        })
-        .then(r => r.json())
-        .then(data => {
-            if (data.success) {
-                checked.forEach(cb => cb.closest('.card-item').remove());
-                updateSummary();
-                checkEmpty();
-            }
-        })
-        .catch(() => showToast('Gagal menghapus item'));
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                },
+                body: JSON.stringify({
+                    ids
+                })
+            })
+            .then(r => r.json())
+            .then(data => {
+                if (data.success) {
+                    checked.forEach(cb => cb.closest('.card-item').remove());
+                    updateSummary();
+                    checkEmpty();
+                }
+            })
+            .catch(() => showToast('Gagal menghapus item'));
     }
 
     function selAllChange(src) {

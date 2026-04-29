@@ -13,13 +13,13 @@ class CheckoutController extends Controller
 
         if (!empty($ids)) {
             // Kalau dari "Sewa Sekarang" — ambil cart berdasarkan ID yang dikirim
-            $carts = Cart::with('item')
+            $carts = Cart::with('product')
                 ->whereIn('id', $ids)
                 ->where('user_id', auth()->id())
                 ->get();
         } else {
             // Kalau dari halaman cart biasa — ambil semua cart user
-            $carts = Cart::with('item')
+            $carts = Cart::with('product')
                 ->where('user_id', auth()->id())
                 ->get();
         }
