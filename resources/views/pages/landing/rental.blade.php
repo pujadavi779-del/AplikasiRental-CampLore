@@ -23,10 +23,20 @@
 
         @forelse($carts as $cart)
         @php
-        $days = ($cart->start_date && $cart->end_date)
-        ? max(1, \Carbon\Carbon::parse($cart->start_date)->diffInDays($cart->end_date))
-        : 1;
-        $subtotal = ($cart->item->price ?? 0) * $cart->quantity * $days;
+            $days = ($cart->start_date && $cart->end_date)
+                ? max(1, \Carbon\Carbon::parse($cart->start_date)->diffInDays($cart->end_date))
+                : 1;
+            $subtotal = ($cart->item->price ?? 0) * $cart->quantity * $days;
+
+            // FIX: trim whitespace/hidden chars dari URL gambar
+            $rawImage  = $cart->item->image ?? null;
+            $cleanImage = $rawImage ? trim($rawImage) : null;
+            $imgSrc = null;
+            if ($cleanImage) {
+                $imgSrc = str_starts_with($cleanImage, 'http')
+                    ? $cleanImage
+                    : asset('storage/' . $cleanImage);
+            }
         @endphp
 
         <div class="card-item border-b border-gray-100"
@@ -38,23 +48,34 @@
 
                 {{-- Checkbox --}}
                 <input type="checkbox" checked
-                class="item-checkbox w-5 h-5 cursor-pointer flex-shrink-0 accent-[#FF6B95]"
+                    class="item-checkbox w-5 h-5 cursor-pointer flex-shrink-0 accent-[#FF6B95]"
                     onchange="updateSummary()">
 
                 {{-- Thumbnail + Nama --}}
                 <div class="flex items-center gap-3 min-w-0">
-                    <div class="w-14 h-14 rounded-xl bg-gray-100 flex items-center justify-center flex-shrink-0 overflow-hidden text-2xl">
-                        @if($cart->item && $cart->item->image)
-                        <img src="{{ str_starts_with($cart->item->image, 'http') ? $cart->item->image : asset('storage/'.$cart->item->image) }}"
-                            class="w-full h-full object-cover" alt="{{ $cart->item->name }}">
+                    <div class="w-14 h-14 rounded-xl bg-gray-100 flex items-center justify-center flex-shrink-0 overflow-hidden shadow-sm">
+                        @if($imgSrc)
+                            <img src="{{ $imgSrc }}"
+                                class="w-full h-full object-cover"
+                                alt="{{ $cart->item->name ?? '' }}"
+                                onerror="this.onerror=null; this.src='https://ui-avatars.com/api/?name={{ urlencode($cart->item->name ?? '?') }}&background=FF6B95&color=fff';">
                         @else
-                        📦
+                            <div class="bg-pink-100 text-[#FF6B95] w-full h-full flex items-center justify-center font-bold text-xs">
+                                {{ substr($cart->item->name ?? '?', 0, 1) }}
+                            </div>
                         @endif
                     </div>
                     <div class="min-w-0">
                         <p class="text-sm font-bold text-gray-900 truncate">{{ $cart->item->name ?? '-' }}</p>
+
+                        {{-- Kategori --}}
                         <p class="text-[11px] font-semibold text-[#FF6B95] uppercase tracking-wide mt-0.5">
                             Kategori: {{ $cart->item->category ?? '-' }}
+                        </p>
+
+                        {{-- Merek (dari kolom body) --}}
+                        <p class="text-[10px] font-medium text-gray-500 uppercase tracking-wide">
+                            Merek: {{ $cart->item->body ?? '-' }}
                         </p>
                     </div>
                 </div>
@@ -114,11 +135,11 @@
                     <span class="text-[11px] text-gray-400 font-medium">Tanggal sewa:</span>
                     <span class="date-summary text-[11px] font-bold text-[#FF6B95]">
                         @if($cart->start_date && $cart->end_date)
-                        {{ \Carbon\Carbon::parse($cart->start_date)->format('d/m/Y') }}
-                        –
-                        {{ \Carbon\Carbon::parse($cart->end_date)->format('d/m/Y') }}
+                            {{ \Carbon\Carbon::parse($cart->start_date)->format('d/m/Y') }}
+                            –
+                            {{ \Carbon\Carbon::parse($cart->end_date)->format('d/m/Y') }}
                         @else
-                        <span class="text-gray-300 font-normal">— Belum ada tanggal</span>
+                            <span class="text-gray-300 font-normal">— Belum ada tanggal</span>
                         @endif
                     </span>
                     @if($cart->start_date && $cart->end_date)
@@ -234,8 +255,7 @@
     }
 
     function updateSummary() {
-        let total = 0,
-            count = 0;
+        let total = 0, count = 0;
         document.querySelectorAll('.card-item').forEach(card => {
             const cb = card.querySelector('.item-checkbox');
             if (cb && cb.checked) {
@@ -308,30 +328,15 @@
 
         recalcCard(card);
 
-        // Update tanggal atau qty — ganti X-HTTP-Method-Override jadi PUT biasa
+        // Simpan tanggal ke server
         fetch(`/cart/${card.dataset.id}`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
                 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
             },
-            body: JSON.stringify({
-                start_date: s,
-                end_date: e
-            })
+            body: JSON.stringify({ start_date: s, end_date: e })
         }).catch(() => showToast('Gagal menyimpan tanggal'));
-
-        // Bulk delete — ganti ke route baru
-        fetch('/cart/bulk-delete', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
-            },
-            body: JSON.stringify({
-                ids
-            })
-        })
 
         updateSummary();
     }
@@ -350,9 +355,7 @@
                 'Content-Type': 'application/json',
                 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
             },
-            body: JSON.stringify({
-                quantity: val
-            })
+            body: JSON.stringify({ quantity: val })
         }).catch(() => showToast('Gagal menyimpan jumlah'));
 
         updateSummary();
@@ -362,21 +365,21 @@
         if (!confirm('Hapus item ini?')) return;
         const card = btn.closest('.card-item');
         fetch(`/cart/${card.dataset.id}`, {
-                method: 'DELETE',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
-                }
-            })
-            .then(r => r.json())
-            .then(data => {
-                if (data.success) {
-                    card.remove();
-                    updateSummary();
-                    checkEmpty();
-                }
-            })
-            .catch(() => showToast('Gagal menghapus item'));
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+            }
+        })
+        .then(r => r.json())
+        .then(data => {
+            if (data.success) {
+                card.remove();
+                updateSummary();
+                checkEmpty();
+            }
+        })
+        .catch(() => showToast('Gagal menghapus item'));
     }
 
     function removeAllChecked() {
@@ -385,24 +388,22 @@
         if (!confirm(`Hapus ${checked.length} item?`)) return;
         const ids = Array.from(checked).map(cb => cb.closest('.card-item').dataset.id);
         fetch('/cart/bulk-delete', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
-                },
-                body: JSON.stringify({
-                    ids
-                })
-            })
-            .then(r => r.json())
-            .then(data => {
-                if (data.success) {
-                    checked.forEach(cb => cb.closest('.card-item').remove());
-                    updateSummary();
-                    checkEmpty();
-                }
-            })
-            .catch(() => showToast('Gagal menghapus item'));
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+            },
+            body: JSON.stringify({ ids })
+        })
+        .then(r => r.json())
+        .then(data => {
+            if (data.success) {
+                checked.forEach(cb => cb.closest('.card-item').remove());
+                updateSummary();
+                checkEmpty();
+            }
+        })
+        .catch(() => showToast('Gagal menghapus item'));
     }
 
     function selAllChange(src) {

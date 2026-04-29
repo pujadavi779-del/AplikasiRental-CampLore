@@ -175,12 +175,12 @@
 </div>
 
 <script>
-    // ── State ──────────────────────────────────────────────
+
+    const isLoggedIn = {{ Auth::check() ? 'true' : 'false' }};
     let thumbOffset = 0;
     let qty = 1;
-    const PRICE_PER_DAY = {{ $item -> price_per_day }};
-
-    const MAX_STOCK = {{ $item -> stock ?? 99 }};
+    const PRICE_PER_DAY = {{ $item->price_per_day }};
+    const MAX_STOCK = {{ $item->stock ?? 99 }};
 
     // ── Accordion ──────────────────────────────────────────
     function toggleAcc(button) {
@@ -225,6 +225,16 @@
         qty = next;
         document.getElementById('qtyDisplay').textContent = qty;
         updatePrice();
+    }
+
+    // ── Delivery option ────────────────────────────────────
+    function pickSize(el) {
+        document.querySelectorAll('.size-btn').forEach(b => {
+            b.classList.remove('border-gray-900', 'ring-1', 'ring-gray-900', 'text-gray-900');
+            b.classList.add('border-gray-200', 'text-gray-400');
+        });
+        el.classList.remove('border-gray-200', 'text-gray-400');
+        el.classList.add('border-gray-900', 'ring-1', 'ring-gray-900', 'text-gray-900');
     }
 
     // ── Date helpers ───────────────────────────────────────
@@ -312,6 +322,13 @@
 
     // ── Add to Cart ────────────────────────────────────────
     function addToCart(itemId) {
+        // --- TAMBAHKAN CEK LOGIN DI SINI ---
+        if (!isLoggedIn) {
+            window.location.href = "{{ route('login') }}";
+            return;
+        }
+        // -----------------------------------
+
         const startDate = document.getElementById('startDate').value;
         const endDate = document.getElementById('endDate').value;
         const btn = document.getElementById('addToCartBtn');
@@ -328,6 +345,7 @@
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
+                    'Accept': 'application/json',
                     'X-CSRF-TOKEN': '{{ csrf_token() }}'
                 },
                 body: JSON.stringify({
@@ -337,7 +355,13 @@
                     end_date: endDate,
                 })
             })
-            .then(r => r.json())
+            .then(r => {
+                if (r.status === 401) {
+                    window.location.href = "{{ route('login') }}";
+                    return;
+                }
+                return r.json();
+            })
             .then(data => {
                 if (data.success) {
                     showToast('Berhasil ditambahkan ke keranjang ✓');
@@ -350,12 +374,19 @@
             .catch(() => showToast('Terjadi kesalahan, coba lagi', 'error'))
             .finally(() => {
                 btn.disabled = false;
-                btn.textContent = 'Add to Cart';
+                btn.textContent = 'Tambahkan ke Keranjang';
             });
     }
 
     // ── Sewa Sekarang ──────────────────────────────────────
     function rentNow(itemId) {
+        // --- TAMBAHKAN CEK LOGIN DI SINI ---
+        if (!isLoggedIn) {
+            window.location.href = "{{ route('login') }}";
+            return;
+        }
+        // -----------------------------------
+
         const startDate = document.getElementById('startDate').value;
         const endDate = document.getElementById('endDate').value;
 
@@ -368,6 +399,7 @@
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
+                    'Accept': 'application/json',
                     'X-CSRF-TOKEN': '{{ csrf_token() }}'
                 },
                 body: JSON.stringify({
@@ -377,13 +409,16 @@
                     end_date: endDate,
                 })
             })
-            .then(r => r.json())
-            .then(data => {
-                if (data.success) {
-                    window.location.href = '/checkout?ids[]=' + data.cart_id;
-                } else {
-                    showToast(data.message ?? 'Gagal, coba lagi', 'error');
+            .then(r => {
+                if (r.status === 401) {
+                    window.location.href = "{{ route('login') }}";
+                    return;
                 }
+                return r.json();
+            })
+            .then(data => {
+                if (data.success) window.location.href = '/checkout';
+                else showToast(data.message ?? 'Gagal, coba lagi', 'error');
             })
             .catch(() => showToast('Terjadi kesalahan, coba lagi', 'error'));
     }
