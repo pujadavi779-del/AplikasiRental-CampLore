@@ -349,7 +349,7 @@
                     'X-CSRF-TOKEN': '{{ csrf_token() }}'
                 },
                 body: JSON.stringify({
-                    item_id: itemId,
+                    product_id: itemId,
                     quantity: qty,
                     start_date: startDate,
                     end_date: endDate,
@@ -403,7 +403,7 @@
                     'X-CSRF-TOKEN': '{{ csrf_token() }}'
                 },
                 body: JSON.stringify({
-                    item_id: itemId,
+                    product_id: itemId,
                     quantity: qty,
                     start_date: startDate,
                     end_date: endDate,

@@ -10,19 +10,50 @@ use Illuminate\Support\Facades\Storage;
 class CustomerController extends Controller
 {
     // ── LIST ──────────────────────────────────────────
-    public function index(Request $request)
-    {
-        $customers = Customer::query()
-            // ->withCount('rentals')  ← hapus baris ini
-            ->when($request->search, fn($q, $s) => $q->where('name', 'like', "%$s%")
-                ->orWhere('nik', 'like', "%$s%")
-                ->orWhere('phone', 'like', "%$s%"))
-            ->when($request->status, fn($q, $s) => $q->where('status', $s))
-            ->latest()
-            ->paginate(15);
+    public function index()
+{
+    $customers = collect([
+        (object)[
+            'id' => 1,
+            'name' => 'Budi Santoso',
+            'nik' => '3201010101010001',
+            'phone' => '081234567890',
+            'type' => 'member',
+            'status' => 'aktif',
+            'total_rentals' => 5,
+        ],
+        (object)[
+            'id' => 2,
+            'name' => 'Siti Rahayu',
+            'nik' => '3201010101010002',
+            'phone' => '082345678901',
+            'type' => 'vip',
+            'status' => 'aktif',
+            'total_rentals' => 8,
+        ],
+        (object)[
+            'id' => 3,
+            'name' => 'Rizky Pratama',
+            'nik' => '3201010101010003',
+            'phone' => '083456789012',
+            'type' => 'reguler',
+            'status' => 'aktif',
+            'total_rentals' => 2,
+        ],
+        (object)[
+            'id' => 4,
+            'name' => 'Dewi Lestari',
+            'nik' => '3201010101010004',
+            'phone' => '084567890123',
+            'type' => 'member',
+            'status' => 'nonaktif',
+            'total_rentals' => 3,
+        ],
+    ]);
 
-        return view('pages.admin.pengguna', compact('customers'));
-    }
+    return view('pages.admin.pengguna', compact('customers'));
+    // sesuaikan nama view-nya ↑ kalau berbeda
+}
 
     // ── CREATE FORM ───────────────────────────────────
     public function create()
