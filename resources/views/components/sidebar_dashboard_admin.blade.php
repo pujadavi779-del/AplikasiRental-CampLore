@@ -35,7 +35,7 @@
                 </svg>
                 Transaksi Pembayaran
             </span>
-            <span class="nav-badge bg-[#ED64A6] text-white rounded-full flex items-center justify-center px-1.5 font-bold text-[10px] min-w-[20px] h-5">2</span>
+            
         </a>
 
         <p class="px-4 pt-4 pb-1 text-[10px] font-bold text-emerald-400 tracking-widest uppercase font-sans">Manajemen Operasional</p>
@@ -64,7 +64,7 @@
                 </svg>
                 Pengembalian
             </span>
-            <span class="nav-badge bg-[#ED64A6] text-white rounded-full flex items-center justify-center px-1.5 font-bold text-[10px] min-w-[20px] h-5">2</span>
+            
         </a>
 
         <p class="px-4 pt-4 pb-1 text-[10px] font-bold text-emerald-400 tracking-widest uppercase font-sans">Manajemen Rental</p>

@@ -1,205 +1,356 @@
 @extends('layouts.admin')
 
-@section('title', 'Manajemen Pengembalian - CampLore')
+@section('title', 'Pengembalian - CampLore')
 
 @section('content')
 
 <div class="fixed top-5 right-6 z-40 left-[calc(272px+24px)] max-sm:left-6">
     @include('components.navbar_judul_LP', [
-    'NavParent' => 'Manajemen Operasional',
-    'section' => 'Pengembalian'
+        'NavParent' => 'Manajemen Operasional',
+        'section' => 'Pengembalian'
     ])
 </div>
 
-<div class="max-w-full ">
+<div class="max-w-full">
     <div class="bg-white rounded-[28px] border border-[#d7e6de] shadow-sm overflow-hidden">
+
+        {{-- HEADER --}}
         <div class="p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#eef4f0]">
             <div>
-                <h2 class="text-2xl font-bold text-[#22543D] font-serif leading-tight">
-                    Pengembalian
-                </h2>
-                <p class="text-[11px] text-[#7c8b84] mt-0.5">
-                    Pantau status pengembalian barang dan denda pelanggan.
-                </p>
+                <h2 class="text-2xl font-bold text-[#22543D] font-serif leading-tight">Pengembalian</h2>
+                <p class="text-[11px] text-[#7c8b84] mt-0.5">Pantau status pengembalian barang dan denda pelanggan.</p>
             </div>
         </div>
 
-        {{-- TABLE CONTAINER --}}
-        <div class="p-5 bg-[#fcfdfb]">
-            <div class="relative flex-1">
-                <span class="absolute inset-y-0 left-0 pl-4 flex items-center">
-                    <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" stroke-width="2" />
+        {{-- SEARCH --}}
+        <div class="px-6 py-4 border-b border-[#eef4f0]">
+            <div class="relative max-w-xs">
+                <div class="pointer-events-none absolute inset-y-0 left-3 flex items-center">
+                    <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-4.35-4.35M17 11A6 6 0 1 1 5 11a6 6 0 0 1 12 0z"/>
                     </svg>
-                </span>
-                <input type="text" placeholder="Cari nama pelanggan atau produk..."
-                    class="w-full bg-white border border-[#d7e6de] text-sm py-2.5 pl-11 pr-4 rounded-xl outline-none focus:ring-2 focus:ring-[#22543D]/10 focus:border-[#22543D] transition-all shadow-sm">
+                </div>
+                <input type="text" id="searchInput" placeholder="Cari nama atau produk..."
+                    class="w-full pl-9 pr-4 py-2 text-sm border border-gray-200 rounded-xl bg-gray-50 text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#22543D]/20 focus:border-[#22543D]">
             </div>
         </div>
 
+        {{-- TABLE --}}
         <div class="overflow-x-auto">
-            {{-- table-fixed digunakan agar lebar kolom konsisten --}}
-            <table class="w-full text-left table-fixed min-w-[1000px]">
-                <thead class="bg-[#f1f8f4] text-[#22543D] uppercase text-[10px] font-bold tracking-widest">
-                    <tr class="border-b border-[#e4f0ea]">
-                        {{-- Border kanan ditambahkan dengan border-r --}}
-                        <th class="px-6 py-4 border-r border-[#e4f0ea] w-[15%]">Pemesan</th>
-                        <th class="px-4 py-4 text-center border-r border-[#e4f0ea] w-[12%]">No HP</th>
-                        <th class="px-4 py-4 border-r border-[#e4f0ea] w-[25%]">Alamat</th>
-                        <th class="px-4 py-4 border-r border-[#e4f0ea] w-[15%]">Produk</th>
-                        <th class="px-4 py-4 text-center border-r border-[#e4f0ea] w-[10%]">Tgl Kembali</th>
-                        <th class="px-4 py-4 text-center border-r border-[#e4f0ea] w-[10%]">Denda</th>
-                        <th class="px-6 py-4 text-center w-[13%]">Status</th>
+            <table class="w-full text-left text-sm">
+                <thead class="bg-[#f1f8f4] text-[10px] font-bold uppercase tracking-widest text-[#22543D] border-b border-[#eef4f0]">
+                    <tr>
+                        <th class="px-6 py-3">Pemesan</th>
+                        <th class="px-6 py-3">Produk</th>
+                        <th class="px-6 py-3">Merek</th>
+                        <th class="px-6 py-3">Kategori & Tipe</th>
+                        <th class="px-6 py-3 text-center">Tgl Kembali</th>
+                        <th class="px-6 py-3 text-center">Denda</th>
+                        <th class="px-6 py-3 text-center">Status</th>
+                        <th class="px-6 py-3 text-center">Aksi</th>
                     </tr>
                 </thead>
-                <tbody class="divide-y divide-[#eef4f0]">
-                    @forelse ($data_pengembalian as $item)
-                    <tr class="hover:bg-gray-50 transition-colors">
-                        <td class="px-6 py-4 border-r border-[#eef4f0]">
-                            <div class="text-sm font-bold text-[#22543D]">{{ $item->user->name }}</div>
-                            <div class="text-[10px] text-gray-400 uppercase">INV-{{ $item->id }}</div>
-                        </td>
-                        <td class="px-4 py-4 text-center border-r border-[#eef4f0]">
-                            <span class="text-[11px] font-mono text-gray-600">{{ $item->user->no_hp ?? '-' }}</span>
-                        </td>
-                        <td class="px-4 py-4 border-r border-[#eef4f0]">
-                            <div class="text-[11px] text-gray-600 leading-relaxed">
-                                {{ $item->alamat }} {{-- Sesuaikan nama kolom alamat di database kamu --}}
+                <tbody class="divide-y divide-[#eef4f0]" id="tableBody">
+                    @forelse($data_pengembalian as $item)
+                    @php
+                    $tglKembali    = $item->tanggal_kembali
+                        ? \Carbon\Carbon::parse($item->tanggal_kembali)
+                        : null;
+                    $today         = \Carbon\Carbon::now()->startOfDay();
+                    $isOverdue     = $tglKembali && $today->timestamp > $tglKembali->timestamp;
+                    $hariTerlambat = $isOverdue ? (int) floor(($today->timestamp - $tglKembali->timestamp) / 86400) : 0;
+                    $dendaPerHari  = 50000;
+                    $totalDenda    = $hariTerlambat * $dendaPerHari;
+                    $kategori      = $item->product->kategori ?? 'Kamera';
+                    $tipe          = $item->product->tipe ?? '-';
+                    $merek         = $item->product->merek ?? $item->product->brand ?? '-';
+                    $tglFormatted  = $tglKembali ? $tglKembali->format('d M Y') : '-';
+                    @endphp
+                    <tr class="hover:bg-[#fcfdfb] transition-colors return-row">
+
+                    
+
+                        {{-- Pemesan --}}
+                        <td class="px-6 py-4">
+                            <div class="flex items-center gap-3">
+                                <div class="w-8 h-8 rounded-full bg-[#22543D]/10 flex items-center justify-center text-[#22543D] font-bold text-xs flex-shrink-0">
+                                    {{ strtoupper(substr($item->user->name, 0, 1)) }}
+                                </div>
+                                <div>
+                                    <div class="font-semibold text-gray-800 text-sm">{{ $item->user->name }}</div>
+                                    <div class="text-[10px] text-gray-400">{{ $item->user->no_hp ?? '-' }}</div>
+                                </div>
                             </div>
                         </td>
-                        <td class="px-4 py-4 border-r border-[#eef4f0]">
-                            <div class="text-xs font-medium text-[#22543D]">{{ $item->product->name }}</div>
+
+                        {{-- Produk --}}
+                        <td class="px-6 py-4">
+                            @foreach($item->products as $prod)
+                                <div class="font-semibold text-gray-800 text-sm">{{ $prod->name }}</div>
+                            @endforeach
+                            <div class="text-[10px] text-gray-400 mt-0.5">{{ $item->id_pesanan }}</div>
                         </td>
-                        <td class="px-4 py-4 text-center border-r border-[#eef4f0] text-xs text-gray-600 uppercase">
-                            {{ $item->tanggal_kembali ?? 'N/A' }}
+
+                        {{-- Merek --}}
+                        <td class="px-6 py-4">
+                            <span class="text-sm font-semibold text-gray-600">{{ $merek }}</span>
                         </td>
-                        <td class="px-4 py-4 text-center border-r border-[#eef4f0]">
-                            <span class="text-xs font-bold text-red-500 tracking-tight">IDR 0.00</span>
+
+                        {{-- Kategori & Tipe --}}
+                        <td class="px-6 py-4">
+                            <div class="flex flex-col gap-1">
+                                <span class="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase w-fit
+                                    {{ $kategori === 'Kamera' ? 'bg-blue-100 text-blue-700' : 'bg-emerald-100 text-emerald-700' }}">
+                                    {{ $kategori }}
+                                </span>
+                                <span class="text-[10px] text-gray-400">{{ $tipe }}</span>
+                            </div>
                         </td>
+
+                        {{-- Tgl Kembali --}}
                         <td class="px-6 py-4 text-center">
-                            <button onclick="openModal('{{ $item->user->name }}', '{{ $item->product->name }}')"
-                                class="inline-flex items-center justify-center w-full px-2 py-2 bg-[#f1f8f4] hover:bg-[#22543D] hover:text-white border border-[#d7e6de] text-[#22543D] rounded-lg text-[9px] font-black transition-all active:scale-95 shadow-sm uppercase">
-                                Tandai Kembali
+                            @if($tglKembali)
+                                <div class="text-sm font-semibold {{ $isOverdue ? 'text-red-600' : 'text-gray-700' }}">
+                                    {{ $tglFormatted }}
+                                </div>
+                                @if($isOverdue)
+                                    <div class="text-[10px] font-bold text-red-500 mt-0.5">{{ $hariTerlambat }} hari terlambat</div>
+                                @endif
+                            @else
+                                <span class="text-gray-400 text-xs">-</span>
+                            @endif
+                        </td>
+
+                        {{-- Denda --}}
+                        <td class="px-6 py-4 text-center">
+                            @if($isOverdue)
+                                <div class="font-bold text-red-600 text-sm">Rp {{ number_format($totalDenda, 0, ',', '.') }}</div>
+                                <div class="text-[10px] text-red-400 mt-0.5">{{ $hariTerlambat }}× Rp 50.000</div>
+                            @else
+                                <span class="text-gray-300 text-sm font-bold">—</span>
+                            @endif
+                        </td>
+
+                        {{-- Status --}}
+                        <td class="px-6 py-4 text-center">
+                            @if($isOverdue)
+                                <span class="px-2.5 py-1 rounded-full text-[10px] font-bold uppercase bg-red-100 text-red-600 border border-red-200">Overdue</span>
+                            @else
+                                <span class="px-2.5 py-1 rounded-full text-[10px] font-bold uppercase bg-amber-50 text-amber-600 border border-amber-200">Proses</span>
+                            @endif
+                        </td>
+
+                        {{-- Aksi --}}
+                        <td class="px-6 py-4 text-center">
+                            <button type="button"
+                                onclick='bukaModalKembali(
+                                    @json($item->user->name),
+                                    @json($item->products),
+                                    @json($merek),
+                                    @json($kategori),
+                                    @json($tipe),
+                                    @json($tglFormatted),
+                                    {{ $totalDenda }},
+                                    {{ $hariTerlambat }},
+                                    {{ $item->id }},
+                                    @json($item->id_pesanan)
+                                )'
+                                class="px-3 py-1.5 rounded-lg bg-[#22543D]/10 hover:bg-[#22543D]/20 text-[#22543D] text-[10px] font-bold uppercase border border-[#22543D]/20 transition-colors">
+                                Detail
                             </button>
                         </td>
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="7" class="text-center py-10 text-gray-400 text-xs uppercase tracking-widest font-bold">
-                            Tidak ada barang yang sedang disewa
-                        </td>
+                        <td colspan="8" class="px-6 py-16 text-center text-gray-400 text-sm">Tidak ada barang yang sedang disewa</td>
                     </tr>
                     @endforelse
                 </tbody>
             </table>
         </div>
 
-        {{-- Pagination / Footer --}}
-        <div class="p-5 bg-[#fcfdfb] border-t border-[#eef4f0] flex items-center justify-between">
+        <div id="mKembaliTipePills" style="display:flex; flex-wrap:wrap; gap:6px;"></div>
+
+        <div class="px-6 py-4 bg-[#fcfdfb] border-t border-[#eef4f0]">
             <p class="text-[10px] font-bold text-[#22543D] uppercase tracking-widest">
                 Menampilkan {{ $data_pengembalian->count() }} data pengembalian
             </p>
-            <div class="flex gap-1.5">
-                <button class="w-9 h-9 flex items-center justify-center border border-gray-100 rounded-xl text-gray-400 hover:bg-gray-50 transition">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path d="M15 19l-7-7 7-7" stroke-width="2" />
-                    </svg>
-                </button>
-                <button class="w-9 h-9 flex items-center justify-center bg-[#22543D] text-white font-bold text-xs rounded-xl shadow-lg shadow-[#22543D]/20">1</button>
-                <button class="w-9 h-9 flex items-center justify-center border border-gray-100 rounded-xl text-gray-400 hover:bg-gray-50 transition">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path d="M9 5l7 7-7 7" stroke-width="2" />
-                    </svg>
-                </button>
-            </div>
         </div>
 
     </div>
 </div>
 
-{{-- MODAL POPUP --}}
-<div id="statusModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-[#1a2e23]/40 backdrop-blur-sm transition-all duration-300 opacity-0">
-    <div class="bg-[#f4f5ed] w-[90%] max-w-sm rounded-[28px] p-8 shadow-2xl border border-[#c8c9b4] text-center relative transform scale-95 transition-all duration-300" id="modalCard">
-        <div class="flex justify-center mb-6">
-            <div class="w-16 h-16 bg-[#22543D] rounded-full flex items-center justify-center border-4 border-[#dff0c0] shadow-sm">
-                <svg class="w-8 h-8 text-[#dff0c0]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path d="M5 13l4 4L19 7" stroke-width="3" />
-                </svg>
+{{-- ═══════════════════ MODAL DETAIL PENGEMBALIAN ═══════════════════ --}}
+<div id="modalKembali" style="display:none; position:fixed; inset:0; z-index:99999; background:rgba(0,0,0,0.5); overflow-y:auto;" onclick="if(event.target===this)tutupModalKembali()">
+    <div style="position:relative; margin:40px auto 40px; background:white; border-radius:20px; width:90%; max-width:520px; overflow:hidden; box-shadow:0 25px 60px rgba(0,0,0,0.3);">
+
+        {{-- Header --}}
+        <div style="display:flex; justify-content:space-between; align-items:center; padding:20px 24px; border-bottom:1px solid #eef4f0;">
+            <div>
+                <div style="font-weight:700; font-size:15px; color:#22543D;">Detail Pengembalian</div>
+                <div style="font-size:11px; color:#9ca3af; margin-top:2px;" id="mKembaliSubjudul">Periksa detail sebelum konfirmasi</div>
+            </div>
+            <button onclick="tutupModalKembali()" style="border:none; background:#f3f4f6; border-radius:8px; width:28px; height:28px; cursor:pointer; font-size:14px;">✕</button>
+        </div>
+
+        {{-- Info Pemesan --}}
+        <div style="padding:16px 24px; border-bottom:1px solid #eef4f0; background:#f9fafb;">
+            <div style="font-size:10px; font-weight:700; color:#9ca3af; text-transform:uppercase; letter-spacing:.08em; margin-bottom:10px;">Info Pemesan</div>
+            <div style="display:flex; align-items:center; gap:12px;">
+                <div id="mKembaliAvatar" style="width:38px; height:38px; border-radius:10px; background:#22543D; color:white; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:14px; flex-shrink:0;"></div>
+                <div>
+                    <div id="mKembaliNama" style="font-weight:700; font-size:14px; color:#1f2937;"></div>
+                    <div id="mKembaliProdukInfo" style="font-size:11px; color:#6b7280; margin-top:2px;"></div>
+                </div>
             </div>
         </div>
 
-        <h3 class="text-lg font-bold text-[#22543D] mb-1" id="modalUser">Konfirmasi</h3>
-
-        <p class="text-[11px] text-gray-500 leading-relaxed mb-6 px-4">
-            Pastikan unit <span class="font-bold text-[#ED64A6]" id="modalProduct"></span>
-            telah diperiksa dan diterima kembali oleh tim CampLore.
-        </p>
-
-        <div class="flex gap-3">
-            <button onclick="closeModal()"
-                class="flex-1 px-4 py-3 bg-gray-100 text-gray-500 text-[10px] font-bold rounded-2xl hover:bg-gray-200 transition-colors">
-                BATAL
-            </button>
-
-            <button onclick="confirmAction()"
-                class="flex-1 px-4 py-3 bg-[#22543D] text-white text-[10px] font-bold rounded-2xl hover:bg-[#1B4332] transition-all shadow-md">
-                KONFIRMASI
-            </button>
+        {{-- Barang Dipesan --}}
+        <div style="padding:16px 24px; border-bottom:1px solid #eef4f0;">
+            <div style="font-size:10px; font-weight:700; color:#9ca3af; text-transform:uppercase; letter-spacing:.08em; margin-bottom:10px;">Barang Dipesan</div>
+            <div id="mKembaliBarangList"></div>
         </div>
+
+        {{-- Barang: Kategori + Tipe --}}
+        <div style="padding:16px 24px; border-bottom:1px solid #eef4f0;">
+            
+
+            {{-- Kategori row --}}
+            <div style="margin-bottom:14px;">
+                <div style="display:flex; gap:8px;">
+                </div>
+            </div>
+
+
+            {{-- Merek --}}
+            <div style="display:flex; align-items:center; gap:8px; padding:10px 14px; background:#f9fafb; border-radius:10px; border:1px solid #e5e7eb;">
+                <span style="font-size:11px; font-weight:600; color:#6b7280;">Merek</span>
+                <span style="font-size:12px; font-weight:700; color:#1f2937;" id="mKembaliMerek"></span>
+            </div>
+        </div>
+
+        {{-- Tanggal & Denda --}}
+        <div style="padding:16px 24px; border-bottom:1px solid #eef4f0;">
+            <div style="font-size:10px; font-weight:700; color:#9ca3af; text-transform:uppercase; letter-spacing:.08em; margin-bottom:12px;">Tanggal & Denda</div>
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+                {{-- Tgl kembali --}}
+                <div style="background:#f0fdf4; border-radius:12px; padding:14px; text-align:center; border:1px solid #bbf7d0;">
+                    <div style="font-size:10px; color:#9ca3af; text-transform:uppercase; letter-spacing:.05em; margin-bottom:6px;">Tgl Kembali</div>
+                    <div id="mKembaliTgl" style="font-size:14px; font-weight:700; color:#22543D;"></div>
+                </div>
+                {{-- Denda --}}
+                <div id="mKembaliDendaBox" style="border-radius:12px; padding:14px; text-align:center; border:1px solid #e5e7eb;">
+                    <div style="font-size:10px; color:#9ca3af; text-transform:uppercase; letter-spacing:.05em; margin-bottom:6px;">Denda</div>
+                    <div id="mKembaliDenda" style="font-size:14px; font-weight:700;"></div>
+                    <div id="mKembaliDendaInfo" style="font-size:10px; margin-top:4px;"></div>
+                </div>
+            </div>
+        </div>
+
+        {{-- Footer --}}
+        <div style="padding:16px 24px; display:flex; gap:12px;">
+            <button onclick="tutupModalKembali()" style="flex:1; padding:10px; border:1px solid #e5e7eb; border-radius:12px; background:white; cursor:pointer; font-size:12px; font-weight:600; color:#6b7280;">Batal</button>
+            <button onclick="konfirmasiKembali()" style="flex:1; padding:10px; border:none; border-radius:12px; background:#22543D; color:white; cursor:pointer; font-size:12px; font-weight:700;">✓ Konfirmasi Kembali</button>
+        </div>
+
     </div>
-</div>
 </div>
 
 <script>
-    function openModal(name, product) {
-        const modal = document.getElementById('statusModal');
-        const card = document.getElementById('modalCard');
+var tipeKamera  = ['DSLR', 'Mirrorless', 'Kamera Aksi', 'Kamera Instan (Polaroid)', 'Kamera Video'];
+var tipeCamping = ['Tenda', 'Sleeping Bag', 'Matras', 'Carrier / Backpack', 'Kompor & Alat Masak', 'Lampu & Penerangan', 'Peralatan Hiking'];
 
-        // isi data
-        document.getElementById('modalUser').innerText = name;
-        document.getElementById('modalProduct').innerText = product;
+var currentItemId = null;
 
-        modal.classList.remove('hidden');
-        modal.classList.add('flex');
+function bukaModalKembali(nama, produk, merek, kategori, tipe, tglKembali, denda, hariTerlambat, itemId, idPesanan) {
+    currentItemId = itemId;
 
-        setTimeout(() => {
-            modal.classList.add('opacity-100');
-            card.classList.remove('scale-95');
-            card.classList.add('scale-100');
-        }, 10);
+    // Info pemesan
+    document.getElementById('mKembaliAvatar').textContent    = nama.charAt(0).toUpperCase();
+    document.getElementById('mKembaliNama').textContent      = nama;
+    document.getElementById('mKembaliProdukInfo').textContent = produk + '  •  INV-' + itemId;
+    document.getElementById('mKembaliMerek').textContent     = merek;
+    document.getElementById('mKembaliProdukInfo').textContent = 'ID Pesanan: ' + idPesanan;
+    
+     // Render barang dipesan
+        var barangHtml = '';
+        produk.forEach(function(p) {
+            barangHtml += '<div style="display:flex; align-items:center; justify-content:space-between; padding:10px 14px; background:#fff5f7; border-radius:10px; border:1px solid #fce7f3; margin-bottom:8px;">'
+                + '<div style="display:flex; align-items:center; gap:10px;">'
+                + '<span style="font-weight:700; font-size:13px; color:#1f2937;">' + p.name + '</span>'
+                + '</div>'
+                + '<div style="display:flex; gap:6px;">'
+                + '<span style="padding:3px 10px; border-radius:999px; font-size:10px; font-weight:700; background:#fce7f3; color:#ED64A6;">' + p.kategori + '</span>'
+                + '<span style="padding:3px 10px; border-radius:999px; font-size:10px; font-weight:700; background:#f3f4f6; color:#6b7280;">' + p.tipe + '</span>'
+                + '</div>'
+                + '</div>';
+        });
+        document.getElementById('mKembaliBarangList').innerHTML = barangHtml;
+
+    // cukup ini aja
+    var isKamera = kategori === 'Kamera';
+
+    // ── Tipe pills ──────────────────────────────────
+    var tipeList   = isKamera ? tipeKamera : tipeCamping;
+    var activeBg   = isKamera ? '#eff6ff'  : '#ecfdf5';
+    var activeTxt  = isKamera ? '#ED64A6'  : '#065f46';
+    var activeBdr  = isKamera ? '#ED64A6'  : '#065f46';
+
+    var html = '';
+    tipeList.forEach(function(t) {
+        var active = t === tipe;
+        html += '<span style="padding:5px 12px; border-radius:999px; font-size:10px; font-weight:700; border:1.5px solid '
+              + (active ? activeBdr : '#e5e7eb') + '; background:'
+              + (active ? activeBg  : '#f9fafb') + '; color:'
+              + (active ? activeTxt : '#9ca3af') + ';">'
+              + t + '</span>';
+    });
+    
+
+    // ── Tanggal ─────────────────────────────────────
+    document.getElementById('mKembaliTgl').textContent = tglKembali;
+
+    // ── Denda ───────────────────────────────────────
+    var dendaBox  = document.getElementById('mKembaliDendaBox');
+    var dendaEl   = document.getElementById('mKembaliDenda');
+    var dendaInfo = document.getElementById('mKembaliDendaInfo');
+
+    if (denda > 0) {
+        dendaBox.style.background   = '#fef2f2';
+        dendaBox.style.borderColor  = '#fecaca';
+        dendaEl.style.color         = '#dc2626';
+        dendaEl.textContent         = 'Rp ' + denda.toLocaleString('id-ID');
+        dendaInfo.style.color       = '#f87171';
+        dendaInfo.textContent       = hariTerlambat + ' hari × Rp 50.000';
+    } else {
+        dendaBox.style.background   = '#f0fdf4';
+        dendaBox.style.borderColor  = '#bbf7d0';
+        dendaEl.style.color         = '#16a34a';
+        dendaEl.textContent         = 'Tidak Ada Denda';
+        dendaInfo.style.color       = '#86efac';
+        dendaInfo.textContent       = 'Tepat waktu ✓';
     }
 
-    function closeModal() {
-        const modal = document.getElementById('statusModal');
-        const card = document.getElementById('modalCard');
+    document.getElementById('modalKembali').style.display = 'block';
+}
 
-        modal.classList.remove('opacity-100');
-        card.classList.add('scale-95');
+function tutupModalKembali() {
+    document.getElementById('modalKembali').style.display = 'none';
+}
 
-        setTimeout(() => {
-            modal.classList.add('hidden');
-            modal.classList.remove('flex');
-        }, 300);
-    }
+function konfirmasiKembali() {
+    // TODO: kirim ke server
+    alert('Pengembalian berhasil dikonfirmasi!');
+    tutupModalKembali();
+}
 
-    function confirmAction() {
-        alert('Status Berhasil Diperbarui!');
-        closeModal();
-    }
-
-    // klik luar modal
-    window.onclick = function(event) {
-        const modal = document.getElementById('statusModal');
-        if (event.target === modal) {
-            closeModal();
-        }
-    }
+// Search
+document.getElementById('searchInput').addEventListener('input', function() {
+    var q = this.value.toLowerCase();
+    document.querySelectorAll('.return-row').forEach(function(row) {
+        row.style.display = row.textContent.toLowerCase().indexOf(q) !== -1 ? '' : 'none';
+    });
+});
 </script>
-
-<style>
-    .no-scrollbar::-webkit-scrollbar {
-        display: none;
-    }
-</style>
 
 @endsection
