@@ -155,8 +155,8 @@ Route::prefix('admin')->middleware('admin.auth')->name('admin.')->group(function
         return view('pages.admin.pembayaran', compact('payments'));
     })->name('pembayaran');
 
-    Route::get('/pengiriman', [PemesananController::class, 'pengiriman'])->name('pengiriman');
-    Route::patch('/pengiriman/{id}/tiba', [PemesananController::class, 'tandaiSudahTiba'])->name('pengiriman.tiba');
+    Route::get('/pengiriman', [DeliveryController::class, 'pengiriman'])->name('pengiriman');
+    Route::patch('/pengiriman/{id}/tiba', [DeliveryController::class, 'tandaiSudahTiba'])->name('pengiriman.tiba');
 
     Route::get('/pengembalian', [PengembalianController::class, 'index'])->name('pengembalian');
 
