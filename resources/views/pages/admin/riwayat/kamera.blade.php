@@ -4,7 +4,7 @@
 
 @section('content')
 
-<div class="fixed top-5 left-6 right-6 sm:left-[296px] z-40">
+<div class="mb-6">
     @include('components.navbar_judul_LP', [
     'NavParent' => 'Manajemen Rental',
     'section' => 'Riwayat Kamera'

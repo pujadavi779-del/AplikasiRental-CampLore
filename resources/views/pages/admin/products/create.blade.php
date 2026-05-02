@@ -5,7 +5,7 @@
 @section('content')
 
 {{-- Navbar Header --}}
-<div class="fixed top-5 right-6 z-40 left-[calc(272px+24px)] max-sm:left-6">
+<div class="mb-6">
     @include('components.navbar_judul_LP', [
     'NavParent' => 'Product Management',
     'section' => 'Tambah Produk'
@@ -29,6 +29,8 @@
             </a>
         </div>
 
+        
+
         {{-- Form Section --}}
         <form action="{{ route('admin.products.store') }}" method="POST" enctype="multipart/form-data" class="p-8">
             @csrf
@@ -45,15 +47,12 @@
                     </div>
 
                     <div>
-                        <label class="block text-[11px] font-black text-gray-400 uppercase tracking-widest mb-2">Kategori</label>
-                        <select name="category" required
-                            class="w-full px-4 py-3 bg-gray-50 border border-[#eef4f0] rounded-xl text-sm focus:ring-2 focus:ring-[#22543D]/20 focus:border-[#22543D] outline-none transition-all appearance-none">
-                            <option value="" disabled selected>Pilih Kategori</option>
-                            <option value="Kamera">Kamera</option>
-                            <option value="Camping">Camping</option>
-                            <option value="Lensa">Lensa</option>
-                            <option value="Aksesoris">Aksesoris</option>
-                        </select>
+                        <label class="block text-[11px] font-black text-gray-400 uppercase tracking-widest mb-2">STOK</label>
+                        <div class="relative">
+                            <input type="number" name="price_per_day" required
+                                placeholder="0"
+                                class="w-full pl-5 pr-4 py-3 bg-gray-50 border border-[#eef4f0] rounded-xl text-sm focus:ring-2 focus:ring-[#22543D]/20 focus:border-[#22543D] outline-none transition-all">
+                        </div>
                     </div>
 
                     <div>
@@ -67,9 +66,50 @@
                     </div>
 
                     <div>
-                        <label class="block text-[11px] font-black text-gray-400 uppercase tracking-widest mb-2">Deskripsi Produk</label>
-                        <textarea name="description" rows="5" required
-                            placeholder="Tuliskan spesifikasi, kondisi, dan kelengkapan alat..."
+                        <label class="block text-[11px] font-black text-gray-400 uppercase tracking-widest mb-2">Kategori</label>
+                        <select name="category" required
+                            class="w-full px-4 py-3 bg-gray-50 border border-[#eef4f0] rounded-xl text-sm focus:ring-2 focus:ring-[#22543D]/20 focus:border-[#22543D] outline-none transition-all appearance-none">
+                            <option value="" disabled selected>Pilih Kategori</option>
+                            <option value="Kamera">Kamera</option>
+                            <option value="Camping">Camping</option>
+                            <option value="Lensa">Lensa</option>
+                            <option value="Aksesoris">Aksesoris</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block text-[11px] font-black text-gray-400 uppercase tracking-widest mb-2">Merek</label>
+                        <select name="brand" required
+                            class="w-full px-4 py-3 bg-gray-50 border border-[#eef4f0] rounded-xl text-sm focus:ring-2 focus:ring-[#22543D]/20 focus:border-[#22543D] outline-none transition-all appearance-none">
+                            <option value="" disabled selected>Pilih Merek</option>
+                            <option value="Canon">Canon</option>
+                            <option value="Sony">Sony</option>
+                            <option value="Nikon">Nikon</option>
+                            <option value="Fujifilm">Fujifilm</option>
+                            <option value="GoPro">GoPro</option>
+                            <option value="Sigma">Sigma</option>
+                            <option value="Leica">Leica</option>
+                            <option value="DJI">DJI</option>
+                        </select>
+                    </div>
+
+                    
+                    <div>
+                        <label class="block text-[11px] font-black text-gray-400 uppercase tracking-widest mb-2">Tentang Kamera ini</label>
+                        <textarea name="description" required
+                            placeholder="Tuliskan cerita dari barang ini, seperti kondisi fisik..."
+                            class="w-full px-4 py-3 bg-gray-50 border border-[#eef4f0] rounded-xl text-sm focus:ring-2 focus:ring-[#22543D]/20 focus:border-[#22543D] outline-none transition-all"></textarea>
+                    </div>
+                    <div>
+                        <label class="block text-[11px] font-black text-gray-400 uppercase tracking-widest mb-2">Highlights</label>
+                        <textarea name="highlights" required
+                            placeholder="Tuliskan kepentingan atau keunggulan alat secara singkat..."
+                            class="w-full px-4 py-3 bg-gray-50 border border-[#eef4f0] rounded-xl text-sm focus:ring-2 focus:ring-[#22543D]/20 focus:border-[#22543D] outline-none transition-all"></textarea>
+                    </div>
+                    <div>
+                        <label class="block text-[11px] font-black text-gray-400 uppercase tracking-widest mb-2">Isi Paket</label>
+                        <textarea name="isi_paket" required
+                            placeholder="Tuliskan isi dari paket barang ini include apa saja..."
                             class="w-full px-4 py-3 bg-gray-50 border border-[#eef4f0] rounded-xl text-sm focus:ring-2 focus:ring-[#22543D]/20 focus:border-[#22543D] outline-none transition-all"></textarea>
                     </div>
                 </div>

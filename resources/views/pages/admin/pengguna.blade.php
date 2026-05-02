@@ -4,7 +4,7 @@
 
 @section('content')
 
-<div class="fixed top-5 right-6 z-40 left-[calc(272px+24px)] max-sm:left-6 animate-fade-up">
+<div class="mb-6">
     @include('components.navbar_judul_LP', [
         'NavParent' => 'Manajemen Operasional',
         'section' => 'Pengguna'
@@ -19,11 +19,6 @@
                 <h2 class="text-2xl font-bold text-[#22543D] font-serif leading-tight">Data Pengguna</h2>
                 <p class="text-[11px] text-[#7c8b84] mt-0.5">Kelola semua data customer yang terdaftar</p>
             </div>
-            <a href="{{ route('admin.customers.create') }}"
-               class="inline-flex items-center gap-2 bg-[#22543D] hover:bg-[#1B4332] text-white text-xs font-bold px-5 py-2.5 rounded-xl transition-colors shadow-sm">
-                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
-                Tambah Customer
-            </a>
         </div>
 
         <div class="flex flex-col sm:flex-row gap-3 px-6 py-4 border-b border-[#eef4f0]">
@@ -86,12 +81,12 @@
                                         <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
                                     </svg>
                                 </a>
-                                <button type="button" onclick="alert('Fitur aktif setelah koneksi database')"
+                                <!-- <button type="button" onclick="alert('Fitur aktif setelah koneksi database')"
                                     class="p-1.5 rounded-lg bg-red-50 hover:bg-red-100 text-red-500 transition-colors" title="Hapus">
                                     <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
                                         <path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6"/>
                                     </svg>
-                                </button>
+                                </button> -->
                             </div>
                         </td>
                     </tr>

@@ -4,7 +4,7 @@
 
 @section('content')
 
-<div class="fixed top-5 right-6 z-40 left-[calc(272px+24px)] max-sm:left-6">
+<div class="mb-6">
     @include('components.navbar_judul_LP', [
         'NavParent' => 'Manajemen Operasional',
         'section' => 'Pengiriman'
@@ -177,7 +177,6 @@
                 <div style="font-weight:700; font-size:15px; color:#22543D;" id="detailNama"></div>
                 <div style="font-size:11px; color:#9ca3af; margin-top:3px;" id="detailIdPesanan"></div>
             </div>
-            <button onclick="tutupDetail()" style="border:none; background:#f3f4f6; border-radius:8px; width:28px; height:28px; cursor:pointer; font-size:14px; flex-shrink:0; margin-left:12px;">✕</button>
         </div>
 
         {{-- Info Barang --}}

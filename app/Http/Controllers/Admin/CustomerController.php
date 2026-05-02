@@ -58,7 +58,7 @@ class CustomerController extends Controller
     // ── CREATE FORM ───────────────────────────────────
     public function create()
     {
-        return view('admin.customers.create');
+        return view('pages.admin.pengguna.edit');
     }
 
     // ── STORE ─────────────────────────────────────────
@@ -105,7 +105,7 @@ class CustomerController extends Controller
 
         Customer::create($data);
 
-        return redirect()->route('admin.customers.index')
+        return redirect()->route('pages.admin.pelanggan.edit')
             ->with('success', 'Customer berhasil ditambahkan!');
     }
 
@@ -113,13 +113,13 @@ class CustomerController extends Controller
     public function show(Customer $customer)
     {
         // $customer->loadCount('rentals');  ← hapus baris ini
-        return view('admin.customers.show', compact('customer'));
+        return view('pages.admin.pengguna.show', compact('customer'));
     }
 
     // ── EDIT FORM ─────────────────────────────────────
     public function edit(Customer $customer)
     {
-        return view('admin.customers.edit', compact('customer'));
+        return view('pages.admin.pengguna.edit', compact('customer'));
     }
 
     // ── UPDATE ────────────────────────────────────────
@@ -169,7 +169,7 @@ class CustomerController extends Controller
 
         $customer->update($data);
 
-        return redirect()->route('admin.customers.index')
+        return redirect()->route('pages.admin.pelanggan.edit')
             ->with('success', 'Data customer berhasil diperbarui!');
     }
 
@@ -182,7 +182,7 @@ class CustomerController extends Controller
 
         $customer->delete();
 
-        return redirect()->route('admin.customers.index')
+        return redirect()->route('pages.admin.pelanggan.edit')
             ->with('success', 'Customer berhasil dihapus!');
     }
 }

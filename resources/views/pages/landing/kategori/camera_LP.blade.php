@@ -17,7 +17,7 @@
         </h1>
     </div>
 
-    <div class="flex gap-8 px-10 pb-16 max-w-[1400px] mx-auto">
+    <div class="flex flex-col lg:flex-row gap-8 px-4 lg:px-10 pb-16 max-w-[1400px] mx-auto">
 
         {{-- SIDEBAR --}}
         @include('components.catalog.sidebar_camera')
@@ -34,7 +34,7 @@
             </div>
 
             {{-- GRID --}}
-            <div class="grid grid-cols-4 gap-5">
+            <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 lg:gap-5">
 
                 @foreach($items as $item)
                 <a href="{{ route('camera.show', $item->id) }}"

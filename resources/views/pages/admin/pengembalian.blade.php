@@ -4,7 +4,7 @@
 
 @section('content')
 
-<div class="fixed top-5 right-6 z-40 left-[calc(272px+24px)] max-sm:left-6">
+<div class="mb-6">
     @include('components.navbar_judul_LP', [
         'NavParent' => 'Manajemen Operasional',
         'section' => 'Pengembalian'

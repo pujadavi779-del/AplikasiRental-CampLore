@@ -5,10 +5,10 @@
 @section('content')
 
 {{-- Navbar Header --}}
-<div class="fixed top-5 right-6 z-40 left-[calc(272px+24px)] max-sm:left-6">
+<div class="mb-6">
     @include('components.navbar_judul_LP', [
-    'NavParent' => 'Product Management',
-    'section' => 'Edit Produk'
+    'NavParent' => 'Product Rental',
+    'section' => 'Mengubah Produk'
     ])
 </div>
 
@@ -30,7 +30,7 @@
         {{-- Header --}}
         <div class="p-6 border-b border-[#eef4f0] flex items-center justify-between">
             <div>
-                <h2 class="text-2xl font-bold text-[#22543D] font-serif">Edit Produk</h2>
+                <h2 class="text-2xl font-bold text-[#22543D] font-serif">Mengubah Produk</h2>
                 <p class="text-[11px] text-[#7c8b84] mt-1">Perbarui informasi alat rental</p>
             </div>
             <a href="{{ route('admin.products') }}"
@@ -73,46 +73,17 @@
                         @enderror
                     </div>
 
-                    {{-- Status Barang --}}
+                    {{-- Stok --}}
                     <div>
                         <label class="block text-[11px] font-black text-gray-400 uppercase tracking-widest mb-2">
-                            Status Barang
+                            Stok
                         </label>
-                        <div class="flex gap-3">
-
-                            {{-- Tersedia --}}
-                            <label class="flex-1 cursor-pointer">
-                                <input type="radio" name="stock" value="1"
-                                    class="sr-only peer"
-                                    {{ old('stock', $product->stock) >= 1 ? 'checked' : '' }}>
-                                <div class="flex items-center justify-center gap-2 px-4 py-3 rounded-xl border-2
-                                            border-[#eef4f0] bg-gray-50 text-sm font-bold text-gray-400
-                                            peer-checked:border-emerald-500 peer-checked:bg-emerald-50
-                                            peer-checked:text-emerald-700 transition-all">
-                                    <span class="w-2 h-2 rounded-full bg-current"></span>
-                                    Tersedia
-                                </div>
-                            </label>
-
-                            {{-- Habis --}}
-                            <label class="flex-1 cursor-pointer">
-                                <input type="radio" name="stock" value="0"
-                                    class="sr-only peer"
-                                    {{ old('stock', $product->stock) == 0 ? 'checked' : '' }}>
-                                <div class="flex items-center justify-center gap-2 px-4 py-3 rounded-xl border-2
-                                            border-[#eef4f0] bg-gray-50 text-sm font-bold text-gray-400
-                                            peer-checked:border-red-400 peer-checked:bg-red-50
-                                            peer-checked:text-red-500 transition-all">
-                                    <span class="w-2 h-2 rounded-full bg-current"></span>
-                                    Habis
-                                </div>
-                            </label>
-
-                        </div>
-                        @error('stock')
-                        <p class="mt-1 text-[10px] text-red-500 font-bold">{{ $message }}</p>
-                        @enderror
+                        <input type="number" name="stock" required min="0"
+                            value="{{ old('stock', $product->stock) }}"
+                            class="w-full px-4 py-3 bg-gray-50 border border-[#eef4f0] rounded-xl text-sm">
                     </div>
+
+
 
                     {{-- Kategori --}}
                     <div>
@@ -137,6 +108,21 @@
                         @enderror
                     </div>
 
+                    <div>
+                        <label class="block text-[11px] font-black text-gray-400 uppercase tracking-widest mb-2">
+                            Merek
+                        </label>
+                        <select name="brand" required
+                            class="w-full px-4 py-3 bg-gray-50 border border-[#eef4f0] rounded-xl text-sm">
+                            @foreach(['Canon','Sony','Nikon','Fujifilm','GoPro','Sigma','Leica','DJI'] as $brand)
+                            <option value="{{ $brand }}"
+                                {{ old('brand', $product->brand) == $brand ? 'selected' : '' }}>
+                                {{ $brand }}
+                            </option>
+                            @endforeach
+                        </select>
+                    </div>
+
                     {{-- Harga Rental / Hari --}}
                     <div>
                         <label class="block text-[11px] font-black text-gray-400 uppercase tracking-widest mb-2">
@@ -158,20 +144,23 @@
                         @enderror
                     </div>
 
-                    {{-- Deskripsi --}}
                     <div>
-                        <label class="block text-[11px] font-black text-gray-400 uppercase tracking-widest mb-2">
-                            Deskripsi Produk
-                        </label>
-                        <textarea name="body" rows="5" required
-                            placeholder="Tuliskan spesifikasi, kondisi, dan kelengkapan alat..."
-                            class="w-full px-4 py-3 bg-gray-50 border border-[#eef4f0] rounded-xl text-sm
-                                         focus:ring-2 focus:ring-[#22543D]/20 focus:border-[#22543D] outline-none
-                                         transition-all resize-none
-                                         @error('body') border-red-400 @enderror">{{ old('body', $product->body) }}</textarea>
-                        @error('body')
-                        <p class="mt-1 text-[10px] text-red-500 font-bold">{{ $message }}</p>
-                        @enderror
+                        <label class="block text-[11px] font-black text-gray-400 uppercase tracking-widest mb-2">Tentang Kamera ini</label>
+                        <textarea name="description" required
+                            placeholder="Tuliskan cerita dari barang ini, seperti kondisi fisik..."
+                            class="w-full px-4 py-3 bg-gray-50 border border-[#eef4f0] rounded-xl text-sm focus:ring-2 focus:ring-[#22543D]/20 focus:border-[#22543D] outline-none transition-all"></textarea>
+                    </div>
+                    <div>
+                        <label class="block text-[11px] font-black text-gray-400 uppercase tracking-widest mb-2">Highlights</label>
+                        <textarea name="highlights" required
+                            placeholder="Tuliskan kepentingan atau keunggulan alat secara singkat..."
+                            class="w-full px-4 py-3 bg-gray-50 border border-[#eef4f0] rounded-xl text-sm focus:ring-2 focus:ring-[#22543D]/20 focus:border-[#22543D] outline-none transition-all"></textarea>
+                    </div>
+                    <div>
+                        <label class="block text-[11px] font-black text-gray-400 uppercase tracking-widest mb-2">Isi Paket</label>
+                        <textarea name="isi_paket" required
+                            placeholder="Tuliskan isi dari paket barang ini include apa saja..."
+                            class="w-full px-4 py-3 bg-gray-50 border border-[#eef4f0] rounded-xl text-sm focus:ring-2 focus:ring-[#22543D]/20 focus:border-[#22543D] outline-none transition-all"></textarea>
                     </div>
 
                 </div>

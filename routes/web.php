@@ -169,7 +169,7 @@ Route::prefix('admin')->middleware('admin.auth')->name('admin.')->group(function
     })->name('products');
 
     Route::get('/products/create', function () {
-        return view('admin.products.create');
+        return view('pages.admin.products.create');
     })->name('products.create');
 
     Route::post('/products', [CreateProductController::class, 'store'])->name('products.store');

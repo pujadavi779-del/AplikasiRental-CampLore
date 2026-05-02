@@ -12,7 +12,7 @@ class ProductController extends Controller
     public function edit($id)
     {
         $product = Product::findOrFail($id);
-        return view('admin.products.edit', compact('product'));
+        return view('pages.admin.products.edit', compact('product'));
     }
 
     public function update(Request $request, $id)
