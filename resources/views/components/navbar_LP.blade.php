@@ -31,12 +31,12 @@
                                 <a href="{{ route('camera.LP') }}" class="group">
                                     <img src="https://images.unsplash.com/photo-1516035069371-29a1b244cc32"
                                         class="w-full h-32 object-cover rounded-xl mb-3 group-hover:scale-105 transition">
-                                    <p class="text-sm font-semibold uppercase tracking-widest">Kamera</p>
+                                    <p class="font-serif uppercase tracking-widest">Kamera</p>
                                 </a>
                                 <a href="{{ route('camping.LP') }}" class="group">
                                     <img src="https://images.unsplash.com/photo-1504280390367-361c6d9f38f4"
                                         class="w-full h-32 object-cover rounded-xl mb-3 group-hover:scale-105 transition">
-                                    <p class="text-sm font-semibold uppercase tracking-widest">Camping</p>
+                                    <p class="font-serif uppercase tracking-widest">Camping</p>
                                 </a>
                             </div>
                         </div>

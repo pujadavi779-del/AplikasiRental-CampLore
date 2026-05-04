@@ -5,6 +5,6 @@
     <title>@yield('title', 'Camplore')</title>
 </head>
 <body>
-    @include('components.footer_biasa')
+    <x-footer_biasa />
 </body>
 </html>

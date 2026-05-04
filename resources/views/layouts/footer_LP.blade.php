@@ -2,9 +2,9 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <title>@yield('title', 'Camplore')</title>
+    <title>{{ $title ?? 'Camplore' }}</title>
 </head>
 <body>
-    @include('components.footer_lp')
+    <x-footer_LP />
 </body>
 </html>
