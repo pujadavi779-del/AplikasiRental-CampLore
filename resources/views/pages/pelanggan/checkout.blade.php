@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="id">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -50,8 +49,8 @@
                 <div class="flex items-center gap-4">
                     <p class="text-sm font-bold text-gray-900">Produk Dipesan</p>
                     @php
-                    $itemNames = $carts->map(fn($c) => $c->product->name ?? '')->filter()->join(', ');
-                    $waText = urlencode('Halo Admin Camplore, saya ingin tanya pesanan: ' . $itemNames);
+                        $itemNames = $carts->map(fn($c) => $c->product->name ?? '')->filter()->join(', ');
+                        $waText = urlencode('Halo Admin Camplore, saya ingin tanya pesanan: ' . $itemNames);
                     @endphp
                     <a href="https://wa.me/6281276903211?text={{ $waText }}" target="_blank"
                         class="flex items-center gap-1.5 text-xs font-bold text-green-600 hover:text-green-700 transition">
@@ -61,6 +60,7 @@
                         Chat Sekarang
                     </a>
                 </div>
+                {{-- Table header desktop only --}}
                 <div class="hidden md:grid grid-cols-[120px_60px_100px] gap-4">
                     <p class="text-[11px] font-bold text-gray-400 uppercase tracking-widest text-center">Harga/Hari</p>
                     <p class="text-[11px] font-bold text-gray-400 uppercase tracking-widest text-center">Qty</p>
@@ -72,17 +72,17 @@
             @php $totalSubtotal = 0; @endphp
             @forelse($carts as $cart)
             @php
-            $days = ($cart->start_date && $cart->end_date)
-            ? max(1, \Carbon\Carbon::parse($cart->start_date)->diffInDays($cart->end_date))
-            : 1;
-            $subtotal = ($cart->product->price_per_day ?? 0) * $cart->quantity * $days;
-            $totalSubtotal += $subtotal;
+                $days = ($cart->start_date && $cart->end_date)
+                    ? max(1, \Carbon\Carbon::parse($cart->start_date)->diffInDays($cart->end_date))
+                    : 1;
+                $subtotal = ($cart->product->price_per_day ?? 0) * $cart->quantity * $days;
+                $totalSubtotal += $subtotal;
             @endphp
 
             <div class="border-b border-gray-100 last:border-0">
 
-                {{-- Baris produk --}}
-                <div class="grid grid-cols-[1fr_120px_60px_100px] gap-4 items-center px-5 py-4">
+                {{-- ══ DESKTOP: baris produk ══ --}}
+                <div class="hidden md:grid grid-cols-[1fr_120px_60px_100px] gap-4 items-center px-5 py-4">
                     <div class="flex items-center gap-3 min-w-0">
                         <div class="w-12 h-12 rounded-xl bg-gray-100 flex items-center justify-center flex-shrink-0 overflow-hidden text-xl">
                             @if($cart->product && $cart->product->image)
@@ -97,21 +97,41 @@
                             <p class="text-[11px] font-semibold text-[#FF6B95] mt-0.5">Kategori: {{ $cart->product->category ?? '-' }}</p>
                         </div>
                     </div>
-
                     <div class="text-center">
                         <p class="text-sm font-bold text-gray-700">Rp{{ number_format($cart->product->price_per_day ?? 0, 0, ',', '.') }}</p>
                         <p class="text-[10px] text-gray-400">/ hari</p>
                     </div>
-
                     <div class="text-center text-sm font-bold text-gray-700">{{ $cart->quantity }}</div>
-
                     <div class="text-right text-sm font-bold text-[#FF6B95]">
                         Rp{{ number_format($subtotal, 0, ',', '.') }}
                     </div>
                 </div>
 
-                {{-- Tanggal sewa --}}
-                <div class="mx-5 mb-4 px-4 py-2.5 bg-gray-50 rounded-xl flex items-center gap-3">
+                {{-- ══ MOBILE: baris produk ══ --}}
+                <div class="md:hidden flex items-center gap-3 px-4 pt-4 pb-2">
+                    <div class="w-14 h-14 rounded-xl bg-gray-100 flex-shrink-0 overflow-hidden">
+                        @if($cart->product && $cart->product->image)
+                        <img src="{{ str_starts_with($cart->product->image, 'http') ? $cart->product->image : asset('storage/'.$cart->product->image) }}"
+                            class="w-full h-full object-cover" alt="{{ $cart->product->name }}">
+                        @else
+                        <div class="w-full h-full flex items-center justify-center text-2xl">📦</div>
+                        @endif
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <p class="text-sm font-bold text-gray-900 truncate">{{ $cart->product->name ?? '-' }}</p>
+                        <p class="text-[11px] font-semibold text-[#FF6B95] mt-0.5">{{ $cart->product->category ?? '-' }}</p>
+                        <div class="flex items-center justify-between mt-1.5">
+                            <span class="text-sm font-bold text-gray-700">
+                                Rp{{ number_format($cart->product->price_per_day ?? 0, 0, ',', '.') }}
+                                <span class="text-xs font-normal text-gray-400">/hari × {{ $cart->quantity }}</span>
+                            </span>
+                            <span class="text-sm font-extrabold text-[#FF6B95]">Rp{{ number_format($subtotal, 0, ',', '.') }}</span>
+                        </div>
+                    </div>
+                </div>
+
+                {{-- Tanggal sewa (shared) --}}
+                <div class="mx-4 md:mx-5 mb-3 px-4 py-2.5 bg-gray-50 rounded-xl flex items-center gap-3 flex-wrap">
                     <svg class="w-4 h-4 text-gray-300 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <rect x="3" y="4" width="18" height="18" rx="2" stroke-width="2" />
                         <path stroke-width="2" d="M16 2v4M8 2v4M3 10h18" />
@@ -132,7 +152,7 @@
                 </div>
 
                 {{-- Catatan --}}
-                <div class="mx-5 mb-4">
+                <div class="mx-4 md:mx-5 mb-4">
                     <p class="text-[10px] text-gray-400 font-semibold mb-1">Catatan (opsional)</p>
                     <textarea rows="2" placeholder="Contoh: tolong bawa baterai cadangan, kondisi harus mulus, dll."
                         class="w-full text-sm p-3 border border-gray-200 rounded-xl outline-none focus:border-[#FF6B95] transition resize-none text-gray-700 placeholder-gray-300"></textarea>
@@ -175,42 +195,34 @@
 
             @foreach($carts as $cart)
             @php
-            $d = ($cart->start_date && $cart->end_date)
-            ? max(1, \Carbon\Carbon::parse($cart->start_date)->diffInDays($cart->end_date))
-            : 1;
-
-            $sub = ($cart->product->price_per_day ?? 0) * $cart->quantity * $d;
+                $d = ($cart->start_date && $cart->end_date)
+                    ? max(1, \Carbon\Carbon::parse($cart->start_date)->diffInDays($cart->end_date))
+                    : 1;
+                $sub = ($cart->product->price_per_day ?? 0) * $cart->quantity * $d;
             @endphp
-
             <div class="flex justify-between text-sm text-gray-500 mb-2">
-                <span>{{ $cart->product->name ?? '-' }} ({{ $d }} hari)</span>
-                <span class="font-semibold text-gray-700">
-                    Rp{{ number_format($sub, 0, ',', '.') }}
-                </span>
+                <span class="truncate pr-4">{{ $cart->product->name ?? '-' }} ({{ $d }} hari)</span>
+                <span class="font-semibold text-gray-700 flex-shrink-0">Rp{{ number_format($sub, 0, ',', '.') }}</span>
             </div>
             @endforeach
 
             @php
-            $biayaLayanan = 2000;
-            $ongkir = 10000;
-            $totalBayar = $totalSubtotal + $biayaLayanan + $ongkir;
+                $biayaLayanan = 2000;
+                $ongkir = 10000;
+                $totalBayar = $totalSubtotal + $biayaLayanan + $ongkir;
             @endphp
 
             <div class="border-t border-gray-100 mt-3 pt-4 space-y-2">
                 <div class="flex justify-between text-sm text-gray-500">
                     <span>Subtotal Sewa Produk</span>
-                    <span class="font-bold text-gray-700">
-                        Rp{{ number_format($totalSubtotal, 0, ',', '.') }}
-                    </span>
+                    <span class="font-bold text-gray-700">Rp{{ number_format($totalSubtotal, 0, ',', '.') }}</span>
                 </div>
-
                 <div class="flex justify-between text-sm text-gray-500">
                     <span>Biaya Layanan Aplikasi</span>
                     <span class="font-bold text-gray-700">Rp2.000</span>
                 </div>
-
                 <div class="flex justify-between text-sm text-gray-500">
-                    <span>Biaya Ongkir(seluruh batam)</span>
+                    <span>Biaya Ongkir (seluruh Batam)</span>
                     <span class="font-bold text-gray-700">Rp10.000</span>
                 </div>
             </div>
@@ -231,7 +243,7 @@
             <div>
                 <p class="text-xs text-gray-400">Total Pembayaran</p>
                 <p class="text-xl font-black text-[#FF6B95]" id="total-bottom">
-                    Rp{{ number_format($totalSubtotal  + 2000, 0, ',', '.') }}
+                    Rp{{ number_format($totalBayar, 0, ',', '.') }}
                 </p>
             </div>
             <button onclick="handleCheckout()"
@@ -285,7 +297,7 @@
         </div>
     </div>
 
-    <!-- {{-- Modal Peringatan KTP --}}
+    <!-- Modal KTP (commented, aktifkan kalau perlu)
     <div id="ktpWarningModal" class="fixed inset-0 bg-black/50 hidden items-center justify-center z-[80] px-4">
         <div class="bg-white w-full max-w-sm rounded-2xl p-6 text-center shadow-2xl">
             <div class="w-14 h-14 bg-red-50 rounded-full flex items-center justify-center mx-auto mb-4">
@@ -295,40 +307,18 @@
                 </svg>
             </div>
             <h3 class="text-lg font-black text-gray-900 mb-2">Data Diri Belum Lengkap</h3>
-            <p class="text-sm text-gray-500 mb-6">
-                Kamu belum menambahkan nomor KTP. Lengkapi data diri dulu sebelum melanjutkan pesanan.
-            </p>
+            <p class="text-sm text-gray-500 mb-6">Kamu belum menambahkan nomor KTP. Lengkapi data diri dulu sebelum melanjutkan pesanan.</p>
             <div class="flex gap-3">
                 <button onclick="document.getElementById('ktpWarningModal').classList.remove('!flex')"
-                    class="flex-1 py-3 border border-gray-200 rounded-xl font-bold text-gray-400 text-sm">
-                    Nanti Saja
-                </button>
+                    class="flex-1 py-3 border border-gray-200 rounded-xl font-bold text-gray-400 text-sm">Nanti Saja</button>
                 <button onclick="window.location.href='/profile'"
-                    class="flex-1 py-3 bg-[#FF6B95] text-white rounded-xl font-bold text-sm">
-                    Lengkapi Sekarang
-                </button>
+                    class="flex-1 py-3 bg-[#FF6B95] text-white rounded-xl font-bold text-sm">Lengkapi Sekarang</button>
             </div>
         </div>
-    </div> -->
+    </div>
+    -->
 
     <script>
-        let currentShipping = 30000;
-        const serviceFee = 2000;
-        const baseSubtotal = {
-            {
-                $totalSubtotal
-            }
-        };
-
-        function updateTotals() {
-            const total = baseSubtotal + currentShipping + serviceFee;
-            const fmt = n => 'Rp' + n.toLocaleString('id-ID');
-            const shippingEl = document.getElementById('summary-shipping');
-            if (shippingEl) shippingEl.innerText = currentShipping === 0 ? 'Gratis' : fmt(currentShipping);
-            document.getElementById('total-pembayaran').innerText = fmt(total);
-            document.getElementById('total-bottom').innerText = fmt(total);
-        }
-
         function selectPayment(btn) {
             document.querySelectorAll('[onclick="selectPayment(this)"]').forEach(b => {
                 b.className = 'px-6 py-2 border-2 border-gray-200 text-gray-400 rounded-xl font-bold text-sm hover:border-[#FF6B95] hover:text-[#FF6B95] transition';
@@ -353,21 +343,20 @@
             const name = document.getElementById('input-name').value.trim();
             const phone = document.getElementById('input-phone').value.trim();
             const address = document.getElementById('input-address').value.trim();
-            if (!name || !phone || !address) {
-                alert('Harap isi semua data!');
-                return;
-            }
+            if (!name || !phone || !address) { alert('Harap isi semua data!'); return; }
             document.getElementById('display-name').innerText = name;
             document.getElementById('display-phone').innerText = phone;
             document.getElementById('display-address').innerText = address;
             closeAddressModal();
         }
 
-        const ktpSudahAda = "{{ auth()->user()->ktp_number }}";
+        const ktpSudahAda = "{{ auth()->user()->ktp_number ?? '' }}";
 
         function handleCheckout() {
             if (!ktpSudahAda) {
-                document.getElementById('ktpWarningModal').classList.add('!flex');
+                // Aktifkan modal KTP kalau sudah di-uncomment
+                // document.getElementById('ktpWarningModal').classList.add('!flex');
+                alert('Lengkapi data KTP di profil kamu terlebih dahulu.');
                 return;
             }
             window.location.href = '/success';
@@ -375,5 +364,4 @@
     </script>
 
 </body>
-
 </html>

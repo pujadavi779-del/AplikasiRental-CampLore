@@ -55,10 +55,10 @@
                     <span class="bg-gray-900 text-white text-xs font-bold tracking-widest uppercase px-3 py-1 rounded">Baru</span>
                     @endif
                 </div>
-                <button onclick="toggleLove(this)"
+                <!-- <button onclick="toggleLove(this)"
                     class="love-btn w-9 h-9 rounded-full border border-gray-200 bg-white flex items-center justify-center text-gray-400 hover:border-pink-400 hover:text-pink-500 transition-all">
                     <span class="love-icon text-lg">♡</span>
-                </button>
+                </button> -->
             </div>
 
             <h1 class="text-xl font-bold text-gray-900 leading-snug mb-2">{{ $item->name }}</h1>
@@ -157,12 +157,12 @@
 
             {{-- Info column --}}
             <div class="shrink-0 flex flex-col" style="width:360px;">
-                <div class="flex justify-end gap-2 mb-5">
+                <!-- <div class="flex justify-end gap-2 mb-5">
                     <button onclick="toggleLove(this)" class="love-btn w-9 h-9 rounded-full border border-gray-200 bg-white flex items-center justify-center text-gray-400 hover:border-pink-400 hover:text-pink-500 transition-all duration-300">
                         <span class="love-icon text-lg">♡</span>
                     </button>
                     <button onclick="shareProduct()" class="w-9 h-9 rounded-full border border-gray-200 bg-white flex items-center justify-center text-gray-400 hover:border-blue-400 hover:text-blue-500 transition-all duration-300">↗</button>
-                </div>
+                </div> -->
 
                 @if($item->is_new ?? false)
                 <span class="mb-3 self-start bg-gray-900 text-white text-xs font-bold tracking-widest uppercase px-3 py-1 rounded">Baru</span>
@@ -391,14 +391,14 @@
         .catch(() => showToast('Terjadi kesalahan, coba lagi', 'error'));
     }
 
-    function toggleLove(btn) {
-        const icon = btn.querySelector('.love-icon');
-        btn.classList.toggle('liked');
-        const liked = btn.classList.contains('liked');
-        btn.classList.toggle('border-pink-500', liked);
-        btn.classList.toggle('text-pink-500', liked);
-        icon.textContent = liked ? '♥' : '♡';
-    }
+    // function toggleLove(btn) {
+    //     const icon = btn.querySelector('.love-icon');
+    //     btn.classList.toggle('liked');
+    //     const liked = btn.classList.contains('liked');
+    //     btn.classList.toggle('border-pink-500', liked);
+    //     btn.classList.toggle('text-pink-500', liked);
+    //     icon.textContent = liked ? '♥' : '♡';
+    // }
 
     function shareProduct() {
         if (navigator.share) navigator.share({ title: document.title, url: window.location.href });

@@ -60,7 +60,7 @@
 
                         <img
                             src="{{ $item->image }}" alt="{{ $item->name }}"
-                            class="w-[70%] h-[70%] object-contain transition-transform duration-300 group-hover:scale-105"
+                            class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
                         >
                     </div>
 
