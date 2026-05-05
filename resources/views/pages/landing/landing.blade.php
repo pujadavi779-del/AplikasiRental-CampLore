@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="id">
 
@@ -8,6 +7,17 @@
     <title>Camplore - Capture Your Adventure | Rental Kamera & Alat Camping</title>
 
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'playfair': ['"Playfair Display"', 'Georgia', 'serif'],
+                    }
+                }
+            }
+        }
+    </script>
 
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
 
@@ -27,11 +37,10 @@
             scroll-behavior: smooth;
         }
 
-        /* Custom Font (Optional, biar lebih keren) */
-        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Playfair+Display:ital,wght@0,700;0,800;1,700&display=swap');
 
         body {
-            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-family: 'Inter', sans-serif;
         }
     </style>
 </head>
@@ -49,17 +58,17 @@
 
         <div class="relative z-10 text-center px-4 max-w-4xl" data-aos="zoom-in" data-aos-duration="1000">
             <span class=" text-white px-4 py-1 rounded-full text-xs font-bold mb-4 tracking-widest uppercase">Lengkapi Petualanganmu dengan Kamera & Peralatan Camping Terbaik</span>
-            <h1 class="text-5xl md:text-7xl font-extrabold mb-6 leading-tight tracking-tighter">Abadikan<span class="text-[#ED64A6]">Keindahan Alam</span>,<br> Rasakan Kebebasan.</h1>
+            <h1 class="font-playfair text-5xl md:text-7xl font-extrabold mb-6 leading-tight tracking-tighter">Abadikan<span class="text-[#ED64A6]">Keindahan Alam</span>,<br> Rasakan Kebebasan.</h1>
             <p class="text-lg md:text-xl text-emerald-100 mb-10 max-w-2xl mx-auto leading-relaxed">
                 Sewakan perlengkapan Camping premium dan Kamera profesional dalam satu tempat. Jelajahi dunia, abadikan momen terbaikmu tanpa beban.
             </p>
             <div class="flex flex-col sm:flex-row gap-4 justify-center">
-                <a href="#catalog" class="bg-[#ED64A6] text-white px-10 py-4 rounded-full font-bold text-lg hover:bg-white hover:text-[#22543D] transition-all shadow-lg transform hover:scale-105">Browse Gear</a>
-                <a href="{{ route('pages.landing.about') }}" class="bg-white/10 backdrop-blur-sm border border-white/20 text-white px-10 py-4 rounded-full font-semibold text-lg hover:bg-white/20 transition">Our Story</a>
+                <a href="#catalog" class="bg-[#ED64A6] text-white px-10 py-4 rounded-full font-bold text-lg hover:bg-white hover:text-[#22543D] transition-all shadow-lg transform hover:scale-105">Jelajahi Perlengkapan</a>
+                <a href="{{ route('pages.landing.about') }}" class="bg-white/10 backdrop-blur-sm border border-white/20 text-white px-10 py-4 rounded-full font-semibold text-lg hover:bg-white/20 transition">Perjalanan Kami</a>
             </div>
         </div>
     </section>
-
+    
     <section id="about" class="py-24 max-w-7xl mx-auto px-4 overflow-hidden">
         <div class="grid md:grid-cols-2 gap-16 items-center">
 
@@ -77,16 +86,16 @@
 
             <div data-aos="fade-left" data-aos-duration="1200">
                 <span class="text-[#ED64A6] font-bold tracking-widest uppercase text-sm mb-2 block">Sewa Serba Ada</span>
-                <h2 class="text-4xl md:text-5xl font-extrabold text-[#22543D] mb-6 tracking-tighter leading-tight">Perlengkapan untuk <span class="italic text-[#ED64A6]">Para Kreator</span> & Penjelajah.</h2>
+                <h2 class="font-playfair text-4xl md:text-5xl font-extrabold text-[#22543D] mb-6 tracking-tighter leading-tight">Perlengkapan untuk <span class="italic text-[#ED64A6]">Para Kreator</span> & Penjelajah.</h2>
                 <p class="text-gray-600 mb-10 leading-relaxed text-lg">Camplore hadir untuk memudahkan petualanganmu. Tidak perlu membeli alat mahal untuk sekali pakai. Kami menyediakan kamera mirrorless terbaru,
                     alat berkemah seperti tenda, sleeping bag, dan peralatan masak outdoor dengan kualitas terbaik.</p>
 
                 <div class="grid grid-cols-2 gap-x-8 gap-y-6">
                     @php $features = [
-                    ['icon' => 'M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z', 'title' => 'Cine-Ready Cameras'],
-                    ['icon' => 'M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z M15 11a3 3 0 11-6 0 3 3 0 016 0z', 'title' => 'Rugged Camping Kit'],
-                    ['icon' => 'M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z', 'title' => 'Fully Insured Gears'],
-                    ['icon' => 'M13 10V3L4 14h7v7l9-11h-7z', 'title' => 'Express Delivery']
+                    ['icon' => 'M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z', 'title' => 'Kamera Siap Sinematografi'],
+                    ['icon' => 'M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z M15 11a3 3 0 11-6 0 3 3 0 016 0z', 'title' => 'Perlengkapan Berkemah Tangguh'],
+                    ['icon' => 'M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z', 'title' => 'Perlengkapan yang Diasuransikan Sepenuhnya'],
+                    ['icon' => 'M13 10V3L4 14h7v7l9-11h-7z', 'title' => 'Pengiriman Ekspres']
                     ]; @endphp
 
                     @foreach($features as $index => $feature)
@@ -109,7 +118,7 @@
 
             <div class="text-center mb-16 max-w-2xl mx-auto" data-aos="fade-up">
                 <span class="text-[#ED64A6] font-bold tracking-widest uppercase text-sm">Semua Peralatan Kami</span>
-                <h2 class="text-4xl md:text-5xl font-extrabold text-[#22543D] mt-2 tracking-tighter">Perlengkapan Petualangan Unggulan</h2>
+                <h2 class="font-playfair text-4xl md:text-5xl font-extrabold text-[#22543D] mt-2 tracking-tighter">Perlengkapan Petualangan Unggulan</h2>
                 <p class="text-gray-600 mt-5 leading-relaxed">Peralatan terpopuler yang siap menemani perjalananmu minggu ini.</p>
             </div>
 
@@ -138,7 +147,7 @@
     </section>
 
     <section id="faq" class="py-24 max-w-3xl mx-auto px-4 overflow-hidden">
-        <h2 class="text-4xl font-extrabold text-center text-[#22543D] mb-16 tracking-tighter" data-aos="fade-up">Pertanyaan Umum</h2>
+        <h2 class="font-playfair text-4xl font-extrabold text-center text-[#22543D] mb-16 tracking-tighter" data-aos="fade-up">Pertanyaan Umum</h2>
         <div class="space-y-5">
 
             @php $faqs = [

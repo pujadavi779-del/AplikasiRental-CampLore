@@ -3,6 +3,18 @@
 @section('title', 'Riwayat Sewa')
 
 @section('content')
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@700;800;900&display=swap');
+
+    .anim, .anim * {
+        font-family: 'Inter', sans-serif;
+    }
+
+    .anim h1 {
+        font-family: 'Playfair Display', serif;
+    }
+</style>
+
 <div x-data="{ activeTab: 'all' }" class="anim">
     {{-- 1. Judul Halaman (Sama dengan Alamat Pengiriman) --}}
     <div class="mb-10">

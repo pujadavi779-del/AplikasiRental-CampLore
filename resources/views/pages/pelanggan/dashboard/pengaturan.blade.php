@@ -4,7 +4,7 @@
 
 @push('styles')
 
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,700;0,800;1,700&display=swap" rel="stylesheet">
 
 <style>
     .input-field {
@@ -53,11 +53,11 @@
             reader.readAsDataURL(file);
         }
     }
-}" class="px-9 pt-9 pb-16">
+}" class="px-9 pt-9 pb-16" style="font-family:'Inter',sans-serif;">
 
     {{-- Judul --}}
     <div class="mb-8 anim">
-        <h1 class="text-3xl font-extrabold text-[#22543D] tracking-tight">Pengaturan Akun</h1>
+        <h1 class="text-3xl font-extrabold text-[#22543D] tracking-tight" style="font-family:'Playfair Display',Georgia,serif;">Pengaturan Akun</h1>
         <p class="text-gray-500 mt-1">Kelola informasi data diri dan keamanan akun Anda.</p>
     </div>
 

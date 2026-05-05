@@ -17,7 +17,7 @@
         {{-- HEADER --}}
         <div class="p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#eef4f0]">
             <div>
-                <h2 class="text-2xl font-bold text-[#22543D] font-serif leading-tight">Pengembalian</h2>
+                <h2 class="text-2xl font-bold text-[#22543D] leading-tight" style="font-family:'Playfair Display',Georgia,serif;">Pengembalian</h2>
                 <p class="text-[11px] text-[#7c8b84] mt-0.5">Pantau status pengembalian barang dan denda pelanggan.</p>
             </div>
         </div>
@@ -182,12 +182,12 @@
 
 {{-- ═══════════════════ MODAL DETAIL PENGEMBALIAN ═══════════════════ --}}
 <div id="modalKembali" style="display:none; position:fixed; inset:0; z-index:99999; background:rgba(0,0,0,0.5); overflow-y:auto;" onclick="if(event.target===this)tutupModalKembali()">
-    <div style="position:relative; margin:40px auto 40px; background:white; border-radius:20px; width:90%; max-width:520px; overflow:hidden; box-shadow:0 25px 60px rgba(0,0,0,0.3);">
+    <div style="position:relative; margin:40px auto 40px; background:white; border-radius:20px; width:90%; max-width:520px; overflow:hidden; box-shadow:0 25px 60px rgba(0,0,0,0.3); font-family:'Inter',sans-serif;">
 
         {{-- Header --}}
         <div style="display:flex; justify-content:space-between; align-items:center; padding:20px 24px; border-bottom:1px solid #eef4f0;">
             <div>
-                <div style="font-weight:700; font-size:15px; color:#22543D;">Detail Pengembalian</div>
+                <div style="font-weight:700; font-size:15px; color:#22543D; font-family:'Playfair Display',Georgia,serif;">Detail Pengembalian</div>
                 <div style="font-size:11px; color:#9ca3af; margin-top:2px;" id="mKembaliSubjudul">Periksa detail sebelum konfirmasi</div>
             </div>
             <button onclick="tutupModalKembali()" style="border:none; background:#f3f4f6; border-radius:8px; width:28px; height:28px; cursor:pointer; font-size:14px;">✕</button>
@@ -249,8 +249,8 @@
 
         {{-- Footer --}}
         <div style="padding:16px 24px; display:flex; gap:12px;">
-            <button onclick="tutupModalKembali()" style="flex:1; padding:10px; border:1px solid #e5e7eb; border-radius:12px; background:white; cursor:pointer; font-size:12px; font-weight:600; color:#6b7280;">Batal</button>
-            <button onclick="konfirmasiKembali()" style="flex:1; padding:10px; border:none; border-radius:12px; background:#22543D; color:white; cursor:pointer; font-size:12px; font-weight:700;">✓ Konfirmasi Kembali</button>
+            <button onclick="tutupModalKembali()" style="flex:1; padding:10px; border:1px solid #e5e7eb; border-radius:12px; background:white; cursor:pointer; font-size:12px; font-weight:600; color:#6b7280; font-family:'Inter',sans-serif;">Batal</button>
+            <button onclick="konfirmasiKembali()" style="flex:1; padding:10px; border:none; border-radius:12px; background:#22543D; color:white; cursor:pointer; font-size:12px; font-weight:700; font-family:'Inter',sans-serif;">✓ Konfirmasi Kembali</button>
         </div>
 
     </div>

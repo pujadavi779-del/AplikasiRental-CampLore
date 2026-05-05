@@ -2,6 +2,21 @@
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
+@once
+    @push('styles')
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@700;800&display=swap" rel="stylesheet">
+        <style>
+            footer, footer * {
+                font-family: 'Inter', sans-serif;
+            }
+            footer .brand-name {
+                font-family: 'Playfair Display', serif;
+            }
+        </style>
+    @endpush
+@endonce
 
     <!-- ========== FOOTER ========== -->
     <footer class="bg-[#22543D] text-white pt-20 pb-10 overflow-hidden">
@@ -14,7 +29,7 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
                             </svg>
                         </div>
-                        <span class="text-2xl font-extrabold">Camp<span class="text-[#ED64A6]">lore</span></span>
+                        <span class="brand-name text-2xl font-extrabold">Camp<span class="text-[#ED64A6]">lore</span></span>
                     </a>
                     <p class="text-emerald-200 text-sm leading-relaxed max-w-sm">Setiap Momen Layak Diabadikan, Setiap Perjalanan Layak Dinikmati. Solusi sewa kamera dan perlengkapan camping dalam satu platform.</p>
                 </div>
@@ -27,9 +42,9 @@
                 </div>
                 
                 <div>
-                    <h4 class="font-bold mb-5 text-white">Support</h4>
+                    <h4 class="font-bold mb-5 text-white">Mendukung</h4>
                     <ul class="space-y-3 text-emerald-200 text-sm">
-                        <li><a href="#" class="hover:text-[#ED64A6] transition">Store Location</a></li>
+                        <li><a href="#" class="hover:text-[#ED64A6] transition">Lokasi Toko</a></li>
                     </ul>
                 </div>
                 <div>

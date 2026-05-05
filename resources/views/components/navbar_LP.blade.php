@@ -1,5 +1,25 @@
 {{-- Navbar --}}
 @if(!request()->routeIs('alamat_pengiriman', 'dashboard'))
+
+{{-- Import Google Fonts: Inter + Playfair Display --}}
+@once
+    @push('styles')
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@700;800&display=swap" rel="stylesheet">
+        <style>
+            /* Inter sebagai font utama navbar */
+            nav, nav * {
+                font-family: 'Inter', sans-serif;
+            }
+            /* Playfair Display untuk elemen font-serif (label kategori di megamenu) */
+            nav .font-serif {
+                font-family: 'Playfair Display', serif;
+            }
+        </style>
+    @endpush
+@endonce
+
 <nav class="bg-white/95 backdrop-blur-md sticky top-0 z-50 border-b border-pink-100 h-20 flex-shrink-0">
     <div class="max-w-7xl mx-auto px-4 h-full flex justify-between items-center">
 

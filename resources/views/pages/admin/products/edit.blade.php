@@ -4,6 +4,13 @@
 
 @section('content')
 
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap');
+
+    * { font-family: 'Inter', sans-serif; }
+    .font-serif { font-family: 'Playfair Display', serif !important; }
+</style>
+
 {{-- Navbar Header --}}
 <div class="mb-6">
     @include('components.navbar_judul_LP', [
@@ -82,8 +89,6 @@
                             value="{{ old('stock', $product->stock) }}"
                             class="w-full px-4 py-3 bg-gray-50 border border-[#eef4f0] rounded-xl text-sm">
                     </div>
-
-
 
                     {{-- Kategori --}}
                     <div>

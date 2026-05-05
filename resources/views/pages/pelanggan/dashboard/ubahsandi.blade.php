@@ -4,7 +4,7 @@
 
 @push('styles')
 
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;600;700;800&display=swap" rel="stylesheet">
 
 <style>
     .input-field { transition: all 0.2s; border: 1px solid #E2E8F0; }
@@ -18,7 +18,7 @@
 @endpush
 
 @section('content')
-<div class="px-9 pt-9 pb-16">
+<div class="px-9 pt-9 pb-16" style="font-family: 'Inter', sans-serif;">
 
     {{-- Notifikasi --}}
     @if(session('success'))
@@ -32,7 +32,7 @@
 
     {{-- Header --}}
     <div class="mb-8 anim" style="animation-delay: 0.1s">
-        <h1 class="text-3xl font-extrabold text-[#22543D] tracking-tight">Ubah Kata Sandi Anda</h1>
+        <h1 class="text-3xl font-extrabold text-[#22543D] tracking-tight" style="font-family: 'Playfair Display', serif;">Ubah Kata Sandi Anda</h1>
         <p class="text-gray-500 mt-1">Gunakan password yang kuat untuk menjaga keamanan akun kamu.</p>
     </div>
 

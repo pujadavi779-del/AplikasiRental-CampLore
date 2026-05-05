@@ -7,7 +7,7 @@
     <title>Tentang Kami - Camplore</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Playfair+Display:ital,wght@0,700;0,800;1,700&display=swap" rel="stylesheet">
     <style>
         /* Keyframe animations — tidak bisa digantikan sepenuhnya oleh Tailwind standar */
         @keyframes pulse-dot {
@@ -47,7 +47,8 @@
             theme: {
                 extend: {
                     fontFamily: {
-                        jakarta: ['Plus Jakarta Sans', 'sans-serif']
+                        jakarta: ['Inter', 'sans-serif'],
+                        playfair: ['"Playfair Display"', 'Georgia', 'serif'],
                     },
                     colors: {
                         primary: '#22543D',
@@ -63,7 +64,7 @@
     </script>
 </head>
 
-<body class="bg-gray-50 text-gray-900 overflow-x-hidden font-[Plus_Jakarta_Sans,sans-serif]">
+<body class="bg-gray-50 text-gray-900 overflow-x-hidden" style="font-family: 'Inter', sans-serif;">
 
     @include('layouts.landingpage')
     @yield('content')
@@ -79,7 +80,7 @@
 
         <div class="relative z-10 text-center px-4 max-w-3xl" data-aos="zoom-in" data-aos-duration="900">
             <span class="inline-block bg-[#ED64A6] text-white px-4 py-1 rounded-full text-xs font-bold mb-4 tracking-widest uppercase">Kisah Kami</span>
-            <h1 class="text-5xl md:text-6xl font-extrabold text-white mb-5 leading-tight tracking-tighter">
+            <h1 class="font-playfair text-5xl md:text-6xl font-extrabold text-white mb-5 leading-tight tracking-tighter">
                 Sewa dengan Mudah —<br><span class="text-[#ED64A6]">Kamera & Camping di Satu Tempat.</span>
             </h1>
             <p class="text-emerald-100 text-lg leading-relaxed max-w-xl mx-auto">
@@ -120,7 +121,7 @@
             <!-- Text -->
             <div data-aos="fade-left" data-aos-duration="1100">
                 <span class="text-[#ED64A6] font-bold tracking-widest uppercase text-sm mb-2 block">Tentang Kami</span>
-                <h2 class="text-4xl md:text-5xl font-extrabold text-[#22543D] mb-6 tracking-tighter leading-tight">
+                <h2 class="font-playfair text-4xl md:text-5xl font-extrabold text-[#22543D] mb-6 tracking-tighter leading-tight">
                     Gear untuk <span class="italic text-[#ED64A6]">Petualang</span> & Kreator.
                 </h2>
                 <p class="text-gray-600 mb-8 leading-relaxed text-lg">
@@ -174,7 +175,7 @@
         <div class="max-w-7xl mx-auto px-4">
             <div class="text-center mb-16" data-aos="fade-up">
                 <span class="text-[#ED64A6] font-bold tracking-widest uppercase text-sm">Pencapaian Kami</span>
-                <h2 class="text-4xl md:text-5xl font-extrabold text-[#22543D] mt-2 tracking-tighter">Dampak dalam Angka</h2>
+                <h2 class="font-playfair text-4xl md:text-5xl font-extrabold text-[#22543D] mt-2 tracking-tighter">Dampak dalam Angka</h2>
                 <p class="text-gray-600 mt-4 max-w-xl mx-auto leading-relaxed">
                     Dari setiap sewa kamera hingga tenda yang dipasang di puncak gunung — setiap momen adalah bagian dari perjalanan kami bersama.
                 </p>
@@ -245,7 +246,7 @@
         <div class="max-w-7xl mx-auto px-4 relative z-10">
             <div class="text-center mb-16" data-aos="fade-up">
                 <span class="text-[#ED64A6] font-bold tracking-widest uppercase text-sm">Perjalanan Kami</span>
-                <h2 class="text-4xl md:text-5xl font-extrabold text-white mt-2 tracking-tighter">Perjalanan Kita</h2>
+                <h2 class="font-playfair text-4xl md:text-5xl font-extrabold text-white mt-2 tracking-tighter">Perjalanan Kita</h2>
                 <p class="text-emerald-200 mt-4 max-w-xl mx-auto">Temukan bagaimana kami mengubah semangat petualangan menjadi layanan nyata bagi para explorer.</p>
             </div>
 
@@ -325,7 +326,7 @@
         <div class="max-w-7xl mx-auto px-4">
             <div class="text-center mb-16" data-aos="fade-up">
                 <span class="text-[#ED64A6] font-bold tracking-widest uppercase text-sm">Tim Kami</span>
-                <h2 class="text-4xl md:text-5xl font-extrabold text-[#22543D] mt-2 tracking-tighter">The Dreamers Behind the Lens</h2>
+                <h2 class="font-playfair text-4xl md:text-5xl font-extrabold text-[#22543D] mt-2 tracking-tighter">Tim di Balik Lensa dan Petualangan</h2>
                 <p class="text-gray-600 mt-4 max-w-xl mx-auto leading-relaxed">Setiap anggota membawa semangat berbeda, namun bersama — kami menciptakan harmoni.</p>
             </div>
 
@@ -386,7 +387,7 @@
                 <div class="absolute -top-10 -right-10 w-40 h-40 bg-[#ED64A6]/20 rounded-full blur-2xl"></div>
                 <div class="absolute -bottom-10 -left-10 w-40 h-40 bg-white/5 rounded-full blur-2xl"></div>
                 <span class="relative z-10 inline-block bg-[#ED64A6] text-white px-4 py-1 rounded-full text-xs font-bold mb-4 tracking-widest uppercase">Mulai Sekarang</span>
-                <h2 class="relative z-10 text-3xl md:text-4xl font-extrabold text-white mb-4 tracking-tighter">Siap Memulai Petualanganmu?</h2>
+                <h2 class="font-playfair relative z-10 text-3xl md:text-4xl font-extrabold text-white mb-4 tracking-tighter">Siap Memulai Petualanganmu?</h2>
                 <p class="relative z-10 text-emerald-100 mb-8 leading-relaxed max-w-lg mx-auto">Jelajahi koleksi kamera dan alat camping kami. Pemesanan mudah, Progress cepat, momen tak terlupakan.</p>
                 <div class="relative z-10 flex flex-col sm:flex-row gap-4 justify-center">
                     <a href="#" class="bg-[#ED64A6] text-white px-10 py-4 rounded-full font-bold hover:bg-white hover:text-[#22543D] transition shadow-lg hover:scale-105 transform">Telusuri Katalog</a>

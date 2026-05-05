@@ -4,6 +4,25 @@
     Dipanggil dari layouts/admin.blade.php via @include
 --}}
 
+{{-- Import Google Fonts: Inter + Playfair Display --}}
+@once
+    @push('styles')
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@700;800&display=swap" rel="stylesheet">
+        <style>
+            /* Terapkan Inter sebagai font utama sidebar */
+            aside, aside * {
+                font-family: 'Inter', sans-serif;
+            }
+            /* Playfair Display untuk nama brand/logo */
+            .sidebar-brand {
+                font-family: 'Playfair Display', serif;
+            }
+        </style>
+    @endpush
+@endonce
+
 <div x-data="{
         sidebarOpen: false,
         openRiwayat: {{ request()->is('admin/riwayat*') ? 'true' : 'false' }}
@@ -78,7 +97,7 @@
         <a href="{{ url('/admin/dashboard_admin') }}"
            @click="sidebarOpen = false"
            class="flex items-center gap-3 px-6 py-6 border-b border-white/10 hover:bg-white/5 transition-colors">
-            <span class="text-white font-extrabold text-lg tracking-tight">
+            <span class="sidebar-brand text-white font-extrabold text-lg tracking-tight">
                 Camp<span class="text-[#ED64A6]">lore</span>
             </span>
         </a>

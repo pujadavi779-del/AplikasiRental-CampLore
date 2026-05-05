@@ -1,3 +1,9 @@
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap');
+
+    * { font-family: 'Inter', sans-serif; }
+    .font-serif { font-family: 'Playfair Display', serif !important; }
+</style>
 
 <aside class="h-full bg-white p-6 rounded-[35px] shadow-sm border border-gray-100 flex flex-col overflow-y-auto no-scrollbar">
     

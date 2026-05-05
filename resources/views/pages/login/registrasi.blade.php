@@ -8,9 +8,9 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet">
 </head>
-<body class="font-['Jost',sans-serif] bg-white text-[#1a1a18]">
+<body class="font-['Inter',sans-serif] bg-white text-[#1a1a18]">
 
 {{-- NAVBAR --}}
 <nav class="fixed top-0 left-0 right-0 h-[58px] flex items-center justify-center border-b border-[#e2e2de] bg-white z-[100]">
@@ -23,7 +23,7 @@
 <div class="min-h-screen flex items-start justify-center px-5 pt-[90px] pb-[60px]">
     <div class="w-full max-w-[380px] pt-5">
 
-        <h1 class="font-['Cormorant_Garamond',serif] text-[26px] font-semibold tracking-[3px] uppercase text-[#22543D] text-center mb-2">Buat Akun</h1>
+        <h1 class="font-['Playfair_Display',serif] text-[26px] font-semibold tracking-[3px] uppercase text-[#22543D] text-center mb-2">Buat Akun</h1>
         <p class="text-center text-xs font-light text-[#999990] tracking-[0.3px] mb-7">Isi data berikut untuk mendaftar</p>
 
         {{-- STEP BAR --}}
@@ -125,7 +125,7 @@
                         Berlaku &nbsp;<span id="timer_num" class="font-medium text-[#22543D]">60</span>s
                     </div>
                     <button type="button" id="resend_btn" disabled onclick="resendOtp()"
-                        class="text-xs bg-none border-none cursor-default text-[#999990] font-['Jost'] disabled:cursor-default enabled:text-[#22543D] enabled:underline enabled:cursor-pointer">
+                        class="text-xs bg-none border-none cursor-default text-[#999990] font-['Inter'] disabled:cursor-default enabled:text-[#22543D] enabled:underline enabled:cursor-pointer">
                         Kirim ulang
                     </button>
                 </div>

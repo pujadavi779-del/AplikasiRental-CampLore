@@ -1,4 +1,17 @@
-<nav class="flex items-center justify-between px-6 py-3 bg-white border border-[#d7e6de] rounded-2xl shadow-sm">
+@once
+    @push('styles')
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@700;800&display=swap" rel="stylesheet">
+        <style>
+            .topbar-nav, .topbar-nav * {
+                font-family: 'Inter', sans-serif;
+            }
+        </style>
+    @endpush
+@endonce
+
+<nav class="topbar-nav flex items-center justify-between px-6 py-3 bg-white border border-[#d7e6de] rounded-2xl shadow-sm">
         
         <div class="flex items-center gap-2">
             <span class="text-[#22543D] text-[10px] font-bold uppercase tracking-widest">

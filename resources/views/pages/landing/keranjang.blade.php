@@ -2,9 +2,9 @@
 
 @section('content')
 
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Playfair+Display:ital,wght@0,700;0,800;1,700&display=swap" rel="stylesheet">
 
-<div class="max-w-4xl mx-auto px-4 py-8 pb-36 bg-white min-h-screen" style="font-family:'Plus Jakarta Sans',sans-serif;">
+<div class="max-w-4xl mx-auto px-4 py-8 pb-36 bg-white min-h-screen" style="font-family:'Inter',sans-serif;">
 
     <h2 class="text-2xl font-extrabold text-gray-900 mb-6">Keranjang Rental</h2>
 

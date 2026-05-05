@@ -1,3 +1,19 @@
+@once
+    @push('styles')
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@700;800&display=swap" rel="stylesheet">
+        <style>
+            aside, aside *,
+            .chip-btn, .chip-btn *,
+            #drawer-kategori, #drawer-kategori *,
+            #drawer-merek, #drawer-merek * {
+                font-family: 'Inter', sans-serif;
+            }
+        </style>
+    @endpush
+@endonce
+
 {{-- ===== DESKTOP SIDEBAR ===== --}}
 <aside class="w-64 shrink-0 pt-2 hidden lg:block">
     <div>

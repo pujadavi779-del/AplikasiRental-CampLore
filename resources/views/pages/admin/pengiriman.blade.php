@@ -17,7 +17,7 @@
         {{-- HEADER --}}
         <div class="p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#eef4f0]">
             <div>
-                <h2 class="text-2xl font-bold text-[#22543D] font-serif leading-tight">Data Pengiriman</h2>
+                <h2 class="text-2xl font-bold text-[#22543D] leading-tight" style="font-family:'Playfair Display',Georgia,serif;">Data Pengiriman</h2>
                 <p class="text-[11px] text-[#7c8b84] mt-0.5">Pantau dan kelola semua status logistik pengiriman barang.</p>
             </div>
         </div>
@@ -169,7 +169,7 @@
 
 {{-- ═══════════════════════ MODAL DETAIL ═══════════════════════ --}}
 <div id="modalDetail" style="display:none; position:fixed; inset:0; z-index:99999; background:rgba(0,0,0,0.55); overflow-y:auto;" onclick="if(event.target===this)tutupDetail()">
-    <div style="position:relative; margin:40px auto; background:white; border-radius:20px; width:90%; max-width:520px; overflow:hidden; box-shadow:0 25px 60px rgba(0,0,0,0.25);">
+    <div style="position:relative; margin:40px auto; background:white; border-radius:20px; width:90%; max-width:520px; overflow:hidden; box-shadow:0 25px 60px rgba(0,0,0,0.25); font-family:'Inter',sans-serif;">
 
         {{-- Header --}}
         <div style="display:flex; justify-content:space-between; align-items:flex-start; padding:18px 22px 14px; border-bottom:1px solid #eef4f0;">
@@ -190,16 +190,16 @@
 
         {{-- Footer --}}
         <div style="padding:12px 22px; border-top:1px solid #eef4f0; display:flex; justify-content:flex-end;">
-            <button onclick="tutupDetail()" style="background:#22543D; color:white; border:none; border-radius:10px; padding:9px 22px; font-size:12px; font-weight:700; cursor:pointer;">Tutup</button>
+            <button onclick="tutupDetail()" style="background:#22543D; color:white; border:none; border-radius:10px; padding:9px 22px; font-size:12px; font-weight:700; cursor:pointer; font-family:'Inter',sans-serif;">Tutup</button>
         </div>
     </div>
 </div>
 
 {{-- ═══════════════════════ MODAL KONFIRMASI ═══════════════════════ --}}
 <div id="modalAksi" style="display:none; position:fixed; inset:0; z-index:999999; background:rgba(0,0,0,0.5);" onclick="if(event.target===this)tutupAksi()">
-    <div style="position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); background:white; border-radius:20px; padding:28px 24px; width:90%; max-width:380px; text-align:center; box-shadow:0 20px 60px rgba(0,0,0,0.3);">
+    <div style="position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); background:white; border-radius:20px; padding:28px 24px; width:90%; max-width:380px; text-align:center; box-shadow:0 20px 60px rgba(0,0,0,0.3); font-family:'Inter',sans-serif;">
         <div id="aksiIcon" style="width:56px; height:56px; border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 16px; font-size:24px;"></div>
-        <h3 id="aksiJudul" style="margin:0 0 8px; font-size:16px; font-weight:700; color:#22543D;"></h3>
+        <h3 id="aksiJudul" style="margin:0 0 8px; font-size:16px; font-weight:700; color:#22543D; font-family:'Playfair Display',Georgia,serif;"></h3>
         <p id="aksiSubjudul" style="margin:0 0 20px; font-size:12px; color:#9ca3af;"></p>
 
         {{-- Upload foto (hanya untuk aksi Terima) --}}
@@ -211,8 +211,8 @@
         </div>
 
         <div style="display:flex; gap:12px;">
-            <button onclick="tutupAksi()" style="flex:1; padding:10px; border:1px solid #e5e7eb; border-radius:12px; background:white; cursor:pointer; font-size:12px; font-weight:600;">Batal</button>
-            <button id="aksiBtn" style="flex:1; padding:10px; border:none; border-radius:12px; background:#22543D; color:white; cursor:pointer; font-size:12px; font-weight:700;"></button>
+            <button onclick="tutupAksi()" style="flex:1; padding:10px; border:1px solid #e5e7eb; border-radius:12px; background:white; cursor:pointer; font-size:12px; font-weight:600; font-family:'Inter',sans-serif;">Batal</button>
+            <button id="aksiBtn" style="flex:1; padding:10px; border:none; border-radius:12px; background:#22543D; color:white; cursor:pointer; font-size:12px; font-weight:700; font-family:'Inter',sans-serif;"></button>
         </div>
     </div>
 </div>
@@ -333,13 +333,13 @@ function renderStatusArea(status, nama, fotoTerima) {
 
     if (status === 'dikirim') {
         html += '<button onclick="bukaKonfirmasi(\'proses\', \'' + nama + '\')" '
-              + 'style="flex:1; min-width:120px; padding:10px; border-radius:12px; border:1px solid #fcd34d; background:#fffbeb; color:#b45309; font-size:12px; font-weight:700; cursor:pointer;">'
+              + 'style="flex:1; min-width:120px; padding:10px; border-radius:12px; border:1px solid #fcd34d; background:#fffbeb; color:#b45309; font-size:12px; font-weight:700; cursor:pointer; font-family:\'Inter\',sans-serif;">'
               + '🚚 Tandai Sedang Diantar</button>';
     }
 
     if (status !== 'tiba') {
         html += '<button onclick="bukaKonfirmasi(\'tiba\', \'' + nama + '\')" '
-              + 'style="flex:1; min-width:120px; padding:10px; border-radius:12px; border:1px solid #6ee7b7; background:#d1fae5; color:#065f46; font-size:12px; font-weight:700; cursor:pointer;">'
+              + 'style="flex:1; min-width:120px; padding:10px; border-radius:12px; border:1px solid #6ee7b7; background:#d1fae5; color:#065f46; font-size:12px; font-weight:700; cursor:pointer; font-family:\'Inter\',sans-serif;">'
               + '✅ Pelanggan Sudah Terima</button>';
     }
 

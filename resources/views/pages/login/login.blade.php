@@ -7,9 +7,9 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet">
 </head>
-<body class="font-['Jost',sans-serif] bg-white text-[#1a1a18] h-full">
+<body class="font-['Inter',sans-serif] bg-white text-[#1a1a18] h-full">
 
 {{-- NAVBAR --}}
 <nav class="fixed top-0 left-0 right-0 h-[58px] flex items-center justify-center border-b border-[#e2e2de] bg-white z-[100]">
@@ -22,7 +22,7 @@
 <div class="min-h-screen flex items-center justify-center px-5 pt-[90px] pb-[60px]">
     <div class="w-full max-w-[380px]">
 
-        <h1 class="font-['Cormorant_Garamond',serif] text-[26px] font-semibold tracking-[3px] uppercase text-[#22543D] text-center mb-8">Masuk</h1>
+        <h1 class="font-['Playfair_Display',serif] text-[26px] font-semibold tracking-[3px] uppercase text-[#22543D] text-center mb-8">Masuk</h1>
 
         {{-- Success alert --}}
         @if(session('success'))

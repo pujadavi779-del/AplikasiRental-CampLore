@@ -3,7 +3,7 @@
 @section('title', 'Sewa Saya - Camplore')
 
 @push('styles')
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,700;0,800;1,700&display=swap" rel="stylesheet">
 <style>
     *, *::before, *::after { box-sizing: border-box; }
 
@@ -20,7 +20,7 @@
         --radius: 18px;
     }
 
-    body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--gray-bg); }
+    body { font-family: 'Inter', sans-serif; background: var(--gray-bg); }
 
     .sewa-layout {
         display: flex;
@@ -32,7 +32,7 @@
 
     /* ── MAIN ── */
     .sewa-main { flex: 1; min-width: 0; }
-    .page-title    { font-size: 26px; font-weight: 900; color: var(--green); letter-spacing: -0.5px; }
+    .page-title    { font-size: 26px; font-weight: 900; color: var(--green); letter-spacing: -0.5px; font-family: 'Playfair Display', Georgia, serif; }
     .page-subtitle { font-size: 13px; color: var(--text-muted); margin-top: 4px; }
 
     /* ── FILTER PILLS ── */
@@ -122,7 +122,7 @@
         width: 100%; padding: 9px 0 2px;
         background: none; border: none; cursor: pointer;
         font-size: 12px; font-weight: 700; color: var(--green);
-        font-family: 'Plus Jakarta Sans', sans-serif; text-align: left; transition: opacity .2s;
+        font-family: 'Inter', sans-serif; text-align: left; transition: opacity .2s;
     }
     .show-more-btn:hover { opacity: 0.75; }
     .show-more-btn svg   { width: 14px; height: 14px; transition: transform .25s; flex-shrink: 0; }
@@ -243,7 +243,7 @@
         display: flex; align-items: center; justify-content: center; margin: 0 auto 20px;
     }
     .empty-icon svg { width: 40px; height: 40px; color: var(--green); opacity: 0.3; }
-    .empty-title { font-size: 20px; font-weight: 900; color: var(--green); margin-bottom: 8px; }
+    .empty-title { font-size: 20px; font-weight: 900; color: var(--green); margin-bottom: 8px; font-family: 'Playfair Display', Georgia, serif; }
     .empty-cta {
         display: inline-flex; align-items: center; gap: 8px;
         background: var(--green); color: #fff; padding: 12px 28px; border-radius: 100px;

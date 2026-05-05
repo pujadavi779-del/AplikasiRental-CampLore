@@ -4,6 +4,13 @@
 
 @section('content')
 
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap');
+
+    * { font-family: 'Inter', sans-serif; }
+    .font-serif { font-family: 'Playfair Display', serif !important; }
+</style>
+
 {{-- Navbar Breadcrumb --}}
 <div class="fixed top-5 right-6 z-40 left-[calc(272px+24px)] max-sm:left-6 animate-fade-up">
     @include('components.navbar_judul_LP', [

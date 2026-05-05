@@ -3,6 +3,11 @@
 
 @section('content')
 
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Playfair+Display:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+    body, * { font-family: 'Inter', sans-serif !important; }
+</style>
+
 {{-- HERO --}}
 <section class="relative min-h-[90vh] flex items-center justify-center bg-[#22543D] text-white overflow-hidden">
     <div class="absolute inset-0 opacity-20 bg-[url('https://images.unsplash.com/photo-1510312305653-8ed496efae75?auto=format&fit=crop&q=80')] bg-cover bg-center"></div>

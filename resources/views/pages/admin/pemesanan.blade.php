@@ -4,6 +4,13 @@
 
 @section('content')
 
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap');
+
+    * { font-family: 'Inter', sans-serif; }
+    .font-serif { font-family: 'Playfair Display', serif !important; }
+</style>
+
 <div class="mb-6">
     @include('components.navbar_judul_LP', [
         'NavParent' => 'Manajemen Pesanan',

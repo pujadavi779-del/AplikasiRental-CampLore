@@ -16,7 +16,7 @@
 
         <div class="p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#eef4f0]">
             <div>
-                <h2 class="text-2xl font-bold text-[#22543D] font-serif leading-tight">Data Pengguna</h2>
+                <h2 class="text-2xl font-bold text-[#22543D] leading-tight" style="font-family:'Playfair Display',Georgia,serif;">Data Pengguna</h2>
                 <p class="text-[11px] text-[#7c8b84] mt-0.5">Kelola semua data customer yang terdaftar</p>
             </div>
         </div>
@@ -110,13 +110,13 @@
 
 {{-- MODAL --}}
 <div id="modalSewa" style="display:none; position:fixed; inset:0; z-index:99999; background:rgba(0,0,0,0.5);" onclick="if(event.target===this)tutupModal()">
-    <div style="position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); background:white; border-radius:16px; padding:24px; width:90%; max-width:480px; box-shadow:0 20px 60px rgba(0,0,0,0.3);">
+    <div style="position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); background:white; border-radius:16px; padding:24px; width:90%; max-width:480px; box-shadow:0 20px 60px rgba(0,0,0,0.3); font-family:'Inter',sans-serif;">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
-            <h3 id="modalJudul" style="margin:0; font-size:16px; font-weight:700; color:#22543D;"></h3>
+            <h3 id="modalJudul" style="margin:0; font-size:16px; font-weight:700; color:#22543D; font-family:'Playfair Display',Georgia,serif;"></h3>
         </div>
         <div id="modalIsi"></div>
         <div style="margin-top:16px; text-align:right;">
-            <button onclick="tutupModal()" style="background:#22543D; color:white; border:none; border-radius:10px; padding:8px 20px; cursor:pointer; font-size:13px;">Tutup</button>
+            <button onclick="tutupModal()" style="background:#22543D; color:white; border:none; border-radius:10px; padding:8px 20px; cursor:pointer; font-size:13px; font-family:'Inter',sans-serif;">Tutup</button>
         </div>
     </div>
 </div>

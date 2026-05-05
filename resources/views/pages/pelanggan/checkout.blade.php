@@ -6,10 +6,10 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Checkout - Camplore</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Playfair+Display:wght@400;700;900&display=swap" rel="stylesheet">
 </head>
 
-<body class="text-gray-800 pb-32 font-['Plus_Jakarta_Sans'] bg-white">
+<body class="text-gray-800 pb-32 font-['Inter'] bg-white">
 
     @include('layouts.landingpage')
 
