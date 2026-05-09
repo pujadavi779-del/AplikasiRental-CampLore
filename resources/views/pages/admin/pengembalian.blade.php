@@ -190,7 +190,6 @@
                 <div style="font-weight:700; font-size:15px; color:#22543D; font-family:'Playfair Display',Georgia,serif;">Detail Pengembalian</div>
                 <div style="font-size:11px; color:#9ca3af; margin-top:2px;" id="mKembaliSubjudul">Periksa detail sebelum konfirmasi</div>
             </div>
-            <button onclick="tutupModalKembali()" style="border:none; background:#f3f4f6; border-radius:8px; width:28px; height:28px; cursor:pointer; font-size:14px;">✕</button>
         </div>
 
         {{-- Info Pemesan --}}

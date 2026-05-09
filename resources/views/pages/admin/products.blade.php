@@ -44,7 +44,7 @@
         <div class="p-6 border-b border-[#f1f8f4] flex flex-col md:flex-row gap-4 items-center justify-between">
             <form method="GET" action="{{ route('admin.products') }}" class="relative w-full md:w-80 flex">
                 <input type="text" name="search" value="{{ request('search') }}"
-                    placeholder="Search product..."
+                    placeholder="Cari Nama Produk..."
                     class="w-full pl-4 pr-4 py-2 bg-gray-50 border rounded-xl text-xs">
 
                 <button type="submit" class="ml-2 px-3 bg-[#22543D] text-white rounded-xl text-xs">
@@ -58,7 +58,7 @@
                 <a href="{{ route('admin.products') }}"
                     class="px-4 py-2 text-xs rounded-lg font-bold 
         {{ !request('category') ? 'bg-[#22543D] text-white' : 'bg-gray-100' }}">
-                    All
+                    Semua
                 </a>
 
                 {{-- KAMERA --}}
@@ -124,7 +124,7 @@
                                         <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
                                         <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
                                     </svg>
-                                    Edit
+                                    Ubah
                                 </a>
                                 <button class="text-red-400 hover:bg-red-50 px-3 py-1.5 rounded-lg transition-colors font-bold text-[11px] flex items-center gap-1 border border-transparent hover:border-red-100">
                                     <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
@@ -153,9 +153,8 @@
 
         {{-- PAGINATION FOOTER --}}
         <div class="px-6 py-4 bg-[#fcfdfb] border-t border-[#f1f8f4] flex justify-between items-center text-[10px] font-bold text-gray-400 uppercase tracking-widest">
-            <span>Showing {{ $products->count() }} Products</span>
+            <span>Menampilkan {{ $products->count() }} Produk</span>
             <div class="px-6 py-4 bg-[#fcfdfb] border-t flex justify-between items-center text-xs">
-                <span>Total {{ $products->total() }} produk</span>
 
                 <div>
                     {{ $products->links() }}

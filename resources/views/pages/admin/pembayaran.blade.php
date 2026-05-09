@@ -42,7 +42,7 @@
                     </svg>
                 </span>
                 <input type="text"
-                    placeholder="Cari Order ID atau Invoice..."
+                    placeholder="Cari ID Pesanan atau Tanggal..."
                     class="w-full pl-10 pr-4 py-2.5 bg-gray-50 border border-[#d7e6de] rounded-xl text-xs focus:ring-1 focus:ring-[#ED64A6] focus:border-[#ED64A6] outline-none shadow-inner">
             </div>
         </div>
@@ -86,7 +86,7 @@
                             </span>
                         </td>
                         <td class="px-4 py-4 border-r text-xs font-black text-[#22543D]">
-                            IDR 150,000.00
+                            Rp 150,000.00
                         </td>
                         <td class="px-4 py-4 text-[10px] text-gray-500 uppercase">
                             12 Apr 2026, 14:35:10
@@ -107,7 +107,7 @@
                             </span>
                         </td>
                         <td class="px-4 py-4 border-r text-xs font-black text-gray-400">
-                            IDR 0.00
+                            Rp 0.00
                         </td>
                         <td class="px-4 py-4 text-[10px] text-gray-500 uppercase">
                             12 Apr 2026, 16:11:45
@@ -120,7 +120,7 @@
 
         {{-- FOOTER --}}
         <div class="px-6 py-4 bg-[#fcfdfb] border-t border-[#f1f8f4] flex justify-between items-center text-[10px] font-bold text-gray-400 uppercase">
-            <span>Showing {{ $payments->count() ?? 2 }} Payments</span>
+            <span>Menampilkan {{ $payments->count() ?? 2 }} Pembayaran</span>
             <div class="flex gap-2">
                 <button class="w-9 h-9 border rounded-xl">‹</button>
                 <button class="w-9 h-9 bg-[#22543D] text-white rounded-xl">1</button>

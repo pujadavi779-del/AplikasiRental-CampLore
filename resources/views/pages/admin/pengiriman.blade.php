@@ -42,7 +42,6 @@
                     <tr>
                         <th class="px-6 py-3">Pemesan</th>
                         <th class="px-6 py-3">Alamat</th>
-                        <th class="px-6 py-3">Barang</th>
                         <th class="px-6 py-3 text-center">Tgl Mulai</th>
                         <th class="px-6 py-3 text-center">Status</th>
                         <th class="px-6 py-3 text-center">Aksi</th>
@@ -54,7 +53,6 @@
                         $hPlus  = $item['h_plus'] ?? 0;
                         $status = $item['status'] ?? 'dikirim';
                         $idPesanan = $item['id_pesanan'] ?? 'CMP-000';
-                        // Barang bisa 1 atau array 2 item
                         $barangList = is_array($item['barang']) ? $item['barang'] : [['nama' => $item['barang'], 'kategori' => $item['kategori'] ?? 'Kamera']];
                     @endphp
                     <tr class="hover:bg-[#fcfdfb] transition-colors delivery-row">
@@ -74,36 +72,6 @@
                         {{-- Alamat --}}
                         <td class="px-6 py-4">
                             <p class="text-[11px] text-gray-500 max-w-[180px] leading-relaxed">{{ $item['alamat'] }}</p>
-                        </td>
-
-                        {{-- Barang (bisa 2) --}}
-                        <td class="px-6 py-4">
-                            <div class="flex flex-col gap-1.5">
-                                @foreach($barangList as $b)
-                                <div class="flex items-center gap-2">
-                                    {{-- Icon kategori --}}
-                                    @if(($b['kategori'] ?? '') === 'Kamera')
-                                        {{-- Icon Kamera SVG --}}
-                                        <span class="inline-flex items-center justify-center w-6 h-6 rounded-md bg-blue-50 flex-shrink-0">
-                                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#ED64A6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                                <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
-                                                <circle cx="12" cy="13" r="4"/>
-                                            </svg>
-                                        </span>
-                                    @else
-                                        {{-- Icon Camping / Tenda --}}
-                                        <span class="inline-flex items-center justify-center w-6 h-6 rounded-md bg-emerald-50 flex-shrink-0">
-                                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#065f46" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                                <path d="M3 18 L12 4 L21 18 Z"/>
-                                                <path d="M1 18 H23"/>
-                                                <path d="M10 18 L12 14 L14 18"/>
-                                            </svg>
-                                        </span>
-                                    @endif
-                                    <span class="font-semibold text-gray-800 text-sm">{{ $b['nama'] }}</span>
-                                </div>
-                                @endforeach
-                            </div>
                         </td>
 
                         {{-- Tgl Mulai --}}
@@ -150,7 +118,7 @@
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="6" class="px-6 py-16 text-center text-gray-400 text-sm">Belum ada data pengiriman.</td>
+                        <td colspan="5" class="px-6 py-16 text-center text-gray-400 text-sm">Belum ada data pengiriman.</td>
                     </tr>
                     @endforelse
                 </tbody>
@@ -237,39 +205,29 @@ function bukaDetail(nama, barangList, tanggal, idPesanan, status, fotoTerima) {
     document.getElementById('detailNama').textContent      = nama;
     document.getElementById('detailIdPesanan').textContent = 'ID Pesanan: ' + idPesanan + '  •  Mulai: ' + tanggal;
 
-    // Render list barang — sekarang tampil Kategori + Tipe
     var barangHtml = '';
     barangList.forEach(function(b) {
         var isKamera  = b.kategori === 'Kamera';
         var bgCard    = isKamera ? '#fff1f2' : '#f0fdf4';
         var borderCard= isKamera ? '#fecdd3' : '#bbf7d0';
-        var bgBadgeK  = '#fce7f3'; var txtBadgeK = '#be185d';   
-        var bgBadgeC  = '#dcfce7'; var txtBadgeC = '#15803d';  
+        var bgBadgeK  = '#fce7f3'; var txtBadgeK = '#be185d';
+        var bgBadgeC  = '#dcfce7'; var txtBadgeC = '#15803d';
         var bgTipe    = isKamera ? '#ffe4e6' : '#d1fae5';
         var txtTipe   = isKamera ? '#e11d48' : '#065f46';
         var svg       = isKamera ? svgKamera() : svgCamping();
         var bgIcon    = isKamera ? '#fce7f3' : '#d1fae5';
 
         barangHtml += '<div style="display:flex; align-items:center; gap:10px; padding:10px 12px; background:' + bgCard + '; border:1px solid ' + borderCard + '; border-radius:12px; margin-bottom:8px;">';
-
-        // Icon
         barangHtml += '<span style="display:inline-flex; align-items:center; justify-content:center; width:30px; height:30px; border-radius:8px; background:' + bgIcon + '; flex-shrink:0;">' + svg + '</span>';
-
-        // Nama barang
         barangHtml += '<div style="flex:1;">';
         barangHtml += '<div style="font-size:13px; font-weight:700; color:#1f2937;">' + b.nama + '</div>';
         barangHtml += '</div>';
-
-        // Badge Kategori
         var bgBadge = isKamera ? bgBadgeK : bgBadgeC;
         var txtBadge= isKamera ? txtBadgeK : txtBadgeC;
         barangHtml += '<span style="font-size:10px; font-weight:700; padding:3px 8px; border-radius:99px; background:' + bgBadge + '; color:' + txtBadge + '; text-transform:uppercase; white-space:nowrap;">' + b.kategori + '</span>';
-
-        // Badge Tipe
         if (b.tipe) {
             barangHtml += '<span style="font-size:10px; font-weight:600; padding:3px 8px; border-radius:99px; background:' + bgTipe + '; color:' + txtTipe + '; white-space:nowrap; margin-left:4px;">' + b.tipe + '</span>';
         }
-
         barangHtml += '</div>';
     });
     document.getElementById('detailBarangList').innerHTML = barangHtml;
@@ -299,21 +257,16 @@ function renderStatusArea(status, nama, fotoTerima) {
         var fontW     = isCurrent ? '700' : '600';
 
         html += '<div style="display:flex; gap:14px;">';
-
-        // Dot + line
         html += '<div style="display:flex; flex-direction:column; align-items:center; width:22px; flex-shrink:0;">';
         html += '<div style="width:16px; height:16px; border-radius:50%; background:' + dotBg + '; display:flex; align-items:center; justify-content:center; margin-top:2px;">';
         if (isDone) html += '<div style="width:6px; height:6px; border-radius:50%; background:white;"></div>';
         html += '</div>';
         if (i < steps.length - 1) html += '<div style="width:2px; flex:1; background:#e5e7eb; margin:4px 0;"></div>';
         html += '</div>';
-
-        // Text
         html += '<div style="padding-bottom:16px; flex:1;">';
         html += '<div style="font-size:13px; font-weight:' + fontW + '; color:' + lblColor + ';">' + s.icon + ' ' + s.label + '</div>';
         html += '<div style="font-size:11px; color:#9ca3af; margin-top:3px; line-height:1.5;">' + s.desc + '</div>';
 
-        // Foto diterima (di bawah tulisan "Diterima Pelanggan")
         if (s.key === 'tiba' && fotoTerima) {
             html += '<div style="margin-top:8px;">';
             html += '<a href="' + fotoTerima + '" target="_blank" style="display:inline-flex; align-items:center; gap:5px; font-size:11px; font-weight:600; color:#22543D; text-decoration:none; background:#d1fae5; padding:5px 10px; border-radius:8px;">';
@@ -328,26 +281,21 @@ function renderStatusArea(status, nama, fotoTerima) {
 
     html += '</div>';
 
-    // Tombol aksi
     html += '<div style="display:flex; gap:10px; flex-wrap:wrap;">';
-
     if (status === 'dikirim') {
         html += '<button onclick="bukaKonfirmasi(\'proses\', \'' + nama + '\')" '
               + 'style="flex:1; min-width:120px; padding:10px; border-radius:12px; border:1px solid #fcd34d; background:#fffbeb; color:#b45309; font-size:12px; font-weight:700; cursor:pointer; font-family:\'Inter\',sans-serif;">'
               + '🚚 Tandai Sedang Diantar</button>';
     }
-
     if (status !== 'tiba') {
         html += '<button onclick="bukaKonfirmasi(\'tiba\', \'' + nama + '\')" '
               + 'style="flex:1; min-width:120px; padding:10px; border-radius:12px; border:1px solid #6ee7b7; background:#d1fae5; color:#065f46; font-size:12px; font-weight:700; cursor:pointer; font-family:\'Inter\',sans-serif;">'
               + '✅ Pelanggan Sudah Terima</button>';
     }
-
     if (status === 'tiba') {
         html += '<div style="width:100%; padding:10px 14px; border-radius:12px; background:#d1fae5; color:#065f46; font-size:12px; font-weight:700; text-align:center;">'
               + '✅ Barang sudah diterima pelanggan</div>';
     }
-
     html += '</div>';
     area.innerHTML = html;
 }

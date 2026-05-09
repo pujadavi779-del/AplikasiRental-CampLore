@@ -58,7 +58,7 @@
 
         <div class="relative z-10 text-center px-4 max-w-4xl" data-aos="zoom-in" data-aos-duration="1000">
             <span class=" text-white px-4 py-1 rounded-full text-xs font-bold mb-4 tracking-widest uppercase">Lengkapi Petualanganmu dengan Kamera & Peralatan Camping Terbaik</span>
-            <h1 class="font-playfair text-5xl md:text-7xl font-extrabold mb-6 leading-tight tracking-tighter">Abadikan<span class="text-[#ED64A6]">Keindahan Alam</span>,<br> Rasakan Kebebasan.</h1>
+            <h1 class="font-playfair text-5xl md:text-7xl font-extrabold mb-6 leading-tight tracking-tighter">Abadikan<span class="text-[#ED64A6]"> Keindahan Alam</span>,<br> Rasakan Kebebasan.</h1>
             <p class="text-lg md:text-xl text-emerald-100 mb-10 max-w-2xl mx-auto leading-relaxed">
                 Sewakan perlengkapan Camping premium dan Kamera profesional dalam satu tempat. Jelajahi dunia, abadikan momen terbaikmu tanpa beban.
             </p>

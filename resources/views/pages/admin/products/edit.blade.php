@@ -14,7 +14,7 @@
 {{-- Navbar Header --}}
 <div class="mb-6">
     @include('components.navbar_judul_LP', [
-    'NavParent' => 'Product Rental',
+    'NavParent' => 'Manajemen Rental',
     'section' => 'Mengubah Produk'
     ])
 </div>
