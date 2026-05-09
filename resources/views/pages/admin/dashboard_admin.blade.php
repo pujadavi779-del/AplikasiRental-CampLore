@@ -167,9 +167,9 @@
         <div class="bg-white rounded-[28px] p-8 border border-[#e8e8e0] shadow-sm">
             <div class="flex items-center justify-between mb-8">
                 <h3 class="font-serif text-2xl text-[#1a1a1a]">Transaksi Terbaru</h3>
-                <button class="text-xs font-bold text-[#22543D] hover:text-[#ED64A6] transition-colors uppercase tracking-widest">
+                <a href="{{ route('admin.pembayaran') }}" class="text-xs font-bold text-[#22543D] hover:text-[#ED64A6] transition-colors uppercase tracking-widest">
                     Lihat Semua →
-                </button>
+                </a>
             </div>
 
             <div class="overflow-x-auto">
@@ -177,7 +177,7 @@
                     <thead>
                         <tr class="text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em] border-b border-gray-50">
                             <th class="pb-4 px-2">Pelanggan</th>
-                            <th class="pb-4 px-2">Item Rental</th>
+                            <th class="pb-4 px-2">Tgl Mulai</th>
                             <th class="pb-4 px-2 text-center">Tgl Kembali</th>
                             <th class="pb-4 px-2 text-right">Status</th>
                         </tr>
@@ -185,10 +185,10 @@
                     <tbody class="divide-y divide-gray-50">
                         @php
                         $transactions = [
-                            ['RS', 'Rizky Saputra',  'Sony A7III',     '18 Mar',   'bg-green-50 text-green-700',   'Aktif'],
-                            ['NA', 'Nadia Aulia',     'Camping Kit L',  '20 Mar',   'bg-blue-50 text-blue-700',     'Reservasi'],
-                            ['DP', 'Doni Pratama',    'Canon EOS R5',   '16 Mar',   'bg-red-50 text-red-700',       'Terlambat'],
-                            ['SW', 'Sari Wulandari',  'Drone DJI Mini', '22 Mar',   'bg-orange-50 text-orange-700', 'Proses'],
+                            ['RS', 'Rizky Saputra',  '15 Maret 2026',     '18 Maret 2026',   'bg-green-50 text-green-700',   'Aktif'],
+                            ['NA', 'Nadia Aulia',     '16 Maret 2026',  '20 Maret 2026',   'bg-blue-50 text-blue-700',     'Reservasi'],
+                            ['DP', 'Doni Pratama',    '10 Maret 2026',   '16 Maret 2026',   'bg-red-50 text-red-700',       'Terlambat'],
+                            ['SW', 'Sari Wulandari',  '18 Maret 2026', '22 Maret 2026',   'bg-orange-50 text-orange-700', 'Proses'],
                         ];
                         @endphp
                         @foreach($transactions as $i => $trx)
