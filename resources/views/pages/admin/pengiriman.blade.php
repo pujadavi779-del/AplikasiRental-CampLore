@@ -241,7 +241,6 @@ function renderStatusArea(status, nama, fotoTerima) {
     var order = { 'dikirim': 0, 'proses': 1, 'tiba': 2 };
     var steps = [
         { key:'dikirim', icon:'📦', label:'Dikirim',            desc:'Barang sedang dalam perjalanan menuju pelanggan.' },
-        { key:'proses',  icon:'🚚', label:'Sedang Diantar',     desc:'Admin sedang mengantarkan barang ke alamat pelanggan.' },
         { key:'tiba',    icon:'✅', label:'Diterima Pelanggan', desc:'Barang telah diterima oleh pelanggan.' },
     ];
     var currentIdx = order[status] ?? 0;
@@ -282,11 +281,6 @@ function renderStatusArea(status, nama, fotoTerima) {
     html += '</div>';
 
     html += '<div style="display:flex; gap:10px; flex-wrap:wrap;">';
-    if (status === 'dikirim') {
-        html += '<button onclick="bukaKonfirmasi(\'proses\', \'' + nama + '\')" '
-              + 'style="flex:1; min-width:120px; padding:10px; border-radius:12px; border:1px solid #fcd34d; background:#fffbeb; color:#b45309; font-size:12px; font-weight:700; cursor:pointer; font-family:\'Inter\',sans-serif;">'
-              + '🚚 Tandai Sedang Diantar</button>';
-    }
     if (status !== 'tiba') {
         html += '<button onclick="bukaKonfirmasi(\'tiba\', \'' + nama + '\')" '
               + 'style="flex:1; min-width:120px; padding:10px; border-radius:12px; border:1px solid #6ee7b7; background:#d1fae5; color:#065f46; font-size:12px; font-weight:700; cursor:pointer; font-family:\'Inter\',sans-serif;">'
@@ -310,23 +304,13 @@ var aksiTipe = '';
 function bukaKonfirmasi(tipe, nama) {
     aksiTipe = tipe;
 
-    if (tipe === 'proses') {
-        document.getElementById('aksiIcon').style.background = '#fef3c7';
-        document.getElementById('aksiIcon').textContent = '🚚';
-        document.getElementById('aksiJudul').textContent = 'Tandai Sedang Diantar';
-        document.getElementById('aksiSubjudul').textContent = 'Konfirmasi barang pesanan "' + nama + '" sedang dalam perjalanan?';
-        document.getElementById('aksiBtn').textContent = 'Ya, Sedang Diantar';
-        document.getElementById('aksiBtn').style.background = '#d97706';
-        document.getElementById('uploadFotoWrap').style.display = 'none';
-    } else {
-        document.getElementById('aksiIcon').style.background = '#d1fae5';
-        document.getElementById('aksiIcon').textContent = '✅';
-        document.getElementById('aksiJudul').textContent = 'Konfirmasi Diterima';
-        document.getElementById('aksiSubjudul').textContent = 'Upload foto bukti barang pesanan "' + nama + '" diterima pelanggan.';
-        document.getElementById('aksiBtn').textContent = 'Simpan & Konfirmasi';
-        document.getElementById('aksiBtn').style.background = '#22543D';
-        document.getElementById('uploadFotoWrap').style.display = 'block';
-    }
+    document.getElementById('aksiIcon').style.background = '#d1fae5';
+    document.getElementById('aksiIcon').textContent = '✅';
+    document.getElementById('aksiJudul').textContent = 'Konfirmasi Diterima';
+    document.getElementById('aksiSubjudul').textContent = 'Upload foto bukti barang pesanan "' + nama + '" diterima pelanggan.';
+    document.getElementById('aksiBtn').textContent = 'Simpan & Konfirmasi';
+    document.getElementById('aksiBtn').style.background = '#22543D';
+    document.getElementById('uploadFotoWrap').style.display = 'block';
 
     document.getElementById('modalAksi').style.display = 'block';
 }
