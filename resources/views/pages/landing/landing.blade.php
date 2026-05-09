@@ -125,9 +125,9 @@
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
 
                 @php $items = [
-                ['cat' => 'Camera', 'name' => 'Canon R6', 'price' => 'Rp 250k/day', 'img' => 'https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&q=80'],
+                ['cat' => 'Kamera', 'name' => 'Canon R6', 'price' => 'Rp 250k/day', 'img' => 'https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&q=80'],
                 ['cat' => 'Camping', 'name' => 'Ultralight Tent 2P', 'price' => 'Rp 100k/day', 'img' => 'https://images.unsplash.com/photo-1504280390367-361c6d9f38f4?auto=format&fit=crop&q=80'],
-                ['cat' => 'Accessory', 'name' => 'Sony A7III', 'price' => 'Rp 300k/day', 'img' => 'https://images.unsplash.com/photo-1502920917128-1aa500764cbd?q=80&w=200'],
+                ['cat' => 'Kamera', 'name' => 'Sony A7III', 'price' => 'Rp 300k/day', 'img' => 'https://images.unsplash.com/photo-1502920917128-1aa500764cbd?q=80&w=200'],
                 ['cat' => 'Camping', 'name' => 'Portable Cooking Set', 'price' => 'Rp 60k/day', 'img' => 'https://plus.unsplash.com/premium_photo-1664360971368-8cf4df3deb53?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D']
                 ]; @endphp
 
