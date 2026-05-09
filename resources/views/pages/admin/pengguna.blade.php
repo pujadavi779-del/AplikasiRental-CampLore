@@ -42,10 +42,9 @@
                     <tr>
                         <th class="px-6 py-3 w-10">No</th>
                         <th class="px-6 py-3">Nama</th>
+                        <th class="px-6 py-3">Alamat</th> 
                         <th class="px-6 py-3">NIK</th>
                         <th class="px-6 py-3">No HP</th>
-                        <th class="px-6 py-3 text-center">Status</th>
-                        <th class="px-6 py-3 text-center">Aksi</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-[#eef4f0]" id="tableBody">
@@ -64,35 +63,16 @@
                                 </button>
                             </div>
                         </td>
+                        <td class="px-6 py-4">
+                            <p class="text-[11px] text-gray-500 max-w-[180px] leading-relaxed">{{ $customer->alamat ?? '-' }}</p>
+                        </td>
                         <td class="px-6 py-4 text-gray-500">{{ $customer->nik ?? '-' }}</td>
                         <td class="px-6 py-4 text-gray-500">{{ $customer->phone ?? '-' }}</td>
-                        <td class="px-6 py-4 text-center">
-                            @php $status = $customer->status ?? 'aktif'; @endphp
-                            <span class="px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wide
-                                {{ $status === 'aktif' ? 'bg-emerald-100 text-emerald-700' : 'bg-red-100 text-red-500' }}">
-                                {{ ucfirst($status) }}
-                            </span>
-                        </td>
-                        <td class="px-6 py-4 text-center">
-                            <div class="flex items-center justify-center gap-2">
-                                <a href="#" class="p-1.5 rounded-lg bg-blue-50 hover:bg-blue-100 text-blue-600 transition-colors" title="Edit">
-                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
-                                        <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
-                                        <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
-                                    </svg>
-                                </a>
-                                <!-- <button type="button" onclick="alert('Fitur aktif setelah koneksi database')"
-                                    class="p-1.5 rounded-lg bg-red-50 hover:bg-red-100 text-red-500 transition-colors" title="Hapus">
-                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
-                                        <path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6"/>
-                                    </svg>
-                                </button> -->
-                            </div>
-                        </td>
+
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="6" class="px-6 py-16 text-center text-gray-400">Belum ada data customer</td>
+                        <td colspan="5" class="px-6 py-16 text-center text-gray-400">Belum ada data customer</td>
                     </tr>
                     @endforelse
                 </tbody>

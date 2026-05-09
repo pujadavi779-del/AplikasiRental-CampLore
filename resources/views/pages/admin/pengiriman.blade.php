@@ -50,11 +50,11 @@
                 <tbody class="divide-y divide-[#eef4f0]" id="tableBody">
                     @forelse($pengiriman as $item)
                     @php
-                        $hPlus  = $item['h_plus'] ?? 0;
                         $status = $item['status'] ?? 'dikirim';
                         $idPesanan = $item['id_pesanan'] ?? 'CMP-000';
                         $barangList = is_array($item['barang']) ? $item['barang'] : [['nama' => $item['barang'], 'kategori' => $item['kategori'] ?? 'Kamera']];
                     @endphp
+
                     <tr class="hover:bg-[#fcfdfb] transition-colors delivery-row">
                         {{-- Pemesan --}}
                         <td class="px-6 py-4">
@@ -76,14 +76,7 @@
 
                         {{-- Tgl Mulai --}}
                         <td class="px-6 py-4 text-center">
-                            <div class="text-sm font-semibold text-gray-700">{{ $item['tanggal_mulai'] }}</div>
-                            @if($hPlus == 0)
-                                <div class="text-[10px] font-bold text-amber-500 mt-0.5">Hari ini</div>
-                            @elseif($hPlus > 0)
-                                <div class="text-[10px] text-gray-400 mt-0.5">H+{{ $hPlus }}</div>
-                            @else
-                                <div class="text-[10px] text-gray-400 mt-0.5">H{{ $hPlus }}</div>
-                            @endif
+                        <div class="text-sm font-semibold text-gray-700">{{ $item['tanggal_mulai'] }}</div>
                         </td>
 
                         {{-- Status --}}
