@@ -1,21 +1,15 @@
 {{-- Navbar --}}
 @if(!request()->routeIs('alamat_pengiriman', 'dashboard'))
 
-{{-- Import Google Fonts: Inter + Playfair Display --}}
+{{-- Import Google Fonts --}}
 @once
     @push('styles')
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@700;800&display=swap" rel="stylesheet">
         <style>
-            /* Inter sebagai font utama navbar */
-            nav, nav * {
-                font-family: 'Inter', sans-serif;
-            }
-            /* Playfair Display untuk elemen font-serif (label kategori di megamenu) */
-            nav .font-serif {
-                font-family: 'Playfair Display', serif;
-            }
+            nav, nav * { font-family: 'Inter', sans-serif; }
+            nav .font-serif { font-family: 'Playfair Display', serif; }
         </style>
     @endpush
 @endonce
@@ -37,25 +31,21 @@
             <div class="relative group">
                 <a href="#" class="flex items-center gap-1 hover:text-[#FF6B95] transition">
                     Kategori
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 transition-transform duration-300 group-hover:rotate-180"
-                        fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 transition-transform duration-300 group-hover:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
                     </svg>
                 </a>
                 {{-- Megamenu Dropdown --}}
-                <div class="fixed left-0 top-[80px] w-full bg-white shadow-2xl border-t border-pink-100
-                    opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-40">
+                <div class="fixed left-0 top-[80px] w-full bg-white shadow-2xl border-t border-pink-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-40">
                     <div class="w-full flex justify-center">
                         <div class="w-full max-w-6xl px-6 py-10">
                             <div class="grid grid-cols-2 gap-12 text-center max-w-xl mx-auto">
                                 <a href="{{ route('camera.LP') }}" class="group">
-                                    <img src="https://images.unsplash.com/photo-1516035069371-29a1b244cc32"
-                                        class="w-full h-32 object-cover rounded-xl mb-3 group-hover:scale-105 transition">
+                                    <img src="https://images.unsplash.com/photo-1516035069371-29a1b244cc32" class="w-full h-32 object-cover rounded-xl mb-3 group-hover:scale-105 transition">
                                     <p class="font-serif uppercase tracking-widest">Kamera</p>
                                 </a>
                                 <a href="{{ route('camping.LP') }}" class="group">
-                                    <img src="https://images.unsplash.com/photo-1504280390367-361c6d9f38f4"
-                                        class="w-full h-32 object-cover rounded-xl mb-3 group-hover:scale-105 transition">
+                                    <img src="https://images.unsplash.com/photo-1504280390367-361c6d9f38f4" class="w-full h-32 object-cover rounded-xl mb-3 group-hover:scale-105 transition">
                                     <p class="font-serif uppercase tracking-widest">Camping</p>
                                 </a>
                             </div>
@@ -67,12 +57,8 @@
 
         {{-- Action Buttons --}}
         <div class="flex items-center gap-2">
-            <!-- <button class="w-10 h-10 flex items-center justify-center rounded-xl border border-gray-200 bg-white text-[#1A392D] hover:text-[#FF6B95] transition-all duration-200">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                </svg>
-            </button> -->
 
+            {{-- Keranjang --}}
             <a href="{{ route('pages.landing.keranjang') }}" class="relative w-10 h-10 flex items-center justify-center rounded-xl border border-gray-200 bg-white text-[#1A392D] hover:text-[#FF6B95] transition-all duration-200">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
@@ -80,31 +66,45 @@
                 <span class="absolute -top-1.5 -right-1.5 bg-[#FF6B95] text-white text-[10px] font-bold min-w-[18px] h-[18px] px-1 flex items-center justify-center rounded-full border-2 border-white">1</span>
             </a>
 
-            {{-- User (Desktop only) --}}
+            {{-- User (Desktop) --}}
             <div class="relative group hidden md:block">
                 @guest
-                <a href="{{ route('login') }}" class="text-[#1A392D] border border-[#1A392D] px-4 py-2 rounded text-sm font-bold hover:bg-[#1A392D] hover:text-white transition">Masuk</a>
+                    <a href="{{ route('login') }}" class="text-[#1A392D] border border-[#1A392D] px-4 py-2 rounded text-sm font-bold hover:bg-[#1A392D] hover:text-white transition">Masuk</a>
                 @endguest
 
                 @auth
-                <button class="flex items-center gap-2 px-3 py-2 rounded-xl border border-gray-200 hover:bg-gray-50 transition">
-                    <span class="text-sm font-semibold text-[#1A392D]">{{ auth()->user()->name }}</span>
-                </button>
-                <div class="absolute right-0 top-12 w-52 bg-white rounded-2xl shadow-xl border border-gray-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 overflow-hidden">
-                    <div class="px-4 py-3 border-b border-gray-100 bg-gray-50/50">
-                        <p class="text-sm font-bold text-gray-800">{{ auth()->user()->name }}</p>
-                        <p class="text-xs text-gray-400 truncate">{{ auth()->user()->email }}</p>
+                    <button class="flex items-center gap-2 px-3 py-2 rounded-xl border border-gray-200 hover:bg-gray-50 transition">
+                        <span class="text-sm font-semibold text-[#1A392D]">{{ auth()->user()->name }}</span>
+                    </button>
+                    
+                    {{-- Dropdown Desktop --}}
+                    <div class="absolute right-0 top-12 w-64 bg-white rounded-2xl shadow-xl border border-gray-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 overflow-hidden">
+                        
+                        {{-- Bagian Nama & Email (Info Akun) --}}
+                        <div class="px-5 py-4 border-b border-gray-100 bg-gray-50/50">
+                            <p class="text-sm font-extrabold text-gray-800 truncate">{{ auth()->user()->name }}</p>
+                            <p class="text-xs text-gray-400 truncate italic normal-case">{{ auth()->user()->email }}</p>
+                        </div>
+
+                        {{-- Menu Desktop --}}
+                        <div class="py-1">
+                            <a href="{{ route('dashboard_pelanggan') }}" class="flex items-center gap-3 px-5 py-3 text-sm font-bold text-gray-700 hover:bg-pink-50 hover:text-pink-600 transition">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" stroke-width="2"/></svg>
+                                Profil Saya
+                            </a>
+                            <form method="POST" action="{{ route('logout') }}" class="border-t border-gray-100">
+                                @csrf
+                                <button type="submit" class="w-full flex items-center gap-3 text-left px-5 py-3 text-sm font-bold text-red-500 hover:bg-red-50 transition">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M17 16l4-4m0 0l-4-4m4 4H7" stroke-width="2"/></svg>
+                                    Keluar
+                                </button>
+                            </form>
+                        </div>
                     </div>
-                    <a href="{{ route('dashboard_pelanggan') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">Profil</a>
-                    <form method="POST" action="{{ route('logout') }}">
-                        @csrf
-                        <button type="submit" class="w-full text-left px-4 py-2 text-sm text-red-500 hover:bg-red-50">Keluar</button>
-                    </form>
-                </div>
                 @endauth
             </div>
 
-            {{-- Hamburger (Mobile only) --}}
+            {{-- Hamburger (Mobile) --}}
             <button id="mobile-menu-btn" class="md:hidden w-10 h-10 flex items-center justify-center rounded-xl border border-gray-200 bg-white text-[#1A392D] hover:text-[#FF6B95] transition-all duration-200">
                 <svg id="icon-open" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
@@ -117,58 +117,69 @@
     </div>
 
     {{-- Mobile Menu --}}
-    <div id="mobile-menu" class="hidden md:hidden bg-white border-t border-pink-100 shadow-lg absolute w-full left-0 z-50">
+    <div id="mobile-menu" class="hidden md:hidden bg-white border-t border-pink-100 shadow-lg absolute w-full left-0 z-50 overflow-y-auto max-h-[80vh]">
         <div class="px-4 py-4 flex flex-col gap-1 font-bold text-xs uppercase tracking-widest text-[#1A392D]">
-
+            
             <a href="{{ route('pages.landing.about') }}" class="px-3 py-3 rounded-xl hover:bg-pink-50 hover:text-[#FF6B95] transition">
                 Tentang Kami
             </a>
 
-            {{-- Kategori Accordion --}}
+            {{-- Accordion Kategori Mobile --}}
             <div>
-                <button id="kategori-btn" class="w-full flex items-center justify-between px-3 py-3 rounded-xl hover:bg-pink-50 hover:text-[#FF6B95] transition text-left">
+                <button id="kategori-btn" class="w-full flex items-center justify-between px-3 py-3 rounded-xl hover:bg-pink-50 hover:text-[#FF6B95] transition">
                     <span>Kategori</span>
                     <svg id="kategori-arrow" xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 transition-transform duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
                     </svg>
                 </button>
-                <div id="kategori-submenu" class="hidden px-3 pb-2">
+                <div id="kategori-submenu" class="hidden px-3 pb-4">
                     <div class="grid grid-cols-2 gap-3 pt-2">
                         <a href="{{ route('camera.LP') }}" class="group text-center">
-                            <img src="https://images.unsplash.com/photo-1516035069371-29a1b244cc32"
-                                class="w-full h-20 object-cover rounded-xl mb-2 group-hover:scale-105 transition">
-                            <p class="text-xs font-semibold uppercase tracking-widest normal-case">Kamera</p>
+                            <img src="https://images.unsplash.com/photo-1516035069371-29a1b244cc32" class="w-full h-20 object-cover rounded-xl mb-2">
+                            <p class="text-[10px] normal-case">Kamera</p>
                         </a>
                         <a href="{{ route('camping.LP') }}" class="group text-center">
-                            <img src="https://images.unsplash.com/photo-1504280390367-361c6d9f38f4"
-                                class="w-full h-20 object-cover rounded-xl mb-2 group-hover:scale-105 transition">
-                            <p class="text-xs font-semibold uppercase tracking-widest normal-case">Camping</p>
+                            <img src="https://images.unsplash.com/photo-1504280390367-361c6d9f38f4" class="w-full h-20 object-cover rounded-xl mb-2">
+                            <p class="text-[10px] normal-case">Camping</p>
                         </a>
                     </div>
                 </div>
             </div>
 
-            {{-- User section mobile --}}
-            <div class="border-t border-gray-100 mt-2 pt-3">
-                @guest
-                <a href="{{ route('login') }}" class="block px-3 py-3 rounded-xl text-center border border-[#1A392D] hover:bg-[#1A392D] hover:text-white transition">
-                    Masuk
-                </a>
-                @endguest
-
-                @auth
-                <div class="px-3 py-2 mb-2 bg-gray-50 rounded-xl">
-                    <p class="text-sm font-bold text-gray-800 normal-case">{{ auth()->user()->name }}</p>
-                    <p class="text-xs text-gray-400 truncate normal-case">{{ auth()->user()->email }}</p>
+            @auth
+            {{-- Mobile Sidebar Menu --}}
+            <div class="mt-4 border-t border-gray-100 pt-4">
+                {{-- Info Akun Mobile --}}
+                <div class="px-3 mb-4">
+                    <p class="text-sm font-extrabold text-gray-800 normal-case">{{ auth()->user()->name }}</p>
+                    <p class="text-[10px] text-gray-400 italic normal-case">{{ auth()->user()->email }}</p>
                 </div>
-                <a href="{{ route('dashboard_pelanggan') }}" class="block px-3 py-3 rounded-xl hover:bg-gray-50 transition normal-case text-sm">Profil</a>
-                <form method="POST" action="{{ route('logout') }}">
-                    @csrf
-                    <button type="submit" class="w-full text-left px-3 py-3 rounded-xl text-sm text-red-500 hover:bg-red-50 transition normal-case">Keluar</button>
-                </form>
-                @endauth
-            </div>
 
+                {{-- Tanpa Button Profil Saya sesuai request --}}
+                <a href="{{ route('dashboard_pelanggan') }}" class="flex items-center gap-3 px-3 py-3 rounded-xl text-xs normal-case text-gray-600 hover:bg-pink-50">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" stroke-width="2"/></svg>
+                    Pesanan Saya
+                </a>
+                <a href="{{ route('change-password') }}" class="flex items-center gap-3 px-3 py-3 rounded-xl text-xs normal-case text-gray-600 hover:bg-pink-50">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" stroke-width="2"/></svg>
+                    Ubah Kata Sandi
+                </a>
+                <a href="{{ route('pages.pelanggan.alamat_pengiriman') }}" class="flex items-center gap-3 px-3 py-3 rounded-xl text-xs normal-case text-gray-600 hover:bg-pink-50">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M17.657 16.657L13.414 20.9a2 2 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" stroke-width="2"/></svg>
+                    Alamat Pengiriman
+                </a>
+
+                <form method="POST" action="{{ route('logout') }}" class="mt-4 pt-2 border-t border-gray-100">
+                    @csrf
+                    <button type="submit" class="w-full flex items-center gap-3 px-3 py-3 rounded-xl text-xs normal-case text-red-500 hover:bg-red-50">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M17 16l4-4m0 0l-4-4m4 4H7" stroke-width="2"/></svg>
+                        Keluar
+                    </button>
+                </form>
+            </div>
+            @else
+            <a href="{{ route('login') }}" class="mt-4 block px-3 py-3 rounded-xl text-center bg-[#1A392D] text-white">Masuk</a>
+            @endauth
         </div>
     </div>
 </nav>
@@ -178,18 +189,18 @@
     const mobileMenu = document.getElementById('mobile-menu');
     const iconOpen = document.getElementById('icon-open');
     const iconClose = document.getElementById('icon-close');
+
+    menuBtn.addEventListener('click', () => {
+        const isHidden = mobileMenu.classList.toggle('hidden');
+        iconOpen.classList.toggle('hidden', !isHidden);
+        iconClose.classList.toggle('hidden', isHidden);
+    });
+
     const kategoriBtn = document.getElementById('kategori-btn');
     const kategoriSubmenu = document.getElementById('kategori-submenu');
     const kategoriArrow = document.getElementById('kategori-arrow');
 
-    menuBtn.addEventListener('click', () => {
-        const isOpen = !mobileMenu.classList.contains('hidden');
-        mobileMenu.classList.toggle('hidden');
-        iconOpen.classList.toggle('hidden', !isOpen);
-        iconClose.classList.toggle('hidden', isOpen);
-    });
-
-    kategoriBtn.addEventListener('click', () => {
+    kategoriBtn?.addEventListener('click', () => {
         kategoriSubmenu.classList.toggle('hidden');
         kategoriArrow.classList.toggle('rotate-180');
     });
