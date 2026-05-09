@@ -145,6 +145,7 @@
                 <div style="font-weight:700; font-size:15px; color:#22543D;" id="detailNama"></div>
                 <div style="font-size:11px; color:#9ca3af; margin-top:3px;" id="detailIdPesanan"></div>
             </div>
+            
         </div>
 
         {{-- Info Barang --}}
@@ -157,9 +158,18 @@
         <div style="padding:20px 22px;" id="detailStatusArea"></div>
 
         {{-- Footer --}}
-        <div style="padding:12px 22px; border-top:1px solid #eef4f0; display:flex; justify-content:flex-end;">
+        <div style="padding:12px 22px; border-top:1px solid #eef4f0; display:flex; justify-content:space-between; align-items:center;">
+            <button onclick="unduhDetail()" style="background:none; border:none; cursor:pointer; font-size:12px; font-weight:600; color:#6b7280; display:flex; align-items:center; gap:6px; font-family:'Inter',sans-serif; padding:0;">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                    <polyline points="7 10 12 15 17 10"/>
+                    <line x1="12" y1="15" x2="12" y2="3"/>
+                </svg>
+                Unduh detail
+            </button>
             <button onclick="tutupDetail()" style="background:#22543D; color:white; border:none; border-radius:10px; padding:9px 22px; font-size:12px; font-weight:700; cursor:pointer; font-family:'Inter',sans-serif;">Tutup</button>
         </div>
+
     </div>
 </div>
 
@@ -172,10 +182,39 @@
 
         {{-- Upload foto (hanya untuk aksi Terima) --}}
         <div id="uploadFotoWrap" style="display:none; margin-bottom:20px; text-align:left;">
-            <label style="font-size:11px; font-weight:600; color:#374151; display:block; margin-bottom:6px;">📷 Foto Bukti Diterima <span style="color:#ef4444;">*</span></label>
-            <input type="file" id="fotoTerima" accept="image/*"
-                style="width:100%; font-size:11px; border:1px dashed #d1d5db; border-radius:10px; padding:8px 10px; background:#f9fafb; cursor:pointer; box-sizing:border-box;">
-            <p style="font-size:10px; color:#9ca3af; margin-top:4px;">Upload foto barang yang diterima pelanggan.</p>
+            <label style="font-size:11px; font-weight:600; color:#374151; display:block; margin-bottom:8px;">📷 Foto Bukti Diterima <span style="color:#ef4444;">*</span></label>
+
+            {{-- Drop Zone --}}
+            <div id="dropZone"
+                onclick="document.getElementById('fotoTerima').click()"
+                style="border:2px dashed #d1d5db; border-radius:14px; padding:20px 16px; background:#f9fafb; cursor:pointer; text-align:center; transition:all .2s; position:relative;">
+                <div id="dropZonePlaceholder">
+                    <div style="font-size:26px; margin-bottom:6px;">🖼️</div>
+                    <div style="font-size:12px; font-weight:600; color:#6b7280;">Klik untuk pilih foto</div>
+                    <div style="font-size:10px; color:#9ca3af; margin-top:3px;">JPG, PNG, WEBP — maks. 5 MB</div>
+                </div>
+                <input type="file" id="fotoTerima" accept="image/*"
+                    style="display:none;" onchange="previewFoto(this)">
+            </div>
+
+            {{-- Preview hasil foto --}}
+            <div id="fotoPreviewWrap" style="display:none; margin-top:12px; border-radius:14px; overflow:hidden; border:1px solid #d1fae5; position:relative; background:#f0fdf4;">
+                <img id="fotoPreviewImg" src="" alt="Preview"
+                    style="width:100%; max-height:200px; object-fit:cover; display:block;">
+                <div style="padding:10px 12px; display:flex; align-items:center; justify-content:space-between;">
+                    <div style="display:flex; align-items:center; gap:8px;">
+                        <div style="width:28px; height:28px; border-radius:8px; background:#22543D; display:flex; align-items:center; justify-content:center; font-size:13px; flex-shrink:0;">✅</div>
+                        <div>
+                            <div id="fotoNamaFile" style="font-size:11px; font-weight:700; color:#1f2937; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:200px;"></div>
+                            <div id="fotoUkuranFile" style="font-size:10px; color:#9ca3af; margin-top:1px;"></div>
+                        </div>
+                    </div>
+                    <button type="button" onclick="hapusFoto()"
+                        style="background:#fee2e2; border:none; border-radius:8px; padding:5px 10px; font-size:10px; font-weight:700; color:#ef4444; cursor:pointer; white-space:nowrap;">
+                        Hapus
+                    </button>
+                </div>
+            </div>
         </div>
 
         <div style="display:flex; gap:12px;">
@@ -195,12 +234,18 @@ function svgCamping() {
 }
 
 // ── MODAL DETAIL ──────────────────────────────────────────
-var _currentStatus = '';
-var _currentNama   = '';
+var _currentStatus   = '';
+var _currentNama     = '';
+var _currentBarang   = [];
+var _currentIdPesanan= '';
+var _currentTanggal  = '';
 
 function bukaDetail(nama, barangList, tanggal, idPesanan, status, fotoTerima) {
-    _currentStatus = status;
-    _currentNama   = nama;
+    _currentStatus    = status;
+    _currentNama      = nama;
+    _currentBarang    = barangList;
+    _currentIdPesanan = idPesanan;
+    _currentTanggal   = tanggal;
 
     document.getElementById('detailNama').textContent      = nama;
     document.getElementById('detailIdPesanan').textContent = 'ID Pesanan: ' + idPesanan + '  •  Mulai: ' + tanggal;
@@ -294,6 +339,36 @@ function renderStatusArea(status, nama, fotoTerima) {
     area.innerHTML = html;
 }
 
+function unduhDetail() {
+    var statusLabel = _currentStatus === 'tiba' ? 'Diterima Pelanggan'
+                    : _currentStatus === 'proses' ? 'Sedang Diantar'
+                    : 'Dikirim';
+
+    var barangLines = '';
+    _currentBarang.forEach(function(b) {
+        barangLines += '  - ' + b.nama + ' [' + b.kategori + (b.tipe ? ' / ' + b.tipe : '') + ']\n';
+    });
+
+    var isi = '================================\n'
+            + '     DETAIL PENGIRIMAN\n'
+            + '================================\n\n'
+            + 'Pemesan      : ' + _currentNama + '\n'
+            + 'ID Pesanan   : ' + _currentIdPesanan + '\n'
+            + 'Tgl Mulai    : ' + _currentTanggal + '\n\n'
+            + 'Barang Dipesan:\n' + barangLines + '\n'
+            + 'Status       : ' + statusLabel + '\n'
+            + 'Dicetak pada : ' + new Date().toLocaleString('id-ID') + '\n\n'
+            + '================================\n';
+
+    var blob = new Blob([isi], { type: 'text/plain' });
+    var url  = URL.createObjectURL(blob);
+    var a    = document.createElement('a');
+    a.href     = url;
+    a.download = 'detail-pengiriman-' + _currentNama.replace(/\s+/g, '-').toLowerCase() + '.txt';
+    a.click();
+    URL.revokeObjectURL(url);
+}
+
 function tutupDetail() {
     document.getElementById('modalDetail').style.display = 'none';
 }
@@ -315,9 +390,38 @@ function bukaKonfirmasi(tipe, nama) {
     document.getElementById('modalAksi').style.display = 'block';
 }
 
+function previewFoto(input) {
+    if (!input.files || !input.files[0]) return;
+    var file = input.files[0];
+
+    // Validasi ukuran maks 5 MB
+    if (file.size > 5 * 1024 * 1024) {
+        alert('Ukuran foto maksimal 5 MB.');
+        input.value = '';
+        return;
+    }
+
+    var reader = new FileReader();
+    reader.onload = function(e) {
+        document.getElementById('fotoPreviewImg').src = e.target.result;
+        document.getElementById('fotoNamaFile').textContent  = file.name;
+        document.getElementById('fotoUkuranFile').textContent = (file.size / 1024).toFixed(1) + ' KB';
+        document.getElementById('dropZone').style.display        = 'none';
+        document.getElementById('fotoPreviewWrap').style.display = 'block';
+    };
+    reader.readAsDataURL(file);
+}
+
+function hapusFoto() {
+    document.getElementById('fotoTerima').value = '';
+    document.getElementById('fotoPreviewImg').src = '';
+    document.getElementById('fotoPreviewWrap').style.display = 'none';
+    document.getElementById('dropZone').style.display        = 'block';
+}
+
 function tutupAksi() {
     document.getElementById('modalAksi').style.display = 'none';
-    document.getElementById('fotoTerima').value = '';
+    hapusFoto();
 }
 
 document.getElementById('aksiBtn').addEventListener('click', function() {
