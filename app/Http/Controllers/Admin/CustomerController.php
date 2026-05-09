@@ -11,49 +11,56 @@ class CustomerController extends Controller
 {
     // ── LIST ──────────────────────────────────────────
     public function index()
-{
-    $customers = collect([
-        (object)[
-            'id' => 1,
-            'name' => 'Budi Santoso',
-            'nik' => '3201010101010001',
-            'phone' => '081234567890',
-            'type' => 'member',
-            'status' => 'aktif',
-            'total_rentals' => 5,
-        ],
-        (object)[
-            'id' => 2,
-            'name' => 'Siti Rahayu',
-            'nik' => '3201010101010002',
-            'phone' => '082345678901',
-            'type' => 'vip',
-            'status' => 'aktif',
-            'total_rentals' => 8,
-        ],
-        (object)[
-            'id' => 3,
-            'name' => 'Rizky Pratama',
-            'nik' => '3201010101010003',
-            'phone' => '083456789012',
-            'type' => 'reguler',
-            'status' => 'aktif',
-            'total_rentals' => 2,
-        ],
-        (object)[
-            'id' => 4,
-            'name' => 'Dewi Lestari',
-            'nik' => '3201010101010004',
-            'phone' => '084567890123',
-            'type' => 'member',
-            'status' => 'nonaktif',
-            'total_rentals' => 3,
-        ],
-    ]);
+    {
+        $customers = collect([
+            (object)[
+                'id'            => 1,
+                'name'          => 'Budi Santoso',
+                'nik'           => '3201010101010001',
+                'phone'         => '081234567890',
+                'address'       => 'Jl. Raya Batam Center No. 5, Batam Kota, Kepulauan Riau',
+                'type'          => 'member',
+                'status'        => 'aktif',
+                'total_rentals' => 5,
+                'document'      => 'dummy/ktp_budi.jpg',   // ada KTP
+            ],
+            (object)[
+                'id'            => 2,
+                'name'          => 'Siti Rahayu',
+                'nik'           => '3201010101010002',
+                'phone'         => '082345678901',
+                'address'       => 'Jl. Sungai Langkai No. 19, Sekupang, Batam',
+                'type'          => 'vip',
+                'status'        => 'aktif',
+                'total_rentals' => 8,
+                'document'      => 'dummy/ktp_siti.jpg',   // ada KTP
+            ],
+            (object)[
+                'id'            => 3,
+                'name'          => 'Rizky Pratama',
+                'nik'           => '3201010101010003',
+                'phone'         => '083456789012',
+                'address'       => 'Jl. Hang Lekir No. 7, Nongsa, Batam',
+                'type'          => 'reguler',
+                'status'        => 'aktif',
+                'total_rentals' => 2,
+                'document'      => null,                   // belum ada KTP
+            ],
+            (object)[
+                'id'            => 4,
+                'name'          => 'Dewi Lestari',
+                'nik'           => '3201010101010004',
+                'phone'         => '084567890123',
+                'address'       => 'Jl. Duyung Blok B No. 12, Batu Ampar, Batam',
+                'type'          => 'member',
+                'status'        => 'nonaktif',
+                'total_rentals' => 3,
+                'document'      => 'dummy/ktp_dewi.jpg',   // ada KTP
+            ],
+        ]);
 
-    return view('pages.admin.pengguna', compact('customers'));
-    // sesuaikan nama view-nya ↑ kalau berbeda
-}
+        return view('pages.admin.pengguna', compact('customers'));
+    }
 
     // ── CREATE FORM ───────────────────────────────────
     public function create()
@@ -80,28 +87,19 @@ class CustomerController extends Controller
         ]);
 
         $data = $request->only([
-            'nik',
-            'name',
-            'phone',
-            'address',
-            'customer_type',
-            'gender',
-            'is_member',
-            'discount',
-            'document_type',
+            'nik', 'name', 'phone', 'address',
+            'customer_type', 'gender', 'is_member',
+            'discount', 'document_type',
         ]);
 
         $data['status'] = $request->has('status') ? 'aktif' : 'nonaktif';
 
-        if ($request->hasFile('photo')) {
+        if ($request->hasFile('photo'))
             $data['photo'] = $request->file('photo')->store('customers/photos', 'public');
-        }
-        if ($request->hasFile('document')) {
+        if ($request->hasFile('document'))
             $data['document'] = $request->file('document')->store('customers/documents', 'public');
-        }
-        if ($request->hasFile('agreement')) {
+        if ($request->hasFile('agreement'))
             $data['agreement'] = $request->file('agreement')->store('customers/agreements', 'public');
-        }
 
         Customer::create($data);
 
@@ -112,7 +110,6 @@ class CustomerController extends Controller
     // ── SHOW ──────────────────────────────────────────
     public function show(Customer $customer)
     {
-        // $customer->loadCount('rentals');  ← hapus baris ini
         return view('pages.admin.pengguna.show', compact('customer'));
     }
 
@@ -141,15 +138,9 @@ class CustomerController extends Controller
         ]);
 
         $data = $request->only([
-            'nik',
-            'name',
-            'phone',
-            'address',
-            'customer_type',
-            'gender',
-            'is_member',
-            'discount',
-            'document_type',
+            'nik', 'name', 'phone', 'address',
+            'customer_type', 'gender', 'is_member',
+            'discount', 'document_type',
         ]);
 
         $data['status'] = $request->has('status') ? 'aktif' : 'nonaktif';
