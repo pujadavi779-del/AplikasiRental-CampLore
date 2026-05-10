@@ -53,7 +53,7 @@
                 <div class="mb-3">
                     <label class="block text-[10px] font-medium tracking-[1.5px] uppercase text-[#999990] mb-1.5">Username</label>
                     <input type="text" id="reg_username" name="username"
-                        placeholder="Pilih username unik"
+                        placeholder="Masukkan Nama Pengguna"
                         value="{{ old('username') }}" autocomplete="username"
                         class="w-full px-4 py-3 border border-[#e2e2de] rounded-[3px] text-sm font-light text-[#1a1a18] bg-[#f7f7f5] outline-none transition focus:border-[#38856a] focus:bg-white placeholder-[#bebeba]">
                     <p class="hidden text-[11px] text-red-600 mt-1" id="e_username">Username minimal 3 karakter</p>

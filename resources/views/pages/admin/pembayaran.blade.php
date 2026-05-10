@@ -54,7 +54,7 @@
                             <th class="px-4 py-4 border-r border-[#e4f0ea] w-[20%]">ID Pesanan</th>
                             <th class="px-4 py-4 border-r border-[#e4f0ea] w-[12%] text-center">Status</th>
                             <th class="px-4 py-4 border-r border-[#e4f0ea] w-[20%]">Harga yang Dibayar</th>
-                            <th class="px-4 py-4 border-r border-[#e4f0ea] w-[25%]">Dibuat</th>
+                            <th class="px-4 py-4 border-r border-[#e4f0ea] w-[25%]">Tanggal Dibuat</th>
                             <th class="px-4 py-4 w-[15%] text-center">Aksi</th>
                         </tr>
                     </thead>
