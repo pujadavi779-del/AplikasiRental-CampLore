@@ -7,7 +7,7 @@
 @php
 $accordions = [
     ['title' => 'Tentang Alat ini', 'body' => $item->description ?? 'Deskripsi alat camping ini belum tersedia.', 'open' => true],
-    ['title' => 'Highlights', 'body' => 'Kualitas premium untuk perlengkapan outdoor ' . $item->name . '.', 'open' => false],
+    ['title' => 'Sorotan', 'body' => 'Kualitas premium untuk perlengkapan outdoor ' . $item->name . '.', 'open' => false],
     ['title' => 'Isi Paket', 'body' => $item->stock > 0 ? 'Tersedia — '.$item->stock.' unit siap disewa.' : 'Maaf, produk ini sedang habis disewa.', 'open' => false],
 ];
 @endphp

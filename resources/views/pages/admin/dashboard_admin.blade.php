@@ -18,12 +18,18 @@
                     },
                     keyframes: {
                         fadeUp: {
-                            from: { opacity: '0', transform: 'translateY(10px)' },
-                            to:   { opacity: '1', transform: 'translateY(0)' },
+                            from: {
+                                opacity: '0',
+                                transform: 'translateY(10px)'
+                            },
+                            to: {
+                                opacity: '1',
+                                transform: 'translateY(0)'
+                            },
                         }
                     },
                     animation: {
-                        'fade-up':   'fadeUp .4s ease both',
+                        'fade-up': 'fadeUp .4s ease both',
                         'fade-up-2': 'fadeUp .4s .07s ease both',
                         'fade-up-3': 'fadeUp .4s .14s ease both',
                         'fade-up-4': 'fadeUp .4s .21s ease both',
@@ -34,7 +40,9 @@
     </script>
 
     <style>
-        [x-cloak] { display: none !important; }
+        [x-cloak] {
+            display: none !important;
+        }
     </style>
 
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -50,8 +58,8 @@
         {{-- Navbar Judul --}}
         <div class="mb-6 animate-fade-up">
             @include('components.navbar_judul_LP', [
-                'NavParent' => 'Managemen Operasional',
-                'section'   => 'Beranda'
+            'NavParent' => 'Managemen Operasional',
+            'section' => 'Beranda'
             ])
         </div>
 
@@ -124,11 +132,11 @@
 
                 @php
                 $topProducts = [
-                    ['Sony A7III',      28, 80, '#22543D', '#22543D'],
-                    ['Canon EOS R5',    22, 63, '#5f6826', '#5f6826'],
-                    ['Camping Kit L',   18, 51, '#df6f81', '#df6f81'],
-                    ['Drone DJI Mini',  15, 43, '#1a3a80', '#1a3a80'],
-                    ['Tenda Dome 4P',   10, 29, '#7a8040', '#7a8040'],
+                ['Sony A7III', 28, 80, '#22543D', '#22543D'],
+                ['Canon EOS R5', 22, 63, '#5f6826', '#5f6826'],
+                ['Camping Kit L', 18, 51, '#df6f81', '#df6f81'],
+                ['Drone DJI Mini', 15, 43, '#1a3a80', '#1a3a80'],
+                ['Tenda Dome 4P', 10, 29, '#7a8040', '#7a8040'],
                 ];
                 @endphp
 
@@ -149,7 +157,7 @@
                             </div>
                             <div class="h-1.5 bg-gray-100 rounded-full overflow-hidden">
                                 <div class="h-full rounded-full"
-                                     style="width:{{ $p[2] }}%; background-color:{{ $p[4] }}"></div>
+                                    style="width:{{ $p[2] }}%; background-color:{{ $p[4] }}"></div>
                             </div>
                         </div>
                     </div>
@@ -177,7 +185,7 @@
                     <thead>
                         <tr class="text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em] border-b border-gray-50">
                             <th class="pb-4 px-2">Pelanggan</th>
-                            <th class="pb-4 px-2">Tgl Mulai</th>
+                            <th class="pb-4 px-2">Item Rental</th>
                             <th class="pb-4 px-2 text-center">Tgl Kembali</th>
                             <th class="pb-4 px-2 text-right">Status</th>
                         </tr>
@@ -185,10 +193,10 @@
                     <tbody class="divide-y divide-gray-50">
                         @php
                         $transactions = [
-                            ['RS', 'Rizky Saputra',  '15 Maret 2026',     '18 Maret 2026',   'bg-green-50 text-green-700',   'Aktif'],
-                            ['NA', 'Nadia Aulia',     '16 Maret 2026',  '20 Maret 2026',   'bg-blue-50 text-blue-700',     'Reservasi'],
-                            ['DP', 'Doni Pratama',    '10 Maret 2026',   '16 Maret 2026',   'bg-red-50 text-red-700',       'Terlambat'],
-                            ['SW', 'Sari Wulandari',  '18 Maret 2026', '22 Maret 2026',   'bg-orange-50 text-orange-700', 'Proses'],
+                            ['RS', 'Rizky Saputra',  '15 Maret 2026', '18 Maret 2026', 'bg-[#e8f8f0] text-[#4caf82] border border-[#b6e8d0]', 'Dibayar',  false],
+                            ['NA', 'Nadia Aulia',    '16 Maret 2026', '20 Maret 2026', 'bg-[#e8f8f0] text-[#4caf82] border border-[#b6e8d0]', 'Dibayar',  false],
+                            ['DP', 'Doni Pratama',   '10 Maret 2026', '16 Maret 2026', 'bg-[#fdf0f5] text-[#e07a9a] border border-[#f5c6d8]', 'Tertunda', true],
+                            ['SW', 'Sari Wulandari', '18 Maret 2026', '22 Maret 2026', 'bg-[#fff6ee] text-[#e09a5a] border border-[#f5d8b0]', 'Proses',   false],
                         ];
                         @endphp
                         @foreach($transactions as $i => $trx)
@@ -201,12 +209,14 @@
                                     <span class="font-bold text-sm text-[#1a1a1a]">{{ $trx[1] }}</span>
                                 </div>
                             </td>
-                            <td class="py-5 px-2 text-sm text-gray-500 font-medium">{{ $trx[2] }}</td>
-                            <td class="py-5 px-2 text-sm text-center font-bold {{ $trx[5] === 'Terlambat' ? 'text-red-500' : 'text-gray-400' }}">
+                            <td class="py-5 px-2 text-sm font-medium {{ $trx[6] ? 'text-gray-300' : 'text-gray-500' }}">
+                                {{ $trx[2] }}
+                            </td>
+                            <td class="py-5 px-2 text-sm text-center font-bold {{ $trx[6] ? 'text-gray-300' : 'text-gray-400' }}">
                                 {{ $trx[3] }}
                             </td>
                             <td class="py-5 px-2 text-right">
-                                <span class="px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-tighter {{ $trx[4] }}">
+                                <span class="px-4 py-1.5 rounded-full text-[11px] font-semibold {{ $trx[4] }}">
                                     {{ $trx[5] }}
                                 </span>
                             </td>
@@ -226,8 +236,7 @@
             type: 'bar',
             data: {
                 labels: ['Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab', 'Min'],
-                datasets: [
-                    {
+                datasets: [{
                         label: 'Kamera',
                         data: [8, 12, 7, 15, 10, 18, 14],
                         backgroundColor: '#5f6826',
@@ -246,17 +255,37 @@
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
-                plugins: { legend: { display: false } },
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                },
                 scales: {
                     y: {
-                        border: { display: false },
-                        grid: { color: '#f5f5f0' },
-                        ticks: { font: { size: 10 } }
+                        border: {
+                            display: false
+                        },
+                        grid: {
+                            color: '#f5f5f0'
+                        },
+                        ticks: {
+                            font: {
+                                size: 10
+                            }
+                        }
                     },
                     x: {
-                        border: { display: false },
-                        grid: { display: false },
-                        ticks: { font: { size: 10 } }
+                        border: {
+                            display: false
+                        },
+                        grid: {
+                            display: false
+                        },
+                        ticks: {
+                            font: {
+                                size: 10
+                            }
+                        }
                     }
                 }
             }

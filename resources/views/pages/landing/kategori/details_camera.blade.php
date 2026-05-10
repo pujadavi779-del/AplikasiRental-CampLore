@@ -96,7 +96,7 @@
             @php
             $accordions = [
                 ['title' => 'Tentang Kamera ini', 'body' => $item->body ?? 'Deskripsi tidak tersedia.', 'open' => true],
-                ['title' => 'Highlights', 'body' => 'Spesifikasi unggulan untuk ' . $item->name . '.', 'open' => false],
+                ['title' => 'Sorotan', 'body' => 'Spesifikasi unggulan untuk ' . $item->name . '.', 'open' => false],
                 ['title' => 'Isi Paket', 'body' => $item->stock > 0 ? 'Tersedia — '.$item->stock.' unit siap disewa.' : 'Maaf, stok unit ini sedang kosong.', 'open' => false],
             ];
             @endphp
