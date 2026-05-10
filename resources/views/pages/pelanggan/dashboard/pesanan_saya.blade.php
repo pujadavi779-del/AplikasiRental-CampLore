@@ -277,7 +277,7 @@
         </div>
         @endif
 
-        <div class="page-title">Sewa Saya</div>
+        <div class="text-3xl font-extrabold text-[#22543D] tracking-tight" style="font-family:'Playfair Display',Georgia,serif;">Sewa Saya</div>
         <div class="page-subtitle">Tinjau semua transaksi penyewaan Anda berdasarkan statusnya.</div>
 
         {{-- Filter Pills --}}

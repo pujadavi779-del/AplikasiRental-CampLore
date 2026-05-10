@@ -37,7 +37,7 @@
     </div>
 
     {{-- Card Form --}}
-    <div class="max-w-2xl bg-white rounded-[24px] shadow-sm border border-gray-100 overflow-hidden anim" style="animation-delay: 0.2s">
+    <div class="bg-white rounded-[24px] shadow-sm border border-gray-100 overflow-hidden anim">
         <form method="POST" action="{{ route('pages.pelanggan.change-password.update') }}" class="p-8 space-y-6">
             @csrf
             @method('PUT')
