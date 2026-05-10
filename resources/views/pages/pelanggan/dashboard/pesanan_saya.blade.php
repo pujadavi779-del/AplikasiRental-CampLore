@@ -6,279 +6,45 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,700;0,800;1,700&display=swap" rel="stylesheet">
 <style>
     *, *::before, *::after { box-sizing: border-box; }
-
-    :root {
-        --green: #1a5c3a;
-        --green-light: #eef5f0;
-        --green-mid: #2d7a52;
-        --pink: #e8567a;
-        --gray-bg: #f5f6f4;
-        --text-main: #1a1a1a;
-        --text-muted: #6b7280;
-        --text-light: #9ca3af;
-        --border: #e5e7eb;
-        --radius: 18px;
-    }
-
-    body { font-family: 'Inter', sans-serif; background: var(--gray-bg); }
-
-    .sewa-layout {
-        display: flex;
-        max-width: 1100px;
-        margin: 0 auto;
-        padding: 32px 16px;
-        gap: 24px;
-    }
-
-    /* ── MAIN ── */
-    .sewa-main { flex: 1; min-width: 0; }
-    .page-title    { font-size: 26px; font-weight: 900; color: var(--green); letter-spacing: -0.5px; font-family: 'Playfair Display', Georgia, serif; }
-    .page-subtitle { font-size: 13px; color: var(--text-muted); margin-top: 4px; }
-
-    /* ── FILTER PILLS ── */
-    .filter-pills { display: flex; flex-wrap: wrap; gap: 8px; margin: 18px 0 22px; }
-    .pill {
-        display: inline-flex; align-items: center; gap: 6px;
-        padding: 7px 16px; border-radius: 100px;
-        border: 1.5px solid var(--border); font-size: 12px; font-weight: 700;
-        color: var(--text-muted); background: #fff; text-decoration: none; transition: all .2s;
-    }
-    .pill:hover  { border-color: var(--green); color: var(--green); }
-    .pill.active { background: var(--green); border-color: var(--green); color: #fff; }
-    .pill-dot    { width: 6px; height: 6px; border-radius: 50%; background: currentColor; opacity: 0.65; }
-
-    /* ── RENTAL CARD ── */
-    .rental-card {
-        background: #fff; border-radius: var(--radius);
-        border: 1.5px solid var(--border); margin-bottom: 14px; overflow: hidden;
-        transition: box-shadow .25s, transform .25s; animation: fadeUp .4s ease both;
-    }
-    .rental-card:hover { box-shadow: 0 8px 32px rgba(26,92,58,0.12); transform: translateY(-2px); }
+    body { font-family: 'Inter', sans-serif; }
     @keyframes fadeUp {
         from { opacity: 0; transform: translateY(14px); }
         to   { opacity: 1; transform: translateY(0); }
     }
-
-    /* Card Header */
-    .card-header {
-        display: flex; align-items: center; justify-content: space-between;
-        padding: 12px 16px 10px; border-bottom: 1px solid var(--border);
-    }
-    .seller-info { display: flex; align-items: center; gap: 8px; }
-    .seller-icon {
-        width: 28px; height: 28px; background: var(--green-light); border-radius: 8px;
-        display: flex; align-items: center; justify-content: center;
-    }
-    .seller-icon svg  { width: 14px; height: 14px; color: var(--green); }
-    .seller-name { font-size: 13px; font-weight: 700; color: var(--text-main); }
-
-    /* Badges */
-    .badge { padding: 4px 12px; border-radius: 100px; font-size: 11px; font-weight: 700; }
-    .badge-belum_bayar  { background: #fff7ed; color: #c2410c; border: 1px solid #fed7aa; }
-    .badge-dikemas      { background: #f0fdf4; color: #15803d; border: 1px solid #bbf7d0; }
-    .badge-dikirim      { background: #eff6ff; color: #1d4ed8; border: 1px solid #bfdbfe; }
-    .badge-selesai      { background: #f0fdf4; color: #166534; border: 1px solid #86efac; }
-    .badge-dibatalkan   { background: #fef2f2; color: #991b1b; border: 1px solid #fecaca; }
-    .badge-pengembalian { background: #faf5ff; color: #7e22ce; border: 1px solid #e9d5ff; }
-    .badge-overdue      { background: #fef2f2; color: #dc2626; border: 1px solid #fecaca; }
-    .badge-default      { background: #f3f4f6; color: #6b7280; border: 1px solid #e5e7eb; }
-
-    /* Card Body */
-    .card-body { padding: 14px 16px; }
-
-    /* ── MULTI-PRODUCT LIST ── */
-    .product-list { display: flex; flex-direction: column; }
-    .product-row {
-        display: flex; gap: 14px; align-items: flex-start;
-        padding: 10px 0; border-bottom: 1px solid var(--border);
-    }
-    .product-row:first-child { padding-top: 0; }
-    .product-row:last-child  { border-bottom: none; padding-bottom: 0; }
-    .product-thumb {
-        width: 68px; height: 68px; border-radius: 12px;
-        border: 1.5px solid var(--border); overflow: hidden; flex-shrink: 0;
-        background: var(--green-light); display: flex; align-items: center; justify-content: center;
-    }
-    .product-thumb img { width: 100%; height: 100%; object-fit: cover; }
-    .product-thumb svg { width: 26px; height: 26px; color: var(--green); opacity: 0.4; }
-    .product-info { flex: 1; min-width: 0; }
-    .product-name-row { display: flex; align-items: center; gap: 8px; margin-bottom: 0; }
-    .product-name {
-        font-size: 14px; font-weight: 800; color: var(--text-main);
-        white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-    }
-    .product-meta { font-size: 12px; color: var(--text-muted); margin-top: 3px; }
-    .product-price-row { display: flex; align-items: center; gap: 8px; margin-top: 5px; }
-    .product-price { font-size: 14px; font-weight: 800; color: var(--green); }
-    .qty-tag {
-        display: inline-flex; align-items: center;
-        background: var(--green-light); color: var(--green);
-        border-radius: 6px; padding: 2px 8px; font-size: 11px; font-weight: 700;
-    }
-
-    /* Show-more */
-    .show-more-btn {
-        display: flex; align-items: center; gap: 6px;
-        width: 100%; padding: 9px 0 2px;
-        background: none; border: none; cursor: pointer;
-        font-size: 12px; font-weight: 700; color: var(--green);
-        font-family: 'Inter', sans-serif; text-align: left; transition: opacity .2s;
-    }
-    .show-more-btn:hover { opacity: 0.75; }
-    .show-more-btn svg   { width: 14px; height: 14px; transition: transform .25s; flex-shrink: 0; }
+    .fade-up { animation: fadeUp .4s ease both; }
+    .prog-line-on  { flex:1; height:3px; background:#1a5c3a; }
+    .prog-line-off { flex:1; height:3px; background:#e5e7eb; }
+    .show-more-btn svg { transition: transform .25s; }
     .show-more-btn.open svg { transform: rotate(180deg); }
-
-    /* Return reminder note */
-    .return-reminder {
-        margin: 12px 0 0; background: #fffbeb; border-radius: 10px;
-        padding: 10px 14px; display: flex; align-items: flex-start; gap: 10px;
-        border: 1px solid #fde68a;
-    }
-    .return-reminder svg { width: 15px; height: 15px; color: #b45309; flex-shrink: 0; margin-top: 1px; }
-    .return-reminder-text { font-size: 12px; font-weight: 600; color: #92400e; line-height: 1.5; }
-    .return-reminder-date { font-size: 13px; font-weight: 800; color: #b45309; }
-
-    /* Timer */
-    .timer-bar {
-        margin: 12px 0 0; background: #fff7ed; border-radius: 10px;
-        padding: 9px 14px; display: flex; align-items: center; gap: 8px; border: 1px solid #fed7aa;
-    }
-    .timer-bar svg    { width: 15px; height: 15px; color: #c2410c; flex-shrink: 0; }
-    .timer-text       { font-size: 12px; font-weight: 700; color: #c2410c; }
-    .timer-countdown  {
-        margin-left: auto; font-size: 14px; font-weight: 800;
-        color: #c2410c; font-variant-numeric: tabular-nums;
-    }
-
-    /* Pengembalian info grid */
-    .return-info-grid {
-        display: grid; grid-template-columns: 1fr 1fr;
-        gap: 10px; margin: 14px 0 0;
-    }
-    .return-info-box {
-        border-radius: 12px; padding: 12px 14px;
-    }
-    .return-info-box.neutral {
-        background: var(--gray-bg); border: 1px solid var(--border);
-    }
-    .return-info-box.danger {
-        background: #fef2f2; border: 1px solid #fecaca;
-    }
-    .return-info-label {
-        font-size: 11px; font-weight: 600; color: var(--text-muted); margin-bottom: 4px;
-    }
-    .return-info-label.red { color: #dc2626; }
-    .return-info-value {
-        font-size: 15px; font-weight: 800; color: var(--text-main);
-    }
-    .return-info-value.red { color: #dc2626; }
-
-    /* Denda row */
-    .denda-row {
-        display: flex; align-items: center; justify-content: space-between;
-        margin: 10px 0 0; padding: 12px 14px;
-        background: var(--gray-bg); border-radius: 12px; border: 1px solid var(--border);
-    }
-    .denda-label { font-size: 12px; color: var(--text-muted); font-weight: 500; margin-bottom: 2px; }
-    .denda-value { font-size: 16px; font-weight: 900; color: #dc2626; }
-    .denda-actions { display: flex; gap: 8px; align-items: center; }
-
-    .order-num { font-size: 11px; color: var(--text-light); margin-top: 10px; }
-
-    /* Progress */
-    .prog-wrap   { margin-top: 14px; }
-    .prog-row    { display: flex; align-items: center; }
-    .prog-dot    { width: 13px; height: 13px; border-radius: 50%; background: var(--green); flex-shrink: 0; }
-    .prog-dot.off{ background: var(--border); }
-    .prog-line   { flex: 1; height: 3px; background: var(--green); }
-    .prog-line.off{ background: var(--border); }
-    .prog-labels { display: flex; margin-top: 6px; }
-    .prog-lbl    { flex: 1; text-align: center; font-size: 10px; font-weight: 600; color: var(--text-light); }
-    .prog-lbl.on { color: var(--green); font-weight: 700; }
-
-    /* Card Footer */
-    .card-footer {
-        border-top: 1px solid var(--border); padding: 12px 16px;
-        display: flex; align-items: center; justify-content: space-between; gap: 12px;
-    }
-    .total-label { font-size: 12px; color: var(--text-muted); font-weight: 500; }
-    .total-price { font-size: 17px; font-weight: 900; color: var(--text-main); margin-top: 1px; }
-    .total-meta  { font-size: 11px; color: var(--text-light); margin-top: 2px; }
-    .card-actions{ display: flex; gap: 8px; align-items: center; flex-wrap: wrap; justify-content: flex-end; }
-
-    .btn {
-        padding: 9px 18px; border-radius: 10px; font-size: 12px; font-weight: 700;
-        cursor: pointer; border: none; transition: all .2s;
-        text-decoration: none; display: inline-flex; align-items: center; gap: 5px;
-    }
-    .btn-outline { background: #fff; border: 1.5px solid var(--border); color: var(--text-main); }
-    .btn-outline:hover { border-color: var(--green); color: var(--green); }
-    .btn-primary { background: var(--green); color: #fff; }
-    .btn-primary:hover { background: var(--green-mid); }
-    .btn-pink    { background: var(--pink); color: #fff; }
-    .btn-pink:hover { background: #d4466a; }
-    .btn-danger  { background: #fff; border: 1.5px solid #fecaca; color: #dc2626; }
-    .btn-danger:hover { background: #fef2f2; }
-
-    /* Flash */
-    .flash-success {
-        display: flex; align-items: center; gap: 10px;
-        background: #f0fdf4; border: 1px solid #bbf7d0;
-        color: #166534; padding: 12px 16px; border-radius: 14px;
-        font-size: 13px; font-weight: 600; margin-bottom: 18px;
-    }
-    .flash-success svg { width: 18px; height: 18px; flex-shrink: 0; }
-    .flash-close {
-        margin-left: auto; background: none; border: none;
-        cursor: pointer; color: #166534; font-size: 15px; line-height: 1;
-    }
-
-    /* Empty */
-    .empty-state {
-        background: #fff; border-radius: var(--radius);
-        border: 1.5px solid var(--border); padding: 64px 32px; text-align: center;
-    }
-    .empty-icon {
-        width: 88px; height: 88px; background: var(--green-light); border-radius: 22px;
-        display: flex; align-items: center; justify-content: center; margin: 0 auto 20px;
-    }
-    .empty-icon svg { width: 40px; height: 40px; color: var(--green); opacity: 0.3; }
-    .empty-title { font-size: 20px; font-weight: 900; color: var(--green); margin-bottom: 8px; font-family: 'Playfair Display', Georgia, serif; }
-    .empty-cta {
-        display: inline-flex; align-items: center; gap: 8px;
-        background: var(--green); color: #fff; padding: 12px 28px; border-radius: 100px;
-        font-weight: 700; font-size: 13px; text-decoration: none; margin-top: 4px;
-        box-shadow: 0 4px 14px rgba(26,92,58,0.25); transition: all .2s;
-    }
-    .empty-cta:hover { background: var(--pink); box-shadow: 0 4px 14px rgba(232,86,122,0.3); }
-    .empty-cta svg { width: 16px; height: 16px; }
-
-    @media (max-width: 700px) {
-        .sewa-layout  { padding: 16px 12px; }
-        .return-info-grid { grid-template-columns: 1fr 1fr; }
-    }
+    /* Tailwind doesn't ship tabular-nums, add it */
+    .tabular { font-variant-numeric: tabular-nums; }
 </style>
 @endpush
 
 @section('content')
-<div class="sewa-layout">
+<div class="bg-[#f5f6f4] min-h-screen" style="font-family:'Inter',sans-serif;">
+<div class="max-w-[1100px] mx-auto px-4 py-8 flex gap-6">
 
     {{-- ══ MAIN ══ --}}
-    <main class="sewa-main">
+    <main class="flex-1 min-w-0">
 
+        {{-- Flash --}}
         @if(session('success'))
-        <div class="flash-success" id="flash-msg">
-            <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <div id="flash-msg"
+             class="flex items-center gap-2.5 bg-[#f0fdf4] border border-[#bbf7d0] text-[#166534] px-4 py-3 rounded-2xl text-[13px] font-semibold mb-[18px]">
+            <svg class="w-[18px] h-[18px] flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                       d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
             </svg>
             {{ session('success') }}
-            <button class="flash-close" onclick="document.getElementById('flash-msg').remove()">&#x2715;</button>
+            <button class="ml-auto bg-transparent border-0 cursor-pointer text-[#166534] text-[15px] leading-none"
+                    onclick="document.getElementById('flash-msg').remove()">&#x2715;</button>
         </div>
         @endif
 
-        <div class="page-title">Sewa Saya</div>
-        <div class="page-subtitle">Tinjau semua transaksi penyewaan Anda berdasarkan statusnya.</div>
+        {{-- Page Title --}}
+        <div class="text-3xl font-extrabold text-[#22543D] tracking-tight" style="font-family: 'Playfair Display', serif;">Sewa Saya</div>
+        <div class="text-[13px] text-[#6b7280] mt-1">Tinjau semua transaksi penyewaan Anda berdasarkan statusnya.</div>
 
         {{-- Filter Pills --}}
         @php
@@ -293,11 +59,16 @@
                 ['label' => 'Dibatalkan',   'value' => 'dibatalkan'],
             ];
         @endphp
-        <div class="filter-pills">
+        <div class="flex flex-wrap gap-2 mt-[18px] mb-[22px]">
             @foreach($filters as $f)
             <a href="?status={{ $f['value'] }}"
-               class="pill {{ $activeStatus === $f['value'] ? 'active' : '' }}">
-                <span class="pill-dot"></span>{{ $f['label'] }}
+               class="inline-flex items-center gap-1.5 px-4 py-[7px] rounded-full border-[1.5px] text-xs font-bold no-underline transition-all duration-200
+                      {{ $activeStatus === $f['value']
+                         ? 'bg-[#1a5c3a] border-[#1a5c3a] text-white'
+                         : 'bg-white border-[#e5e7eb] text-[#6b7280] hover:border-[#1a5c3a] hover:text-[#1a5c3a]' }}">
+                <span class="w-1.5 h-1.5 rounded-full inline-block"
+                      style="background:currentColor;opacity:0.65;"></span>
+                {{ $f['label'] }}
             </a>
             @endforeach
         </div>
@@ -389,203 +160,195 @@
                 ],
             ];
 
-            // Sorting: urutan status di tab "Semua"
-            $statusOrder = [
-                'belum_bayar'  => 1,
-                'dikemas'      => 2,
-                'dikirim'      => 3,
-                'pengembalian' => 4,
-                'selesai'      => 5,
-                'dibatalkan'   => 6,
-            ];
+            $statusOrder = ['belum_bayar'=>1,'dikemas'=>2,'dikirim'=>3,'pengembalian'=>4,'selesai'=>5,'dibatalkan'=>6];
+            usort($allRentals, fn($a,$b) => ($statusOrder[$a->status]??99) - ($statusOrder[$b->status]??99));
 
-            usort($allRentals, function($a, $b) use ($statusOrder) {
-                $orderA = $statusOrder[$a->status] ?? 99;
-                $orderB = $statusOrder[$b->status] ?? 99;
-                return $orderA - $orderB;
-            });
-
-            // Filter berdasarkan status pill yang dipilih
-            if ($activeStatus !== 'semua') {
-                $rentals = [];
-                foreach ($allRentals as $r) {
-                    if ($r->status === $activeStatus) {
-                        $rentals[] = $r;
-                    }
-                }
-            } else {
-                $rentals = $allRentals;
-            }
+            $rentals = $activeStatus !== 'semua'
+                ? array_values(array_filter($allRentals, fn($r) => $r->status === $activeStatus))
+                : $allRentals;
         @endphp
 
         {{-- ══ RENTAL LIST ══ --}}
         @forelse($rentals as $index => $rental)
 
         @php
-            $status = strtolower(isset($rental->status) ? $rental->status : 'belum_bayar');
+            $status = strtolower($rental->status ?? 'belum_bayar');
 
-            $badgeClass = 'badge-default';
+            $badgeClass = 'bg-[#f3f4f6] text-[#6b7280] border border-[#e5e7eb]';
             $badgeLabel = ucfirst($status);
-            if ($status === 'belum_bayar')  { $badgeClass = 'badge-belum_bayar';  $badgeLabel = 'Belum Bayar'; }
-            if ($status === 'dikemas')      { $badgeClass = 'badge-dikemas';      $badgeLabel = 'Dikemas'; }
-            if ($status === 'dikirim')      { $badgeClass = 'badge-dikirim';      $badgeLabel = 'Dikirim'; }
-            if ($status === 'selesai')      { $badgeClass = 'badge-selesai';      $badgeLabel = 'Selesai'; }
-            if ($status === 'dibatalkan')   { $badgeClass = 'badge-dibatalkan';   $badgeLabel = 'Dibatalkan'; }
-            if ($status === 'pengembalian') { $badgeClass = 'badge-pengembalian'; $badgeLabel = 'Pengembalian'; }
+            if ($status === 'belum_bayar')  { $badgeClass = 'bg-[#fff7ed] text-[#c2410c] border border-[#fed7aa]'; $badgeLabel = 'Belum Bayar'; }
+            if ($status === 'dikemas')      { $badgeClass = 'bg-[#f0fdf4] text-[#15803d] border border-[#bbf7d0]'; $badgeLabel = 'Dikemas'; }
+            if ($status === 'dikirim')      { $badgeClass = 'bg-[#eff6ff] text-[#1d4ed8] border border-[#bfdbfe]'; $badgeLabel = 'Dikirim'; }
+            if ($status === 'selesai')      { $badgeClass = 'bg-[#f0fdf4] text-[#166534] border border-[#86efac]'; $badgeLabel = 'Selesai'; }
+            if ($status === 'dibatalkan')   { $badgeClass = 'bg-[#fef2f2] text-[#991b1b] border border-[#fecaca]'; $badgeLabel = 'Dibatalkan'; }
+            if ($status === 'pengembalian') { $badgeClass = 'bg-[#faf5ff] text-[#7e22ce] border border-[#e9d5ff]'; $badgeLabel = 'Pengembalian'; }
 
             $stepIndex = 0;
-            if ($status === 'dikemas')  { $stepIndex = 1; }
-            if ($status === 'dikirim')  { $stepIndex = 2; }
-            if ($status === 'selesai')  { $stepIndex = 3; }
+            if ($status === 'dikemas') $stepIndex = 1;
+            if ($status === 'dikirim') $stepIndex = 2;
+            if ($status === 'selesai') $stepIndex = 3;
+            $showProgress = in_array($status, ['dikemas','dikirim','selesai']);
 
-            $showProgress = ($status === 'dikemas' || $status === 'dikirim' || $status === 'selesai');
-
-            $items        = isset($rental->items) ? $rental->items : [];
+            $items        = $rental->items ?? [];
             $itemCount    = count($items);
             $visibleItems = array_slice($items, 0, 1);
             $hiddenItems  = array_slice($items, 1);
             $hiddenCount  = count($hiddenItems);
-
-            $totalQty = 0;
-            foreach ($items as $itm) {
-                $totalQty += isset($itm->quantity) ? (int)$itm->quantity : 1;
-            }
+            $totalQty     = array_sum(array_map(fn($i) => (int)($i->quantity ?? 1), $items));
         @endphp
 
-        <div class="rental-card" style="animation-delay: {{ $index * 0.08 }}s">
+        {{-- Card --}}
+        <div class="bg-white rounded-[18px] border-[1.5px] border-[#e5e7eb] mb-3.5 overflow-hidden
+                    transition-all duration-[250ms] hover:shadow-[0_8px_32px_rgba(26,92,58,0.12)] hover:-translate-y-0.5
+                    fade-up"
+             style="animation-delay: {{ $index * 0.08 }}s">
 
-            {{-- Header --}}
-            <div class="card-header">
-                <div class="seller-info">
-                    <div class="seller-icon">
-                        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            {{-- Card Header --}}
+            <div class="flex items-center justify-between px-4 py-3 pb-[10px] border-b border-[#e5e7eb]">
+                <div class="flex items-center gap-2">
+                    <div class="w-7 h-7 bg-[#eef5f0] rounded-lg flex items-center justify-center">
+                        <svg class="w-3.5 h-3.5 text-[#1a5c3a]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                   d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/>
                         </svg>
                     </div>
-                    <div class="seller-name">Camplore Official</div>
+                    <span class="text-[13px] font-bold text-[#1a1a1a]">Camplore Official</span>
                 </div>
-                <span class="badge {{ $badgeClass }}">{{ $badgeLabel }}</span>
+                <span class="px-3 py-1 rounded-full text-[11px] font-bold {{ $badgeClass }}">{{ $badgeLabel }}</span>
             </div>
 
-            {{-- Body --}}
-            <div class="card-body">
+            {{-- Card Body --}}
+            <div class="px-4 py-3.5">
 
-                <div class="product-list">
+                {{-- Product list --}}
+                <div class="flex flex-col">
 
-                    {{-- Produk selalu tampil (1 pertama) --}}
+                    {{-- Visible items (first only) --}}
                     @foreach($visibleItems as $item)
-                    <div class="product-row">
-                        <div class="product-thumb">
+                    <div class="flex gap-3.5 items-start py-2.5 first:pt-0 last:border-0 last:pb-0 border-b border-[#e5e7eb]">
+                        {{-- Thumb --}}
+                        <div class="w-[68px] h-[68px] rounded-xl border-[1.5px] border-[#e5e7eb] overflow-hidden
+                                    flex-shrink-0 bg-[#eef5f0] flex items-center justify-center">
                             @if(!empty($item->image))
-                                <img src="{{ $item->image }}" alt="{{ $item->name }}">
+                                <img src="{{ $item->image }}" alt="{{ $item->name }}" class="w-full h-full object-cover">
                             @else
-                                <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <svg class="w-[26px] h-[26px] text-[#1a5c3a] opacity-40" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.2"
                                           d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/>
                                     <circle cx="12" cy="13" r="3" stroke-width="1.2"/>
                                 </svg>
                             @endif
                         </div>
-                        <div class="product-info">
-                            <div class="product-name-row">
-                                <div class="product-name">{{ isset($item->name) ? $item->name : 'Produk' }}</div>
-                                @if($status === 'pengembalian' && isset($item->overdue) && $item->overdue)
-                                    <span class="badge badge-overdue" style="font-size:10px;padding:2px 9px;white-space:nowrap;flex-shrink:0;">Overdue</span>
+                        {{-- Info --}}
+                        <div class="flex-1 min-w-0">
+                            <div class="flex items-center gap-2">
+                                <div class="text-sm font-extrabold text-[#1a1a1a] truncate">{{ $item->name ?? 'Produk' }}</div>
+                                @if($status === 'pengembalian' && ($item->overdue ?? false))
+                                    <span class="flex-shrink-0 px-[9px] py-0.5 rounded-full text-[10px] font-bold bg-[#fef2f2] text-[#dc2626] border border-[#fecaca]">Overdue</span>
                                 @endif
                             </div>
-                            <div class="product-meta">
-                                Sewa {{ isset($item->duration) ? $item->duration : '-' }} hari
+                            <div class="text-xs text-[#6b7280] mt-0.5">
+                                Sewa {{ $item->duration ?? '-' }} hari
                                 &bull; {{ \Carbon\Carbon::parse($item->start_date)->format('d M') }}
                                 &ndash; {{ \Carbon\Carbon::parse($item->end_date)->format('d M') }}
                             </div>
-                            <div class="product-price-row">
-                                <span class="product-price">Rp {{ number_format(isset($item->price) ? $item->price : 0, 0, ',', '.') }}</span>
-                                <span class="qty-tag">&times;{{ isset($item->quantity) ? $item->quantity : 1 }}</span>
+                            <div class="flex items-center gap-2 mt-[5px]">
+                                <span class="text-sm font-extrabold text-[#1a5c3a]">Rp {{ number_format($item->price ?? 0, 0, ',', '.') }}</span>
+                                <span class="inline-flex items-center bg-[#eef5f0] text-[#1a5c3a] rounded-[6px] px-2 py-0.5 text-[11px] font-bold">
+                                    &times;{{ $item->quantity ?? 1 }}
+                                </span>
                             </div>
                         </div>
                     </div>
                     @endforeach
 
-                    {{-- Produk tersembunyi (item ke-2 dst) --}}
+                    {{-- Hidden items --}}
                     @if($hiddenCount > 0)
                     <div id="hidden-items-{{ $rental->id }}" style="display:none;">
                         @foreach($hiddenItems as $item)
-                        <div class="product-row">
-                            <div class="product-thumb">
+                        <div class="flex gap-3.5 items-start py-2.5 border-b border-[#e5e7eb] last:border-0">
+                            <div class="w-[68px] h-[68px] rounded-xl border-[1.5px] border-[#e5e7eb] overflow-hidden
+                                        flex-shrink-0 bg-[#eef5f0] flex items-center justify-center">
                                 @if(!empty($item->image))
-                                    <img src="{{ $item->image }}" alt="{{ $item->name }}">
+                                    <img src="{{ $item->image }}" alt="{{ $item->name }}" class="w-full h-full object-cover">
                                 @else
-                                    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <svg class="w-[26px] h-[26px] text-[#1a5c3a] opacity-40" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.2"
                                               d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/>
                                         <circle cx="12" cy="13" r="3" stroke-width="1.2"/>
                                     </svg>
                                 @endif
                             </div>
-                            <div class="product-info">
-                                <div class="product-name-row">
-                                    <div class="product-name">{{ isset($item->name) ? $item->name : 'Produk' }}</div>
-                                    @if($status === 'pengembalian' && isset($item->overdue) && $item->overdue)
-                                        <span class="badge badge-overdue" style="font-size:10px;padding:2px 9px;white-space:nowrap;flex-shrink:0;">Overdue</span>
+                            <div class="flex-1 min-w-0">
+                                <div class="flex items-center gap-2">
+                                    <div class="text-sm font-extrabold text-[#1a1a1a] truncate">{{ $item->name ?? 'Produk' }}</div>
+                                    @if($status === 'pengembalian' && ($item->overdue ?? false))
+                                        <span class="flex-shrink-0 px-[9px] py-0.5 rounded-full text-[10px] font-bold bg-[#fef2f2] text-[#dc2626] border border-[#fecaca]">Overdue</span>
                                     @endif
                                 </div>
-                                <div class="product-meta">
-                                    Sewa {{ isset($item->duration) ? $item->duration : '-' }} hari
+                                <div class="text-xs text-[#6b7280] mt-0.5">
+                                    Sewa {{ $item->duration ?? '-' }} hari
                                     &bull; {{ \Carbon\Carbon::parse($item->start_date)->format('d M') }}
                                     &ndash; {{ \Carbon\Carbon::parse($item->end_date)->format('d M') }}
                                 </div>
-                                <div class="product-price-row">
-                                    <span class="product-price">Rp {{ number_format(isset($item->price) ? $item->price : 0, 0, ',', '.') }}</span>
-                                    <span class="qty-tag">&times;{{ isset($item->quantity) ? $item->quantity : 1 }}</span>
+                                <div class="flex items-center gap-2 mt-[5px]">
+                                    <span class="text-sm font-extrabold text-[#1a5c3a]">Rp {{ number_format($item->price ?? 0, 0, ',', '.') }}</span>
+                                    <span class="inline-flex items-center bg-[#eef5f0] text-[#1a5c3a] rounded-[6px] px-2 py-0.5 text-[11px] font-bold">
+                                        &times;{{ $item->quantity ?? 1 }}
+                                    </span>
                                 </div>
                             </div>
                         </div>
                         @endforeach
                     </div>
-                    <button class="show-more-btn"
+
+                    {{-- Toggle button --}}
+                    <button class="show-more-btn flex items-center gap-1.5 w-full pt-[9px] pb-0.5
+                                   bg-transparent border-0 cursor-pointer text-xs font-bold text-[#1a5c3a]
+                                   text-left transition-opacity duration-200 hover:opacity-75"
                             id="toggle-btn-{{ $rental->id }}"
                             onclick="toggleItems({{ $rental->id }}, {{ $hiddenCount }})">
-                        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <svg class="w-3.5 h-3.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/>
                         </svg>
                         + {{ $hiddenCount }} produk lainnya
                     </button>
                     @endif
 
-                </div>
+                </div>{{-- end product-list --}}
 
-                {{-- Timer (belum bayar) --}}
+                {{-- Timer (belum_bayar) --}}
                 @if($status === 'belum_bayar' && !empty($rental->payment_deadline))
-                <div class="timer-bar">
-                    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <div class="mt-3 bg-[#fff7ed] rounded-[10px] px-3.5 py-[9px] flex items-center gap-2 border border-[#fed7aa]">
+                    <svg class="w-[15px] h-[15px] text-[#c2410c] flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <circle cx="12" cy="12" r="10" stroke-width="1.8"/>
                         <path stroke-linecap="round" stroke-width="1.8" d="M12 6v6l4 2"/>
                     </svg>
-                    <span class="timer-text">Bayar dalam</span>
-                    <span class="timer-countdown"
+                    <span class="text-xs font-bold text-[#c2410c]">Bayar dalam</span>
+                    <span class="ml-auto text-sm font-extrabold text-[#c2410c] tabular timer-countdown"
                           data-deadline="{{ \Carbon\Carbon::parse($rental->payment_deadline)->timestamp }}">
                         --:--:--
                     </span>
                 </div>
                 @endif
 
-                {{-- Return reminder note (selesai) --}}
+                {{-- Return reminder (selesai) --}}
                 @if($status === 'selesai' && !empty($rental->return_date))
                 @php
-                    $returnDate   = \Carbon\Carbon::parse($rental->return_date);
-                    $daysLeft     = (int) now()->startOfDay()->diffInDays($returnDate->startOfDay(), false);
-                    $isUrgent     = $daysLeft <= 1;
+                    $returnDate = \Carbon\Carbon::parse($rental->return_date);
+                    $daysLeft   = (int) now()->startOfDay()->diffInDays($returnDate->startOfDay(), false);
+                    $isUrgent   = $daysLeft <= 1;
                 @endphp
-                <div class="return-reminder" style="{{ $isUrgent ? 'background:#fef2f2;border-color:#fecaca;' : '' }}">
-                    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"
-                         style="{{ $isUrgent ? 'color:#dc2626;' : '' }}">
+                <div class="mt-3 rounded-[10px] px-3.5 py-[10px] flex items-start gap-2.5
+                            {{ $isUrgent ? 'bg-[#fef2f2] border border-[#fecaca]' : 'bg-[#fffbeb] border border-[#fde68a]' }}">
+                    <svg class="w-[15px] h-[15px] flex-shrink-0 mt-px {{ $isUrgent ? 'text-[#dc2626]' : 'text-[#b45309]' }}"
+                         fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                               d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/>
                     </svg>
-                    <div class="return-reminder-text" style="{{ $isUrgent ? 'color:#991b1b;' : '' }}">
+                    <div class="text-xs font-semibold leading-relaxed {{ $isUrgent ? 'text-[#991b1b]' : 'text-[#92400e]' }}">
                         Jangan lupa kembalikan barang sebelum
-                        <span class="return-reminder-date" style="{{ $isUrgent ? 'color:#dc2626;' : '' }}">
+                        <span class="text-[13px] font-extrabold {{ $isUrgent ? 'text-[#dc2626]' : 'text-[#b45309]' }}">
                             {{ $returnDate->translatedFormat('d F Y') }}
                         </span>
                         @if($daysLeft > 0)
@@ -599,101 +362,129 @@
                 </div>
                 @endif
 
-                {{-- Info keterlambatan & denda (pengembalian) --}}
+                {{-- Pengembalian info --}}
                 @if($status === 'pengembalian')
-                <div class="return-info-grid">
-                    <div class="return-info-box neutral">
-                        <div class="return-info-label">Tanggal sewa</div>
-                        <div class="return-info-value">
+                <div class="grid grid-cols-2 gap-2.5 mt-3.5">
+                    <div class="bg-[#f5f6f4] border border-[#e5e7eb] rounded-xl px-3.5 py-3">
+                        <div class="text-[11px] font-semibold text-[#6b7280] mb-1">Tanggal sewa</div>
+                        <div class="text-[15px] font-extrabold text-[#1a1a1a]">
                             {{ isset($items[0]) ? \Carbon\Carbon::parse($items[0]->start_date)->format('d M Y') : '-' }}
                         </div>
                     </div>
-                    <div class="return-info-box danger">
-                        <div class="return-info-label red">Keterlambatan</div>
-                        <div class="return-info-value red">
-                            {{ isset($rental->overdue_days) ? $rental->overdue_days : 0 }} hari
+                    <div class="bg-[#fef2f2] border border-[#fecaca] rounded-xl px-3.5 py-3">
+                        <div class="text-[11px] font-semibold text-[#dc2626] mb-1">Keterlambatan</div>
+                        <div class="text-[15px] font-extrabold text-[#dc2626]">
+                            {{ $rental->overdue_days ?? 0 }} hari
                         </div>
                     </div>
                 </div>
-                <div class="denda-row">
+                <div class="flex items-center justify-between mt-2.5 px-3.5 py-3
+                            bg-[#f5f6f4] rounded-xl border border-[#e5e7eb]">
                     <div>
-                        <div class="denda-label">Total denda</div>
-                        <div class="denda-value">Rp {{ number_format(isset($rental->late_fee) ? $rental->late_fee : 0, 0, ',', '.') }}</div>
+                        <div class="text-xs text-[#6b7280] font-medium mb-0.5">Total denda</div>
+                        <div class="text-base font-black text-[#dc2626]">Rp {{ number_format($rental->late_fee ?? 0, 0, ',', '.') }}</div>
                     </div>
-                    <div class="denda-actions">
-                        <a href="#" class="btn btn-primary">Bayar</a>
+                    <div class="flex gap-2 items-center">
+                        <a href="#" class="px-[18px] py-[9px] rounded-[10px] text-xs font-bold bg-[#1a5c3a] text-white
+                                           hover:bg-[#2d7a52] transition-colors duration-200 no-underline inline-flex items-center gap-1.5">
+                            Bayar
+                        </a>
                     </div>
                 </div>
                 @endif
 
                 {{-- Order info --}}
-                <div class="order-num">
+                <div class="text-[11px] text-[#9ca3af] mt-2.5">
                     No. pemesanan:
-                    {{ isset($rental->order_number) ? $rental->order_number : 'CPL-' . str_pad($rental->id, 8, '0', STR_PAD_LEFT) }}
+                    {{ $rental->order_number ?? 'CPL-' . str_pad($rental->id, 8, '0', STR_PAD_LEFT) }}
                     &bull; {{ $itemCount }} produk, {{ $totalQty }} item
                 </div>
 
-                {{-- Progress --}}
+                {{-- Progress bar --}}
                 @if($showProgress)
-                <div class="prog-wrap">
-                    <div class="prog-row">
-                        <div class="prog-dot"></div>
-                        <div class="prog-line {{ $stepIndex >= 1 ? '' : 'off' }}"></div>
-                        <div class="prog-dot {{ $stepIndex >= 1 ? '' : 'off' }}"></div>
-                        <div class="prog-line {{ $stepIndex >= 2 ? '' : 'off' }}"></div>
-                        <div class="prog-dot {{ $stepIndex >= 2 ? '' : 'off' }}"></div>
-                        <div class="prog-line {{ $stepIndex >= 3 ? '' : 'off' }}"></div>
-                        <div class="prog-dot {{ $stepIndex >= 3 ? '' : 'off' }}"></div>
+                <div class="mt-3.5">
+                    {{-- Dots + lines --}}
+                    <div class="flex items-center">
+                        <div class="w-[13px] h-[13px] rounded-full bg-[#1a5c3a] flex-shrink-0"></div>
+                        <div class="{{ $stepIndex >= 1 ? 'prog-line-on' : 'prog-line-off' }}"></div>
+                        <div class="w-[13px] h-[13px] rounded-full flex-shrink-0 {{ $stepIndex >= 1 ? 'bg-[#1a5c3a]' : 'bg-[#e5e7eb]' }}"></div>
+                        <div class="{{ $stepIndex >= 2 ? 'prog-line-on' : 'prog-line-off' }}"></div>
+                        <div class="w-[13px] h-[13px] rounded-full flex-shrink-0 {{ $stepIndex >= 2 ? 'bg-[#1a5c3a]' : 'bg-[#e5e7eb]' }}"></div>
+                        <div class="{{ $stepIndex >= 3 ? 'prog-line-on' : 'prog-line-off' }}"></div>
+                        <div class="w-[13px] h-[13px] rounded-full flex-shrink-0 {{ $stepIndex >= 3 ? 'bg-[#1a5c3a]' : 'bg-[#e5e7eb]' }}"></div>
                     </div>
-                    <div class="prog-labels">
-                        <div class="prog-lbl on">Pesanan dibuat</div>
-                        <div class="prog-lbl {{ $stepIndex >= 1 ? 'on' : '' }}">Dikemas</div>
-                        <div class="prog-lbl {{ $stepIndex >= 2 ? 'on' : '' }}">Dikirim</div>
-                        <div class="prog-lbl {{ $stepIndex >= 3 ? 'on' : '' }}">Diterima</div>
+                    {{-- Labels --}}
+                    <div class="flex mt-1.5">
+                        <div class="flex-1 text-center text-[10px] font-bold text-[#1a5c3a]">Pesanan dibuat</div>
+                        <div class="flex-1 text-center text-[10px] {{ $stepIndex >= 1 ? 'font-bold text-[#1a5c3a]' : 'font-semibold text-[#9ca3af]' }}">Dikemas</div>
+                        <div class="flex-1 text-center text-[10px] {{ $stepIndex >= 2 ? 'font-bold text-[#1a5c3a]' : 'font-semibold text-[#9ca3af]' }}">Dikirim</div>
+                        <div class="flex-1 text-center text-[10px] {{ $stepIndex >= 3 ? 'font-bold text-[#1a5c3a]' : 'font-semibold text-[#9ca3af]' }}">Diterima</div>
                     </div>
                 </div>
                 @endif
 
             </div>{{-- end card-body --}}
 
-            {{-- Footer --}}
-            <div class="card-footer">
+            {{-- Card Footer --}}
+            <div class="border-t border-[#e5e7eb] px-4 py-3 flex items-center justify-between gap-3">
                 <div>
-                    <div class="total-label">Total sewa:</div>
-                    <div class="total-price">Rp {{ number_format(isset($rental->total_price) ? $rental->total_price : 0, 0, ',', '.') }}</div>
-                    <div class="total-meta">{{ $itemCount }} produk &bull; {{ $totalQty }} item</div>
+                    <div class="text-xs text-[#6b7280] font-medium">Total sewa:</div>
+                    <div class="text-[17px] font-black text-[#1a1a1a] mt-px">
+                        Rp {{ number_format($rental->total_price ?? 0, 0, ',', '.') }}
+                    </div>
+                    <div class="text-[11px] text-[#9ca3af] mt-0.5">{{ $itemCount }} produk &bull; {{ $totalQty }} item</div>
                 </div>
-                <div class="card-actions">
+                <div class="flex gap-2 items-center flex-wrap justify-end">
 
                     @if($status === 'belum_bayar')
-                        <button class="btn btn-danger">Batalkan</button>
-                        <a href="#" class="btn btn-primary">Bayar Sekarang</a>
+                        <button class="px-[18px] py-[9px] rounded-[10px] text-xs font-bold cursor-pointer transition-all duration-200
+                                       bg-white border-[1.5px] border-[#fecaca] text-[#dc2626] hover:bg-[#fef2f2]">
+                            Batalkan
+                        </button>
+                        <a href="#" class="px-[18px] py-[9px] rounded-[10px] text-xs font-bold no-underline inline-flex items-center gap-1.5
+                                           bg-[#1a5c3a] text-white hover:bg-[#2d7a52] transition-colors duration-200">
+                            Bayar Sekarang
+                        </a>
                     @endif
 
                     @if($status === 'dikirim')
-                        <a href="#" class="btn btn-outline">Hubungi Penjual</a>
+                        <a href="#" class="px-[18px] py-[9px] rounded-[10px] text-xs font-bold no-underline inline-flex items-center gap-1.5
+                                           bg-white border-[1.5px] border-[#e5e7eb] text-[#1a1a1a]
+                                           hover:border-[#1a5c3a] hover:text-[#1a5c3a] transition-all duration-200">
+                            Hubungi Penjual
+                        </a>
                     @endif
 
                     @if($status === 'selesai')
-                        <a href="#" class="btn btn-pink">Sewa Lagi</a>
+                        <a href="#" class="px-[18px] py-[9px] rounded-[10px] text-xs font-bold no-underline inline-flex items-center gap-1.5
+                                           bg-[#e8567a] text-white hover:bg-[#d4466a] transition-colors duration-200">
+                            Sewa Lagi
+                        </a>
                     @endif
 
                 </div>
             </div>
 
-        </div>{{-- end .rental-card --}}
+        </div>{{-- end rental-card --}}
 
         @empty
-        <div class="empty-state">
-            <div class="empty-icon">
-                <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        {{-- Empty state --}}
+        <div class="bg-white rounded-[18px] border-[1.5px] border-[#e5e7eb] px-8 py-16 text-center">
+            <div class="w-[88px] h-[88px] bg-[#eef5f0] rounded-[22px] flex items-center justify-center mx-auto mb-5">
+                <svg class="w-10 h-10 text-[#1a5c3a] opacity-30" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
                           d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/>
                 </svg>
             </div>
-            <div class="empty-title">Belum Ada Riwayat Sewa</div>
-            <a href="{{ url('/catalog') }}" class="empty-cta">
-                <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <div class="text-xl font-black text-[#1a5c3a] mb-2" style="font-family:'Playfair Display',Georgia,serif;">
+                Belum Ada Riwayat Sewa
+            </div>
+            <a href="{{ url('/catalog') }}"
+               class="inline-flex items-center gap-2 bg-[#1a5c3a] text-white px-7 py-3 rounded-full
+                      font-bold text-[13px] no-underline mt-1
+                      shadow-[0_4px_14px_rgba(26,92,58,0.25)] hover:bg-[#e8567a]
+                      hover:shadow-[0_4px_14px_rgba(232,86,122,0.3)] transition-all duration-200">
+                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                           d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/>
                 </svg>
@@ -703,6 +494,7 @@
         @endforelse
 
     </main>
+</div>
 </div>
 
 <script>

@@ -115,7 +115,7 @@
                             class="input-field flex-1 px-4 py-3 rounded-xl text-sm font-medium text-gray-700">
                         <button type="button" @click="otpSent = true"
                             class="px-5 py-2 bg-[#22543D] text-white text-[11px] font-bold rounded-xl">
-                            Verify
+                            Verifikasi
                         </button>
                     </div>
                 </div>
@@ -124,8 +124,9 @@
                 <div class="space-y-2"> 
                     <label class="text-[11px] font-bold text-gray-400 uppercase tracking-widest">Masukkan Kode OTP</label>
                     <div class="flex gap-2"> 
-                        <input type="number" placeholder="656989" class="w-32 px-4 py-2 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#22543D] outline-none font-bold text-center tracking-widest"> <button type="button" @click="isVerified = true" class="px-6 py-2 bg-[#ED64A6] text-white rounded-xl text-xs font-bold hover:bg-[#d55695] transition">Confirm</button> </div>
-                    <p x-show="isVerified" class="text-xs text-emerald-600 font-bold flex items-center gap-2 italic"> ✓ Phone Number Successfully Verified! </p>
+                        <input type="number" placeholder="656989" class="w-32 px-4 py-2 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#22543D] outline-none font-bold text-center tracking-widest"> 
+                        <button type="button" @click="isVerified = true" class="px-6 py-2 bg-[#ED64A6] text-white rounded-xl text-xs font-bold hover:bg-[#d55695] transition">Konfirmasi</button> </div>
+                    <p x-show="isVerified" class="text-xs text-emerald-600 font-bold flex items-center gap-2 italic"> ✓ Nomor Telepon Berhasil Diverifikasi! </p>
                 </div>
 
                 {{-- KTP --}}

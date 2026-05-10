@@ -35,7 +35,8 @@
 
         <div class="card-item border-b border-gray-100 last:border-0"
             data-id="{{ $cart->id }}"
-            data-price="{{ $cart->product->price_per_day ?? 0 }}">
+            data-price="{{ $cart->product->price_per_day ?? 0 }}"
+            data-days="{{ $days }}">
 
             {{-- ══════ DESKTOP ROW ══════ --}}
             <div class="hidden md:grid grid-cols-[auto_1fr_160px_120px_140px_48px] gap-4 items-center px-4 py-5">
@@ -209,40 +210,57 @@
 <script>
     const today = new Date().toISOString().split('T')[0];
 
+    // Ambil jumlah hari dari data-days attribute (sudah dihitung server)
+    // dan update jika user ganti tanggal
     function getDays(card) {
         const s = card.querySelector('.start-date')?.value;
         const e = card.querySelector('.end-date')?.value;
-        if (!s || !e) return 1;
+        if (!s || !e) {
+            // fallback ke data-days dari server jika input belum ada
+            return parseInt(card.dataset.days) || 1;
+        }
         const d = Math.floor((new Date(e) - new Date(s)) / 86400000);
         return d > 0 ? d : 1;
     }
 
     function recalcCard(card) {
         const price = parseFloat(card.dataset.price) || 0;
-        const qty = parseInt(card.querySelector('.qty-val').textContent) || 1;
-        const subtotal = price * qty * getDays(card);
-        card.querySelectorAll('.subtotal-detail').forEach(el => el.textContent = subtotal.toLocaleString('id-ID'));
+        const qty   = parseInt(card.querySelector('.qty-val').textContent) || 1;
+        const days  = getDays(card);
+        const subtotal = price * qty * days;
+        card.querySelectorAll('.subtotal-detail').forEach(el =>
+            el.textContent = subtotal.toLocaleString('id-ID')
+        );
     }
 
     function updateSummary() {
         let total = 0, count = 0;
+
+        // Ambil unique card-item (bukan checkbox), lalu cek apakah ada checkbox yang dicentang
         document.querySelectorAll('.card-item').forEach(card => {
-            const cbs = card.querySelectorAll('.item-checkbox');
-            const checked = Array.from(cbs).some(cb => cb.checked);
+            const checked = Array.from(card.querySelectorAll('.item-checkbox')).some(cb => cb.checked);
             if (checked) {
                 const price = parseFloat(card.dataset.price) || 0;
-                const qty = parseInt(card.querySelector('.qty-val').textContent) || 1;
-                total += price * qty * getDays(card);
+                const qty   = parseInt(card.querySelector('.qty-val').textContent) || 1;
+                const days  = getDays(card);
+                total += price * qty * days;
                 count++;
             }
         });
+
         document.getElementById('grandTotal').textContent = 'Rp' + total.toLocaleString('id-ID');
-        document.getElementById('countItems').textContent = count;
+        document.getElementById('countItems').textContent  = count;
         document.getElementById('totalChecked').textContent = count;
+
+        // Sinkronkan tombol "Pilih Semua"
+        const allCards    = document.querySelectorAll('.card-item').length;
+        const selectAllCb = document.getElementById('selectAll');
+        selectAllCb.checked       = allCards > 0 && count === allCards;
+        selectAllCb.indeterminate = count > 0 && count < allCards;
     }
 
     function toggleDate(strip) {
-        const card = strip.closest('.card-item');
+        const card  = strip.closest('.card-item');
         const panel = card.querySelector('.date-row');
         const arrow = strip.querySelector('.toggle-arrow');
         panel.classList.toggle('hidden');
@@ -250,12 +268,12 @@
     }
 
     function onDateChange(input) {
-        const card = input.closest('.card-item');
-        const sEl = card.querySelector('.start-date');
-        const eEl = card.querySelector('.end-date');
+        const card  = input.closest('.card-item');
+        const sEl   = card.querySelector('.start-date');
+        const eEl   = card.querySelector('.end-date');
         const badge = card.querySelector('.days-badge');
         const errEl = card.querySelector('.date-error');
-        const dsum = card.querySelector('.date-summary');
+        const dsum  = card.querySelector('.date-summary');
         const s = sEl.value, e = eEl.value;
 
         badge.classList.add('hidden');
@@ -264,14 +282,23 @@
         if (!s || !e) { recalcCard(card); updateSummary(); return; }
 
         const diff = Math.round((new Date(e) - new Date(s)) / 86400000);
-        if (diff <= 0) { errEl.classList.remove('hidden'); recalcCard(card); updateSummary(); return; }
+        if (diff <= 0) {
+            errEl.classList.remove('hidden');
+            recalcCard(card);
+            updateSummary();
+            return;
+        }
+
+        // Update data-days agar getDays() konsisten
+        card.dataset.days = diff;
 
         badge.textContent = diff + ' hari';
         badge.classList.remove('hidden');
 
         const fmt = d => { const [y, m, dy] = d.split('-'); return `${dy}/${m}/${y}`; };
-        dsum.textContent = `${fmt(s)} – ${fmt(e)}`;
+        dsum.innerHTML = `${fmt(s)} – ${fmt(e)}`;
 
+        // Update atau buat pill di date strip
         let pill = card.querySelector('.strip-pill');
         if (!pill) {
             pill = document.createElement('span');
@@ -281,12 +308,16 @@
         pill.textContent = diff + ' hari';
 
         recalcCard(card);
+        updateSummary();
+
         fetch(`/cart/${card.dataset.id}`, {
             method: 'PUT',
-            headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content },
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+            },
             body: JSON.stringify({ start_date: s, end_date: e })
         }).catch(() => showToast('Gagal menyimpan tanggal'));
-        updateSummary();
     }
 
     function changeQty(btn, delta) {
@@ -296,12 +327,16 @@
         if (val < 1) val = 1;
         span.textContent = val;
         recalcCard(card);
+        updateSummary();
+
         fetch(`/cart/${card.dataset.id}`, {
             method: 'PUT',
-            headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content },
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+            },
             body: JSON.stringify({ quantity: val })
         }).catch(() => showToast('Gagal menyimpan jumlah'));
-        updateSummary();
     }
 
     function removeItem(btn) {
@@ -309,25 +344,36 @@
         const card = btn.closest('.card-item');
         fetch(`/cart/${card.dataset.id}`, {
             method: 'DELETE',
-            headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content }
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+            }
         }).then(r => r.json()).then(data => {
             if (data.success) { card.remove(); updateSummary(); checkEmpty(); }
         }).catch(() => showToast('Gagal menghapus item'));
     }
 
     function removeAllChecked() {
-        const checked = document.querySelectorAll('.item-checkbox:checked');
-        if (!checked.length) return;
-        if (!confirm(`Hapus ${checked.length} item?`)) return;
-        const ids = [...new Set(Array.from(checked).map(cb => cb.closest('.card-item').dataset.id))];
+        const checkedCards = [...new Set(
+            Array.from(document.querySelectorAll('.item-checkbox:checked'))
+                .map(cb => cb.closest('.card-item'))
+        )];
+        if (!checkedCards.length) return;
+        if (!confirm(`Hapus ${checkedCards.length} item?`)) return;
+
+        const ids = checkedCards.map(c => c.dataset.id);
         fetch('/cart/bulk-delete', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content },
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+            },
             body: JSON.stringify({ ids })
         }).then(r => r.json()).then(data => {
             if (data.success) {
-                ids.forEach(id => document.querySelector(`.card-item[data-id="${id}"]`)?.remove());
-                updateSummary(); checkEmpty();
+                checkedCards.forEach(c => c.remove());
+                updateSummary();
+                checkEmpty();
             }
         }).catch(() => showToast('Gagal menghapus'));
     }
@@ -344,9 +390,12 @@
     }
 
     function goToCheckout() {
-        const checked = document.querySelectorAll('.item-checkbox:checked');
-        if (!checked.length) { alert('Pilih barang dulu!'); return; }
-        const ids = [...new Set(Array.from(checked).map(cb => cb.closest('.card-item').dataset.id))];
+        const checkedCards = [...new Set(
+            Array.from(document.querySelectorAll('.item-checkbox:checked'))
+                .map(cb => cb.closest('.card-item'))
+        )];
+        if (!checkedCards.length) { alert('Pilih barang dulu!'); return; }
+        const ids = checkedCards.map(c => c.dataset.id);
         window.location.href = `/checkout?${ids.map(id => `ids[]=${id}`).join('&')}`;
     }
 
@@ -362,7 +411,7 @@
     window.addEventListener('load', () => {
         document.querySelectorAll('.start-date').forEach(el => el.min = today);
         document.querySelectorAll('.card-item').forEach(card => {
-            const s = card.querySelector('.start-date')?.value;
+            const s  = card.querySelector('.start-date')?.value;
             const eEl = card.querySelector('.end-date');
             if (s && eEl) eEl.min = s;
             recalcCard(card);
