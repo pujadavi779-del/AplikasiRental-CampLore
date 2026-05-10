@@ -14,7 +14,7 @@ class DeliveryController extends Controller
             [
                 'id_pesanan'    => 'CMP-20250722-001',
                 'pemesan'       => 'Rizka Nur',
-                'alamat'        => 'Jl. Sungai Langkai No. 19, Aji Stone, Kota Batam',
+                'alamat'        => 'Jl. Sungai Langkai No. 19, Aji Stone, Kota Batam, 29422 ',
                 'no_hp'         => '081234567890',
                 'tanggal_mulai' => '22 Jul 2025',
                 'barang' => [
@@ -28,7 +28,7 @@ class DeliveryController extends Controller
             [
                 'id_pesanan'    => 'CMP-20250725-002',
                 'pemesan'       => 'Budi Santoso',
-                'alamat'        => 'Jl. Raya Batam Center No. 5, Batam',
+                'alamat'        => 'Jl. Raya Batam Center No. 5, Batam, 29461 ',
                 'no_hp'         => '082345678901',
                 'tanggal_mulai' => '25 Jul 2025',
                 'barang'        => [

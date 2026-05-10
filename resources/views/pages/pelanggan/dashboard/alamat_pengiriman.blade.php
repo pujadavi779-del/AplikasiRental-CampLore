@@ -44,9 +44,13 @@
                     <input type="text" name="city" value="{{ old('city', $address->city ?? '') }}" class="input-field w-full px-4 py-3 rounded-xl text-sm">
                 </div>
                 <div class="space-y-2">
+                    <label class="text-[11px] font-bold text-gray-400 uppercase tracking-widest">Kecamatan</label>
+                    <input type="text" name="district" value="{{ old('district', $address->district ?? '') }}" class="input-field w-full px-4 py-3 rounded-xl text-sm">
+                </div>
+                <!-- <div class="space-y-2">
                     <label class="text-[11px] font-bold text-gray-400 uppercase tracking-widest">Provinsi</label>
                     <input type="text" name="province" value="{{ old('province', $address->province ?? '') }}" class="input-field w-full px-4 py-3 rounded-xl text-sm">
-                </div>
+                </div> -->
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -54,10 +58,7 @@
                     <label class="text-[11px] font-bold text-gray-400 uppercase tracking-widest">Kode Pos</label>
                     <input type="text" name="postal_code" value="{{ old('postal_code', $address->postal_code ?? '') }}" class="input-field w-full px-4 py-3 rounded-xl text-sm">
                 </div>
-                <div class="space-y-2">
-                    <label class="text-[11px] font-bold text-gray-400 uppercase tracking-widest">Kecamatan</label>
-                    <input type="text" name="district" value="{{ old('district', $address->district ?? '') }}" class="input-field w-full px-4 py-3 rounded-xl text-sm">
-                </div>
+
             </div>
 
             <div class="pt-4 flex items-center justify-end gap-4">

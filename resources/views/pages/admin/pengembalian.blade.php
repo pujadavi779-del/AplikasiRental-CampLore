@@ -41,8 +41,7 @@
                 <thead class="bg-[#f1f8f4] text-[10px] font-bold uppercase tracking-widest text-[#22543D] border-b border-[#eef4f0]">
                     <tr>
                         <th class="px-6 py-3">Pemesan</th>
-                        <th class="px-6 py-3">Produk</th>
-                        <th class="px-6 py-3">Merek</th>
+                        <th class="px-6 py-3">ID Pemesanan</th>
                         <th class="px-6 py-3">Kategori & Tipe</th>
                         <th class="px-6 py-3 text-center">Tgl Kembali</th>
                         <th class="px-6 py-3 text-center">Denda</th>
@@ -85,15 +84,7 @@
 
                         {{-- Produk --}}
                         <td class="px-6 py-4">
-                            @foreach($item->products as $prod)
-                                <div class="font-semibold text-gray-800 text-sm">{{ $prod->name }}</div>
-                            @endforeach
-                            <div class="text-[10px] text-gray-400 mt-0.5">{{ $item->id_pesanan }}</div>
-                        </td>
-
-                        {{-- Merek --}}
-                        <td class="px-6 py-4">
-                            <span class="text-sm font-semibold text-gray-600">{{ $merek }}</span>
+                            <div class="font-semibold text-gray-800 text-sm">{{ $item->id_pesanan }}</div>
                         </td>
 
                         {{-- Kategori & Tipe --}}
