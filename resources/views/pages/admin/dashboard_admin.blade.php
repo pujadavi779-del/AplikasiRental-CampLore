@@ -56,9 +56,10 @@
     <main class="lg:ml-[272px] min-h-screen pb-10 px-6 pt-6">
 
         {{-- Navbar Judul --}}
+        {{-- Navbar Judul --}}
         <div class="mb-6 animate-fade-up">
             @include('components.navbar_judul_LP', [
-            'NavParent' => 'Managemen Operasional',
+            'NavParent' => '',
             'section' => 'Beranda'
             ])
         </div>
@@ -193,10 +194,10 @@
                     <tbody class="divide-y divide-gray-50">
                         @php
                         $transactions = [
-                            ['RS', 'Rizky Saputra',  '15 Maret 2026', '18 Maret 2026', 'bg-[#e8f8f0] text-[#4caf82] border border-[#b6e8d0]', 'Dibayar',  false],
-                            ['NA', 'Nadia Aulia',    '16 Maret 2026', '20 Maret 2026', 'bg-[#e8f8f0] text-[#4caf82] border border-[#b6e8d0]', 'Dibayar',  false],
-                            ['DP', 'Doni Pratama',   '10 Maret 2026', '16 Maret 2026', 'bg-[#fdf0f5] text-[#e07a9a] border border-[#f5c6d8]', 'Tertunda', true],
-                            ['SW', 'Sari Wulandari', '18 Maret 2026', '22 Maret 2026', 'bg-[#fff6ee] text-[#e09a5a] border border-[#f5d8b0]', 'Proses',   false],
+                        ['RS', 'Rizky Saputra', '15 Maret 2026', '18 Maret 2026', 'bg-[#e8f8f0] text-[#4caf82] border border-[#b6e8d0]', 'Dibayar', false],
+                        ['NA', 'Nadia Aulia', '16 Maret 2026', '20 Maret 2026', 'bg-[#e8f8f0] text-[#4caf82] border border-[#b6e8d0]', 'Dibayar', false],
+                        ['DP', 'Doni Pratama', '10 Maret 2026', '16 Maret 2026', 'bg-[#fdf0f5] text-[#e07a9a] border border-[#f5c6d8]', 'Tertunda', true],
+                        ['SW', 'Sari Wulandari', '18 Maret 2026', '22 Maret 2026', 'bg-[#fff6ee] text-[#e09a5a] border border-[#f5d8b0]', 'Proses', false],
                         ];
                         @endphp
                         @foreach($transactions as $i => $trx)
