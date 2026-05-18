@@ -18,6 +18,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\ChangePasswordController;
 use App\Http\Controllers\Admin\PemesananController;
+use App\Http\Controllers\Admin\KategoriController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\CreateProductController;
 use App\Http\Controllers\CartController;
@@ -159,6 +160,7 @@ Route::prefix('admin')->middleware('admin.auth')->name('admin.')->group(function
     Route::patch('/pengiriman/{id}/tiba', [DeliveryController::class, 'tandaiSudahTiba'])->name('pengiriman.tiba');
 
     Route::get('/pengembalian', [PengembalianController::class, 'index'])->name('pengembalian');
+    Route::get('/kategori_produk', [KategoriController::class, 'index'])->name('kategori_produk');
 
     Route::get('/products', function (Request $request) {
         $query = Product::query();
@@ -225,3 +227,12 @@ Route::get('/alamat_pengiriman', function () {
 Route::get('/admin/login', [AdminAuthController::class, 'showLogin'])->name('admin.login');
 Route::post('/admin/login', [AdminAuthController::class, 'login'])->name('admin.login.post');
 Route::post('/admin/logout', [AdminAuthController::class, 'logout'])->name('admin.logout');
+
+
+// routes/web.php
+Route::prefix('admin')->name('admin.')->group(function () {
+    Route::get('/pengiriman',          [DeliveryController::class, 'pengiriman'])->name('pengiriman');
+    Route::get('/pengiriman/{id}',     [DeliveryController::class, 'detail'])->name('pengiriman.detail');
+    Route::post('/pengiriman/{id}/tiba', [DeliveryController::class, 'tandaiSudahTiba'])->name('pengiriman.tiba');
+    Route::patch('/pengiriman/{id}/status', [DeliveryController::class, 'updateStatus'])->name('pengiriman.update-status');
+});

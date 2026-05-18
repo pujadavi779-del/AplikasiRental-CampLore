@@ -17,7 +17,7 @@
 {{-- ===== DESKTOP SIDEBAR ===== --}}
 <aside class="w-64 shrink-0 pt-2 hidden lg:block">
     <div>
-        <p class="text-xs font-bold tracking-[0.14em] uppercase text-gray-400 mb-3">Kategori</p>
+        <p class="text-xs font-bold tracking-[0.14em] uppercase text-gray-400 mb-3">tipe</p>
         <div class="space-y-2">
             @foreach(['DSLR','Mirrorless','Kamera Aksi','Kamera Instan (Polaroid)','Kamera Video','Semua'] as $cat)
             <label class="flex items-center gap-2 text-sm text-gray-700 cursor-pointer hover:text-black transition">

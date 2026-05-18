@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Pemesanan;
+use Illuminate\Http\Request;  
 use Illuminate\Support\Facades\Mail;
 use App\Mail\BarangTibaMail;
 
@@ -18,8 +19,8 @@ class DeliveryController extends Controller
                 'no_hp'         => '081234567890',
                 'tanggal_mulai' => '22 Jul 2025',
                 'barang' => [
-                ['nama' => 'Canon R6',        'kategori' => 'Kamera',  'tipe' => 'Mirrorless'],
-                ['nama' => 'Lensa 50mm f1.4', 'kategori' => 'Kamera',  'tipe' => 'Aksesori'],
+                    ['nama' => 'Canon R6',        'kategori' => 'Kamera',  'tipe' => 'Mirrorless'],
+                    ['nama' => 'Lensa 50mm f1.4', 'kategori' => 'Kamera',  'tipe' => 'Aksesori'],
                 ],
                 'status'        => 'dikirim',
                 'foto_terima'   => null,
@@ -60,4 +61,41 @@ class DeliveryController extends Controller
 
         return redirect()->back()->with('success', 'Barang tiba! Data telah dipindahkan ke Pengembalian.');
     }
+
+    public function detail($id)
+    {
+        // Find the specific pengiriman by ID
+        // Since you're using static data now, you'd filter by id_pesanan
+        // Replace this with a DB query when you move to real data
+        $pengiriman = collect([
+            [
+                'id_pesanan'    => 'CMP-20250722-001',
+                'pemesan'       => 'Rizka Nur',
+                // ... rest of item 1
+            ],
+            [
+                'id_pesanan'    => 'CMP-20250725-002',
+                'pemesan'       => 'Budi Santoso',
+                // ... rest of item 2
+            ],
+        ])->firstWhere('id_pesanan', $id);
+
+        if (!$pengiriman) {
+            abort(404);
+        }
+
+        return view('pages.admin.pengiriman_detail', compact('pengiriman'));
+    }
+
+    public function updateStatus(Request $request, $id)
+{
+    $pesanan = Pemesanan::findOrFail($id);
+
+    $pesanan->update([
+        'status' => $request->status
+    ]);
+
+    return redirect()->route('admin.pengiriman.detail', $id)
+        ->with('success', 'Status berhasil diperbarui.');
+}
 }
