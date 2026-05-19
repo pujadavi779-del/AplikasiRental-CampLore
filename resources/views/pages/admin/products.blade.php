@@ -83,7 +83,6 @@
             <table class="w-full text-left">
                 <thead>
                     <tr class="bg-[#fcfdfb] border-b border-[#f1f8f4]">
-                        <th class="px-6 py-4 w-10"><input type="checkbox" class="accent-[#22543D] rounded"></th>
                         <th class="px-4 py-4 text-[10px] font-black text-gray-400 uppercase tracking-widest">Gambar</th>
                         <th class="px-4 py-4 text-[10px] font-black text-gray-400 uppercase tracking-widest">Nama Produk</th>
                         <th class="px-4 py-4 text-[10px] font-black text-gray-400 uppercase tracking-widest text-center">Kategori</th>
@@ -94,7 +93,7 @@
                 <tbody class="divide-y divide-[#f1f8f4]">
                     @forelse($products as $product)
                     <tr class="hover:bg-gray-50 transition-colors">
-                        <td class="px-6 py-4"><input type="checkbox" class="accent-[#22543D] rounded"></td>
+                        
                         <td class="px-4 py-4">
                             <div class="w-12 h-12 rounded-xl bg-gray-100 border border-[#d7e6de] overflow-hidden shadow-sm">
                                 <img src="{{ asset('storage/' . $product->image) }}"
