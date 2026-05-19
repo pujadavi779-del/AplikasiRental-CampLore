@@ -48,7 +48,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
 
-<body class="bg-[#f8faf6] font-sans text-[#1a1a1a] antialiased">
+<deskripsi class="bg-[#f8faf6] font-sans text-[#1a1a1a] antialiased">
 
     {{-- Sidebar --}}
     @include('components.sidebar_dashboard_admin')
@@ -292,6 +292,6 @@
             }
         });
     </script>
-</body>
+</deskripsi>
 
 </html>

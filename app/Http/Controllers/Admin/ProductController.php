@@ -24,7 +24,7 @@ class ProductController extends Controller
             'stock'         => 'required|in:0,1',
             'category'      => 'required|string',
             'price_per_day' => 'required|numeric|min:0',
-            'body'          => 'required|string', // ← ganti description jadi body
+            'deskripsi'          => 'required|string', // ← ganti description jadi deskripsi
             'image'         => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
         ]);
 
@@ -33,7 +33,7 @@ class ProductController extends Controller
             'stock'         => $request->stock,
             'category'      => $request->category,
             'price_per_day' => $request->price_per_day,
-            'body'          => $request->body, // ← ganti request->description jadi request->body
+            'deskripsi'          => $request->deskripsi, // ← ganti request->description jadi request->deskripsi
         ];
 
         if ($request->hasFile('image')) {

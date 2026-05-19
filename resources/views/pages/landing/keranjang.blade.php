@@ -59,7 +59,7 @@
                     <div class="min-w-0">
                         <p class="text-sm font-bold text-gray-900 truncate">{{ $cart->product->name ?? '-' }}</p>
                         <p class="text-[11px] font-semibold text-[#FF6B95] uppercase tracking-wide mt-0.5">Kategori: {{ $cart->product->category ?? '-' }}</p>
-                        <p class="text-[10px] font-medium text-gray-500 uppercase tracking-wide">Merek: {{ $cart->product->body ?? '-' }}</p>
+                        <p class="text-[10px] font-medium text-gray-500 uppercase tracking-wide">Merek: {{ $cart->product->deskripsi ?? '-' }}</p>
                     </div>
                 </div>
 
@@ -316,7 +316,7 @@
                 'Content-Type': 'application/json',
                 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
             },
-            body: JSON.stringify({ start_date: s, end_date: e })
+            deskripsi: JSON.stringify({ start_date: s, end_date: e })
         }).catch(() => showToast('Gagal menyimpan tanggal'));
     }
 
@@ -335,7 +335,7 @@
                 'Content-Type': 'application/json',
                 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
             },
-            body: JSON.stringify({ quantity: val })
+            deskripsi: JSON.stringify({ quantity: val })
         }).catch(() => showToast('Gagal menyimpan jumlah'));
     }
 
@@ -368,7 +368,7 @@
                 'Content-Type': 'application/json',
                 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
             },
-            body: JSON.stringify({ ids })
+            deskripsi: JSON.stringify({ ids })
         }).then(r => r.json()).then(data => {
             if (data.success) {
                 checkedCards.forEach(c => c.remove());
@@ -403,7 +403,7 @@
         const t = document.createElement('div');
         t.textContent = msg;
         t.className = 'fixed bottom-24 left-1/2 -translate-x-1/2 bg-gray-800 text-white text-xs px-4 py-2 rounded-xl z-[999] opacity-0 transition-opacity duration-300';
-        document.body.appendChild(t);
+        document.deskripsi.appendChild(t);
         setTimeout(() => t.style.opacity = '1', 10);
         setTimeout(() => { t.style.opacity = '0'; setTimeout(() => t.remove(), 300); }, 2500);
     }

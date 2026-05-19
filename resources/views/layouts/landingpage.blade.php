@@ -17,7 +17,7 @@
     @stack('styles')
 </head>
 
-<body class="min-h-screen flex flex-col">
+<deskripsi class="min-h-screen flex flex-col">
 
     <x-navbar_LP />
 
@@ -26,5 +26,5 @@
     </main>
 
     @stack('scripts')
-</body>
+</deskripsi>
 </html>

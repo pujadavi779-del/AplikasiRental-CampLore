@@ -95,9 +95,9 @@
             {{-- Accordion --}}
             @php
             $accordions = [
-                ['title' => 'Tentang Kamera ini', 'body' => $item->body ?? 'Deskripsi tidak tersedia.', 'open' => true],
-                ['title' => 'Sorotan', 'body' => 'Spesifikasi unggulan untuk ' . $item->name . '.', 'open' => false],
-                ['title' => 'Isi Paket', 'body' => $item->stock > 0 ? 'Tersedia — '.$item->stock.' unit siap disewa.' : 'Maaf, stok unit ini sedang kosong.', 'open' => false],
+                ['title' => 'Tentang Kamera ini', 'deskripsi' => $item->deskripsi ?? 'Deskripsi tidak tersedia.', 'open' => true],
+                ['title' => 'Sorotan', 'deskripsi' => 'Spesifikasi unggulan untuk ' . $item->name . '.', 'open' => false],
+                ['title' => 'Isi Paket', 'deskripsi' => $item->stock > 0 ? 'Tersedia — '.$item->stock.' unit siap disewa.' : 'Maaf, stok unit ini sedang kosong.', 'open' => false],
             ];
             @endphp
             <div class="border-t border-gray-100">
@@ -107,8 +107,8 @@
                         {{ $ac['title'] }}
                         <span class="acc-icon transition-transform duration-300 {{ $ac['open'] ? 'rotate-180' : '' }}">▾</span>
                     </button>
-                    <div class="acc-body overflow-hidden transition-all duration-300" style="{{ $ac['open'] ? 'max-height:200px;' : 'max-height:0;' }}">
-                        <div class="pb-4 text-sm text-gray-500 leading-relaxed">{{ $ac['body'] }}</div>
+                    <div class="acc-deskripsi overflow-hidden transition-all duration-300" style="{{ $ac['open'] ? 'max-height:200px;' : 'max-height:0;' }}">
+                        <div class="pb-4 text-sm text-gray-500 leading-relaxed">{{ $ac['deskripsi'] }}</div>
                     </div>
                 </div>
                 @endforeach
@@ -216,8 +216,8 @@
                             {{ $ac['title'] }}
                             <span class="acc-icon transition-transform duration-300 {{ $ac['open'] ? 'rotate-180' : '' }}">▾</span>
                         </button>
-                        <div class="acc-body overflow-hidden transition-all duration-300" style="{{ $ac['open'] ? 'max-height:200px;' : 'max-height:0;' }}">
-                            <div class="pb-4 text-sm text-gray-500 leading-relaxed">{{ $ac['body'] }}</div>
+                        <div class="acc-deskripsi overflow-hidden transition-all duration-300" style="{{ $ac['open'] ? 'max-height:200px;' : 'max-height:0;' }}">
+                            <div class="pb-4 text-sm text-gray-500 leading-relaxed">{{ $ac['deskripsi'] }}</div>
                         </div>
                     </div>
                     @endforeach
@@ -274,10 +274,10 @@
     }
 
     function toggleAcc(button) {
-        const body = button.nextElementSibling;
+        const deskripsi = button.nextElementSibling;
         const icon = button.querySelector('.acc-icon');
-        const open = body.style.maxHeight && body.style.maxHeight !== '0px';
-        body.style.maxHeight = open ? '0px' : body.scrollHeight + 'px';
+        const open = deskripsi.style.maxHeight && deskripsi.style.maxHeight !== '0px';
+        deskripsi.style.maxHeight = open ? '0px' : deskripsi.scrollHeight + 'px';
         icon.classList.toggle('rotate-180', !open);
     }
 
@@ -366,7 +366,7 @@
         fetch('/cart/add', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json', 'Accept': 'application/json', 'X-CSRF-TOKEN': '{{ csrf_token() }}' },
-            body: JSON.stringify({ product_id: itemId, quantity: qty, start_date: startDate, end_date: endDate })
+            deskripsi: JSON.stringify({ product_id: itemId, quantity: qty, start_date: startDate, end_date: endDate })
         })
         .then(r => r.status === 401 ? window.location.href = "{{ route('login') }}" : r.json())
         .then(data => {
@@ -384,7 +384,7 @@
         fetch('/cart/add', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json', 'Accept': 'application/json', 'X-CSRF-TOKEN': '{{ csrf_token() }}' },
-            body: JSON.stringify({ product_id: itemId, quantity: qty, start_date: startDate, end_date: endDate })
+            deskripsi: JSON.stringify({ product_id: itemId, quantity: qty, start_date: startDate, end_date: endDate })
         })
         .then(r => r.status === 401 ? window.location.href = "{{ route('login') }}" : r.json())
         .then(data => { if (data?.success) window.location.href = '/checkout'; else showToast(data?.message ?? 'Gagal', 'error'); })

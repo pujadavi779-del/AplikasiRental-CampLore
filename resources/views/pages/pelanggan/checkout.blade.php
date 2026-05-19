@@ -9,7 +9,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Playfair+Display:wght@400;700;900&display=swap" rel="stylesheet">
 </head>
 
-<body class="text-gray-800 pb-32 font-['Inter'] bg-white">
+<deskripsi class="text-gray-800 pb-32 font-['Inter'] bg-white">
 
     @include('layouts.landingpage')
 
@@ -363,5 +363,5 @@
         }
     </script>
 
-</body>
+</deskripsi>
 </html>

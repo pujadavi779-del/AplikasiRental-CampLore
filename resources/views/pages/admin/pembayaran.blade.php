@@ -186,7 +186,7 @@
                 </div>
             </div>
 
-            {{-- Body --}}
+            {{-- deskripsi --}}
             <div class="px-5 py-4 flex flex-col gap-4 max-h-[70vh] overflow-y-auto">
 
                 {{-- Info Pelanggan --}}

@@ -348,7 +348,7 @@ function submitTiba() {
 
     fetch('{{ route("admin.pengiriman.update-status", $idPesanan) }}', {
         method: 'POST',
-        body: formData
+        deskripsi: formData
     }).then(function(res) {
         if (res.ok) { window.location.reload(); }
         else { alert('Gagal menyimpan. Coba lagi.'); }

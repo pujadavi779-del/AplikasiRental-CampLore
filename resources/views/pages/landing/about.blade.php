@@ -64,7 +64,7 @@
     </script>
 </head>
 
-<body class="bg-gray-50 text-gray-900 overflow-x-hidden" style="font-family: 'Inter', sans-serif;">
+<deskripsi class="bg-gray-50 text-gray-900 overflow-x-hidden" style="font-family: 'Inter', sans-serif;">
 
     @include('layouts.landingpage')
     @yield('content')
@@ -401,6 +401,6 @@
    
     @vite('resources/js/landing.js')
     @include('layouts.footer_lp')
-</body>
+</deskripsi>
 
 </html>

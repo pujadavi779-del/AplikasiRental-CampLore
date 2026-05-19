@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Playfair+Display:wght@700;800&display=swap" rel="stylesheet">
 </head>
-<body style="font-family: 'Inter', Arial, sans-serif; background:#f4f4f4; padding: 30px;">
+<deskripsi style="font-family: 'Inter', Arial, sans-serif; background:#f4f4f4; padding: 30px;">
     <div style="max-width:480px; margin:auto; background:#fff; border-radius:8px; padding:30px;">
         
         <h2 style="color:#2d6a4f; text-align:center; font-family:'Playfair Display', Georgia, serif;">CAMPLORE</h2>
@@ -25,5 +25,5 @@
             Jika kamu tidak merasa mendaftar, abaikan email ini.
         </p>
     </div>
-</body>
+</deskripsi>
 </html>

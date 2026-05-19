@@ -93,11 +93,12 @@
                 <tbody class="divide-y divide-[#f1f8f4]">
                     @forelse($products as $product)
                     <tr class="hover:bg-gray-50 transition-colors">
-                        
+
                         <td class="px-4 py-4">
                             <div class="w-12 h-12 rounded-xl bg-gray-100 border border-[#d7e6de] overflow-hidden shadow-sm">
-                                <img src="{{ asset('storage/' . $product->image) }}"
-                                    onerror="this.src='https://via.placeholder.com/100?text=No+Image'">
+                                <img src="{{ Str::startsWith($product->image, 'http') ? $product->image : asset('storage/' . $product->image) }}"
+                                    onerror="this.src='https://via.placeholder.com/100?text=No+Image'"
+                                    class="w-full h-full object-cover">
                             </div>
                         </td>
                         <td class="px-4 py-4">

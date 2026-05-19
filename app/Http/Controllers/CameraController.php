@@ -46,7 +46,7 @@ class CameraController extends Controller
             'price_per_day' => $request->price,
             'category' => 'Kamera',
             'image'         => $request->image,
-            'body' => $request->body,
+            'deskripsi' => $request->deskripsi,
         ]);
 
         return redirect()->route('camera.index');
@@ -67,7 +67,7 @@ class CameraController extends Controller
             'name' => $request->name,
             'stock' => $request->stock,
             'price_per_day' => $request->price,
-            'body' => $request->body,
+            'deskripsi' => $request->deskripsi,
         ]);
 
         return redirect()->route('camera.index');

@@ -7,13 +7,13 @@
 
     // ── Accordion ──────────────────────────────────────────
     function toggleAcc(button) {
-        const body = button.nextElementSibling;
+        const deskripsi = button.nextElementSibling;
         const icon = button.querySelector('.acc-icon');
-        if (body.style.maxHeight && body.style.maxHeight !== '0px') {
-            body.style.maxHeight = '0px';
+        if (deskripsi.style.maxHeight && deskripsi.style.maxHeight !== '0px') {
+            deskripsi.style.maxHeight = '0px';
             icon.classList.remove('rotate-180');
         } else {
-            body.style.maxHeight = body.scrollHeight + 'px';
+            deskripsi.style.maxHeight = deskripsi.scrollHeight + 'px';
             icon.classList.add('rotate-180');
         }
     }
@@ -160,7 +160,7 @@
                 'Content-Type': 'application/json',
                 'X-CSRF-TOKEN': '{{ csrf_token() }}'
             },
-            body: JSON.stringify({
+            deskripsi: JSON.stringify({
                 item_id: itemId,
                 quantity: qty,
                 start_date: startDate,
@@ -200,7 +200,7 @@
                 'Content-Type': 'application/json',
                 'X-CSRF-TOKEN': '{{ csrf_token() }}'
             },
-            body: JSON.stringify({
+            deskripsi: JSON.stringify({
                 item_id: itemId,
                 quantity: qty,
                 start_date: startDate,

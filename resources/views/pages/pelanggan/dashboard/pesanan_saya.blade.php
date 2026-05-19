@@ -6,7 +6,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,700;0,800;1,700&display=swap" rel="stylesheet">
 <style>
     *, *::before, *::after { box-sizing: border-box; }
-    body { font-family: 'Inter', sans-serif; }
+    deskripsi { font-family: 'Inter', sans-serif; }
     @keyframes fadeUp {
         from { opacity: 0; transform: translateY(14px); }
         to   { opacity: 1; transform: translateY(0); }
@@ -84,7 +84,7 @@
                     'overdue_days'     => 0,
                     'late_fee'         => 0,
                     'items' => [
-                        (object)['name' => 'Sony A7 III Body Only',        'image' => null, 'duration' => 3, 'start_date' => '2026-04-30', 'end_date' => '2026-05-02', 'price' => 450000, 'quantity' => 1, 'overdue' => false],
+                        (object)['name' => 'Sony A7 III deskripsi Only',        'image' => null, 'duration' => 3, 'start_date' => '2026-04-30', 'end_date' => '2026-05-02', 'price' => 450000, 'quantity' => 1, 'overdue' => false],
                         (object)['name' => 'DJI Ronin-S Gimbal Stabilizer','image' => null, 'duration' => 3, 'start_date' => '2026-04-30', 'end_date' => '2026-05-02', 'price' => 180000, 'quantity' => 1, 'overdue' => false],
                         (object)['name' => 'Rode VideoMic Pro+',           'image' => null, 'duration' => 3, 'start_date' => '2026-04-30', 'end_date' => '2026-05-02', 'price' => 90000,  'quantity' => 2, 'overdue' => false],
                     ],
@@ -112,7 +112,7 @@
                     'overdue_days'     => 0,
                     'late_fee'         => 0,
                     'items' => [
-                        (object)['name' => 'Sony A7 III Body Only',   'image' => null, 'duration' => 1, 'start_date' => '2026-04-25', 'end_date' => '2026-04-25', 'price' => 150000, 'quantity' => 1, 'overdue' => false],
+                        (object)['name' => 'Sony A7 III deskripsi Only',   'image' => null, 'duration' => 1, 'start_date' => '2026-04-25', 'end_date' => '2026-04-25', 'price' => 150000, 'quantity' => 1, 'overdue' => false],
                         (object)['name' => 'Rode VideoMic Pro+',      'image' => null, 'duration' => 1, 'start_date' => '2026-04-25', 'end_date' => '2026-04-25', 'price' => 30000,  'quantity' => 1, 'overdue' => false],
                         (object)['name' => 'LED Panel Light 100W',    'image' => null, 'duration' => 1, 'start_date' => '2026-04-25', 'end_date' => '2026-04-25', 'price' => 50000,  'quantity' => 2, 'overdue' => false],
                         (object)['name' => 'Background Stand + Kain', 'image' => null, 'duration' => 1, 'start_date' => '2026-04-25', 'end_date' => '2026-04-25', 'price' => 40000,  'quantity' => 1, 'overdue' => false],
@@ -153,7 +153,7 @@
                     'overdue_days'     => 3,
                     'late_fee'         => 150000,
                     'items' => [
-                        (object)['name' => 'Sony A7 III Body Only',        'image' => null, 'duration' => 3, 'start_date' => '2026-04-10', 'end_date' => '2026-04-12', 'price' => 450000, 'quantity' => 1, 'overdue' => true],
+                        (object)['name' => 'Sony A7 III deskripsi Only',        'image' => null, 'duration' => 3, 'start_date' => '2026-04-10', 'end_date' => '2026-04-12', 'price' => 450000, 'quantity' => 1, 'overdue' => true],
                         (object)['name' => 'DJI Ronin-S Gimbal Stabilizer','image' => null, 'duration' => 3, 'start_date' => '2026-04-10', 'end_date' => '2026-04-12', 'price' => 180000, 'quantity' => 1, 'overdue' => false],
                         (object)['name' => 'Rode VideoMic Pro+',           'image' => null, 'duration' => 3, 'start_date' => '2026-04-10', 'end_date' => '2026-04-12', 'price' => 90000,  'quantity' => 2, 'overdue' => false],
                     ],
@@ -217,7 +217,7 @@
                 <span class="px-3 py-1 rounded-full text-[11px] font-bold {{ $badgeClass }}">{{ $badgeLabel }}</span>
             </div>
 
-            {{-- Card Body --}}
+            {{-- Card deskripsi --}}
             <div class="px-4 py-3.5">
 
                 {{-- Product list --}}
@@ -423,7 +423,7 @@
                 </div>
                 @endif
 
-            </div>{{-- end card-body --}}
+            </div>{{-- end card-deskripsi --}}
 
             {{-- Card Footer --}}
             <div class="border-t border-[#e5e7eb] px-4 py-3 flex items-center justify-between gap-3">

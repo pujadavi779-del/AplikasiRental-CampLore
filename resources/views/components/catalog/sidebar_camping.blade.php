@@ -108,7 +108,7 @@ const openDrawer = name => {
     closeAllDrawers(false);
     document.getElementById('drawer-' + name).classList.remove('translate-y-full');
     document.getElementById('drawer-overlay').classList.remove('hidden');
-    document.body.style.overflow = 'hidden';
+    document.deskripsi.style.overflow = 'hidden';
     document.querySelectorAll('.chip-btn').forEach(b => {
         const active = b.dataset.drawer === name;
         b.classList.toggle('bg-gray-900', active);
@@ -121,7 +121,7 @@ const openDrawer = name => {
 const closeAllDrawers = (resetChips = true) => {
     document.querySelectorAll('.drawer').forEach(d => d.classList.add('translate-y-full'));
     document.getElementById('drawer-overlay').classList.add('hidden');
-    document.body.style.overflow = '';
+    document.deskripsi.style.overflow = '';
     if (resetChips) document.querySelectorAll('.chip-btn').forEach(b => {
         b.classList.replace('bg-gray-900', 'bg-white');
         b.classList.replace('text-white', 'text-gray-700');

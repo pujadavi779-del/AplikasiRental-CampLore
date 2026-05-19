@@ -233,7 +233,7 @@ CREATE TABLE `items` (
   `category` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `stock` int NOT NULL,
   `price` int NOT NULL,
-  `body` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `deskripsi` text COLLATE utf8mb4_unicode_ci NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`)
@@ -437,7 +437,7 @@ CREATE TABLE `products` (
   `category` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `price_per_day` decimal(15,2) NOT NULL,
   `image` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `body` text COLLATE utf8mb4_unicode_ci,
+  `deskripsi` text COLLATE utf8mb4_unicode_ci,
   `stock` int NOT NULL DEFAULT '0',
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,

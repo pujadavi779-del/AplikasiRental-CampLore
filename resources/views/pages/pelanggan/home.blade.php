@@ -5,7 +5,7 @@
 
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Playfair+Display:wght@400;700;900&display=swap" rel="stylesheet">
 <style>
-    body, * { font-family: 'Inter', sans-serif !important; }
+    deskripsi, * { font-family: 'Inter', sans-serif !important; }
 </style>
 
 {{-- HERO --}}
@@ -60,7 +60,7 @@
                     <span class="absolute top-3 left-3 bg-[#22543D] text-white text-xs font-bold px-2.5 py-1 rounded-full"> Camera</span>
                 </div>
 
-                {{-- Card body --}}
+                {{-- Card deskripsi --}}
                 <div class="p-5 flex flex-col flex-1">
                     <h3 class="font-bold text-gray-800 text-base leading-tight mb-1">{{ $item['name'] }}</h3>
                     <p class="text-[#ED64A6] font-extrabold text-lg mb-4">{{ $item['price_label'] }}</p>
@@ -95,7 +95,7 @@
                     <span class="absolute top-3 left-3 bg-[#ED64A6] text-white text-xs font-bold px-2.5 py-1 rounded-full"> Camping</span>
                 </div>
 
-                {{-- Card body --}}
+                {{-- Card deskripsi --}}
                 <div class="p-5 flex flex-col flex-1">
                     <h3 class="font-bold text-gray-800 text-base leading-tight mb-1">{{ $item['name'] }}</h3>
                     <p class="text-[#ED64A6] font-extrabold text-lg mb-4">{{ $item['price_label'] }}</p>

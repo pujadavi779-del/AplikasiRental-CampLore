@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <title>{{ $title ?? 'Camplore' }}</title>
 </head>
-<body>
+<deskripsi>
     <x-footer_LP />
-</body>
+</deskripsi>
 </html>

@@ -151,9 +151,9 @@
 
                     <div>
                         <label class="block text-[11px] font-black text-gray-400 uppercase tracking-widest mb-2">Tentang Kamera ini</label>
-                        <textarea name="description" required
+                        <textarea name="deskripsi" required
                             placeholder="Tuliskan cerita dari barang ini, seperti kondisi fisik..."
-                            class="w-full px-4 py-3 bg-gray-50 border border-[#eef4f0] rounded-xl text-sm focus:ring-2 focus:ring-[#22543D]/20 focus:border-[#22543D] outline-none transition-all"></textarea>
+                            class="w-full px-4 py-3 bg-gray-50 border border-[#eef4f0] rounded-xl text-sm focus:ring-2 focus:ring-[#22543D]/20 focus:border-[#22543D] outline-none transition-all">{{ old('deskripsi', $product->deskripsi) }}</textarea>
                     </div>
                     <div>
                         <label class="block text-[11px] font-black text-gray-400 uppercase tracking-widest mb-2">Highlights</label>

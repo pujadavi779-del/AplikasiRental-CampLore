@@ -160,7 +160,38 @@ Route::prefix('admin')->middleware('admin.auth')->name('admin.')->group(function
     Route::patch('/pengiriman/{id}/tiba', [DeliveryController::class, 'tandaiSudahTiba'])->name('pengiriman.tiba');
 
     Route::get('/pengembalian', [PengembalianController::class, 'index'])->name('pengembalian');
-    Route::get('/kategori_produk', [KategoriController::class, 'index'])->name('kategori_produk');
+
+    // ── Halaman utama kategori ─────────────────────────────────────────────
+    Route::get('/kategori_produk', [KategoriController::class, 'index'])
+        ->name('kategori_produk');
+
+    // ── Tambah ────────────────────────────────────────────────────────────
+    Route::post('/kategori/tipe', [KategoriController::class, 'storeType'])
+        ->name('category.storeType');
+
+    Route::post('/kategori/merek', [KategoriController::class, 'storeBrand'])
+        ->name('category.storeBrand');
+
+    // ── Edit ──────────────────────────────────────────────────────────────
+    Route::put('/kategori/tipe/{category}', [KategoriController::class, 'updateType'])
+        ->name('category.updateType');
+
+    Route::put('/kategori/merek/{category}', [KategoriController::class, 'updateBrand'])
+        ->name('category.updateBrand');
+
+    // ── Hapus ─────────────────────────────────────────────────────────────
+    Route::delete('/kategori/tipe/{category}', [KategoriController::class, 'destroyType'])
+        ->name('category.destroyType');
+
+    Route::delete('/kategori/merek/{category}', [KategoriController::class, 'destroyBrand'])
+        ->name('category.destroyBrand');
+
+    // ── Detail merek (AJAX untuk modal) ───────────────────────────────────
+    Route::get('/kategori/merek/{category}/detail', [KategoriController::class, 'brandDetail'])
+        ->name('category.brandDetail');
+
+
+
 
     Route::get('/products', function (Request $request) {
         $query = Product::query();

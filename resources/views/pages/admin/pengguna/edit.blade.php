@@ -43,7 +43,7 @@
             </a>
         </div>
 
-        {{-- Main Form Body: Padding p-10 agar tidak mepet ke garis luar --}}
+        {{-- Main Form deskripsi: Padding p-10 agar tidak mepet ke garis luar --}}
         <form action="{{ route('admin.orders.update', $order->id) }}" method="POST" class="p-10">
             @csrf
             @method('PUT')
