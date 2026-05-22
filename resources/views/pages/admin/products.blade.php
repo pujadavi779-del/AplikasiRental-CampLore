@@ -20,13 +20,14 @@
 
     <div class="bg-white rounded-[28px] border border-[#d7e6de] shadow-sm overflow-hidden">
 
+        {{-- HEADER SECTION --}}
         <div class="p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#eef4f0]">
             <div>
                 <h2 class="text-2xl font-bold text-[#22543D]" style="font-family:'Playfair Display',Georgia,serif;">Produk</h2>
                 <div class="flex items-center gap-2 mt-1">
                     <span class="text-[11px] text-[#7c8b84]">Kelola inventaris kamera dan alat camping</span>
                     <span class="bg-emerald-100 text-[#22543D] text-[10px] font-bold px-2 py-0.5 rounded-full border border-emerald-200">
-                        Tersedia ({{ $products->total() }})
+                        Tersedia (60)
                     </span>
                 </div>
             </div>
@@ -38,95 +39,109 @@
             </a>
         </div>
 
-        {{-- TABLE CONTAINER --}}
-
         {{-- SEARCH & FILTER BAR --}}
         <div class="p-6 border-b border-[#f1f8f4] flex flex-col md:flex-row gap-4 items-center justify-between">
             <form method="GET" action="{{ route('admin.products') }}" class="relative w-full md:w-80 flex">
                 <input type="text" name="search" value="{{ request('search') }}"
                     placeholder="Cari Nama Produk..."
-                    class="w-full pl-4 pr-4 py-2 bg-gray-50 border rounded-xl text-xs">
+                    class="w-full pl-4 pr-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-xs focus:outline-none focus:border-[#22543D]">
 
-                <button type="submit" class="ml-2 px-3 bg-[#22543D] text-white rounded-xl text-xs">
+                <button type="submit" class="ml-2 px-4 bg-[#22543D] hover:bg-[#1B4332] text-white rounded-xl text-xs font-bold transition-colors">
                     Cari
                 </button>
             </form>
 
             <div class="flex gap-2">
-
                 {{-- ALL --}}
                 <a href="{{ route('admin.products') }}"
-                    class="px-4 py-2 text-xs rounded-lg font-bold 
-        {{ !request('category') ? 'bg-[#22543D] text-white' : 'bg-gray-100' }}">
+                    class="px-4 py-2 text-xs rounded-lg font-bold transition-colors
+                    {{ !request('category') ? 'bg-[#22543D] text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200' }}">
                     Semua
                 </a>
 
                 {{-- KAMERA --}}
                 <a href="{{ route('admin.products', ['category' => 'Kamera']) }}"
-                    class="px-4 py-2 text-xs rounded-lg font-bold 
-        {{ request('category') == 'Kamera' ? 'bg-[#22543D] text-white' : 'bg-gray-100' }}">
+                    class="px-4 py-2 text-xs rounded-lg font-bold transition-colors
+                    {{ request('category') == 'Kamera' ? 'bg-[#22543D] text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200' }}">
                     Kamera
                 </a>
 
                 {{-- CAMPING --}}
                 <a href="{{ route('admin.products', ['category' => 'Camping']) }}"
-                    class="px-4 py-2 text-xs rounded-lg font-bold 
-        {{ request('category') == 'Camping' ? 'bg-[#22543D] text-white' : 'bg-gray-100' }}">
+                    class="px-4 py-2 text-xs rounded-lg font-bold transition-colors
+                    {{ request('category') == 'Camping' ? 'bg-[#22543D] text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200' }}">
                     Camping
                 </a>
-
             </div>
         </div>
 
         {{-- TABLE SECTION --}}
         <div class="overflow-x-auto">
-            <table class="w-full text-left">
+            <table class="w-full text-left border-collapse">
                 <thead>
                     <tr class="bg-[#fcfdfb] border-b border-[#f1f8f4]">
-                        <th class="px-4 py-4 text-[10px] font-black text-gray-400 uppercase tracking-widest">Gambar</th>
-                        <th class="px-4 py-4 text-[10px] font-black text-gray-400 uppercase tracking-widest">Nama Produk</th>
-                        <th class="px-4 py-4 text-[10px] font-black text-gray-400 uppercase tracking-widest text-center">Kategori</th>
-                        <th class="px-4 py-4 text-[10px] font-black text-gray-400 uppercase tracking-widest">Harga/Perhari</th>
+                        {{-- Judul kolom digabung dan menggunakan colspan="2" agar sejajar sempurna dengan isi di bawahnya --}}
+                        <th class="px-6 py-4 text-[10px] font-black text-gray-400 uppercase tracking-widest" colspan="2">Gambar & Nama Produk</th>
+                        <th class="px-6 py-4 text-[10px] font-black text-gray-400 uppercase tracking-widest text-center">Kategori</th>
+                        <th class="px-6 py-4 text-[10px] font-black text-gray-400 uppercase tracking-widest">Harga/Perhari</th>
                         <th class="px-6 py-4 text-[10px] font-black text-gray-400 uppercase tracking-widest text-right">Tindakan</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-[#f1f8f4]">
                     @forelse($products as $product)
-                    <tr class="hover:bg-gray-50 transition-colors">
+                    <tr class="hover:bg-gray-50/80 transition-colors">
 
-                        <td class="px-4 py-4">
-                            <div class="w-12 h-12 rounded-xl bg-gray-100 border border-[#d7e6de] overflow-hidden shadow-sm">
-                                <img src="{{ Str::startsWith($product->image, 'http') ? $product->image : asset('storage/' . $product->image) }}"
-                                    onerror="this.src='https://via.placeholder.com/100?text=No+Image'"
-                                    class="w-full h-full object-cover">
+                        {{-- GAMBAR DAN NAMA PRODUK --}}
+                        <td class="px-6 py-4 vertical-align-middle" colspan="2">
+                            <div class="flex items-center gap-4">
+                                {{-- Kotak Gambar --}}
+                                <div class="w-12 h-12 rounded-xl bg-gray-100 border border-[#d7e6de] overflow-hidden shadow-sm flex items-center justify-center flex-shrink-0">
+                                    <img src="{{ Str::startsWith($product->image, 'http') ? $product->image : asset('storage/' . $product->image) }}"
+                                        onerror="this.src='https://via.placeholder.com/100?text=No+Image'"
+                                        class="w-full h-full object-cover">
+                                </div>
+                                {{-- Teks Nama & Stok --}}
+                                <div>
+                                    <div class="text-sm font-bold text-[#22543D] mb-0.5">{{ $product->name }}</div>
+                                    <div class="text-[10px] font-bold flex items-center gap-1">
+                                        @if($product->stock > 0)
+                                        <span class="text-emerald-500 text-[8px]">●</span>
+                                        <span class="text-emerald-500">Tersedia: {{ $product->stock }} Unit</span>
+                                        @else
+                                        <span class="text-red-400 text-[8px]">●</span>
+                                        <span class="text-red-400">Habis</span>
+                                        @endif
+                                    </div>
+                                </div>
                             </div>
                         </td>
-                        <td class="px-4 py-4">
-                            <div class="text-sm font-bold text-[#22543D]">{{ $product->name }}</div>
-                            <div class="text-[10px] {{ $product->stock > 0 ? 'text-emerald-500' : 'text-red-400' }} font-bold">
-                                ● {{ $product->stock > 0 ? 'Tersedia' : 'Habis' }}
-                            </div>
-                        </td>
-                        <td class="px-4 py-4 text-center">
-                            <span class="px-3 py-1 bg-[#f1f8f4] text-[#22543D] text-[10px] font-bold rounded-lg border border-[#d7e6de]">
+
+                        {{-- KATEGORI --}}
+                        <td class="px-6 py-4 text-center vertical-align-middle">
+                            <span class="px-3 py-1 bg-[#f1f8f4] text-[#22543D] text-[10px] font-bold rounded-lg border border-[#d7e6de] inline-block min-w-[70px]">
                                 {{ $product->category }}
                             </span>
                         </td>
-                        <td class="px-4 py-4">
+
+                        {{-- HARGA --}}
+                        <td class="px-6 py-4 vertical-align-middle">
                             <div class="text-xs font-bold text-[#22543D]">IDR {{ number_format($product->price_per_day, 2) }}</div>
                         </td>
-                        <td class="px-6 py-4 text-right">
-                            <div class="flex justify-end gap-2">
+
+                        {{-- TINDAKAN --}}
+                        <td class="px-6 py-4 text-right vertical-align-middle">
+                            <div class="flex justify-end gap-3">
                                 <a href="{{ route('admin.products.edit', $product->id) }}"
-                                    class="text-[#ED64A6] hover:bg-[#ED64A6]/10 px-3 py-1.5 rounded-lg transition-colors
-                                    font-bold text-[11px] flex items-center gap-1 border border-transparent hover:border-[#ED64A6]/20">
+                                    class="text-[#ED64A6] hover:bg-[#ED64A6]/5 px-2 py-1 rounded-lg transition-colors font-bold text-[11px] flex items-center gap-1">
                                     <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
                                         <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
                                         <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
                                     </svg>
                                     Ubah
                                 </a>
-                                <button class="text-red-400 hover:bg-red-50 px-3 py-1.5 rounded-lg transition-colors font-bold text-[11px] flex items-center gap-1 border border-transparent hover:border-red-100">
+
+                                <button type="button"
+                                    class="text-red-400 hover:bg-red-50/50 px-2 py-1 rounded-lg transition-colors font-bold text-[11px] flex items-center gap-1">
                                     <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
                                         <path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
                                     </svg>
@@ -137,7 +152,7 @@
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="6" class="px-6 py-12 text-center">
+                        <td colspan="5" class="px-6 py-12 text-center">
                             <div class="flex flex-col items-center justify-center text-gray-400">
                                 <svg class="w-12 h-12 mb-3 opacity-20" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
                                     <path d="M20 13V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v7m16 0v5a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-5m16 0h-2.586a1 1 0 0 0-.707.293l-2.414 2.414a1 1 0 0 1-.707.293h-3.172a1 1 0 0 1-.707-.293l-2.414-2.414A1 1 0 0 0 6.586 13H4" />
@@ -152,21 +167,71 @@
         </div>
 
         {{-- PAGINATION FOOTER --}}
-        <div class="px-6 py-4 bg-[#fcfdfb] border-t border-[#f1f8f4] flex justify-between items-center text-[10px] font-bold text-gray-400 uppercase tracking-widest">
-            <span>Menampilkan {{ $products->count() }} Produk</span>
-            <div class="px-6 py-4 bg-[#fcfdfb] border-t flex justify-between items-center text-xs">
+        <div class="px-6 py-4 bg-[#fcfdfb] border-t border-[#f1f8f4] flex justify-between items-center">
+            {{-- Info Total Produk (Sisi Kiri) --}}
+            <span class="text-[10px] font-black text-gray-400 uppercase tracking-widest">
+                Menampilkan {{ $products->count() }} dari {{ $products->total() }} Produk
+            </span>
 
-                <div>
-                    {{ $products->links() }}
+            {{-- Navigasi Halaman Bergaya Kustom (Sisi Kanan) --}}
+            <div class="flex items-center gap-4">
+                {{-- Info Halaman Ke- Berapa --}}
+                <span class="text-xs font-semibold text-gray-400 selection:bg-transparent">
+                    Halaman <span class="text-gray-900">{{ $products->currentPage() }}</span> dari <span class="text-gray-900">{{ $products->lastPage() }}</span>
+                </span>
+
+                {{-- Tombol-Tombol Angka --}}
+                <div class="inline-flex gap-1">
+                    {{-- Tombol Previous (<) --}}
+                    @if ($products->onFirstPage())
+                    <button disabled class="px-2.5 py-1.5 border border-gray-200 rounded-lg text-xs font-bold opacity-40 cursor-not-allowed text-gray-400 shadow-sm">
+                        &lt;
+                    </button>
+                    @else
+                    <a href="{{ $products->previousPageUrl() }}" class="px-2.5 py-1.5 border border-gray-200 rounded-lg text-xs font-bold transition-colors shadow-sm hover:bg-gray-50 text-gray-700">
+                        &lt;
+                    </a>
+                    @endif
+
+                    {{-- Render Angka Halaman Secara Dinamis --}}
+                    @foreach ($products->getUrlRange(1, $products->lastPage()) as $page => $url)
+                    @if ($page == $products->currentPage())
+                    {{-- Halaman Aktif (Menggunakan warna hijau khas CampLore) --}}
+                    <span class="px-3 py-1.5 bg-[#22543D] text-white border border-[#22543D] rounded-lg text-xs font-bold shadow-sm inline-block">
+                        {{ $page }}
+                    </span>
+                    @else
+                    {{-- Halaman Biasa --}}
+                    <a href="{{ $url }}" class="px-3 py-1.5 border border-gray-200 rounded-lg text-xs font-bold text-gray-600 hover:bg-gray-50 transition-all inline-block">
+                        {{ $page }}
+                    </a>
+                    @endif
+                    @endforeach
+
+                    {{-- Tombol Next (>) --}}
+                    @if ($products->hasMorePages())
+                    <a href="{{ $products->nextPageUrl() }}" class="px-2.5 py-1.5 border border-gray-200 rounded-lg text-xs font-bold transition-colors shadow-sm hover:bg-gray-50 text-gray-700">
+                        &gt;
+                    </a>
+                    @else
+                    <button disabled class="px-2.5 py-1.5 border border-gray-200 rounded-lg text-xs font-bold opacity-40 cursor-not-allowed text-gray-400 shadow-sm">
+                        &gt;
+                    </button>
+                    @endif
                 </div>
             </div>
         </div>
 
     </div>
 </div>
+
 <style>
     .no-scrollbar::-webkit-scrollbar {
         display: none;
+    }
+
+    .vertical-align-middle {
+        vertical-align: middle !important;
     }
 </style>
 

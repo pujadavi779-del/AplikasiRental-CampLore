@@ -5,7 +5,7 @@
 @section('content')
 
 <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght=400;500;600;700&family=Playfair+Display:wght=400;500;600;700&display=swap');
 
     * { font-family: 'Inter', sans-serif; }
     .font-serif { font-family: 'Playfair Display', serif !important; }
@@ -73,8 +73,8 @@
                             required
                             placeholder="Contoh: Sony Alpha A7 III"
                             class="w-full px-4 py-3 bg-gray-50 border border-[#eef4f0] rounded-xl text-sm
-                                      focus:ring-2 focus:ring-[#22543D]/20 focus:border-[#22543D] outline-none transition-all
-                                      @error('name') border-red-400 @enderror">
+                                     focus:ring-2 focus:ring-[#22543D]/20 focus:border-[#22543D] outline-none transition-all
+                                     @error('name') border-red-400 @enderror">
                         @error('name')
                         <p class="mt-1 text-[10px] text-red-500 font-bold">{{ $message }}</p>
                         @enderror
@@ -113,6 +113,7 @@
                         @enderror
                     </div>
 
+                    {{-- Merek --}}
                     <div>
                         <label class="block text-[11px] font-black text-gray-400 uppercase tracking-widest mb-2">
                             Merek
@@ -137,7 +138,7 @@
                             <span class="absolute inset-y-0 left-0 pl-4 flex items-center
                                          text-[#22543D] font-bold text-xs pointer-events-none">IDR</span>
                             <input type="number" name="price_per_day" min="0"
-                                value="{{ old('price_per_day', $product->price_per_day) }}"
+                                value="{{ old('price_per_day', intval($product->price_per_day)) }}"
                                 required
                                 placeholder="0"
                                 class="w-full pl-12 pr-4 py-3 bg-gray-50 border border-[#eef4f0] rounded-xl text-sm
@@ -149,23 +150,37 @@
                         @enderror
                     </div>
 
+                    {{-- Tentang Kamera / Deskripsi --}}
                     <div>
                         <label class="block text-[11px] font-black text-gray-400 uppercase tracking-widest mb-2">Tentang Kamera ini</label>
                         <textarea name="deskripsi" required
                             placeholder="Tuliskan cerita dari barang ini, seperti kondisi fisik..."
                             class="w-full px-4 py-3 bg-gray-50 border border-[#eef4f0] rounded-xl text-sm focus:ring-2 focus:ring-[#22543D]/20 focus:border-[#22543D] outline-none transition-all">{{ old('deskripsi', $product->deskripsi) }}</textarea>
+                        @error('deskripsi')
+                        <p class="mt-1 text-[10px] text-red-500 font-bold">{{ $message }}</p>
+                        @enderror
                     </div>
+
+                    {{-- Sorotan --}}
                     <div>
-                        <label class="block text-[11px] font-black text-gray-400 uppercase tracking-widest mb-2">Highlights</label>
+                        <label class="block text-[11px] font-black text-gray-400 uppercase tracking-widest mb-2">Sorotan</label>
                         <textarea name="highlights" required
                             placeholder="Tuliskan kepentingan atau keunggulan alat secara singkat..."
-                            class="w-full px-4 py-3 bg-gray-50 border border-[#eef4f0] rounded-xl text-sm focus:ring-2 focus:ring-[#22543D]/20 focus:border-[#22543D] outline-none transition-all"></textarea>
+                            class="w-full px-4 py-3 bg-gray-50 border border-[#eef4f0] rounded-xl text-sm focus:ring-2 focus:ring-[#22543D]/20 focus:border-[#22543D] outline-none transition-all">{{ old('highlights', $product->highlights) }}</textarea>
+                        @error('highlights')
+                        <p class="mt-1 text-[10px] text-red-500 font-bold">{{ $message }}</p>
+                        @enderror
                     </div>
+
+                    {{-- Isi Paket --}}
                     <div>
                         <label class="block text-[11px] font-black text-gray-400 uppercase tracking-widest mb-2">Isi Paket</label>
                         <textarea name="isi_paket" required
                             placeholder="Tuliskan isi dari paket barang ini include apa saja..."
-                            class="w-full px-4 py-3 bg-gray-50 border border-[#eef4f0] rounded-xl text-sm focus:ring-2 focus:ring-[#22543D]/20 focus:border-[#22543D] outline-none transition-all"></textarea>
+                            class="w-full px-4 py-3 bg-gray-50 border border-[#eef4f0] rounded-xl text-sm focus:ring-2 focus:ring-[#22543D]/20 focus:border-[#22543D] outline-none transition-all">{{ old('isi_paket', $product->isi_paket) }}</textarea>
+                        @error('isi_paket')
+                        <p class="mt-1 text-[10px] text-red-500 font-bold">{{ $message }}</p>
+                        @enderror
                     </div>
 
                 </div>
@@ -197,11 +212,11 @@
                         <div id="existing-container"
                             class="{{ $product->image ? '' : 'hidden' }} absolute inset-0 p-2">
                             <img id="existing-image"
-                                src="{{ $product->image ? asset('storage/' . $product->image) : '#' }}"
+                                src="{{ Str::startsWith($product->image, 'http') ? $product->image : asset('storage/' . $product->image) }}"
                                 onerror="this.src='https://via.placeholder.com/400x300?text=No+Image'"
                                 class="w-full h-full object-cover rounded-[20px]">
                             <div class="absolute inset-0 flex items-end p-4 rounded-[20px]
-                                        bg-gradient-to-t from-black/40 to-transparent">
+                                         bg-gradient-to-t from-black/40 to-transparent">
                                 <span class="text-white text-[10px] font-bold uppercase tracking-widest">
                                     Gambar Saat Ini — Klik area untuk ganti
                                 </span>
@@ -245,10 +260,10 @@
         </form>
         {{-- ===== AKHIR FORM UTAMA ===== --}}
 
-        {{-- Footer: Hapus & Simpan — DI LUAR form utama --}}
+        {{-- Footer: Hapus & Simpan --}}
         <div class="px-8 pb-8 pt-6 border-t border-[#f1f8f4] flex items-center justify-between">
 
-            {{-- Form Hapus (terpisah dari form edit) --}}
+            {{-- Form Hapus --}}
             <form action="{{ route('admin.products.destroy', $product->id) }}"
                 method="POST"
                 onsubmit="return confirm('Yakin ingin menghapus produk ini?')">
@@ -265,7 +280,7 @@
                 </button>
             </form>
 
-            {{-- Tombol Simpan — terhubung ke form-edit via atribut form= --}}
+            {{-- Tombol Simpan --}}
             <button type="submit" form="form-edit"
                 class="bg-[#22543D] hover:bg-[#1B4332] text-white px-8 py-3 rounded-xl text-sm
                            font-bold transition-all shadow-md flex items-center gap-2">
