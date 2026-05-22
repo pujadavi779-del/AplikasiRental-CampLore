@@ -17,7 +17,7 @@
     </style>
 </head>
 
-<deskripsi class="bg-[#f8faf6]">
+<body class="bg-[#f8faf6]">
 
     {{-- Sidebar --}}
     <x-sidebar_dashboard_admin />
@@ -28,5 +28,5 @@
     </main>
 
     @stack('scripts')
-</deskripsi>
+</body>
 </html>

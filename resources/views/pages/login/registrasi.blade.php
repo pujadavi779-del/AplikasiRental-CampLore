@@ -10,7 +10,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet">
 </head>
-<deskripsi class="font-['Inter',sans-serif] bg-white text-[#1a1a18]">
+<body class="font-['Inter',sans-serif] bg-white text-[#1a1a18]">
 
 {{-- NAVBAR --}}
 <nav class="fixed top-0 left-0 right-0 h-[58px] flex items-center justify-center border-b border-[#e2e2de] bg-white z-[100]">
@@ -343,7 +343,7 @@ async function goToOtp() {
         const res  = await fetch('{{ route("otp.send") }}', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content },
-            deskripsi: JSON.stringify({ email: e }),
+            body: JSON.stringify({ email: e }),
         });
         const data = await res.json();
 
@@ -384,7 +384,7 @@ async function doVerifyOtp() {
         const res  = await fetch('{{ route("otp.verify") }}', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content },
-            deskripsi: JSON.stringify({ email, otp: digits }),
+            body: JSON.stringify({ email, otp: digits }),
         });
         const data = await res.json();
 
@@ -418,7 +418,7 @@ async function resendOtp() {
         const res  = await fetch('{{ route("otp.send") }}', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content },
-            deskripsi: JSON.stringify({ email }),
+            body: JSON.stringify({ email }),
         });
         const text = await res.text();
         console.log("RESPONSE:", text);
@@ -524,5 +524,5 @@ function hideAlert(id) {
 }
 </script>
 
-</deskripsi>
+</body>
 </html>

@@ -39,13 +39,13 @@
 
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Playfair+Display:ital,wght@0,700;0,800;1,700&display=swap');
 
-        deskripsi {
+        body {
             font-family: 'Inter', sans-serif;
         }
     </style>
 </head>
 
-<deskripsi class="bg-gray-50 text-gray-900 overflow-x-hidden">
+<body class="bg-gray-50 text-gray-900 overflow-x-hidden">
 
     @include('layouts.landingpage')
     @yield('content')
@@ -177,6 +177,6 @@
 
 
 @vite('resources/js/landing.js')
-</deskripsi>
+</body>
  @include('layouts.footer_lp')
 </html>

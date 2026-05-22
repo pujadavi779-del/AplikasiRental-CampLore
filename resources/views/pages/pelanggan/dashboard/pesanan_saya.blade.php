@@ -6,7 +6,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,700;0,800;1,700&display=swap" rel="stylesheet">
 <style>
     *, *::before, *::after { box-sizing: border-box; }
-    deskripsi { font-family: 'Inter', sans-serif; }
+    body { font-family: 'Inter', sans-serif; }
     @keyframes fadeUp {
         from { opacity: 0; transform: translateY(14px); }
         to   { opacity: 1; transform: translateY(0); }

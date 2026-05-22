@@ -23,7 +23,13 @@ class CameraController extends Controller
             (object)['name' => 'DJI',      'slug' => 'dji',      'image' => null],
         ]);
 
-        return view('pages.landing.kategori.camera_LP', compact('items', 'ipCategories'));
+        return view('pages.landing.kategori.kategori_LP', [          // ← ganti nama view
+        'items'      => $items,
+        'ipCategories' => $ipCategories, // ← tetap kirim ke sidebar
+        'category'   => 'camera',
+        'title'      => 'Kamera',
+        'emptyIcon'  => '📷',
+    ]);
     }
 
     public function index()
@@ -81,15 +87,25 @@ class CameraController extends Controller
         return redirect()->route('camera.index');
     }
 
-    public function show($id)
-    {
-        $item = Product::findOrFail($id);
+public function show($id)
+{
+    $item = Product::findOrFail($id);
 
-        $relatedItems = Product::where('category', 'Kamera')
-            ->where('id', '!=', $item->id)
-            ->take(5)
-            ->get();
+    $relatedItems = Product::where('category', 'Kamera')
+        ->where('id', '!=', $item->id)
+        ->take(5)
+        ->get();
 
-        return view('pages.landing.kategori.details_camera', compact('item', 'relatedItems'));
-    }
+    return view('pages.landing.kategori.details_LP', [    
+        'item'          => $item,
+        'relatedItems'  => $relatedItems,
+        'category'      => 'camera',
+        'categoryLabel' => 'Kamera',
+        'accordions'    => [
+            ['title' => 'Tentang Kamera ini', 'deskripsi' => $item->deskripsi ?? 'Deskripsi tidak tersedia.', 'open' => true],
+            ['title' => 'Sorotan',            'deskripsi' => 'Spesifikasi unggulan untuk ' . $item->name . '.', 'open' => false],
+            ['title' => 'Isi Paket',          'deskripsi' => $item->stock > 0 ? 'Tersedia — '.$item->stock.' unit siap disewa.' : 'Stok sedang kosong.', 'open' => false],
+        ],
+    ]);
+}
 }

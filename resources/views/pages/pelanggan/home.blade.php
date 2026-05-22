@@ -5,7 +5,7 @@
 
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Playfair+Display:wght@400;700;900&display=swap" rel="stylesheet">
 <style>
-    deskripsi, * { font-family: 'Inter', sans-serif !important; }
+    body, * { font-family: 'Inter', sans-serif !important; }
 </style>
 
 {{-- HERO --}}

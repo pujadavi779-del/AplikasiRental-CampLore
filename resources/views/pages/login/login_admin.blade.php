@@ -9,7 +9,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet">
 </head>
-<deskripsi class="font-['Inter',sans-serif] bg-white text-[#1a1a18] h-full">
+<body class="font-['Inter',sans-serif] bg-white text-[#1a1a18] h-full">
 
 {{-- NAVBAR --}}
 <nav class="fixed top-0 left-0 right-0 h-[58px] flex items-center justify-center border-b border-[#e2e2de] bg-white z-[100]">
@@ -77,5 +77,5 @@ function togglePw() {
 }
 </script>
 
-</deskripsi>
+</body>
 </html>

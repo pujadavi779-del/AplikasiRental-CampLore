@@ -316,7 +316,7 @@
                 'Content-Type': 'application/json',
                 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
             },
-            deskripsi: JSON.stringify({ start_date: s, end_date: e })
+            body: JSON.stringify({ start_date: s, end_date: e })
         }).catch(() => showToast('Gagal menyimpan tanggal'));
     }
 
@@ -335,7 +335,7 @@
                 'Content-Type': 'application/json',
                 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
             },
-            deskripsi: JSON.stringify({ quantity: val })
+            body: JSON.stringify({ quantity: val })
         }).catch(() => showToast('Gagal menyimpan jumlah'));
     }
 
@@ -368,7 +368,7 @@
                 'Content-Type': 'application/json',
                 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
             },
-            deskripsi: JSON.stringify({ ids })
+            body: JSON.stringify({ ids })
         }).then(r => r.json()).then(data => {
             if (data.success) {
                 checkedCards.forEach(c => c.remove());
@@ -403,7 +403,7 @@
         const t = document.createElement('div');
         t.textContent = msg;
         t.className = 'fixed bottom-24 left-1/2 -translate-x-1/2 bg-gray-800 text-white text-xs px-4 py-2 rounded-xl z-[999] opacity-0 transition-opacity duration-300';
-        document.deskripsi.appendChild(t);
+        document.body.appendChild(t);
         setTimeout(() => t.style.opacity = '1', 10);
         setTimeout(() => { t.style.opacity = '0'; setTimeout(() => t.remove(), 300); }, 2500);
     }

@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <title>@yield('title', 'Camplore')</title>
 </head>
-<deskripsi>
+<body>
     <x-footer_biasa />
-</deskripsi>
+</body>
 </html>

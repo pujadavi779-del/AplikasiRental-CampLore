@@ -2,22 +2,64 @@
 
 @section('content')
 
+{{--
+    VARIABEL YANG DIBUTUHKAN DARI CONTROLLER:
+    - $item          : object produk
+    - $category      : string, misal 'camera' atau 'camping'
+    - $categoryLabel : string label untuk breadcrumb, misal 'Kamera' atau 'Camping'
+    - $accordions    : array accordion (opsional, kalau tidak dikirim akan pakai default di bawah)
+
+    CONTOH CONTROLLER (camera):
+    return view('catalog_details', [
+        'item'          => $item,
+        'category'      => 'camera',
+        'categoryLabel' => 'Kamera',
+        'accordions'    => [
+            ['title' => 'Tentang Kamera ini',  'deskripsi' => $item->deskripsi ?? 'Deskripsi tidak tersedia.', 'open' => true],
+            ['title' => 'Sorotan',             'deskripsi' => 'Spesifikasi unggulan untuk ' . $item->name . '.', 'open' => false],
+            ['title' => 'Isi Paket',           'deskripsi' => $item->stock > 0 ? 'Tersedia — '.$item->stock.' unit siap disewa.' : 'Stok sedang kosong.', 'open' => false],
+        ],
+    ]);
+
+    CONTOH CONTROLLER (camping):
+    return view('catalog_details', [
+        'item'          => $item,
+        'category'      => 'camping',
+        'categoryLabel' => 'Camping',
+        'accordions'    => [
+            ['title' => 'Tentang Alat ini', 'deskripsi' => $item->description ?? 'Deskripsi belum tersedia.', 'open' => true],
+            ['title' => 'Sorotan',          'deskripsi' => 'Kualitas premium untuk perlengkapan outdoor ' . $item->name . '.', 'open' => false],
+            ['title' => 'Isi Paket',        'deskripsi' => $item->stock > 0 ? 'Tersedia — '.$item->stock.' unit siap disewa.' : 'Produk ini sedang habis disewa.', 'open' => false],
+        ],
+    ]);
+--}}
+
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet">
+
+@php
+if (!isset($accordions)) {
+    $accordions = [
+        ['title' => 'Tentang Produk ini', 'deskripsi' => $item->deskripsi ?? $item->description ?? 'Deskripsi tidak tersedia.', 'open' => true],
+        ['title' => 'Sorotan',            'deskripsi' => 'Spesifikasi unggulan untuk ' . $item->name . '.', 'open' => false],
+        ['title' => 'Isi Paket',          'deskripsi' => $item->stock > 0 ? 'Tersedia — '.$item->stock.' unit siap disewa.' : 'Maaf, stok sedang kosong.', 'open' => false],
+    ];
+}
+@endphp
 
 <div style="font-family:'DM Sans',sans-serif;">
 
-    {{-- Breadcrumb --}}
+    {{-- ── BREADCRUMB ─────────────────────────────────────────── --}}
     <nav class="flex items-center gap-2 px-4 py-4 text-xs text-gray-400 max-w-6xl mx-auto">
         <a href="/" class="hover:text-gray-900 transition-colors">BERANDA</a>
         <span>/</span>
-        <a href="{{ route('camera.LP') }}" class="hover:text-gray-900 transition-colors">Kamera</a>
+        <a href="{{ route($category . '.LP') }}" class="hover:text-gray-900 transition-colors">{{ $categoryLabel }}</a>
         <span>/</span>
         <span class="text-orange-600 font-medium truncate">{{ $item->name }}</span>
     </nav>
 
-    {{-- ════════════════════════════════════
+    {{-- ══════════════════════════════════════════════════════════
          MOBILE LAYOUT (< lg)
-    ════════════════════════════════════ --}}
+    ══════════════════════════════════════════════════════════ --}}
     <div class="lg:hidden">
 
         {{-- Main Image --}}
@@ -26,43 +68,31 @@
                 src="{{ str_starts_with($item->image, 'http') ? $item->image : asset('storage/'.$item->image) }}"
                 alt="{{ $item->name }}"
                 class="w-full h-full object-cover">
-            {{-- nomor untuk gambar --}}
-            <!-- <span id="imgCounter" class="absolute bottom-3 right-4 text-xs text-gray-500 bg-white/80 px-2 py-0.5 rounded-full">1 / {{ count($relatedItems) + 1 }}</span> -->
         </div>
 
         {{-- Thumbnail horizontal scroll --}}
         <div class="flex gap-2 px-4 py-3 overflow-x-auto no-scrollbar">
-            <!-- {{-- Main item thumb --}}
-            <button onclick="switchImgMobile(this, '{{ str_starts_with($item->image, 'http') ? $item->image : asset('storage/'.$item->image) }}', 1, {{ count($relatedItems) + 1 }})"
+            {{-- Uncomment jika fitur multi-gambar diaktifkan
+            <button onclick="switchImgMobile(this, '...', 1, total)"
                 class="shrink-0 w-16 h-16 rounded-xl overflow-hidden border-2 border-gray-900">
-                <img src="{{ str_starts_with($item->image, 'http') ? $item->image : asset('storage/'.$item->image) }}" class="w-full h-full object-cover">
+                <img src="..." class="w-full h-full object-cover">
             </button>
-            @foreach($relatedItems as $i => $related)
-            <button onclick="switchImgMobile(this, '{{ str_starts_with($related->image, 'http') ? $related->image : asset('storage/'.$related->image) }}', {{ $i + 2 }}, {{ count($relatedItems) + 1 }})"
-                class="shrink-0 w-16 h-16 rounded-xl overflow-hidden border-2 border-gray-200">
-                <img src="{{ str_starts_with($related->image, 'http') ? $related->image : asset('storage/'.$related->image) }}" class="w-full h-full object-cover">
-            </button>
-            @endforeach -->
+            --}}
         </div>
 
         {{-- Info --}}
         <div class="px-4 pb-32">
 
-            {{-- Badge + Wishlist --}}
+            {{-- Badge --}}
             <div class="flex items-center justify-between mb-2">
                 <div>
                     @if($item->is_new ?? false)
                     <span class="bg-gray-900 text-white text-xs font-bold tracking-widest uppercase px-3 py-1 rounded">Baru</span>
                     @endif
                 </div>
-                <!-- <button onclick="toggleLove(this)"
-                    class="love-btn w-9 h-9 rounded-full border border-gray-200 bg-white flex items-center justify-center text-gray-400 hover:border-pink-400 hover:text-pink-500 transition-all">
-                    <span class="love-icon text-lg">♡</span>
-                </button> -->
             </div>
 
             <h1 class="text-xl font-bold text-gray-900 leading-snug mb-2">{{ $item->name }}</h1>
-
             <p class="text-2xl font-bold text-orange-600 mb-1">Rp {{ number_format($item->price_per_day, 0, ',', '.') }}</p>
             <p class="text-xs text-gray-400 mb-5" id="totalPriceNoteMobile"></p>
 
@@ -71,16 +101,18 @@
             <div class="flex gap-3 mb-3">
                 <div class="flex-1">
                     <label class="block text-xs text-gray-400 mb-1">Mulai</label>
-                    <input type="date" id="startDateM" class="w-full border-2 border-gray-100 rounded-xl px-3 py-3 text-sm focus:border-gray-400 focus:outline-none transition-colors" onchange="onStartChangeM()">
+                    <input type="date" id="startDateM" onchange="onStartChangeM()"
+                        class="w-full border-2 border-gray-100 rounded-xl px-3 py-3 text-sm focus:border-gray-400 focus:outline-none transition-colors">
                 </div>
                 <div class="flex-1">
                     <label class="block text-xs text-gray-400 mb-1">Selesai</label>
-                    <input type="date" id="endDateM" class="w-full border-2 border-gray-100 rounded-xl px-3 py-3 text-sm focus:border-gray-400 focus:outline-none transition-colors" onchange="onDateChangeM()">
+                    <input type="date" id="endDateM" onchange="onDateChangeM()"
+                        class="w-full border-2 border-gray-100 rounded-xl px-3 py-3 text-sm focus:border-gray-400 focus:outline-none transition-colors">
                 </div>
             </div>
-
             <div id="durationBadgeM" class="hidden mb-4">
-                <span id="durationTextM" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-medium" style="background:#FFF0F6;color:#C2185B;border:1px solid #F8BBD9;"></span>
+                <span id="durationTextM" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-medium"
+                    style="background:#FFF0F6;color:#C2185B;border:1px solid #F8BBD9;"></span>
             </div>
             <p id="dateErrorM" class="hidden text-xs text-red-500 mb-4">Tanggal selesai harus setelah tanggal mulai.</p>
 
@@ -93,13 +125,6 @@
             </div>
 
             {{-- Accordion --}}
-            @php
-            $accordions = [
-                ['title' => 'Tentang Kamera ini', 'deskripsi' => $item->deskripsi ?? 'Deskripsi tidak tersedia.', 'open' => true],
-                ['title' => 'Sorotan', 'deskripsi' => 'Spesifikasi unggulan untuk ' . $item->name . '.', 'open' => false],
-                ['title' => 'Isi Paket', 'deskripsi' => $item->stock > 0 ? 'Tersedia — '.$item->stock.' unit siap disewa.' : 'Maaf, stok unit ini sedang kosong.', 'open' => false],
-            ];
-            @endphp
             <div class="border-t border-gray-100">
                 @foreach($accordions as $ac)
                 <div class="border-b border-gray-100">
@@ -128,26 +153,28 @@
         </div>
     </div>
 
-    {{-- ════════════════════════════════════
+    {{-- ══════════════════════════════════════════════════════════
          DESKTOP LAYOUT (>= lg)
-    ════════════════════════════════════ --}}
+    ══════════════════════════════════════════════════════════ --}}
     <div class="hidden lg:block max-w-6xl mx-auto px-10 pb-20">
         <div class="flex gap-5 items-start">
 
-            {{-- Thumbnail column --}}
+            {{-- Thumbnail column (uncomment jika multi-gambar aktif) --}}
             <div class="flex flex-col items-center gap-2 shrink-0" style="width:72px;">
-                <!-- <button onclick="scrollThumbs(-1)" class="w-8 h-8 rounded-full bg-white border border-gray-200 flex items-center justify-center text-xs text-gray-400 hover:border-gray-500 transition-colors shrink-0">▲</button>
+                {{--
+                <button onclick="scrollThumbs(-1)" class="...">▲</button>
                 <div id="thumbList" class="flex flex-col gap-2 overflow-hidden" style="max-height:400px;">
                     @foreach($relatedItems as $related)
-                    <a href="{{ route('camera.show', $related->id) }}" class="block rounded-lg overflow-hidden border-2 border-gray-200 hover:border-gray-900 transition-all" style="width:72px;height:72px;">
+                    <a href="{{ route($category . '.show', $related->id) }}" class="block rounded-lg overflow-hidden border-2 border-gray-200 hover:border-gray-900 transition-all" style="width:72px;height:72px;">
                         <img src="{{ str_starts_with($related->image, 'http') ? $related->image : asset('storage/'.$related->image) }}" class="w-full h-full object-cover">
                     </a>
                     @endforeach
                 </div>
-                <button onclick="scrollThumbs(1)" class="w-8 h-8 rounded-full bg-white border border-gray-200 flex items-center justify-center text-xs text-gray-400 hover:border-gray-500 transition-colors shrink-0">▼</button> -->
+                <button onclick="scrollThumbs(1)" class="...">▼</button>
+                --}}
             </div>
 
-            {{-- Main image --}}
+            {{-- Main Image --}}
             <div class="flex-1 rounded-2xl overflow-hidden bg-gray-100 group" style="aspect-ratio:1/1;min-width:0;">
                 <img id="mainImg"
                     src="{{ str_starts_with($item->image, 'http') ? $item->image : asset('storage/'.$item->image) }}"
@@ -157,12 +184,6 @@
 
             {{-- Info column --}}
             <div class="shrink-0 flex flex-col" style="width:360px;">
-                <!-- <div class="flex justify-end gap-2 mb-5">
-                    <button onclick="toggleLove(this)" class="love-btn w-9 h-9 rounded-full border border-gray-200 bg-white flex items-center justify-center text-gray-400 hover:border-pink-400 hover:text-pink-500 transition-all duration-300">
-                        <span class="love-icon text-lg">♡</span>
-                    </button>
-                    <button onclick="shareProduct()" class="w-9 h-9 rounded-full border border-gray-200 bg-white flex items-center justify-center text-gray-400 hover:border-blue-400 hover:text-blue-500 transition-all duration-300">↗</button>
-                </div> -->
 
                 @if($item->is_new ?? false)
                 <span class="mb-3 self-start bg-gray-900 text-white text-xs font-bold tracking-widest uppercase px-3 py-1 rounded">Baru</span>
@@ -171,26 +192,31 @@
                 <h1 class="text-xl font-bold text-gray-900 leading-snug mb-1">{{ $item->name }}</h1>
                 <div class="flex items-baseline gap-2 mb-1">
                     <p class="text-2xl font-bold text-orange-600" id="displayPrice">Rp {{ number_format($item->price_per_day, 0, ',', '.') }}</p>
-                    <span class="text-sm text-gray-400" id="priceLabel">/ hari</span>
+                    <span class="text-sm text-gray-400">/ hari</span>
                 </div>
                 <p class="text-xs text-gray-400 mb-5" id="totalPriceNote"></p>
 
+                {{-- Tanggal --}}
                 <p class="text-xs font-bold tracking-widest uppercase text-gray-400 mb-3">Tanggal Penyewaan</p>
                 <div class="flex gap-3 mb-3">
                     <div class="flex-1">
                         <label class="block text-xs text-gray-400 mb-1">Mulai</label>
-                        <input type="date" id="startDate" class="w-full border-2 border-gray-100 rounded-xl px-3 py-3 text-sm focus:border-gray-400 focus:outline-none transition-colors" onchange="onStartChange()">
+                        <input type="date" id="startDate" onchange="onStartChange()"
+                            class="w-full border-2 border-gray-100 rounded-xl px-3 py-3 text-sm focus:border-gray-400 focus:outline-none transition-colors">
                     </div>
                     <div class="flex-1">
                         <label class="block text-xs text-gray-400 mb-1">Selesai</label>
-                        <input type="date" id="endDate" class="w-full border-2 border-gray-100 rounded-xl px-3 py-3 text-sm focus:border-gray-400 focus:outline-none transition-colors" onchange="onDateChange()">
+                        <input type="date" id="endDate" onchange="onDateChange()"
+                            class="w-full border-2 border-gray-100 rounded-xl px-3 py-3 text-sm focus:border-gray-400 focus:outline-none transition-colors">
                     </div>
                 </div>
                 <div id="durationBadge" class="hidden mb-5">
-                    <span id="durationText" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-medium" style="background:#FFF0F6;color:#C2185B;border:1px solid #F8BBD9;"></span>
+                    <span id="durationText" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-medium"
+                        style="background:#FFF0F6;color:#C2185B;border:1px solid #F8BBD9;"></span>
                 </div>
                 <p id="dateError" class="hidden text-xs text-red-500 mb-4">Tanggal selesai harus setelah tanggal mulai.</p>
 
+                {{-- Jumlah --}}
                 <p class="text-xs font-bold tracking-widest uppercase text-gray-400 mb-3">Jumlah</p>
                 <div class="flex items-center w-fit border-2 border-gray-100 rounded-xl overflow-hidden mb-8">
                     <button onclick="changeQty(-1)" class="w-12 h-12 flex items-center justify-center bg-white text-xl text-gray-500 hover:bg-gray-50 active:bg-gray-100 transition-colors select-none">−</button>
@@ -198,6 +224,7 @@
                     <button onclick="changeQty(1)" class="w-12 h-12 flex items-center justify-center bg-white text-xl text-gray-500 hover:bg-gray-50 active:bg-gray-100 transition-colors select-none">+</button>
                 </div>
 
+                {{-- CTA --}}
                 <div class="flex gap-3 mb-6">
                     <button onclick="addToCart({{ $item->id }})" id="addToCartBtnD"
                         class="flex-1 py-4 rounded-xl bg-gray-900 text-white text-xs font-black tracking-widest uppercase hover:bg-gray-700 active:scale-95 transition-all duration-200">
@@ -209,7 +236,8 @@
                     </button>
                 </div>
 
-                <div class="border-gray-100">
+                {{-- Accordion --}}
+                <div>
                     @foreach($accordions as $ac)
                     <div class="border-b border-gray-100">
                         <button onclick="toggleAcc(this)" class="w-full flex items-center justify-between py-4 text-sm font-semibold text-gray-900 text-left">
@@ -228,7 +256,9 @@
 </div>
 
 {{-- Toast --}}
-<div id="toast" class="fixed bottom-6 left-1/2 -translate-x-1/2 px-5 py-3 rounded-xl text-sm font-medium text-white shadow-lg transition-all duration-300 opacity-0 pointer-events-none z-50" style="background:#1a1a1a;min-width:220px;text-align:center;"></div>
+<div id="toast"
+    class="fixed bottom-6 left-1/2 -translate-x-1/2 px-5 py-3 rounded-xl text-sm font-medium text-white shadow-lg transition-all duration-300 opacity-0 pointer-events-none z-50"
+    style="background:#1a1a1a;min-width:220px;text-align:center;"></div>
 
 <script>
     const isLoggedIn = {{ Auth::check() ? 'true' : 'false' }};
@@ -236,9 +266,9 @@
     const PRICE_PER_DAY = {{ $item->price_per_day }};
     const MAX_STOCK = {{ $item->stock ?? 99 }};
 
-    // Sync qty display across mobile & desktop
+    // ── Qty ────────────────────────────────────────────────────
     function syncQty() {
-        ['qtyDisplay','qtyDisplay2'].forEach(id => {
+        ['qtyDisplay', 'qtyDisplay2'].forEach(id => {
             const el = document.getElementById(id);
             if (el) el.textContent = qty;
         });
@@ -248,21 +278,17 @@
         const next = qty + d;
         if (next < 1) return;
         if (next > MAX_STOCK) { showToast(`Stok tersedia hanya ${MAX_STOCK} unit`, 'error'); return; }
-        qty = next;
-        syncQty();
-        updatePrice();
+        qty = next; syncQty(); updatePrice();
     }
 
-    // Mobile image switch
+    // ── Image helpers ──────────────────────────────────────────
     function switchImgMobile(btn, src, idx, total) {
         document.getElementById('mainImgMobile').src = src;
         document.getElementById('imgCounter').textContent = `${idx} / ${total}`;
-        document.querySelectorAll('.thumb-mobile-btn').forEach(b => {
-            b.classList.remove('border-gray-900');
-            b.classList.add('border-gray-200');
+        btn.parentElement.querySelectorAll('button').forEach(b => {
+            b.classList.remove('border-gray-900'); b.classList.add('border-gray-200');
         });
-        btn.classList.add('border-gray-900');
-        btn.classList.remove('border-gray-200');
+        btn.classList.add('border-gray-900'); btn.classList.remove('border-gray-200');
     }
 
     function scrollThumbs(dir) {
@@ -273,6 +299,7 @@
         list.style.transition = 'transform .25s ease';
     }
 
+    // ── Accordion ──────────────────────────────────────────────
     function toggleAcc(button) {
         const deskripsi = button.nextElementSibling;
         const icon = button.querySelector('.acc-icon');
@@ -281,19 +308,12 @@
         icon.classList.toggle('rotate-180', !open);
     }
 
+    // ── Date ───────────────────────────────────────────────────
     const today = new Date().toISOString().split('T')[0];
-    ['startDate','endDate','startDateM','endDateM'].forEach(id => {
+    ['startDate', 'endDate', 'startDateM', 'endDateM'].forEach(id => {
         const el = document.getElementById(id);
         if (el) el.min = today;
     });
-
-    function getDays(prefix = '') {
-        const s = document.getElementById('startDate' + prefix)?.value;
-        const e = document.getElementById('endDate' + prefix)?.value;
-        if (!s || !e) return 0;
-        const diff = Math.round((new Date(e) - new Date(s)) / 86400000);
-        return diff > 0 ? diff : 0;
-    }
 
     function onStartChange() {
         const s = document.getElementById('startDate').value;
@@ -309,22 +329,23 @@
         onDateChangeM();
     }
 
-    function onDateChange() { handleDateChange('', ''); }
-    function onDateChangeM() { handleDateChange('M', 'M'); }
+    function onDateChange()  { handleDateChange(''); }
+    function onDateChangeM() { handleDateChange('M'); }
 
-    function handleDateChange(sfx, noteSfx) {
-        const s = document.getElementById('startDate' + sfx)?.value;
-        const e = document.getElementById('endDate' + sfx)?.value;
-        const err = document.getElementById('dateError' + sfx);
+    function handleDateChange(sfx) {
+        const s     = document.getElementById('startDate' + sfx)?.value;
+        const e     = document.getElementById('endDate'   + sfx)?.value;
+        const err   = document.getElementById('dateError'    + sfx);
         const badge = document.getElementById('durationBadge' + sfx);
-        const text = document.getElementById('durationText' + sfx);
+        const text  = document.getElementById('durationText'  + sfx);
 
-        if (err) err.classList.add('hidden');
+        if (err)   err.classList.add('hidden');
         if (badge) badge.classList.add('hidden');
 
         if (s && e) {
-            if (e <= s) { if (err) err.classList.remove('hidden'); }
-            else {
+            if (e <= s) {
+                if (err) err.classList.remove('hidden');
+            } else {
                 const days = Math.round((new Date(e) - new Date(s)) / 86400000);
                 if (badge && text) { badge.classList.remove('hidden'); text.textContent = `🗓 ${days} hari sewa`; }
             }
@@ -332,17 +353,29 @@
         updatePrice();
     }
 
+    // ── Price ──────────────────────────────────────────────────
     function fmtRp(n) { return 'Rp ' + Math.round(n).toLocaleString('id-ID'); }
 
-    function updatePrice() {
-        const days = getDays() || getDays('M');
-        const note = document.getElementById('totalPriceNote');
-        const noteM = document.getElementById('totalPriceNoteMobile');
-        const txt = days > 0 ? `Total ${days} hari × ${qty} unit = ${fmtRp(PRICE_PER_DAY * days * qty)}` : (qty > 1 ? `${qty} unit dipilih` : '');
-        if (note) note.textContent = txt;
-        if (noteM) noteM.textContent = txt;
+    function getDays(sfx = '') {
+        const s = document.getElementById('startDate' + sfx)?.value;
+        const e = document.getElementById('endDate'   + sfx)?.value;
+        if (!s || !e) return 0;
+        const d = Math.round((new Date(e) - new Date(s)) / 86400000);
+        return d > 0 ? d : 0;
     }
 
+    function updatePrice() {
+        const days = getDays('') || getDays('M');
+        const txt  = days > 0
+            ? `Total ${days} hari × ${qty} unit = ${fmtRp(PRICE_PER_DAY * days * qty)}`
+            : (qty > 1 ? `${qty} unit dipilih` : '');
+        ['totalPriceNote', 'totalPriceNoteMobile'].forEach(id => {
+            const el = document.getElementById(id);
+            if (el) el.textContent = txt;
+        });
+    }
+
+    // ── Toast ──────────────────────────────────────────────────
     function showToast(msg, type = 'success') {
         const t = document.getElementById('toast');
         t.textContent = msg;
@@ -351,54 +384,65 @@
         setTimeout(() => { t.classList.remove('opacity-100'); t.classList.add('opacity-0'); }, 2500);
     }
 
+    // ── Form data ──────────────────────────────────────────────
     function getFormData() {
-        const startDate = document.getElementById('startDate')?.value || document.getElementById('startDateM')?.value;
-        const endDate = document.getElementById('endDate')?.value || document.getElementById('endDateM')?.value;
-        return { startDate, endDate };
+        return {
+            startDate: document.getElementById('startDate')?.value  || document.getElementById('startDateM')?.value,
+            endDate:   document.getElementById('endDate')?.value    || document.getElementById('endDateM')?.value,
+        };
     }
 
+    // ── Cart & Checkout ────────────────────────────────────────
     function addToCart(itemId) {
         if (!isLoggedIn) { window.location.href = "{{ route('login') }}"; return; }
         const { startDate, endDate } = getFormData();
         if (!startDate || !endDate) { showToast('Pilih tanggal penyewaan terlebih dahulu', 'error'); return; }
-        const btns = ['addToCartBtn','addToCartBtnD'].map(id => document.getElementById(id)).filter(Boolean);
+
+        const btns = ['addToCartBtn', 'addToCartBtnD'].map(id => document.getElementById(id)).filter(Boolean);
         btns.forEach(b => { b.disabled = true; b.textContent = 'Menambahkan...'; });
+
         fetch('/cart/add', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json', 'Accept': 'application/json', 'X-CSRF-TOKEN': '{{ csrf_token() }}' },
-            deskripsi: JSON.stringify({ product_id: itemId, quantity: qty, start_date: startDate, end_date: endDate })
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+            },
+            body: JSON.stringify({ product_id: itemId, quantity: qty, start_date: startDate, end_date: endDate })
         })
         .then(r => r.status === 401 ? window.location.href = "{{ route('login') }}" : r.json())
         .then(data => {
-            if (data?.success) { showToast('Berhasil ditambahkan ke keranjang ✓'); }
+            if (data?.success) showToast('Berhasil ditambahkan ke keranjang ✓');
             else showToast(data?.message ?? 'Gagal menambahkan', 'error');
         })
         .catch(() => showToast('Terjadi kesalahan, coba lagi', 'error'))
-        .finally(() => btns.forEach(b => { b.disabled = false; b.textContent = b.id === 'addToCartBtn' ? '+ Keranjang' : 'Tambahkan ke Keranjang'; }));
+        .finally(() => btns.forEach(b => {
+            b.disabled = false;
+            b.textContent = b.id === 'addToCartBtn' ? '+ Keranjang' : 'Tambahkan ke Keranjang';
+        }));
     }
 
     function rentNow(itemId) {
         if (!isLoggedIn) { window.location.href = "{{ route('login') }}"; return; }
         const { startDate, endDate } = getFormData();
         if (!startDate || !endDate) { showToast('Pilih tanggal penyewaan terlebih dahulu', 'error'); return; }
+
         fetch('/cart/add', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json', 'Accept': 'application/json', 'X-CSRF-TOKEN': '{{ csrf_token() }}' },
-            deskripsi: JSON.stringify({ product_id: itemId, quantity: qty, start_date: startDate, end_date: endDate })
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+            },
+            body: JSON.stringify({ product_id: itemId, quantity: qty, start_date: startDate, end_date: endDate })
         })
         .then(r => r.status === 401 ? window.location.href = "{{ route('login') }}" : r.json())
-        .then(data => { if (data?.success) window.location.href = '/checkout'; else showToast(data?.message ?? 'Gagal', 'error'); })
+        .then(data => {
+            if (data?.success) window.location.href = '/checkout';
+            else showToast(data?.message ?? 'Gagal', 'error');
+        })
         .catch(() => showToast('Terjadi kesalahan, coba lagi', 'error'));
     }
-
-    // function toggleLove(btn) {
-    //     const icon = btn.querySelector('.love-icon');
-    //     btn.classList.toggle('liked');
-    //     const liked = btn.classList.contains('liked');
-    //     btn.classList.toggle('border-pink-500', liked);
-    //     btn.classList.toggle('text-pink-500', liked);
-    //     icon.textContent = liked ? '♥' : '♡';
-    // }
 
     function shareProduct() {
         if (navigator.share) navigator.share({ title: document.title, url: window.location.href });
