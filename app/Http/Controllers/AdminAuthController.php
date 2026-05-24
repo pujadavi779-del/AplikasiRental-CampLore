@@ -7,14 +7,21 @@ use Illuminate\Support\Facades\Auth;
 
 class AdminAuthController extends Controller
 {
+    /**
+     * Tampilkan halaman login admin.
+     * Jika sudah login sebagai admin → redirect ke dashboard admin.
+     */
     public function showLogin()
     {
         if (Auth::guard('admin')->check()) {
-            return redirect('/admin/dashboard_admin');
+            return redirect()->route('admin.dashboard');
         }
         return view('pages.login.login_admin');
     }
 
+    /**
+     * Proses login admin.
+     */
     public function login(Request $request)
     {
         $credentials = $request->validate([
@@ -24,7 +31,7 @@ class AdminAuthController extends Controller
 
         if (Auth::guard('admin')->attempt($credentials)) {
             $request->session()->regenerate();
-            return redirect('/admin/dashboard_admin');
+            return redirect()->route('admin.dashboard');
         }
 
         return back()->withErrors([
@@ -32,11 +39,14 @@ class AdminAuthController extends Controller
         ])->withInput($request->only('username'));
     }
 
+    /**
+     * Logout admin.
+     */
     public function logout(Request $request)
     {
         Auth::guard('admin')->logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
-        return redirect('/admin/login');
+        return redirect()->route('admin.login');
     }
 }

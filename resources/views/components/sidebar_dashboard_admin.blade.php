@@ -259,13 +259,13 @@
         <div class="px-4 py-4 border-t border-white/10 flex items-center gap-3 mt-auto">
             <div class="w-9 h-9 rounded-full bg-[#ED64A6]/30 flex items-center justify-center
                         text-white font-bold text-sm flex-shrink-0 select-none">
-                {{ strtoupper(substr(Auth::user()->name ?? 'A', 0, 2)) }}
+                {{ strtoupper(substr(Auth::guard('admin')->user()->name ?? 'A', 0, 2)) }}
             </div>
             <div class="flex-1 min-w-0">
-                <p class="text-white text-xs font-bold truncate">{{ Auth::user()->name ?? 'Admin' }}</p>
-                <p class="text-emerald-400 text-[10px]">Administrator</p>
+                <p class="text-white text-xs font-bold truncate">{{ Auth::guard('admin')->user()->name ?? 'Admin' }}</p>
+                <p class="text-emerald-400 text-[10px]">Admin</p>
             </div>
-            <form method="POST" action="{{ route('logout') }}">
+            <form method="POST" action="{{ route('admin.logout') }}">
                 @csrf
                 <button type="submit" title="Logout"
                         class="text-emerald-400 hover:text-[#ED64A6] transition-colors p-1 rounded-lg hover:bg-white/5">
