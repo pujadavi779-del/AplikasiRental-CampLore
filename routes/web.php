@@ -128,9 +128,8 @@ Route::middleware('auth')->group(function () {
     Route::post('/profile',  [ProfileController::class, 'update'])->middleware('auth');
 
     // Alamat pengiriman
-    Route::get('/alamat_pengiriman', function () {
-        return view('pages.pelanggan.dashboard.alamat_pengiriman');
-    })->name('pages.pelanggan.alamat_pengiriman');
+    Route::get('/alamat_pengiriman', [App\Http\Controllers\ShippingAddressController::class, 'index'])
+    ->name('pages.pelanggan.alamat_pengiriman');
 
     // Riwayat sewa
     Route::get('/riwayat_sewa', function () {

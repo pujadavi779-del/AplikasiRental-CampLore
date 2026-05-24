@@ -3,59 +3,54 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\ShippingAddress; // Sesuaikan dengan model kamu
+use App\Models\ShippingAddress;
+use App\Models\Customer;
 use Illuminate\Support\Facades\Auth;
 
 class ShippingAddressController extends Controller
 {
     public function index()
-    {
-        // Ambil data alamat user yang sedang login (jika ada)
-        $address = Auth::user()->shippingAddress ?? null;
-
-        return view('pages.pelanggan.alamat_pengiriman', compact('address'));
-    }
+{
+    $address = ShippingAddress::where('user_id', Auth::id())->first();
+    // dd($address); // ← tambah ini sementara
+    return view('pages.pelanggan.dashboard.alamat_pengiriman', compact('address'));
+}
 
     public function update(Request $request)
     {
         $request->validate([
             'full_address' => 'required|string',
-            'city' => 'required',
-            'province' => 'required',
-            'postal_code' => 'required',
-            'district' => 'required',
+            'city'         => 'required|string',
+            'district'     => 'required|string',
+            'postal_code'  => 'required|string',
         ]);
 
-        // Logika update database kamu di sini...
+        $user = Auth::user();
 
-        return back()->with('success', 'Alamat pengiriman berhasil diperbarui!');
-    }
-
-    public function store(Request $request)
-    {
-        $request->validate([
-            'full_address' => 'required',
-            'city' => 'required',
-            'province' => 'required',
-            'postal_code' => 'required',
-            'district' => 'required',
-        ]);
-
-        $address = ShippingAddress::updateOrCreate(
-            ['user_id' => Auth::id()],
+        // 1. Simpan/update ke tabel shipping_addresses
+        ShippingAddress::updateOrCreate(
+            ['user_id' => $user->id],
             [
                 'full_address' => $request->full_address,
-                'city' => $request->city,
-                'province' => $request->province,
-                'postal_code' => $request->postal_code,
-                'district' => $request->district,
-                'notes' => $request->notes,
+                'city'         => $request->city,
+                'district'     => $request->district,
+                'postal_code'  => $request->postal_code,
             ]
         );
 
-        return response()->json([
-            'success' => true,
-            'address' => $address
-        ]);
+        // 2. Gabungkan jadi satu string dengan koma, simpan ke customers.address
+        $alamatGabung = implode(', ', array_filter([
+            $request->full_address,
+            $request->city,
+            $request->district,
+            $request->postal_code,
+        ]));
+
+        // Cari customer berdasarkan nomor HP atau NIK yang sama dengan user
+        // Sesuaikan kolom penghubungnya — pakai phone atau nik
+        Customer::where('phone', $user->phone)
+                ->update(['address' => $alamatGabung]);
+
+        return back()->with('success', 'Alamat pengiriman berhasil diperbarui!');
     }
 }

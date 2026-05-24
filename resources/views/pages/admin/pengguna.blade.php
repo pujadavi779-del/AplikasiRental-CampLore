@@ -69,7 +69,19 @@
 
                         {{-- Alamat --}}
                         <td class="px-6 py-4">
-                            <p class="text-[11px] text-gray-500 max-w-[180px] leading-relaxed">{{ $customer->address ?? $customer->alamat ?? '-' }}</p>
+                            <p class="text-[11px] text-gray-500 max-w-[180px] leading-relaxed">// SESUDAH
+                        @php
+                            $sa = $customer->shippingAddress;
+                            $alamat = $sa
+                                ? implode(', ', array_filter([
+                                    $sa->full_address,
+                                    $sa->city,
+                                    $sa->district,
+                                    $sa->postal_code,
+                                ]))
+                                : '-';
+                        @endphp
+                        {{ $alamat }}</p>
                         </td>
 
                         {{-- NIK --}}

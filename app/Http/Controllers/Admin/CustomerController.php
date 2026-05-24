@@ -11,56 +11,12 @@ class CustomerController extends Controller
 {
     // ── LIST ──────────────────────────────────────────
     public function index()
-    {
-        $customers = collect([
-            (object)[
-                'id'            => 1,
-                'name'          => 'Budi Santoso',
-                'nik'           => '3201010101010001',
-                'phone'         => '081234567890',
-                'address'       => 'Jl. Raya Batam Center No. 5, Batam Kota, Kepulauan Riau, 29461',
-                'type'          => 'member',
-                'status'        => 'aktif',
-                'total_rentals' => 5,
-                'document'      => 'dummy/ktp_budi.jpg',   // ada KTP
-            ],
-            (object)[
-                'id'            => 2,
-                'name'          => 'Siti Rahayu',
-                'nik'           => '3201010101010002',
-                'phone'         => '082345678901',
-                'address'       => 'Jl. Sungai Langkai No. 19, Sekupang, Batam, 29422',
-                'type'          => 'vip',
-                'status'        => 'aktif',
-                'total_rentals' => 8,
-                'document'      => 'dummy/ktp_siti.jpg',   // ada KTP
-            ],
-            (object)[
-                'id'            => 3,
-                'name'          => 'Rizky Pratama',
-                'nik'           => '3201010101010003',
-                'phone'         => '083456789012',
-                'address'       => 'Jl. Hang Lekir No. 7, Nongsa, Batam, 29422',
-                'type'          => 'reguler',
-                'status'        => 'aktif',
-                'total_rentals' => 2,
-                'document'      => null,                   // belum ada KTP
-            ],
-            (object)[
-                'id'            => 4,
-                'name'          => 'Dewi Lestari',
-                'nik'           => '3201010101010004',
-                'phone'         => '084567890123',
-                'address'       => 'Jl. Duyung Blok B No. 12, Batu Ampar, Batam, 29422',
-                'type'          => 'member',
-                'status'        => 'nonaktif',
-                'total_rentals' => 3,
-                'document'      => 'dummy/ktp_dewi.jpg',   // ada KTP
-            ],
-        ]);
+{
+    // Ambil data users beserta alamatnya dari shipping_addresses
+    $customers = \App\Models\User::with('shippingAddress')->get();
 
-        return view('pages.admin.pengguna', compact('customers'));
-    }
+    return view('pages.admin.pengguna', compact('customers'));
+}
 
     // ── CREATE FORM ───────────────────────────────────
     public function create()

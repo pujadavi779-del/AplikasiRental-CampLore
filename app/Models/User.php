@@ -21,6 +21,7 @@ class User extends Authenticatable
 
     public function shippingAddress()
     {
-        return $this->hasOne(ShippingAddress::class);
+        return $this->hasOne(\App\Models\ShippingAddress::class);
+   
     }
 }
