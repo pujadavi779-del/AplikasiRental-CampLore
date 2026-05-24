@@ -171,7 +171,7 @@ function openDrawer(name) {
     closeAllDrawers(false);
     document.getElementById('drawer-' + name).classList.remove('translate-y-full');
     document.getElementById('drawer-overlay').classList.remove('hidden');
-    document.deskripsi.style.overflow = 'hidden';
+    document.body.style.overflow = 'hidden';
 
     // Tandai chip aktif
     document.querySelectorAll('.chip-btn').forEach(btn => {
@@ -190,7 +190,7 @@ function closeAllDrawers(resetChips = true) {
         document.getElementById('drawer-' + name).classList.add('translate-y-full');
     });
     document.getElementById('drawer-overlay').classList.add('hidden');
-    document.deskripsi.style.overflow = '';
+    document.body.style.overflow = '';
 
     if (resetChips) {
         document.querySelectorAll('.chip-btn').forEach(btn => {

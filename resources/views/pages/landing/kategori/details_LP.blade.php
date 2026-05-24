@@ -449,6 +449,6 @@ if (!isset($accordions)) {
         else { navigator.clipboard.writeText(window.location.href); showToast('Link berhasil disalin ✓'); }
     }
 </script>
-
+@include('components.komentar')
 @include('layouts.footer_biasa')
 @endsection
