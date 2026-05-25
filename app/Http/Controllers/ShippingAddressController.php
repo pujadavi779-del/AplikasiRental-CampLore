@@ -10,11 +10,10 @@ use Illuminate\Support\Facades\Auth;
 class ShippingAddressController extends Controller
 {
     public function index()
-{
-    $address = ShippingAddress::where('user_id', Auth::id())->first();
-    // dd($address); // ← tambah ini sementara
-    return view('pages.pelanggan.dashboard.alamat_pengiriman', compact('address'));
-}
+    {
+        $address = ShippingAddress::where('user_id', Auth::id())->first();
+        return view('pages.pelanggan.dashboard.alamat_pengiriman', compact('address'));
+    }
 
     public function update(Request $request)
     {
@@ -38,7 +37,7 @@ class ShippingAddressController extends Controller
             ]
         );
 
-        // 2. Gabungkan jadi satu string dengan koma, simpan ke customers.address
+        // 2. Gabungkan jadi satu string, simpan ke customers.address
         $alamatGabung = implode(', ', array_filter([
             $request->full_address,
             $request->city,
@@ -46,8 +45,7 @@ class ShippingAddressController extends Controller
             $request->postal_code,
         ]));
 
-        // Cari customer berdasarkan nomor HP atau NIK yang sama dengan user
-        // Sesuaikan kolom penghubungnya — pakai phone atau nik
+        // 3. Update ke tabel customers
         Customer::where('phone', $user->phone)
                 ->update(['address' => $alamatGabung]);
 

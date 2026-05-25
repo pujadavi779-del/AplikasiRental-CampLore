@@ -69,7 +69,7 @@
 
                         {{-- Alamat --}}
                         <td class="px-6 py-4">
-                            <p class="text-[11px] text-gray-500 max-w-[180px] leading-relaxed">// SESUDAH
+                            <p class="text-[11px] text-gray-500 max-w-[180px] leading-relaxed">
                         @php
                             $sa = $customer->shippingAddress;
                             $alamat = $sa
