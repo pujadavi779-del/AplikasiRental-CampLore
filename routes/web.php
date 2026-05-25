@@ -175,7 +175,8 @@ Route::prefix('admin')->middleware('admin.auth')->name('admin.')->group(function
         return view('pages.admin.products', compact('products'));
     })->name('products');
 
-    Route::get('/products/create',    fn() => view('pages.admin.products.create'))->name('products.create');
+    Route::get('/products/create', [ProductController::class, 'create'])
+    ->name('products.create');
     Route::post('/products',          [CreateProductController::class, 'store'])->name('products.store');
     Route::get('/products/{id}/edit', [ProductController::class, 'edit'])->name('products.edit');
     Route::put('/products/{id}',      [ProductController::class, 'update'])->name('products.update');

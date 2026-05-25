@@ -7,8 +7,13 @@
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght=400;500;600;700&family=Playfair+Display:wght=400;500;600;700&display=swap');
 
-    * { font-family: 'Inter', sans-serif; }
-    .font-serif { font-family: 'Playfair Display', serif !important; }
+    * {
+        font-family: 'Inter', sans-serif;
+    }
+
+    .font-serif {
+        font-family: 'Playfair Display', serif !important;
+    }
 </style>
 
 {{-- Navbar Header --}}
@@ -113,17 +118,41 @@
                         @enderror
                     </div>
 
-                    {{-- Merek --}}
+                    {{-- TIPE --}}
+                    <div>
+                        <label class="block text-[11px] font-black text-gray-400 uppercase tracking-widest mb-2">
+                            Tipe
+                        </label>
+
+                        <select name="type_category_id" required
+                            class="w-full px-4 py-3 bg-gray-50 border border-[#eef4f0] rounded-xl text-sm">
+
+                            <option value="">Pilih Tipe</option>
+
+                            @foreach($types as $type)
+                            <option value="{{ $type->id }}"
+                                {{ old('type_category_id', $product->type_category_id) == $type->id ? 'selected' : '' }}>
+                                {{ $type->name }}
+                            </option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    {{-- MEREK --}}
                     <div>
                         <label class="block text-[11px] font-black text-gray-400 uppercase tracking-widest mb-2">
                             Merek
                         </label>
-                        <select name="brand" required
+
+                        <select name="brand_category_id" required
                             class="w-full px-4 py-3 bg-gray-50 border border-[#eef4f0] rounded-xl text-sm">
-                            @foreach(['Canon','Sony','Nikon','Fujifilm','GoPro','Sigma','Leica','DJI'] as $brand)
-                            <option value="{{ $brand }}"
-                                {{ old('brand', $product->brand) == $brand ? 'selected' : '' }}>
-                                {{ $brand }}
+
+                            <option value="">Pilih Merek</option>
+
+                            @foreach($brands as $brand)
+                            <option value="{{ $brand->id }}"
+                                {{ old('brand_category_id', $product->brand_category_id) == $brand->id ? 'selected' : '' }}>
+                                {{ $brand->name }}
                             </option>
                             @endforeach
                         </select>

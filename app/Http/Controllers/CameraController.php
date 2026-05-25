@@ -8,9 +8,21 @@ use App\Models\Category;
 
 class CameraController extends Controller
 {
-    public function landing()
+    public function landing(Request $request)
     {
-        $items = Product::where('category', 'Kamera')->get();
+        $query = Product::where('category', 'Kamera');
+
+        // FILTER TIPE
+        if ($request->type) {
+            $query->where('type_category_id', $request->type);
+        }
+
+        // FILTER MEREK
+        if ($request->brand) {
+            $query->where('brand_category_id', $request->brand);
+        }
+
+        $items = $query->get();
 
         $filterTipes = Category::where('main_category', 'Kamera')
             ->where('attribute_type', 'Tipe')
@@ -87,25 +99,25 @@ class CameraController extends Controller
         return redirect()->route('camera.index');
     }
 
-public function show($id)
-{
-    $item = Product::findOrFail($id);
+    public function show($id)
+    {
+        $item = Product::findOrFail($id);
 
-    $relatedItems = Product::where('category', 'Kamera')
-        ->where('id', '!=', $item->id)
-        ->take(5)
-        ->get();
+        $relatedItems = Product::where('category', 'Kamera')
+            ->where('id', '!=', $item->id)
+            ->take(5)
+            ->get();
 
-    return view('pages.landing.kategori.details_LP', [    
-        'item'          => $item,
-        'relatedItems'  => $relatedItems,
-        'category'      => 'camera',
-        'categoryLabel' => 'Kamera',
-        'accordions'    => [
-            ['title' => 'Tentang Kamera ini', 'deskripsi' => $item->deskripsi ?? 'Deskripsi tidak tersedia.', 'open' => true],
-            ['title' => 'Sorotan',            'deskripsi' => 'Spesifikasi unggulan untuk ' . $item->name . '.', 'open' => false],
-            ['title' => 'Isi Paket',          'deskripsi' => $item->stock > 0 ? 'Tersedia — '.$item->stock.' unit siap disewa.' : 'Stok sedang kosong.', 'open' => false],
-        ],
-    ]);
-}
+        return view('pages.landing.kategori.details_LP', [
+            'item'          => $item,
+            'relatedItems'  => $relatedItems,
+            'category'      => 'camera',
+            'categoryLabel' => 'Kamera',
+            'accordions'    => [
+                ['title' => 'Tentang Kamera ini', 'deskripsi' => $item->deskripsi ?? 'Deskripsi tidak tersedia.', 'open' => true],
+                ['title' => 'Sorotan',            'deskripsi' => 'Spesifikasi unggulan untuk ' . $item->name . '.', 'open' => false],
+                ['title' => 'Isi Paket',          'deskripsi' => $item->stock > 0 ? 'Tersedia — ' . $item->stock . ' unit siap disewa.' : 'Stok sedang kosong.', 'open' => false],
+            ],
+        ]);
+    }
 }

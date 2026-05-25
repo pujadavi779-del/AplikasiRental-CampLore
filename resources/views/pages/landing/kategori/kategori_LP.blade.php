@@ -53,7 +53,7 @@
 
                 @foreach($items as $item)
                 <a href="{{ route($category . '.show', $item->id) }}"
-                   class="group bg-[#ededea] rounded-2xl overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-xl">
+                    class="group bg-[#ededea] rounded-2xl overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-xl">
 
                     {{-- IMAGE --}}
                     <div class="relative bg-[#e8e7e3] aspect-square flex items-center justify-center overflow-hidden">
@@ -61,22 +61,21 @@
                         {{-- BADGES --}}
                         <div class="absolute top-3 left-3 flex gap-2 z-10">
                             @if($item->is_new ?? false)
-                                <span class="text-[9px] font-bold uppercase tracking-widest bg-black text-white px-2 py-1 rounded">
-                                    Baru
-                                </span>
+                            <span class="text-[9px] font-bold uppercase tracking-widest bg-black text-white px-2 py-1 rounded">
+                                Baru
+                            </span>
                             @endif
                             @if($item->stock <= 0)
                                 <span class="text-[9px] font-semibold uppercase tracking-wide bg-red-500 text-white px-2 py-1 rounded">
-                                    Habis
+                                Habis
                                 </span>
-                            @endif
+                                @endif
                         </div>
 
                         <img
                             src="{{ $item->image }}"
                             alt="{{ $item->name }}"
-                            class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-                        >
+                            class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105">
                     </div>
 
                     {{-- INFO --}}
@@ -102,6 +101,7 @@
                 @endforeach
 
             </div>
+
 
             {{-- EMPTY STATE --}}
             @if(count($items) === 0)
