@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Product;
+use App\Models\Category;
 
 class CampingController extends Controller
 {
@@ -19,21 +20,23 @@ class CampingController extends Controller
     {
         $items = Product::where('category', 'Camping')->get();
 
-        $campingBrands = collect([
-            (object)['name' => 'Eiger',      'slug' => 'eiger',      'image' => null],
-            (object)['name' => 'Consina',    'slug' => 'consina',    'image' => null],
-            (object)['name' => 'Rei',        'slug' => 'rei',        'image' => null],
-            (object)['name' => 'Naturehike', 'slug' => 'naturehike', 'image' => null],
-            (object)['name' => 'Arei',       'slug' => 'arei',       'image' => null],
-            (object)['name' => 'Avtech',     'slug' => 'avtech',     'image' => null],
-        ]);
+        $filterTipes = Category::where('main_category', 'Camping')
+            ->where('attribute_type', 'Tipe')
+            ->where('is_active', 1)
+            ->get();
+
+        $filterMereks = Category::where('main_category', 'Camping')
+            ->where('attribute_type', 'Merek')
+            ->where('is_active', 1)
+            ->get();
 
         return view('pages.landing.kategori.kategori_LP', [
-            'items'         => $items,
-            'campingBrands' => $campingBrands,
-            'category'      => 'camping',
-            'title'         => 'Camping',
-            'emptyIcon'     => '🏕️',
+            'items'        => $items,
+            'filterTipes'  => $filterTipes,
+            'filterMereks' => $filterMereks,
+            'category'     => 'camping',
+            'title'        => 'Camping',
+            'emptyIcon'    => '🏕️',
         ]);
     }   // ← cuma 1 kurung, tutup method
 

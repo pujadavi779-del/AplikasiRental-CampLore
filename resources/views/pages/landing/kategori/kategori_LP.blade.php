@@ -36,7 +36,7 @@
     <div class="flex flex-col lg:flex-row gap-8 px-4 lg:px-10 pb-16 max-w-[1400px] mx-auto">
 
         {{-- SIDEBAR — dipilih berdasarkan $category --}}
-        @include('components.catalog.sidebar_' . $category)
+        @include('components.catalog.sidebar_filter')
 
         {{-- PRODUCT GRID --}}
         <main class="flex-1">

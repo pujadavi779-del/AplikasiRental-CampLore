@@ -3,33 +3,33 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Product; // 1. Ganti dari Item ke Product
+use App\Models\Product;
+use App\Models\Category;
 
 class CameraController extends Controller
 {
     public function landing()
     {
-        // 2. Ambil dari Product, kategori 'Kamera' (sesuai isi database tadi)
         $items = Product::where('category', 'Kamera')->get();
 
-        $ipCategories = collect([
-            (object)['name' => 'Canon',    'slug' => 'canon',    'image' => null],
-            (object)['name' => 'Sony',     'slug' => 'sony',     'image' => null],
-            (object)['name' => 'Nikon',    'slug' => 'nikon',    'image' => null],
-            (object)['name' => 'Fujifilm', 'slug' => 'fujifilm', 'image' => null],
-            (object)['name' => 'GoPro',    'slug' => 'gopro',    'image' => null],
-            (object)['name' => 'Sigma',    'slug' => 'sigma',    'image' => null],
-            (object)['name' => 'Leica',    'slug' => 'leica',    'image' => null],
-            (object)['name' => 'DJI',      'slug' => 'dji',      'image' => null],
-        ]);
+        $filterTipes = Category::where('main_category', 'Kamera')
+            ->where('attribute_type', 'Tipe')
+            ->where('is_active', 1)
+            ->get();
 
-        return view('pages.landing.kategori.kategori_LP', [          // ← ganti nama view
-        'items'      => $items,
-        'ipCategories' => $ipCategories, // ← tetap kirim ke sidebar
-        'category'   => 'camera',
-        'title'      => 'Kamera',
-        'emptyIcon'  => '📷',
-    ]);
+        $filterMereks = Category::where('main_category', 'Kamera')
+            ->where('attribute_type', 'Merek')
+            ->where('is_active', 1)
+            ->get();
+
+        return view('pages.landing.kategori.kategori_LP', [
+            'items'        => $items,
+            'filterTipes'  => $filterTipes,
+            'filterMereks' => $filterMereks,
+            'category'     => 'camera',
+            'title'        => 'Kamera',
+            'emptyIcon'    => '📷',
+        ]);
     }
 
     public function index()
