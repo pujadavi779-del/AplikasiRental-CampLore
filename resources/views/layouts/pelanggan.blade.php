@@ -14,6 +14,8 @@
         .font-serif { font-family: 'Playfair Display', serif !important; }
     </style>
 
+    
+
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     @stack('styles')
 </head>
@@ -44,4 +46,3 @@
 
     @stack('scripts')
 </body>
-</html>
