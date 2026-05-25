@@ -85,7 +85,7 @@ Route::post('/admin/logout', [AdminAuthController::class, 'logout'])->name('admi
 Route::middleware('auth')->group(function () {
 
     // Dashboard
-    Route::get('/home', fn() => view('pages.pelanggan.home'))->name('pelanggan.home');
+    Route::get('/home', fn() => view('pages.landing.landing'))->name('landing.landing');
     Route::get('/dashboard_pelanggan', fn() => view('pages.pelanggan.dashboard.pesanan_saya'))->name('dashboard_pelanggan');
 
     // Keranjang
