@@ -222,7 +222,7 @@ class KategoriController extends Controller
 
         return response()->json([
             'merek'    => $category->name,
-            'logo'     => $category->logo ? asset('storage/' . $category->logo) : null,
+            'logo'     => $category->logo ? asset($category->logo) : null,
             'products' => $products,
         ]);
     }

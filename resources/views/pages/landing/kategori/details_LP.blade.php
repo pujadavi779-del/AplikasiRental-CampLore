@@ -38,11 +38,11 @@
 
 @php
 if (!isset($accordions)) {
-    $accordions = [
-        ['title' => 'Tentang Produk ini', 'deskripsi' => $item->deskripsi ?? $item->description ?? 'Deskripsi tidak tersedia.', 'open' => true],
-        ['title' => 'Sorotan',            'deskripsi' => 'Spesifikasi unggulan untuk ' . $item->name . '.', 'open' => false],
-        ['title' => 'Isi Paket',          'deskripsi' => $item->stock > 0 ? 'Tersedia — '.$item->stock.' unit siap disewa.' : 'Maaf, stok sedang kosong.', 'open' => false],
-    ];
+$accordions = [
+['title' => 'Tentang Produk ini', 'deskripsi' => $item->deskripsi ?? $item->description ?? 'Deskripsi tidak tersedia.', 'open' => true],
+['title' => 'Sorotan', 'deskripsi' => 'Spesifikasi unggulan untuk ' . $item->name . '.', 'open' => false],
+['title' => 'Isi Paket', 'deskripsi' => $item->stock > 0 ? 'Tersedia — '.$item->stock.' unit siap disewa.' : 'Maaf, stok sedang kosong.', 'open' => false],
+];
 }
 @endphp
 
@@ -64,8 +64,12 @@ if (!isset($accordions)) {
 
         {{-- Main Image --}}
         <div class="relative bg-gray-100 w-full" style="aspect-ratio:1/1;">
+            <!-- <img id="mainImgMobile"
+                src="{{ str_starts_with($item->image, 'http') ? $item->image : asset('storage/'.$item->image) }}" -->
             <img id="mainImgMobile"
-                src="{{ str_starts_with($item->image, 'http') ? $item->image : asset('storage/'.$item->image) }}"
+                src="{{ str_starts_with($item->image, 'http') 
+        ? $item->image 
+        : asset($item->image) }}"
                 alt="{{ $item->name }}"
                 class="w-full h-full object-cover">
         </div>
@@ -166,93 +170,96 @@ if (!isset($accordions)) {
                 <div id="thumbList" class="flex flex-col gap-2 overflow-hidden" style="max-height:400px;">
                     @foreach($relatedItems as $related)
                     <a href="{{ route($category . '.show', $related->id) }}" class="block rounded-lg overflow-hidden border-2 border-gray-200 hover:border-gray-900 transition-all" style="width:72px;height:72px;">
-                        <img src="{{ str_starts_with($related->image, 'http') ? $related->image : asset('storage/'.$related->image) }}" class="w-full h-full object-cover">
-                    </a>
-                    @endforeach
+                <img src="{{ str_starts_with($related->image, 'http') ? $related->image : asset('storage/'.$related->image) }}" class="w-full h-full object-cover">
+                </a>
+                @endforeach
+            </div>
+            <button onclick="scrollThumbs(1)" class="...">▼</button>
+            --}}
+        </div>
+
+        {{-- Main Image --}}
+        <div class="flex-1 rounded-2xl overflow-hidden bg-gray-100 group" style="aspect-ratio:1/1;min-width:0;">
+            <img id="mainImg"
+                src="{{ str_starts_with($item->image, 'http') 
+        ? $item->image 
+        : asset($item->image) }}"
+                
+            alt="{{ $item->name }}"
+            class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
+        </div>
+
+        {{-- Info column --}}
+        <div class="shrink-0 flex flex-col" style="width:360px;">
+
+            @if($item->is_new ?? false)
+            <span class="mb-3 self-start bg-gray-900 text-white text-xs font-bold tracking-widest uppercase px-3 py-1 rounded">Baru</span>
+            @endif
+
+            <h1 class="text-xl font-bold text-gray-900 leading-snug mb-1">{{ $item->name }}</h1>
+            <div class="flex items-baseline gap-2 mb-1">
+                <p class="text-2xl font-bold text-orange-600" id="displayPrice">Rp {{ number_format($item->price_per_day, 0, ',', '.') }}</p>
+                <span class="text-sm text-gray-400">/ hari</span>
+            </div>
+            <p class="text-xs text-gray-400 mb-5" id="totalPriceNote"></p>
+
+            {{-- Tanggal --}}
+            <p class="text-xs font-bold tracking-widest uppercase text-gray-400 mb-3">Tanggal Penyewaan</p>
+            <div class="flex gap-3 mb-3">
+                <div class="flex-1">
+                    <label class="block text-xs text-gray-400 mb-1">Mulai</label>
+                    <input type="date" id="startDate" onchange="onStartChange()"
+                        class="w-full border-2 border-gray-100 rounded-xl px-3 py-3 text-sm focus:border-gray-400 focus:outline-none transition-colors">
                 </div>
-                <button onclick="scrollThumbs(1)" class="...">▼</button>
-                --}}
+                <div class="flex-1">
+                    <label class="block text-xs text-gray-400 mb-1">Selesai</label>
+                    <input type="date" id="endDate" onchange="onDateChange()"
+                        class="w-full border-2 border-gray-100 rounded-xl px-3 py-3 text-sm focus:border-gray-400 focus:outline-none transition-colors">
+                </div>
+            </div>
+            <div id="durationBadge" class="hidden mb-5">
+                <span id="durationText" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-medium"
+                    style="background:#FFF0F6;color:#C2185B;border:1px solid #F8BBD9;"></span>
+            </div>
+            <p id="dateError" class="hidden text-xs text-red-500 mb-4">Tanggal selesai harus setelah tanggal mulai.</p>
+
+            {{-- Jumlah --}}
+            <p class="text-xs font-bold tracking-widest uppercase text-gray-400 mb-3">Jumlah</p>
+            <div class="flex items-center w-fit border-2 border-gray-100 rounded-xl overflow-hidden mb-8">
+                <button onclick="changeQty(-1)" class="w-12 h-12 flex items-center justify-center bg-white text-xl text-gray-500 hover:bg-gray-50 active:bg-gray-100 transition-colors select-none">−</button>
+                <div id="qtyDisplay2" class="w-12 h-12 flex items-center justify-center border-x-2 border-gray-100 text-sm font-bold text-gray-900">1</div>
+                <button onclick="changeQty(1)" class="w-12 h-12 flex items-center justify-center bg-white text-xl text-gray-500 hover:bg-gray-50 active:bg-gray-100 transition-colors select-none">+</button>
             </div>
 
-            {{-- Main Image --}}
-            <div class="flex-1 rounded-2xl overflow-hidden bg-gray-100 group" style="aspect-ratio:1/1;min-width:0;">
-                <img id="mainImg"
-                    src="{{ str_starts_with($item->image, 'http') ? $item->image : asset('storage/'.$item->image) }}"
-                    alt="{{ $item->name }}"
-                    class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
+            {{-- CTA --}}
+            <div class="flex gap-3 mb-6">
+                <button onclick="addToCart({{ $item->id }})" id="addToCartBtnD"
+                    class="flex-1 py-4 rounded-xl bg-gray-900 text-white text-xs font-black tracking-widest uppercase hover:bg-gray-700 active:scale-95 transition-all duration-200">
+                    Tambahkan ke Keranjang
+                </button>
+                <button onclick="rentNow({{ $item->id }})"
+                    class="flex-1 py-4 rounded-xl bg-[#ED64A6] text-white text-xs font-black tracking-widest uppercase hover:bg-[#d45592] active:scale-95 transition-all duration-200">
+                    Sewa Sekarang
+                </button>
             </div>
 
-            {{-- Info column --}}
-            <div class="shrink-0 flex flex-col" style="width:360px;">
-
-                @if($item->is_new ?? false)
-                <span class="mb-3 self-start bg-gray-900 text-white text-xs font-bold tracking-widest uppercase px-3 py-1 rounded">Baru</span>
-                @endif
-
-                <h1 class="text-xl font-bold text-gray-900 leading-snug mb-1">{{ $item->name }}</h1>
-                <div class="flex items-baseline gap-2 mb-1">
-                    <p class="text-2xl font-bold text-orange-600" id="displayPrice">Rp {{ number_format($item->price_per_day, 0, ',', '.') }}</p>
-                    <span class="text-sm text-gray-400">/ hari</span>
-                </div>
-                <p class="text-xs text-gray-400 mb-5" id="totalPriceNote"></p>
-
-                {{-- Tanggal --}}
-                <p class="text-xs font-bold tracking-widest uppercase text-gray-400 mb-3">Tanggal Penyewaan</p>
-                <div class="flex gap-3 mb-3">
-                    <div class="flex-1">
-                        <label class="block text-xs text-gray-400 mb-1">Mulai</label>
-                        <input type="date" id="startDate" onchange="onStartChange()"
-                            class="w-full border-2 border-gray-100 rounded-xl px-3 py-3 text-sm focus:border-gray-400 focus:outline-none transition-colors">
-                    </div>
-                    <div class="flex-1">
-                        <label class="block text-xs text-gray-400 mb-1">Selesai</label>
-                        <input type="date" id="endDate" onchange="onDateChange()"
-                            class="w-full border-2 border-gray-100 rounded-xl px-3 py-3 text-sm focus:border-gray-400 focus:outline-none transition-colors">
-                    </div>
-                </div>
-                <div id="durationBadge" class="hidden mb-5">
-                    <span id="durationText" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-medium"
-                        style="background:#FFF0F6;color:#C2185B;border:1px solid #F8BBD9;"></span>
-                </div>
-                <p id="dateError" class="hidden text-xs text-red-500 mb-4">Tanggal selesai harus setelah tanggal mulai.</p>
-
-                {{-- Jumlah --}}
-                <p class="text-xs font-bold tracking-widest uppercase text-gray-400 mb-3">Jumlah</p>
-                <div class="flex items-center w-fit border-2 border-gray-100 rounded-xl overflow-hidden mb-8">
-                    <button onclick="changeQty(-1)" class="w-12 h-12 flex items-center justify-center bg-white text-xl text-gray-500 hover:bg-gray-50 active:bg-gray-100 transition-colors select-none">−</button>
-                    <div id="qtyDisplay2" class="w-12 h-12 flex items-center justify-center border-x-2 border-gray-100 text-sm font-bold text-gray-900">1</div>
-                    <button onclick="changeQty(1)" class="w-12 h-12 flex items-center justify-center bg-white text-xl text-gray-500 hover:bg-gray-50 active:bg-gray-100 transition-colors select-none">+</button>
-                </div>
-
-                {{-- CTA --}}
-                <div class="flex gap-3 mb-6">
-                    <button onclick="addToCart({{ $item->id }})" id="addToCartBtnD"
-                        class="flex-1 py-4 rounded-xl bg-gray-900 text-white text-xs font-black tracking-widest uppercase hover:bg-gray-700 active:scale-95 transition-all duration-200">
-                        Tambahkan ke Keranjang
+            {{-- Accordion --}}
+            <div>
+                @foreach($accordions as $ac)
+                <div class="border-b border-gray-100">
+                    <button onclick="toggleAcc(this)" class="w-full flex items-center justify-between py-4 text-sm font-semibold text-gray-900 text-left">
+                        {{ $ac['title'] }}
+                        <span class="acc-icon transition-transform duration-300 {{ $ac['open'] ? 'rotate-180' : '' }}">▾</span>
                     </button>
-                    <button onclick="rentNow({{ $item->id }})"
-                        class="flex-1 py-4 rounded-xl bg-[#ED64A6] text-white text-xs font-black tracking-widest uppercase hover:bg-[#d45592] active:scale-95 transition-all duration-200">
-                        Sewa Sekarang
-                    </button>
-                </div>
-
-                {{-- Accordion --}}
-                <div>
-                    @foreach($accordions as $ac)
-                    <div class="border-b border-gray-100">
-                        <button onclick="toggleAcc(this)" class="w-full flex items-center justify-between py-4 text-sm font-semibold text-gray-900 text-left">
-                            {{ $ac['title'] }}
-                            <span class="acc-icon transition-transform duration-300 {{ $ac['open'] ? 'rotate-180' : '' }}">▾</span>
-                        </button>
-                        <div class="acc-deskripsi overflow-hidden transition-all duration-300" style="{{ $ac['open'] ? 'max-height:200px;' : 'max-height:0;' }}">
-                            <div class="pb-4 text-sm text-gray-500 leading-relaxed">{{ $ac['deskripsi'] }}</div>
-                        </div>
+                    <div class="acc-deskripsi overflow-hidden transition-all duration-300" style="{{ $ac['open'] ? 'max-height:200px;' : 'max-height:0;' }}">
+                        <div class="pb-4 text-sm text-gray-500 leading-relaxed">{{ $ac['deskripsi'] }}</div>
                     </div>
-                    @endforeach
                 </div>
+                @endforeach
             </div>
         </div>
     </div>
+</div>
 </div>
 
 {{-- Toast --}}
@@ -261,10 +268,23 @@ if (!isset($accordions)) {
     style="background:#1a1a1a;min-width:220px;text-align:center;"></div>
 
 <script>
-    const isLoggedIn = {{ Auth::check() ? 'true' : 'false' }};
-    let thumbOffset = 0, qty = 1;
-    const PRICE_PER_DAY = {{ $item->price_per_day }};
-    const MAX_STOCK = {{ $item->stock ?? 99 }};
+    const isLoggedIn = {
+        {
+            Auth::check() ? 'true' : 'false'
+        }
+    };
+    let thumbOffset = 0,
+        qty = 1;
+    const PRICE_PER_DAY = {
+        {
+            $item - > price_per_day
+        }
+    };
+    const MAX_STOCK = {
+        {
+            $item - > stock ?? 99
+        }
+    };
 
     // ── Qty ────────────────────────────────────────────────────
     function syncQty() {
@@ -277,8 +297,13 @@ if (!isset($accordions)) {
     function changeQty(d) {
         const next = qty + d;
         if (next < 1) return;
-        if (next > MAX_STOCK) { showToast(`Stok tersedia hanya ${MAX_STOCK} unit`, 'error'); return; }
-        qty = next; syncQty(); updatePrice();
+        if (next > MAX_STOCK) {
+            showToast(`Stok tersedia hanya ${MAX_STOCK} unit`, 'error');
+            return;
+        }
+        qty = next;
+        syncQty();
+        updatePrice();
     }
 
     // ── Image helpers ──────────────────────────────────────────
@@ -286,9 +311,11 @@ if (!isset($accordions)) {
         document.getElementById('mainImgMobile').src = src;
         document.getElementById('imgCounter').textContent = `${idx} / ${total}`;
         btn.parentElement.querySelectorAll('button').forEach(b => {
-            b.classList.remove('border-gray-900'); b.classList.add('border-gray-200');
+            b.classList.remove('border-gray-900');
+            b.classList.add('border-gray-200');
         });
-        btn.classList.add('border-gray-900'); btn.classList.remove('border-gray-200');
+        btn.classList.add('border-gray-900');
+        btn.classList.remove('border-gray-200');
     }
 
     function scrollThumbs(dir) {
@@ -329,17 +356,22 @@ if (!isset($accordions)) {
         onDateChangeM();
     }
 
-    function onDateChange()  { handleDateChange(''); }
-    function onDateChangeM() { handleDateChange('M'); }
+    function onDateChange() {
+        handleDateChange('');
+    }
+
+    function onDateChangeM() {
+        handleDateChange('M');
+    }
 
     function handleDateChange(sfx) {
-        const s     = document.getElementById('startDate' + sfx)?.value;
-        const e     = document.getElementById('endDate'   + sfx)?.value;
-        const err   = document.getElementById('dateError'    + sfx);
+        const s = document.getElementById('startDate' + sfx)?.value;
+        const e = document.getElementById('endDate' + sfx)?.value;
+        const err = document.getElementById('dateError' + sfx);
         const badge = document.getElementById('durationBadge' + sfx);
-        const text  = document.getElementById('durationText'  + sfx);
+        const text = document.getElementById('durationText' + sfx);
 
-        if (err)   err.classList.add('hidden');
+        if (err) err.classList.add('hidden');
         if (badge) badge.classList.add('hidden');
 
         if (s && e) {
@@ -347,18 +379,23 @@ if (!isset($accordions)) {
                 if (err) err.classList.remove('hidden');
             } else {
                 const days = Math.round((new Date(e) - new Date(s)) / 86400000);
-                if (badge && text) { badge.classList.remove('hidden'); text.textContent = `🗓 ${days} hari sewa`; }
+                if (badge && text) {
+                    badge.classList.remove('hidden');
+                    text.textContent = `🗓 ${days} hari sewa`;
+                }
             }
         }
         updatePrice();
     }
 
     // ── Price ──────────────────────────────────────────────────
-    function fmtRp(n) { return 'Rp ' + Math.round(n).toLocaleString('id-ID'); }
+    function fmtRp(n) {
+        return 'Rp ' + Math.round(n).toLocaleString('id-ID');
+    }
 
     function getDays(sfx = '') {
         const s = document.getElementById('startDate' + sfx)?.value;
-        const e = document.getElementById('endDate'   + sfx)?.value;
+        const e = document.getElementById('endDate' + sfx)?.value;
         if (!s || !e) return 0;
         const d = Math.round((new Date(e) - new Date(s)) / 86400000);
         return d > 0 ? d : 0;
@@ -366,9 +403,9 @@ if (!isset($accordions)) {
 
     function updatePrice() {
         const days = getDays('') || getDays('M');
-        const txt  = days > 0
-            ? `Total ${days} hari × ${qty} unit = ${fmtRp(PRICE_PER_DAY * days * qty)}`
-            : (qty > 1 ? `${qty} unit dipilih` : '');
+        const txt = days > 0 ?
+            `Total ${days} hari × ${qty} unit = ${fmtRp(PRICE_PER_DAY * days * qty)}` :
+            (qty > 1 ? `${qty} unit dipilih` : '');
         ['totalPriceNote', 'totalPriceNoteMobile'].forEach(id => {
             const el = document.getElementById(id);
             if (el) el.textContent = txt;
@@ -380,73 +417,114 @@ if (!isset($accordions)) {
         const t = document.getElementById('toast');
         t.textContent = msg;
         t.style.background = type === 'error' ? '#e53e3e' : '#1a1a1a';
-        t.classList.remove('opacity-0'); t.classList.add('opacity-100');
-        setTimeout(() => { t.classList.remove('opacity-100'); t.classList.add('opacity-0'); }, 2500);
+        t.classList.remove('opacity-0');
+        t.classList.add('opacity-100');
+        setTimeout(() => {
+            t.classList.remove('opacity-100');
+            t.classList.add('opacity-0');
+        }, 2500);
     }
 
     // ── Form data ──────────────────────────────────────────────
     function getFormData() {
         return {
-            startDate: document.getElementById('startDate')?.value  || document.getElementById('startDateM')?.value,
-            endDate:   document.getElementById('endDate')?.value    || document.getElementById('endDateM')?.value,
+            startDate: document.getElementById('startDate')?.value || document.getElementById('startDateM')?.value,
+            endDate: document.getElementById('endDate')?.value || document.getElementById('endDateM')?.value,
         };
     }
 
     // ── Cart & Checkout ────────────────────────────────────────
     function addToCart(itemId) {
-        if (!isLoggedIn) { window.location.href = "{{ route('login') }}"; return; }
-        const { startDate, endDate } = getFormData();
-        if (!startDate || !endDate) { showToast('Pilih tanggal penyewaan terlebih dahulu', 'error'); return; }
+        if (!isLoggedIn) {
+            window.location.href = "{{ route('login') }}";
+            return;
+        }
+        const {
+            startDate,
+            endDate
+        } = getFormData();
+        if (!startDate || !endDate) {
+            showToast('Pilih tanggal penyewaan terlebih dahulu', 'error');
+            return;
+        }
 
         const btns = ['addToCartBtn', 'addToCartBtnD'].map(id => document.getElementById(id)).filter(Boolean);
-        btns.forEach(b => { b.disabled = true; b.textContent = 'Menambahkan...'; });
+        btns.forEach(b => {
+            b.disabled = true;
+            b.textContent = 'Menambahkan...';
+        });
 
         fetch('/cart/add', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Accept': 'application/json',
-                'X-CSRF-TOKEN': '{{ csrf_token() }}'
-            },
-            body: JSON.stringify({ product_id: itemId, quantity: qty, start_date: startDate, end_date: endDate })
-        })
-        .then(r => r.status === 401 ? window.location.href = "{{ route('login') }}" : r.json())
-        .then(data => {
-            if (data?.success) showToast('Berhasil ditambahkan ke keranjang ✓');
-            else showToast(data?.message ?? 'Gagal menambahkan', 'error');
-        })
-        .catch(() => showToast('Terjadi kesalahan, coba lagi', 'error'))
-        .finally(() => btns.forEach(b => {
-            b.disabled = false;
-            b.textContent = b.id === 'addToCartBtn' ? '+ Keranjang' : 'Tambahkan ke Keranjang';
-        }));
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                },
+                body: JSON.stringify({
+                    product_id: itemId,
+                    quantity: qty,
+                    start_date: startDate,
+                    end_date: endDate
+                })
+            })
+            .then(r => r.status === 401 ? window.location.href = "{{ route('login') }}" : r.json())
+            .then(data => {
+                if (data?.success) showToast('Berhasil ditambahkan ke keranjang ✓');
+                else showToast(data?.message ?? 'Gagal menambahkan', 'error');
+            })
+            .catch(() => showToast('Terjadi kesalahan, coba lagi', 'error'))
+            .finally(() => btns.forEach(b => {
+                b.disabled = false;
+                b.textContent = b.id === 'addToCartBtn' ? '+ Keranjang' : 'Tambahkan ke Keranjang';
+            }));
     }
 
     function rentNow(itemId) {
-        if (!isLoggedIn) { window.location.href = "{{ route('login') }}"; return; }
-        const { startDate, endDate } = getFormData();
-        if (!startDate || !endDate) { showToast('Pilih tanggal penyewaan terlebih dahulu', 'error'); return; }
+        if (!isLoggedIn) {
+            window.location.href = "{{ route('login') }}";
+            return;
+        }
+        const {
+            startDate,
+            endDate
+        } = getFormData();
+        if (!startDate || !endDate) {
+            showToast('Pilih tanggal penyewaan terlebih dahulu', 'error');
+            return;
+        }
 
         fetch('/cart/add', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Accept': 'application/json',
-                'X-CSRF-TOKEN': '{{ csrf_token() }}'
-            },
-            body: JSON.stringify({ product_id: itemId, quantity: qty, start_date: startDate, end_date: endDate })
-        })
-        .then(r => r.status === 401 ? window.location.href = "{{ route('login') }}" : r.json())
-        .then(data => {
-            if (data?.success) window.location.href = '/checkout';
-            else showToast(data?.message ?? 'Gagal', 'error');
-        })
-        .catch(() => showToast('Terjadi kesalahan, coba lagi', 'error'));
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                },
+                body: JSON.stringify({
+                    product_id: itemId,
+                    quantity: qty,
+                    start_date: startDate,
+                    end_date: endDate
+                })
+            })
+            .then(r => r.status === 401 ? window.location.href = "{{ route('login') }}" : r.json())
+            .then(data => {
+                if (data?.success) window.location.href = '/checkout';
+                else showToast(data?.message ?? 'Gagal', 'error');
+            })
+            .catch(() => showToast('Terjadi kesalahan, coba lagi', 'error'));
     }
 
     function shareProduct() {
-        if (navigator.share) navigator.share({ title: document.title, url: window.location.href });
-        else { navigator.clipboard.writeText(window.location.href); showToast('Link berhasil disalin ✓'); }
+        if (navigator.share) navigator.share({
+            title: document.title,
+            url: window.location.href
+        });
+        else {
+            navigator.clipboard.writeText(window.location.href);
+            showToast('Link berhasil disalin ✓');
+        }
     }
 </script>
 @include('components.komentar')

@@ -7,8 +7,13 @@
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap');
 
-    * { font-family: 'Inter', sans-serif; }
-    .font-serif { font-family: 'Playfair Display', serif !important; }
+    * {
+        font-family: 'Inter', sans-serif;
+    }
+
+    .font-serif {
+        font-family: 'Playfair Display', serif !important;
+    }
 </style>
 
 {{-- Navbar Header --}}
@@ -36,7 +41,7 @@
             </a>
         </div>
 
-        
+
 
         {{-- Form Section --}}
         <form action="{{ route('admin.products.store') }}" method="POST" enctype="multipart/form-data" class="p-8">
@@ -56,7 +61,7 @@
                     <div>
                         <label class="block text-[11px] font-black text-gray-400 uppercase tracking-widest mb-2">STOK</label>
                         <div class="relative">
-                            <input type="number" name="price_per_day" required
+                            <input type="number" name="stock" required
                                 placeholder="0"
                                 class="w-full pl-5 pr-4 py-3 bg-gray-50 border border-[#eef4f0] rounded-xl text-sm focus:ring-2 focus:ring-[#22543D]/20 focus:border-[#22543D] outline-none transition-all">
                         </div>
@@ -84,11 +89,31 @@
                         </select>
                     </div>
 
+                    {{-- TIPE --}}
+                    <div>
+                        <label class="block text-[11px] font-black text-gray-400 uppercase tracking-widest mb-2">
+                            Tipe
+                        </label>
+
+                        <select name="type_category_id" required
+                            class="w-full px-4 py-3 bg-gray-50 border border-[#eef4f0] rounded-xl text-sm">
+
+                            <option value="">Pilih Tipe</option>
+
+                            @foreach($types as $type)
+                            <option value="{{ $type->id }}">
+                                {{ $type->name }}
+                            </option>
+                            @endforeach
+                        </select>
+                    </div>
+
+
                     <div>
                         <label class="block text-[11px] font-black text-gray-400 uppercase tracking-widest mb-2">Merek</label>
-                        <select name="brand" required
+                        <select name="brand_category_id" required
                             class="w-full px-4 py-3 bg-gray-50 border border-[#eef4f0] rounded-xl text-sm focus:ring-2 focus:ring-[#22543D]/20 focus:border-[#22543D] outline-none transition-all appearance-none">
-                            <option value="" disabled selected>Pilih Merek</option>
+                            <!-- <option value="" disabled selected>Pilih Merek</option>
                             <option value="Canon">Canon</option>
                             <option value="Sony">Sony</option>
                             <option value="Nikon">Nikon</option>
@@ -96,14 +121,21 @@
                             <option value="GoPro">GoPro</option>
                             <option value="Sigma">Sigma</option>
                             <option value="Leica">Leica</option>
-                            <option value="DJI">DJI</option>
+                            <option value="DJI">DJI</option> -->
+                            <option value="">Pilih Merek</option>
+
+                            @foreach($brands as $brand)
+                            <option value="{{ $brand->id }}">
+                                {{ $brand->name }}
+                            </option>
+                            @endforeach
                         </select>
                     </div>
 
-                    
+
                     <div>
                         <label class="block text-[11px] font-black text-gray-400 uppercase tracking-widest mb-2">Tentang Kamera ini</label>
-                        <textarea name="description" required
+                        <textarea name="deskripsi" required
                             placeholder="Tuliskan cerita dari barang ini, seperti kondisi fisik..."
                             class="w-full px-4 py-3 bg-gray-50 border border-[#eef4f0] rounded-xl text-sm focus:ring-2 focus:ring-[#22543D]/20 focus:border-[#22543D] outline-none transition-all"></textarea>
                     </div>
