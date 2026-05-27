@@ -241,7 +241,9 @@
                         <div id="existing-container"
                             class="{{ $product->image ? '' : 'hidden' }} absolute inset-0 p-2">
                             <img id="existing-image"
-                                src="{{ Str::startsWith($product->image, 'http') ? $product->image : asset('storage/' . $product->image) }}"
+                                src="{{ Str::startsWith($product->image, 'http') 
+    ? $product->image 
+    : asset($product->image) }}"
                                 onerror="this.src='https://via.placeholder.com/400x300?text=No+Image'"
                                 class="w-full h-full object-cover rounded-[20px]">
                             <div class="absolute inset-0 flex items-end p-4 rounded-[20px]

@@ -51,7 +51,30 @@ class ProductController extends Controller
         $imagePath = null;
 
         if ($request->hasFile('image')) {
-            $imagePath = $request->file('image')->store('products', 'public');
+
+            $imageName = time() . '.' . $request->image->extension();
+
+            // FOTO KAMERA
+            if ($request->category == 'Kamera') {
+
+                $request->image->move(
+                    public_path('img_foto/camera'),
+                    $imageName
+                );
+
+                $imagePath = 'img_foto/camera/' . $imageName;
+            }
+
+            // FOTO CAMPING
+            elseif ($request->category == 'Camping') {
+
+                $request->image->move(
+                    public_path('img_foto/camping'),
+                    $imageName
+                );
+
+                $imagePath = 'img_foto/camping/' . $imageName;
+            }
         }
 
         Product::create([
@@ -137,13 +160,34 @@ class ProductController extends Controller
 
         if ($request->hasFile('image')) {
 
-            if ($product->image) {
-                Storage::disk('public')->delete($product->image);
+            // HAPUS FOTO LAMA
+            if ($product->image && file_exists(public_path($product->image))) {
+                unlink(public_path($product->image));
             }
 
-            $data['image'] = $request
-                ->file('image')
-                ->store('products', 'public');
+            $imageName = time() . '.' . $request->image->extension();
+
+            // FOTO KAMERA
+            if ($request->category == 'Kamera') {
+
+                $request->image->move(
+                    public_path('img_foto/camera'),
+                    $imageName
+                );
+
+                $data['image'] = 'img_foto/camera/' . $imageName;
+            }
+
+            // FOTO CAMPING
+            elseif ($request->category == 'Camping') {
+
+                $request->image->move(
+                    public_path('img_foto/camping'),
+                    $imageName
+                );
+
+                $data['image'] = 'img_foto/camping/' . $imageName;
+            }
         }
 
         $product->update($data);
@@ -162,8 +206,8 @@ class ProductController extends Controller
     {
         $product = Product::findOrFail($id);
 
-        if ($product->image) {
-            Storage::disk('public')->delete($product->image);
+        if ($product->image && file_exists(public_path($product->image))) {
+            unlink(public_path($product->image));
         }
 
         $product->delete();
