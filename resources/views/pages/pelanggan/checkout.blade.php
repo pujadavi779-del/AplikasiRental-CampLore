@@ -41,6 +41,42 @@
             </div>
         </div>
 
+        {{-- OPSI PENGANTARAN (BARU) --}}
+        <div class="border border-gray-200 rounded-2xl p-5 mb-4">
+            <div class="flex items-center gap-2 text-[#FF6B95] mb-4">
+                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10a1 1 0 001 1h8a1 1 0 001-1zM13 16a2 2 0 012 2v1.5a.5.5 0 01-.5.5h-2a.5.5 0 01-.5-.5V18a2 2 0 012-2zM13 16h4M17 12h3M17 9h1" />
+                </svg>
+                <span class="text-xs font-bold uppercase tracking-widest">Metode Pengantaran</span>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <!-- Opsi Ambil di Tempat -->
+                <label id="delivery-pickup-label" class="flex items-center justify-between p-4 border-2 border-[#FF6B95] bg-pink-50 rounded-xl cursor-pointer transition active:scale-98">
+                    <div class="flex items-center gap-3">
+                        <input type="radio" name="shipping_method" value="0" checked onchange="updateShipping(0)" class="accent-[#FF6B95] h-4 w-4">
+                        <div>
+                            <p class="text-sm font-bold text-gray-900">Ambil di Tempat</p>
+                            <p class="text-xs text-gray-400 mt-0.5">Ambil langsung ke lokasi toko kami</p>
+                        </div>
+                    </div>
+                    <span class="text-sm font-extrabold text-green-600">Gratis</span>
+                </label>
+
+                <!-- Opsi COD -->
+                <label id="delivery-cod-label" class="flex items-center justify-between p-4 border border-gray-200 rounded-xl cursor-pointer transition hover:border-[#FF6B95]/50 active:scale-98">
+                    <div class="flex items-center gap-3">
+                        <input type="radio" name="shipping_method" value="10000" onchange="updateShipping(10000)" class="accent-[#FF6B95] h-4 w-4">
+                        <div>
+                            <p class="text-sm font-bold text-gray-900">Pengantaran COD</p>
+                            <p class="text-xs text-gray-400 mt-0.5">Antar dan bayar di lokasi tujuan</p>
+                        </div>
+                    </div>
+                    <span class="text-sm font-extrabold text-gray-700">Rp10.000</span>
+                </label>
+            </div>
+        </div>
+
         {{-- Produk --}}
         <div class="border border-gray-200 rounded-2xl overflow-hidden mb-4">
 
@@ -60,7 +96,6 @@
                         Chat Sekarang
                     </a>
                 </div>
-                {{-- Table header desktop only --}}
                 <div class="hidden md:grid grid-cols-[120px_60px_100px] gap-4">
                     <p class="text-[11px] font-bold text-gray-400 uppercase tracking-widest text-center">Harga/Hari</p>
                     <p class="text-[11px] font-bold text-gray-400 uppercase tracking-widest text-center">Qty</p>
@@ -208,8 +243,9 @@
 
             @php
                 $biayaLayanan = 2000;
-                $ongkir = 10000;
-                $totalBayar = $totalSubtotal + $biayaLayanan + $ongkir;
+                // Default di awal adalah ambil di tempat (Gratis)
+                $ongkirAwal = 0; 
+                $totalBayarAwal = $totalSubtotal + $biayaLayanan + $ongkirAwal;
             @endphp
 
             <div class="border-t border-gray-100 mt-3 pt-4 space-y-2">
@@ -222,15 +258,15 @@
                     <span class="font-bold text-gray-700">Rp2.000</span>
                 </div>
                 <div class="flex justify-between text-sm text-gray-500">
-                    <span>Biaya Ongkir (seluruh Batam)</span>
-                    <span class="font-bold text-gray-700">Rp10.000</span>
+                    <span>Biaya Pengantaran</span>
+                    <span id="display-ongkir" class="font-bold text-green-600">Gratis</span>
                 </div>
             </div>
 
             <div class="flex justify-between items-center mt-4 pt-4 border-t border-gray-200">
                 <span class="text-base font-bold text-gray-900">Total Pembayaran</span>
                 <span class="text-2xl font-black text-[#FF6B95]" id="total-pembayaran">
-                    Rp{{ number_format($totalBayar, 0, ',', '.') }}
+                    Rp{{ number_format($totalBayarAwal, 0, ',', '.') }}
                 </span>
             </div>
         </div>
@@ -243,7 +279,7 @@
             <div>
                 <p class="text-xs text-gray-400">Total Pembayaran</p>
                 <p class="text-xl font-black text-[#FF6B95]" id="total-bottom">
-                    Rp{{ number_format($totalBayar, 0, ',', '.') }}
+                    Rp{{ number_format($totalBayarAwal, 0, ',', '.') }}
                 </p>
             </div>
             <button onclick="handleCheckout()"
@@ -297,28 +333,48 @@
         </div>
     </div>
 
-    <!-- Modal KTP (commented, aktifkan kalau perlu)
-    <div id="ktpWarningModal" class="fixed inset-0 bg-black/50 hidden items-center justify-center z-[80] px-4">
-        <div class="bg-white w-full max-w-sm rounded-2xl p-6 text-center shadow-2xl">
-            <div class="w-14 h-14 bg-red-50 rounded-full flex items-center justify-center mx-auto mb-4">
-                <svg class="w-7 h-7 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" />
-                </svg>
-            </div>
-            <h3 class="text-lg font-black text-gray-900 mb-2">Data Diri Belum Lengkap</h3>
-            <p class="text-sm text-gray-500 mb-6">Kamu belum menambahkan nomor KTP. Lengkapi data diri dulu sebelum melanjutkan pesanan.</p>
-            <div class="flex gap-3">
-                <button onclick="document.getElementById('ktpWarningModal').classList.remove('!flex')"
-                    class="flex-1 py-3 border border-gray-200 rounded-xl font-bold text-gray-400 text-sm">Nanti Saja</button>
-                <button onclick="window.location.href='/profile'"
-                    class="flex-1 py-3 bg-[#FF6B95] text-white rounded-xl font-bold text-sm">Lengkapi Sekarang</button>
-            </div>
-        </div>
-    </div>
-    -->
-
     <script>
+        // Data total subtotal produk & biaya layanan dari backend untuk kalkulasi JS dinamis
+        const totalSubtotal = {{ $totalSubtotal }};
+        const biayaLayanan = 2000;
+
+        function formatRupiah(number) {
+            return 'Rp' + number.toLocaleString('id-ID');
+        }
+
+        // Fungsi mengubah Opsi Pengantaran dan Menghitung ulang Total Pembayaran secara Realtime
+        function updateShipping(amount) {
+            const displayOngkir = document.getElementById('display-ongkir');
+            const totalPembayaran = document.getElementById('total-pembayaran');
+            const totalBottom = document.getElementById('total-bottom');
+            
+            const labelPickup = document.getElementById('delivery-pickup-label');
+            const labelCod = document.getElementById('delivery-cod-label');
+
+            // Hitung total bayar baru
+            const newTotal = totalSubtotal + biayaLayanan + amount;
+
+            if (amount === 0) {
+                // Set UI ke Ambil Di Tempat
+                displayOngkir.innerText = 'Gratis';
+                displayOngkir.className = 'font-bold text-green-600';
+                
+                labelPickup.className = 'flex items-center justify-between p-4 border-2 border-[#FF6B95] bg-pink-50 rounded-xl cursor-pointer transition active:scale-98';
+                labelCod.className = 'flex items-center justify-between p-4 border border-gray-200 rounded-xl cursor-pointer transition hover:border-[#FF6B95]/50 active:scale-98';
+            } else {
+                // Set UI ke Pengantaran COD
+                displayOngkir.innerText = formatRupiah(amount);
+                displayOngkir.className = 'font-bold text-gray-700';
+
+                labelPickup.className = 'flex items-center justify-between p-4 border border-gray-200 rounded-xl cursor-pointer transition hover:border-[#FF6B95]/50 active:scale-98';
+                labelCod.className = 'flex items-center justify-between p-4 border-2 border-[#FF6B95] bg-pink-50 rounded-xl cursor-pointer transition active:scale-98';
+            }
+
+            // Render nilai total pembayaran terupdate
+            totalPembayaran.innerText = formatRupiah(newTotal);
+            totalBottom.innerText = formatRupiah(newTotal);
+        }
+
         function selectPayment(btn) {
             document.querySelectorAll('[onclick="selectPayment(this)"]').forEach(b => {
                 b.className = 'px-6 py-2 border-2 border-gray-200 text-gray-400 rounded-xl font-bold text-sm hover:border-[#FF6B95] hover:text-[#FF6B95] transition';
@@ -354,8 +410,6 @@
 
         function handleCheckout() {
             if (!ktpSudahAda) {
-                // Aktifkan modal KTP kalau sudah di-uncomment
-                // document.getElementById('ktpWarningModal').classList.add('!flex');
                 alert('Lengkapi data KTP di profil kamu terlebih dahulu.');
                 return;
             }

@@ -203,17 +203,33 @@ $fotoProfil = $pelanggan->foto_profile
                 {{-- KTP --}}
                 <div class="space-y-2">
                     <label class="text-[11px] font-bold text-gray-400 uppercase tracking-widest">Dokumen (KTP)</label>
+
+                    {{-- Tampil foto KTP dari DB kalau ada --}}
+                    @if($pelanggan->foto_ktp)
+                    <div class="relative">
+                        <img src="{{ asset('storage/' . $pelanggan->foto_ktp) }}"
+                            class="h-32 w-full object-cover rounded-xl border border-gray-200">
+                        <span class="absolute top-2 left-2 bg-emerald-500 text-white text-[9px] font-bold px-2 py-1 rounded-full uppercase tracking-wide">
+                            ✓ KTP Tersimpan
+                        </span>
+                    </div>
+                    <p class="text-[10px] text-gray-400">Unggah ulang jika ingin mengganti.</p>
+                    @endif
+
                     <label for="ktp"
                         class="flex items-center justify-center w-full px-4 py-3 border-2 border-dashed border-gray-200 rounded-xl cursor-pointer hover:bg-gray-50">
-                        <span class="text-xs text-gray-400 font-bold uppercase">Pilih File KTP</span>
+                        <span class="text-xs text-gray-400 font-bold uppercase">
+                            {{ $pelanggan->foto_ktp ? 'Ganti File KTP' : 'Pilih File KTP' }}
+                        </span>
                     </label>
                     <input type="file" id="ktp" name="ktp" class="hidden" @change="updatePreview($event, 'ktp')">
                 </div>
 
             </div>
 
-            {{-- Preview KTP --}}
+            {{-- Preview KTP (sebelum disimpan) --}}
             <div x-show="ktpPreview">
+                <p class="text-[10px] text-gray-400 mb-1 uppercase font-bold tracking-widest">Preview KTP Baru</p>
                 <img :src="ktpPreview" class="h-32 w-56 object-cover rounded-2xl border shadow-sm">
             </div>
 

@@ -26,6 +26,10 @@
         <h1 class="font-['Playfair_Display',serif] text-[26px] font-semibold tracking-[3px] uppercase text-[#22543D] text-center mb-2">Buat Akun</h1>
         <p class="text-center text-xs font-light text-[#999990] tracking-[0.3px] mb-7">Isi data berikut untuk mendaftar</p>
 
+<div class="bg-[#FFF5F7] border border-[#FED7E2] rounded-[4px] px-3.5 py-3 mb-6 text-[12px] text-[#B83280] leading-relaxed">
+            <strong class="text-[#ED64A6]">Penting:</strong> Data NIK yang Anda masukkan harus sesuai dengan KTP fisik. Tim kami akan melakukan verifikasi data NIK saat proses pengambilan alat di lokasi.
+        </div>
+
         {{-- STEP BAR --}}
         <div class="flex items-center mb-7">
             <div class="w-6 h-6 rounded-full border flex items-center justify-center text-[11px] shrink-0 transition-all bg-[#22543D] border-[#22543D] text-white" id="dot1">1</div>
