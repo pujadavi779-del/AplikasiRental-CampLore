@@ -268,23 +268,14 @@ $accordions = [
     style="background:#1a1a1a;min-width:220px;text-align:center;"></div>
 
 <script>
-    const isLoggedIn = {
-        {
-            Auth::check() ? 'true' : 'false'
-        }
-    };
+    const isLoggedIn = {{ Auth::check() ? 'true' : 'false' }};
+
     let thumbOffset = 0,
         qty = 1;
-    const PRICE_PER_DAY = {
-        {
-            $item - > price_per_day
-        }
-    };
-    const MAX_STOCK = {
-        {
-            $item - > stock ?? 99
-        }
-    };
+        
+    const PRICE_PER_DAY = {{ $item->price_per_day }};
+
+    const MAX_STOCK = {{ $item->stock ?? 99 }};
 
     // ── Qty ────────────────────────────────────────────────────
     function syncQty() {
