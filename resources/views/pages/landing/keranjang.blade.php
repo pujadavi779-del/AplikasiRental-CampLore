@@ -29,7 +29,7 @@
             $rawImage = $cart->product->image ?? null;
             $cleanImage = $rawImage ? trim($rawImage) : null;
             $imgSrc = $cleanImage
-                ? (str_starts_with($cleanImage, 'http') ? $cleanImage : asset('storage/' . $cleanImage))
+                ? (str_starts_with($cleanImage, 'http') ? $cleanImage : asset($cleanImage))
                 : null;
         @endphp
 
