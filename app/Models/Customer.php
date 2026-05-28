@@ -12,7 +12,7 @@ class Customer extends Model
     protected $fillable = [
         'nik',
         'name',
-        'phone',
+        'no_tlp',
         'address',
         'customer_type',
         'gender',

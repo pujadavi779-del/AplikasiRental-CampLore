@@ -22,7 +22,7 @@ class ProfileController extends Controller
             'name'            => 'required|string|max:255',
             'email'           => 'required|email|unique:users,email,' . $user->id,
             'no_tlp'          => 'nullable|string|max:20',
-            'nik'             => 'nullable|string|max:20',
+            'nik'             => 'nullable|string|max:16',
             'profile_picture' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
             'ktp'             => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
         ]);
@@ -40,6 +40,8 @@ class ProfileController extends Controller
         if ($request->hasFile('ktp')) {
             if ($user->foto_ktp) Storage::disk('public')->delete($user->foto_ktp);
             $user->foto_ktp = $request->file('ktp')->store('ktp', 'public');
+            $user->ktp_updated_at = now();
+            $user->ktp_status = 'pending'; // reset ke pending kalau upload ulang
         }
 
         $user->save();

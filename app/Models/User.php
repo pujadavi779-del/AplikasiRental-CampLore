@@ -11,17 +11,21 @@ use Illuminate\Notifications\Notifiable;
 class User extends Authenticatable
 {
     protected $fillable = [
-        'username',
-        'nik',
         'name',
         'email',
         'password',
-        'ktp_number',
+        'username',
+        'nik',
+        'no_tlp',
+        'foto_profile',
+        'foto_ktp',
+        'ktp_status',
+        'ktp_note',
+        'ktp_updated_at',
     ];
 
     public function shippingAddress()
     {
         return $this->hasOne(\App\Models\ShippingAddress::class);
-   
     }
 }

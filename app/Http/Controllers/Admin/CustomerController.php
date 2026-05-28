@@ -3,133 +3,54 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\Customer;
+use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
 
 class CustomerController extends Controller
 {
-    // ── LIST ──────────────────────────────────────────
     public function index()
-{
-    // Ambil data users beserta alamatnya dari shipping_addresses
-    $customers = \App\Models\User::with('shippingAddress')->get();
+    {
+        $customers = User::with('shippingAddress')->get();
+        return view('pages.admin.pengguna', compact('customers'));
+    }
 
-    return view('pages.admin.pengguna', compact('customers'));
-}
+    public function show($id)
+    {
+        $customer = User::with('shippingAddress')->findOrFail($id);
+        return view('pages.admin.pengguna.pengguna_detail', compact('customer'));
+    }
 
-    // ── CREATE FORM ───────────────────────────────────
+    public function update(Request $request, $id)
+    {
+        $customer = User::findOrFail($id);
+        $customer->ktp_status = $request->ktp_status; // 'verified' atau 'rejected'
+        $customer->ktp_note   = $request->ktp_note;
+        $customer->save();
+
+        return redirect()->back()->with('success', 'Status verifikasi berhasil diperbarui.');
+    }
+
     public function create()
     {
         return view('pages.admin.pengguna.edit');
     }
 
-    // ── STORE ─────────────────────────────────────────
     public function store(Request $request)
     {
-        $request->validate([
-            'nik'           => 'required|string|max:20|unique:customers,nik',
-            'name'          => 'required|string|max:100',
-            'phone'         => 'required|string|max:20',
-            'address'       => 'required|string',
-            'customer_type' => 'required|in:Pribadi,Perusahaan,Organisasi',
-            'gender'        => 'required|in:L,P',
-            'is_member'     => 'required|boolean',
-            'discount'      => 'required|numeric|min:0|max:100',
-            'document_type' => 'required|string',
-            'document'      => 'required|file|mimes:pdf,jpg,jpeg,png|max:2048',
-            'agreement'     => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:2048',
-            'photo'         => 'nullable|image|max:1024',
-        ]);
-
-        $data = $request->only([
-            'nik', 'name', 'phone', 'address',
-            'customer_type', 'gender', 'is_member',
-            'discount', 'document_type',
-        ]);
-
-        $data['status'] = $request->has('status') ? 'aktif' : 'nonaktif';
-
-        if ($request->hasFile('photo'))
-            $data['photo'] = $request->file('photo')->store('customers/photos', 'public');
-        if ($request->hasFile('document'))
-            $data['document'] = $request->file('document')->store('customers/documents', 'public');
-        if ($request->hasFile('agreement'))
-            $data['agreement'] = $request->file('agreement')->store('customers/agreements', 'public');
-
-        Customer::create($data);
-
-        return redirect()->route('pages.admin.pelanggan.edit')
+        return redirect()->route('admin.customers.index')
             ->with('success', 'Customer berhasil ditambahkan!');
     }
 
-    // ── SHOW ──────────────────────────────────────────
-    public function show(Customer $customer)
+    public function edit($id)
     {
-        return view('pages.admin.pengguna.show', compact('customer'));
-    }
-
-    // ── EDIT FORM ─────────────────────────────────────
-    public function edit(Customer $customer)
-    {
+        $customer = User::findOrFail($id);
         return view('pages.admin.pengguna.edit', compact('customer'));
     }
 
-    // ── UPDATE ────────────────────────────────────────
-    public function update(Request $request, Customer $customer)
+    public function destroy($id)
     {
-        $request->validate([
-            'nik'           => 'required|string|max:20|unique:customers,nik,' . $customer->id,
-            'name'          => 'required|string|max:100',
-            'phone'         => 'required|string|max:20',
-            'address'       => 'required|string',
-            'customer_type' => 'required|in:Pribadi,Perusahaan,Organisasi',
-            'gender'        => 'required|in:L,P',
-            'is_member'     => 'required|boolean',
-            'discount'      => 'required|numeric|min:0|max:100',
-            'document_type' => 'required|string',
-            'photo'         => 'nullable|image|max:1024',
-            'document'      => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:2048',
-            'agreement'     => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:2048',
-        ]);
-
-        $data = $request->only([
-            'nik', 'name', 'phone', 'address',
-            'customer_type', 'gender', 'is_member',
-            'discount', 'document_type',
-        ]);
-
-        $data['status'] = $request->has('status') ? 'aktif' : 'nonaktif';
-
-        if ($request->hasFile('photo')) {
-            if ($customer->photo) Storage::disk('public')->delete($customer->photo);
-            $data['photo'] = $request->file('photo')->store('customers/photos', 'public');
-        }
-        if ($request->hasFile('document')) {
-            if ($customer->document) Storage::disk('public')->delete($customer->document);
-            $data['document'] = $request->file('document')->store('customers/documents', 'public');
-        }
-        if ($request->hasFile('agreement')) {
-            if ($customer->agreement) Storage::disk('public')->delete($customer->agreement);
-            $data['agreement'] = $request->file('agreement')->store('customers/agreements', 'public');
-        }
-
-        $customer->update($data);
-
-        return redirect()->route('pages.admin.pelanggan.edit')
-            ->with('success', 'Data customer berhasil diperbarui!');
-    }
-
-    // ── DESTROY ───────────────────────────────────────
-    public function destroy(Customer $customer)
-    {
-        if ($customer->photo)     Storage::disk('public')->delete($customer->photo);
-        if ($customer->document)  Storage::disk('public')->delete($customer->document);
-        if ($customer->agreement) Storage::disk('public')->delete($customer->agreement);
-
-        $customer->delete();
-
-        return redirect()->route('pages.admin.pelanggan.edit')
+        User::findOrFail($id)->delete();
+        return redirect()->route('admin.customers.index')
             ->with('success', 'Customer berhasil dihapus!');
     }
 }

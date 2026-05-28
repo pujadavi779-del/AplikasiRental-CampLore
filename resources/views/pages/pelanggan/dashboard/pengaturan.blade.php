@@ -165,6 +165,25 @@ $fotoProfil = $pelanggan->foto_profile
                         class="input-field w-full px-4 py-3 rounded-xl text-sm font-medium text-gray-700">
                 </div>
 
+                {{-- NIK --}}
+                <div class="space-y-2">
+                    <label class="text-[11px] font-bold text-gray-400 uppercase tracking-widest">No KTP (NIK)</label>
+                    <input type="text" name="nik"
+                        value="{{ old('nik', $pelanggan->nik) }}"
+                        placeholder="16 digit NIK"
+                        maxlength="16"
+                        class="input-field w-full px-4 py-3 rounded-xl text-sm font-medium text-gray-700 font-mono tracking-widest">
+                    @if($pelanggan->ktp_status === 'verified')
+                    <p class="text-[10px] text-emerald-600 font-bold flex items-center gap-1">
+                        <span>✓</span> NIK Terverifikasi oleh Admin
+                    </p>
+                    @elseif($pelanggan->ktp_status === 'rejected')
+                    <p class="text-[10px] text-red-500 font-bold flex items-center gap-1">
+                        <span>✕</span> NIK Ditolak — {{ $pelanggan->ktp_note ?? 'Silakan unggah ulang KTP.' }}
+                    </p>
+                    @endif
+                </div>
+
                 {{-- Nomor Telepon --}}
                 <div class="space-y-2">
                     <label class="text-[11px] font-bold text-gray-400 uppercase tracking-widest">Nomor Telepon</label>
