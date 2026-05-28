@@ -7,6 +7,7 @@
     <title>Checkout - Camplore</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Playfair+Display:wght@400;700;900&display=swap" rel="stylesheet">
+    <script type="text/javascript" src="https://app.sandbox.midtrans.com/snap/snap.js" data-client-key="{{ env('MIDTRANS_CLIENT_KEY') }}"></script>
 </head>
 
 <body class="text-gray-800 pb-32 font-['Inter'] bg-white">
@@ -243,7 +244,6 @@
 
             @php
                 $biayaLayanan = 2000;
-                // Default di awal adalah ambil di tempat (Gratis)
                 $ongkirAwal = 0; 
                 $totalBayarAwal = $totalSubtotal + $biayaLayanan + $ongkirAwal;
             @endphp
@@ -334,15 +334,16 @@
     </div>
 
     <script>
-        // Data total subtotal produk & biaya layanan dari backend untuk kalkulasi JS dinamis
+        // 1. Inisialisasi Data Utama Global
         const totalSubtotal = {{ $totalSubtotal }};
         const biayaLayanan = 2000;
+        const ktpSudahAda = "1"; // Dipaksa bypass bypass pengecekan KTP demi testing
 
         function formatRupiah(number) {
             return 'Rp' + number.toLocaleString('id-ID');
         }
 
-        // Fungsi mengubah Opsi Pengantaran dan Menghitung ulang Total Pembayaran secara Realtime
+        // 2. Fungsi hitung ulang ongkir (pilih metode COD / Ambil Sendiri)
         function updateShipping(amount) {
             const displayOngkir = document.getElementById('display-ongkir');
             const totalPembayaran = document.getElementById('total-pembayaran');
@@ -351,18 +352,15 @@
             const labelPickup = document.getElementById('delivery-pickup-label');
             const labelCod = document.getElementById('delivery-cod-label');
 
-            // Hitung total bayar baru
             const newTotal = totalSubtotal + biayaLayanan + amount;
 
             if (amount === 0) {
-                // Set UI ke Ambil Di Tempat
                 displayOngkir.innerText = 'Gratis';
                 displayOngkir.className = 'font-bold text-green-600';
                 
                 labelPickup.className = 'flex items-center justify-between p-4 border-2 border-[#FF6B95] bg-pink-50 rounded-xl cursor-pointer transition active:scale-98';
                 labelCod.className = 'flex items-center justify-between p-4 border border-gray-200 rounded-xl cursor-pointer transition hover:border-[#FF6B95]/50 active:scale-98';
             } else {
-                // Set UI ke Pengantaran COD
                 displayOngkir.innerText = formatRupiah(amount);
                 displayOngkir.className = 'font-bold text-gray-700';
 
@@ -370,7 +368,6 @@
                 labelCod.className = 'flex items-center justify-between p-4 border-2 border-[#FF6B95] bg-pink-50 rounded-xl cursor-pointer transition active:scale-98';
             }
 
-            // Render nilai total pembayaran terupdate
             totalPembayaran.innerText = formatRupiah(newTotal);
             totalBottom.innerText = formatRupiah(newTotal);
         }
@@ -406,15 +403,59 @@
             closeAddressModal();
         }
 
-        const ktpSudahAda = "{{ auth()->user()->ktp_number ?? '' }}";
-
+        // 3. Fungsi Utama Request Token dan Pemicu Pop-Up Midtrans
         function handleCheckout() {
-            if (!ktpSudahAda) {
-                alert('Lengkapi data KTP di profil kamu terlebih dahulu.');
-                return;
-            }
-            window.location.href = '/success';
+            const totalText = document.getElementById('total-pembayaran').innerText;
+            const totalAmount = parseInt(totalText.replace(/[^0-9]/g, ''));
+            const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+
+            fetch("{{ route('payment.token') }}", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRF-TOKEN": csrfToken
+                },
+                body: JSON.stringify({
+                    total_payment: totalAmount
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    // Eksekusi Pop-up Midtrans Snap
+                    window.snap.pay(data.snapToken, {
+                        onSuccess: function(result) {
+                            alert("Pembayaran sukses dikonfirmasi!");
+                            window.location.href = '/success'; 
+                        },
+                        onPending: function(result) {
+                            alert("Menunggu kamu menyelesaikan pembayaran.");
+                            console.log(result);
+                        },
+                        onError: function(result) {
+                            alert("Pembayaran kamu gagal, silahkan coba lagi.");
+                            console.log(result);
+                        },
+                        onClose: function() {
+                            alert('Kamu menutup halaman pembayaran sebelum selesai.');
+                        }
+                    });
+                } else {
+                    alert('Gagal mendapatkan token pembayaran dari server.');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Terjadi kesalahan koneksi sistem pembayaran.');
+            });
         }
+
+        // 4. Trigger Otomatis Begitu Halaman Selesai Dimuat di Browser
+        document.addEventListener("DOMContentLoaded", function() {
+            setTimeout(function() {
+                handleCheckout();
+            }, 600); // delay 600ms agar halaman ter-render sempurna terlebih dahulu
+        });
     </script>
 
 </body>

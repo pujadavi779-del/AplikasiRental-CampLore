@@ -13,7 +13,13 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware) {
     $middleware->alias([
         'admin.auth' => \App\Http\Middleware\AdminAuthenticate::class,
+        'customer.auth' => \App\Http\Middleware\CustomerAuthenticate::class,
+            'guest.auth' => \App\Http\Middleware\RedirectIfAuthenticated::class,
     ]);
+
+    $middleware->validateCsrfTokens(except: [
+            '/payment/webhook', 
+        ]);
 })
     ->withExceptions(function (Exceptions $exceptions): void {
         //

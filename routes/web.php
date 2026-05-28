@@ -25,6 +25,7 @@ use App\Http\Controllers\CartController;
 use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\AdminAuthController;
 use App\Http\Controllers\OtpController;
+use App\Http\Controllers\PaymentController;
 use App\Models\Product;
 use App\Models\Cart;
 
@@ -192,3 +193,11 @@ Route::prefix('admin')->middleware('admin.auth')->name('admin.')->group(function
     // Customers
     Route::resource('customers', CustomerController::class);
 });
+
+// Route untuk meminta token pembayaran (harus login)
+Route::middleware(['auth'])->group(function () {
+    Route::post('/payment/token', [PaymentController::class, 'getToken'])->name('payment.token');
+});
+
+// Route Webhook untuk menerima notifikasi dari Midtrans (Jangan diberi middleware auth)
+Route::post('/payment/webhook', [PaymentController::class, 'webhook']);
