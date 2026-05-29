@@ -42,7 +42,7 @@
             </div>
         </div>
 
-        {{-- OPSI PENGANTARAN (BARU) --}}
+        {{-- OPSI PENGANTARAN --}}
         <div class="border border-gray-200 rounded-2xl p-5 mb-4">
             <div class="flex items-center gap-2 text-[#FF6B95] mb-4">
                 <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -52,7 +52,6 @@
             </div>
             
             <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-                <!-- Opsi Ambil di Tempat -->
                 <label id="delivery-pickup-label" class="flex items-center justify-between p-4 border-2 border-[#FF6B95] bg-pink-50 rounded-xl cursor-pointer transition active:scale-98">
                     <div class="flex items-center gap-3">
                         <input type="radio" name="shipping_method" value="0" checked onchange="updateShipping(0)" class="accent-[#FF6B95] h-4 w-4">
@@ -64,7 +63,6 @@
                     <span class="text-sm font-extrabold text-green-600">Gratis</span>
                 </label>
 
-                <!-- Opsi COD -->
                 <label id="delivery-cod-label" class="flex items-center justify-between p-4 border border-gray-200 rounded-xl cursor-pointer transition hover:border-[#FF6B95]/50 active:scale-98">
                     <div class="flex items-center gap-3">
                         <input type="radio" name="shipping_method" value="10000" onchange="updateShipping(10000)" class="accent-[#FF6B95] h-4 w-4">
@@ -80,7 +78,6 @@
 
         {{-- Produk --}}
         <div class="border border-gray-200 rounded-2xl overflow-hidden mb-4">
-
             {{-- Header --}}
             <div class="px-5 py-3 bg-gray-50 border-b border-gray-100 flex items-center justify-between">
                 <div class="flex items-center gap-4">
@@ -116,8 +113,7 @@
             @endphp
 
             <div class="border-b border-gray-100 last:border-0">
-
-                {{-- ══ DESKTOP: baris produk ══ --}}
+                {{-- DESKTOP --}}
                 <div class="hidden md:grid grid-cols-[1fr_120px_60px_100px] gap-4 items-center px-5 py-4">
                     <div class="flex items-center gap-3 min-w-0">
                         <div class="w-12 h-12 rounded-xl bg-gray-100 flex items-center justify-center flex-shrink-0 overflow-hidden text-xl">
@@ -143,7 +139,7 @@
                     </div>
                 </div>
 
-                {{-- ══ MOBILE: baris produk ══ --}}
+                {{-- MOBILE --}}
                 <div class="md:hidden flex items-center gap-3 px-4 pt-4 pb-2">
                     <div class="w-14 h-14 rounded-xl bg-gray-100 flex-shrink-0 overflow-hidden">
                         @if($cart->product && $cart->product->image)
@@ -166,7 +162,7 @@
                     </div>
                 </div>
 
-                {{-- Tanggal sewa (shared) --}}
+                {{-- Tanggal sewa --}}
                 <div class="mx-4 md:mx-5 mb-3 px-4 py-2.5 bg-gray-50 rounded-xl flex items-center gap-3 flex-wrap">
                     <svg class="w-4 h-4 text-gray-300 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <rect x="3" y="4" width="18" height="18" rx="2" stroke-width="2" />
@@ -175,9 +171,7 @@
                     <span class="text-[11px] text-gray-400">Sewa:</span>
                     @if($cart->start_date && $cart->end_date)
                     <span class="text-[11px] font-bold text-[#FF6B95]">
-                        {{ \Carbon\Carbon::parse($cart->start_date)->format('d/m/Y') }}
-                        –
-                        {{ \Carbon\Carbon::parse($cart->end_date)->format('d/m/Y') }}
+                        {{ \Carbon\Carbon::parse($cart->start_date)->format('d/m/Y') }} – {{ \Carbon\Carbon::parse($cart->end_date)->format('d/m/Y') }}
                     </span>
                     <span class="bg-pink-100 text-[#FF6B95] text-[10px] font-bold px-2.5 py-0.5 rounded-full">
                         {{ $days }} hari
@@ -193,34 +187,28 @@
                     <textarea rows="2" placeholder="Contoh: tolong bawa baterai cadangan, kondisi harus mulus, dll."
                         class="w-full text-sm p-3 border border-gray-200 rounded-xl outline-none focus:border-[#FF6B95] transition resize-none text-gray-700 placeholder-gray-300"></textarea>
                 </div>
-
             </div>
             @empty
             <div class="p-10 text-center text-gray-400 italic">Tidak ada produk.</div>
             @endforelse
-
         </div>
 
         {{-- Metode Pembayaran --}}
         <div class="border border-gray-200 rounded-2xl p-5 mb-4">
             <div class="flex items-center gap-2 text-[#FF6B95] mb-4">
                 <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
                 </svg>
                 <span class="text-xs font-bold uppercase tracking-widest">Metode Pembayaran</span>
             </div>
             <div class="flex flex-wrap gap-3">
-                <button onclick="selectPayment(this)"
-                    class="px-6 py-2 border-2 border-[#FF6B95] text-[#FF6B95] rounded-xl font-bold text-sm bg-pink-50">
+                <button onclick="selectPayment(this)" class="px-6 py-2 border-2 border-[#FF6B95] text-[#FF6B95] rounded-xl font-bold text-sm bg-pink-50">
                     Transfer Bank
                 </button>
-                <button onclick="selectPayment(this)"
-                    class="px-6 py-2 border-2 border-gray-200 text-gray-400 rounded-xl font-bold text-sm hover:border-[#FF6B95] hover:text-[#FF6B95] transition">
+                <button onclick="selectPayment(this)" class="px-6 py-2 border-2 border-gray-200 text-gray-400 rounded-xl font-bold text-sm hover:border-[#FF6B95] hover:text-[#FF6B95] transition">
                     QRIS
                 </button>
-                <button onclick="selectPayment(this)"
-                    class="px-6 py-2 border-2 border-gray-200 text-gray-400 rounded-xl font-bold text-sm hover:border-[#FF6B95] hover:text-[#FF6B95] transition">
+                <button onclick="selectPayment(this)" class="px-6 py-2 border-2 border-gray-200 text-gray-400 rounded-xl font-bold text-sm hover:border-[#FF6B95] hover:text-[#FF6B95] transition">
                     Gopay
                 </button>
             </div>
@@ -228,12 +216,9 @@
 
         {{-- Ringkasan --}}
         <div class="border border-gray-200 rounded-2xl p-5 mb-4">
-
             @foreach($carts as $cart)
             @php
-                $d = ($cart->start_date && $cart->end_date)
-                    ? max(1, \Carbon\Carbon::parse($cart->start_date)->diffInDays($cart->end_date))
-                    : 1;
+                $d = ($cart->start_date && $cart->end_date) ? max(1, \Carbon\Carbon::parse($cart->start_date)->diffInDays($cart->end_date)) : 1;
                 $sub = ($cart->product->price_per_day ?? 0) * $cart->quantity * $d;
             @endphp
             <div class="flex justify-between text-sm text-gray-500 mb-2">
@@ -282,8 +267,8 @@
                     Rp{{ number_format($totalBayarAwal, 0, ',', '.') }}
                 </p>
             </div>
-            <button onclick="handleCheckout()"
-                class="bg-[#FF6B95] hover:bg-[#ff5282] text-white px-8 py-3 rounded-xl font-black text-sm uppercase tracking-widest transition-all active:scale-95">
+            <button id="btn-checkout" onclick="handleCheckout()"
+                class="bg-[#FF6B95] hover:bg-[#ff5282] text-white px-8 py-3 rounded-xl font-black text-sm uppercase tracking-widest transition-all active:scale-95 disabled:bg-gray-300 disabled:text-gray-500 disabled:scale-100 disabled:cursor-not-allowed">
                 Buat Pesanan Sekarang
             </button>
         </div>
@@ -303,29 +288,21 @@
             <div class="p-6 space-y-4">
                 <div>
                     <label class="text-xs font-bold text-gray-400 uppercase block mb-1">Nama Lengkap</label>
-                    <input type="text" id="input-name"
-                        class="w-full p-3 border border-gray-200 rounded-xl outline-none focus:border-[#FF6B95] transition"
-                        placeholder="Contoh: Rizkanur">
+                    <input type="text" id="input-name" class="w-full p-3 border border-gray-200 rounded-xl outline-none focus:border-[#FF6B95] transition" placeholder="Contoh: Rizkanur">
                 </div>
                 <div>
                     <label class="text-xs font-bold text-gray-400 uppercase block mb-1">Nomor HP</label>
-                    <input type="text" id="input-phone"
-                        class="w-full p-3 border border-gray-200 rounded-xl outline-none focus:border-[#FF6B95] transition"
-                        placeholder="Contoh: +62 812-3456-7890">
+                    <input type="text" id="input-phone" class="w-full p-3 border border-gray-200 rounded-xl outline-none focus:border-[#FF6B95] transition" placeholder="Contoh: +62 812-3456-7890">
                 </div>
                 <div>
                     <label class="text-xs font-bold text-gray-400 uppercase block mb-1">Alamat Lengkap</label>
-                    <textarea id="input-address" rows="3"
-                        class="w-full p-3 border border-gray-200 rounded-xl outline-none focus:border-[#FF6B95] transition"
-                        placeholder="Jl. Nama Jalan, Kelurahan, Kecamatan, Kota, Provinsi"></textarea>
+                    <textarea id="input-address" rows="3" class="w-full p-3 border border-gray-200 rounded-xl outline-none focus:border-[#FF6B95] transition" placeholder="Jl. Nama Jalan, Kelurahan, Kecamatan, Kota, Provinsi"></textarea>
                 </div>
                 <div class="flex gap-3 pt-2">
-                    <button onclick="closeAddressModal()"
-                        class="flex-1 py-3 border border-gray-200 rounded-xl font-bold text-gray-400 hover:bg-gray-50 transition">
+                    <button onclick="closeAddressModal()" class="flex-1 py-3 border border-gray-200 rounded-xl font-bold text-gray-400 hover:bg-gray-50 transition">
                         Batal
                     </button>
-                    <button onclick="saveAddress()"
-                        class="flex-1 py-3 bg-[#FF6B95] text-white rounded-xl font-bold hover:brightness-110 transition">
+                    <button onclick="saveAddress()" class="flex-1 py-3 bg-[#FF6B95] text-white rounded-xl font-bold hover:brightness-110 transition">
                         Simpan
                     </button>
                 </div>
@@ -334,16 +311,17 @@
     </div>
 
     <script>
-        // 1. Inisialisasi Data Utama Global
         const totalSubtotal = {{ $totalSubtotal }};
         const biayaLayanan = 2000;
-        const ktpSudahAda = "1"; // Dipaksa bypass bypass pengecekan KTP demi testing
+        const ktpSudahAda = "1"; 
+
+        // State global untuk mencegah double submit / klik ganda
+        let isProcessing = false;
 
         function formatRupiah(number) {
             return 'Rp' + number.toLocaleString('id-ID');
         }
 
-        // 2. Fungsi hitung ulang ongkir (pilih metode COD / Ambil Sendiri)
         function updateShipping(amount) {
             const displayOngkir = document.getElementById('display-ongkir');
             const totalPembayaran = document.getElementById('total-pembayaran');
@@ -385,11 +363,13 @@
             document.getElementById('input-name').value = document.getElementById('display-name').innerText;
             document.getElementById('input-phone').value = phone === '— Belum ada no. HP' ? '' : phone;
             document.getElementById('input-address').value = address === 'Masukkan alamat pengiriman kamu' ? '' : address;
-            document.getElementById('addressModal').classList.add('!flex');
+            document.getElementById('addressModal').className = document.getElementById('addressModal').className.replace('hidden', 'flex');
         }
 
         function closeAddressModal() {
-            document.getElementById('addressModal').classList.remove('!flex');
+            document.getElementById('addressModal').className = document.getElementById('addressModal').className.replace('flex', 'hidden');
+            
+            resetButtonState();
         }
 
         function saveAddress() {
@@ -403,8 +383,43 @@
             closeAddressModal();
         }
 
-        // 3. Fungsi Utama Request Token dan Pemicu Pop-Up Midtrans
+        // Fungsi Utama yang dipanggil saat tombol diklik
         function handleCheckout() {
+            // 1. Cek jika sedang memproses data (Anti double-click)
+            if (isProcessing) {
+                alert("Mohon tunggu, pesanan sedang diproses. Jangan klik dua kali!");
+                return;
+            }
+
+            // Kunci tombol di latar belakang agar tidak bisa diklik lagi selama pengecekan
+            isProcessing = true;
+            const checkoutBtn = document.getElementById('btn-checkout');
+            checkoutBtn.disabled = true;
+
+            // 2. AMBIL DATA UNTUK VALIDASI
+            const phoneText = document.getElementById('display-phone').innerText.trim();
+            const addressText = document.getElementById('display-address').innerText.trim();
+
+            // 3. JALANKAN VALIDASI SATU PER SATU
+
+            // KONDISI A: Cek apakah KTP sudah lengkap
+            // Catatan: Di kode atas variabel ktpSudahAda = "1" (artinya lengkap). 
+            // Jika kondisinya "0" atau selain "1", maka akan memunculkan alert.
+            if (ktpSudahAda !== "1") {
+                alert("Tolong lengkapi KTP terlebih dahulu di profil Anda!");
+                resetButtonState(); // Buka kembali kunci tombol
+                return; // Batalkan proses ke Midtrans
+            }
+
+            // KONDISI B: Cek apakah Alamat dan No HP sudah diisi
+            if (phoneText === "— Belum ada no. HP" || addressText === "Masukkan alamat pengiriman kamu" || !phoneText || !addressText) {
+                alert("Tolong lengkapi nomor HP dan alamat pengiriman Anda terlebih dahulu!");
+                openAddressModal(); // Otomatis bukakan modal alamat agar user langsung bisa isi
+                resetButtonState(); // Buka kembali kunci tombol
+                return; // Batalkan proses ke Midtrans
+            }
+
+            // 4. JIKA SEMUA VALIDASI LOLOS, BARU MUNCULKAN POP-UP MIDTRANS
             const totalText = document.getElementById('total-pembayaran').innerText;
             const totalAmount = parseInt(totalText.replace(/[^0-9]/g, ''));
             const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
@@ -422,7 +437,6 @@
             .then(response => response.json())
             .then(data => {
                 if (data.status === 'success') {
-                    // Eksekusi Pop-up Midtrans Snap
                     window.snap.pay(data.snapToken, {
                         onSuccess: function(result) {
                             alert("Pembayaran sukses dikonfirmasi!");
@@ -430,33 +444,36 @@
                         },
                         onPending: function(result) {
                             alert("Menunggu kamu menyelesaikan pembayaran.");
-                            console.log(result);
+                            resetButtonState();
                         },
                         onError: function(result) {
                             alert("Pembayaran kamu gagal, silahkan coba lagi.");
-                            console.log(result);
+                            resetButtonState();
                         },
                         onClose: function() {
                             alert('Kamu menutup halaman pembayaran sebelum selesai.');
+                            resetButtonState();
                         }
                     });
                 } else {
                     alert('Gagal mendapatkan token pembayaran dari server.');
+                    resetButtonState();
                 }
             })
             .catch(error => {
                 console.error('Error:', error);
                 alert('Terjadi kesalahan koneksi sistem pembayaran.');
+                resetButtonState();
             });
         }
 
-        // 4. Trigger Otomatis Begitu Halaman Selesai Dimuat di Browser
-        document.addEventListener("DOMContentLoaded", function() {
-            setTimeout(function() {
-                handleCheckout();
-            }, 600); // delay 600ms agar halaman ter-render sempurna terlebih dahulu
-        });
+        // Helper untuk mengembalikan kondisi tombol jika transaksi batal/gagal
+        function resetButtonState() {
+            isProcessing = false;
+            const checkoutBtn = document.getElementById('btn-checkout');
+            checkoutBtn.disabled = false;
+            checkoutBtn.innerText = "Buat Pesanan Sekarang";
+        }
     </script>
-
 </body>
 </html>
