@@ -28,6 +28,8 @@ use App\Http\Controllers\OtpController;
 use App\Http\Controllers\PaymentController;
 use App\Models\Product;
 use App\Models\Cart;
+use App\Http\Controllers\Auth\ForgotPasswordController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -66,6 +68,27 @@ Route::post('/otp/send',   [RegisterController::class, 'sendOtp'])->name('otp.se
 Route::post('/otp/verify', [RegisterController::class, 'verifyOtp'])->name('otp.verify');
 
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
+
+/*
+|--------------------------------------------------------------------------
+| Lupa Password Routes
+|--------------------------------------------------------------------------
+*/
+
+Route::get('/forgot-password', [ForgotPasswordController::class, 'showForm'])
+    ->name('password.request');
+
+Route::post('/forgot-password/send-otp', [ForgotPasswordController::class, 'sendOtp'])
+    ->name('password.send-otp');
+
+Route::post('/forgot-password/verify-otp', [ForgotPasswordController::class, 'verifyOtp'])
+    ->name('password.verify-otp');
+
+Route::get('/forgot-password/reset', [ForgotPasswordController::class, 'showResetForm'])
+    ->name('password.reset.form');
+
+Route::post('/forgot-password/reset', [ForgotPasswordController::class, 'resetPassword'])
+    ->name('password.reset');
 
 /*
 |--------------------------------------------------------------------------

@@ -75,7 +75,7 @@
 
         {{-- Lupa password --}}
         <div class="text-center mt-4">
-            <a href="#" class="text-xs font-light text-[#999990] underline underline-offset-[3px] hover:text-[#22543D] transition">
+            <a href="{{ route('password.request') }}" class="text-xs font-light text-[#999990] underline underline-offset-[3px] hover:text-[#22543D] transition">
                 Lupa kata sandi?
             </a>
         </div>
