@@ -145,7 +145,7 @@
                                 </span>
                                 @if($customer->ktp_updated_at)
                                 <span class="text-[9px] text-blue-500 font-bold flex items-center gap-1">
-                                    🔄 KTP diperbarui {{ $customer->ktp_updated_at->diffForHumans() }}
+                                    🔄 KTP diperbarui {{ \Carbon\Carbon::parse($customer->ktp_updated_at)->diffForHumans() }}
                                 </span>
                                 @endif
                             </div>
