@@ -137,7 +137,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/change-password',        [ChangePasswordController::class, 'index'])->name('change-password');
     Route::put('/change-password/update', [ChangePasswordController::class, 'update'])->name('pages.pelanggan.change-password.update');
 
-    // Settings / Profile (satu route saja, tidak duplikat)
+    // Settings / Profile 
     Route::get('/settings', [ProfileController::class, 'index'])->name('pages.pelanggan.settings');
     Route::put('/settings', [ProfileController::class, 'update_profile'])->name('profil.update_profile');
 

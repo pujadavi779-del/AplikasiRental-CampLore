@@ -10,42 +10,98 @@ class PaymentController extends Controller
 {
     public function getToken(Request $request)
     {
-        // 1. Set Konfigurasi Midtrans
-        Config::$serverKey = env('MIDTRANS_SERVER_KEY');
-        Config::$isProduction = false; // set false untuk Sandbox/Testing
-        Config::$isSanitized = true;
-        Config::$is3ds = true;
+        // Konfigurasi Midtrans
+        \Midtrans\Config::$serverKey = env('MIDTRANS_SERVER_KEY');
+        \Midtrans\Config::$isProduction = false;
+        \Midtrans\Config::$isSanitized = true;
+        \Midtrans\Config::$is3ds = true;
 
         try {
-            // 2. Buat parameter transaksi
-            // Sesuaikan ID order agar selalu unik (bisa pakai kombinasi time atau id order dari DB)
-            $orderId = 'CAMP-' . time() . '-' . auth()->id(); 
-            $totalPayment = $request->input('total_payment');
+            $totalPayment  = (int) $request->input('total_payment');
+            $subtotal      = (int) $request->input('subtotal');
+            $shippingCost  = (int) $request->input('shipping_cost');
+            $serviceFee    = (int) $request->input('service_fee');
 
-            $params = [
-                'transaction_details' => [
-                    'order_id' => $orderId,
-                    'gross_amount' => (int) $totalPayment,
-                ],
-                'customer_details' => [
-                    'first_name' => auth()->user()->name ?? 'Pelanggan',
-                    'email' => auth()->user()->email ?? 'pelanggan@mail.com',
-                ],
+            $customerName  = $request->input('customer_name', 'Pelanggan');
+            $customerPhone = $request->input('customer_phone', '');
+
+            $customerAddress = $request->input('customer_address');
+            if (empty(trim($customerAddress))) {
+                $customerAddress = 'Alamat tidak diisi';
+            }
+
+            $address_details = [
+                'first_name'   => $customerName,
+                'phone'        => $customerPhone,
+                'address'      => $customerAddress,
+                'country_code' => 'IDN'
             ];
 
-            // 3. Minta token dari Midtrans Snap
-            $snapToken = Snap::getSnapToken($params);
+            $orderId = 'CAMP-' . time() . '-' . (auth()->id() ?? rand(10, 99));
 
-            // 4. Return JSON ke JavaScript (WAJIB berformat seperti ini)
+            $transaction_details = [
+                'order_id'     => $orderId,
+                'gross_amount' => $totalPayment,
+            ];
+
+            $item_details = [];
+            $item_details[] = [
+                'id'       => 'items-subtotal',
+                'price'    => $subtotal,
+                'quantity' => 1,
+                'name'     => 'Total Sewa Produk'
+            ];
+
+            if ($serviceFee > 0) {
+                $item_details[] = [
+                    'id'       => 'fee-service',
+                    'price'    => $serviceFee,
+                    'quantity' => 1,
+                    'name'     => 'Biaya Layanan Aplikasi'
+                ];
+            }
+
+            if ($shippingCost > 0) {
+                $item_details[] = [
+                    'id'       => 'fee-shipping',
+                    'price'    => $shippingCost,
+                    'quantity' => 1,
+                    'name'     => 'Biaya Pengantaran'
+                ];
+            }
+
+            // 2. STRUKTUR ALAMAT UNTUK MIDTRANS
+            $address_details = [
+                'first_name'   => $customerName,
+                'phone'        => $customerPhone,
+                'address'      => $customerAddress,
+                'country_code' => 'IDN'
+            ];
+
+            // 3. PASANG KE CUSTOMER DETAILS
+            $customer_details = [
+                'first_name'       => $customerName,
+                'email'            => auth()->user()->email ?? 'customer@camplore.com',
+                'phone'            => $customerPhone,
+                'billing_address'  => $address_details,
+                'shipping_address' => $address_details,
+            ];
+
+            $params = [
+                'transaction_details' => $transaction_details,
+                'item_details'        => $item_details,
+                'customer_details'    => $customer_details,
+            ];
+
+            $snapToken = \Midtrans\Snap::getSnapToken($params);
+
             return response()->json([
-                'status' => 'success',
+                'status'    => 'success',
                 'snapToken' => $snapToken
             ]);
-
         } catch (\Exception $e) {
-            // Jika ada error, return status error beserta pesannya agar bisa dilacak
             return response()->json([
-                'status' => 'error',
+                'status'  => 'error',
                 'message' => $e->getMessage()
             ], 500);
         }
