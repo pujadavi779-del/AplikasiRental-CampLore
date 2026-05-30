@@ -193,27 +193,6 @@
             @endforelse
         </div>
 
-        {{-- Metode Pembayaran --}}
-        <div class="border border-gray-200 rounded-2xl p-5 mb-4">
-            <div class="flex items-center gap-2 text-[#FF6B95] mb-4">
-                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
-                </svg>
-                <span class="text-xs font-bold uppercase tracking-widest">Metode Pembayaran</span>
-            </div>
-            <div class="flex flex-wrap gap-3">
-                <button onclick="selectPayment(this)" class="px-6 py-2 border-2 border-[#FF6B95] text-[#FF6B95] rounded-xl font-bold text-sm bg-pink-50">
-                    Transfer Bank
-                </button>
-                <button onclick="selectPayment(this)" class="px-6 py-2 border-2 border-gray-200 text-gray-400 rounded-xl font-bold text-sm hover:border-[#FF6B95] hover:text-[#FF6B95] transition">
-                    QRIS
-                </button>
-                <button onclick="selectPayment(this)" class="px-6 py-2 border-2 border-gray-200 text-gray-400 rounded-xl font-bold text-sm hover:border-[#FF6B95] hover:text-[#FF6B95] transition">
-                    Gopay
-                </button>
-            </div>
-        </div>
-
         {{-- Ringkasan --}}
         <div class="border border-gray-200 rounded-2xl p-5 mb-4">
             @foreach($carts as $cart)
