@@ -32,13 +32,12 @@
                     <p class="font-bold text-gray-900">
                         <span id="display-name">{{ auth()->user()->name ?? '-' }}</span>
                         <span class="text-gray-400 font-normal mx-1">·</span>
-                        
-                        {{-- FIX: Mengganti no_hp menjadi no_tlp --}}
+
                         <span id="display-phone" class="text-gray-500 font-semibold text-sm">
                             {{ auth()->user()->no_tlp ?? '— Belum ada no. HP' }}
                         </span>
                     </p>
-                    
+
                     <p id="display-address" class="text-sm text-gray-500 mt-0.5">
                         {{ optional(auth()->user()->shippingAddress)->full_address ?? 'Masukkan alamat pengiriman kamu' }}
                     </p>
@@ -76,7 +75,7 @@
                         <input type="radio" name="shipping_method" value="10000" onchange="updateShipping(10000)" class="accent-[#FF6B95] h-4 w-4">
                         <div>
                             <p class="text-sm font-bold text-gray-900">Diantar Ke Tujuan</p>
-                            <p class="text-xs text-gray-400 mt-0.5">Antar dan bayar di lokasi tujuan</p>
+                            <p class="text-xs text-gray-400 mt-0.5">Antar langsung ke lokasi pilihan Anda</p>
                         </div>
                     </div>
                     <span class="text-sm font-extrabold text-gray-700">Rp10.000</span>
@@ -126,7 +125,7 @@
                     <div class="flex items-center gap-3 min-w-0">
                         <div class="w-12 h-12 rounded-xl bg-gray-100 flex items-center justify-center flex-shrink-0 overflow-hidden text-xl">
                             @if($cart->product && $cart->product->image)
-                            <img src="{{ str_starts_with($cart->product->image, 'http') ? $cart->product->image : asset($cart->product->image) }}"
+                            <img src="{{ str_starts_with($cart->product->image, 'http') ? $cart->product->image : asset('storage/' . $cart->product->image) }}"
                                 class="w-full h-full object-cover" alt="{{ $cart->product->name }}">
                             @else
                             📦
@@ -192,7 +191,7 @@
                 {{-- Catatan --}}
                 <div class="mx-4 md:mx-5 mb-4">
                     <p class="text-[10px] text-gray-400 font-semibold mb-1">Catatan (opsional)</p>
-                    <textarea rows="2" placeholder="Contoh: tolong bawa baterai cadangan, kondisi harus mulus, dll."
+                    <textarea id="note-{{ $cart->id }}" rows="2" placeholder="Contoh: tolong bawa baterai cadangan, kondisi harus mulus, dll."
                         class="w-full text-sm p-3 border border-gray-200 rounded-xl outline-none focus:border-[#FF6B95] transition resize-none text-gray-700 placeholder-gray-300"></textarea>
                 </div>
             </div>
@@ -301,6 +300,16 @@
         const totalSubtotal = {{ $totalSubtotal }};
         const biayaLayanan = 2000;
         const ktpSudahAda = "{{ auth()->user()->foto_ktp ? '1' : '0' }}";
+        const cartItems = [
+            @foreach($carts as $cart)
+            {
+                id: {{ $cart->id }},
+                product_id: {{ $cart->product_id ?? 'null' }},
+                quantity: {{ $cart->quantity }},
+                days: {{ ($cart->start_date && $cart->end_date) ? max(1, \Carbon\Carbon::parse($cart->start_date)->diffInDays($cart->end_date)) : 1 }}
+            },
+            @endforeach
+        ];
 
         let currentShipping = 0;
         let isProcessing = false;
@@ -339,13 +348,6 @@
             totalBottom.innerText = formatRupiah(newTotal);
         }
 
-        function selectPayment(btn) {
-            document.querySelectorAll('[onclick="selectPayment(this)"]').forEach(b => {
-                b.className = 'px-6 py-2 border-2 border-gray-200 text-gray-400 rounded-xl font-bold text-sm hover:border-[#FF6B95] hover:text-[#FF6B95] transition';
-            });
-            btn.className = 'px-6 py-2 border-2 border-[#FF6B95] text-[#FF6B95] rounded-xl font-bold text-sm bg-pink-50';
-        }
-
         function openAddressModal() {
             const phone = document.getElementById('display-phone').innerText.trim();
             const address = document.getElementById('display-address').innerText.trim();
@@ -356,28 +358,6 @@
 
             document.getElementById('addressModal').classList.remove('hidden');
             document.getElementById('addressModal').classList.add('flex');
-        }
-
-        function closeAddressModal() {
-            document.getElementById('addressModal').classList.remove('flex');
-            document.getElementById('addressModal').classList.add('hidden');
-        }
-
-        function saveAddress() {
-            const name = document.getElementById('input-name').value.trim();
-            const phone = document.getElementById('input-phone').value.trim();
-            const address = document.getElementById('input-address').value.trim();
-
-            if (!name || !phone || !address) {
-                alert('Harap isi semua data dengan benar!');
-                return;
-            }
-
-            document.getElementById('display-name').innerText = name;
-            document.getElementById('display-phone').innerText = phone;
-            document.getElementById('display-address').innerText = address;
-
-            closeAddressModal();
         }
 
         function handleCheckout() {
@@ -393,19 +373,17 @@
             if (ktpSudahAda !== "1") {
                 alert("Gagal membuat pesanan! Anda belum mengunggah foto KTP sebagai jaminan rental. Silakan lengkapi KTP di halaman Profil Anda terlebih dahulu.");
                 window.location.href = "{{ route('pages.pelanggan.settings') }}";
-                return; 
+                return;
             }
 
             if (phoneText === "— Belum ada no. HP" || !phoneText) {
-                alert("Nomor HP Anda belum lengkap. Silakan isi terlebih dahulu di halaman pengaturan!");
-                window.location.href = "{{ route('pages.pelanggan.settings') }}";
-                return; 
+                alert("Nomor HP Anda belum lengkap. Silakan isi terlebih dahulu di halaman pengubahan data pengiriman!");
+                return;
             }
 
             if (addressText === "Masukkan alamat pengiriman kamu" || !addressText) {
-                alert("Alamat pengiriman belum diisi. Silakan lengkapi alamat Anda di halaman pengaturan!");
-                window.location.href = "{{ route('pages.pelanggan.settings') }}";
-                return; 
+                alert("Alamat pengiriman belum diisi. Silakan lengkapi alamat Anda terlebih dahulu!");
+                return;
             }
 
             isProcessing = true;
@@ -415,60 +393,68 @@
             const totalText = document.getElementById('total-pembayaran').innerText;
             const totalAmount = parseInt(totalText.replace(/[^0-9]/g, ''));
             const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+            const finalItems = cartItems.map(item => {
+                const noteElement = document.getElementById(`note-${item.id}`);
+                return {
+                    ...item,
+                    note: noteElement ? noteElement.value.trim() : ''
+                };
+            });
 
             fetch("{{ route('payment.token') }}", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    "X-CSRF-TOKEN": csrfToken,
-                    "Accept": "application/json"
-                },
-                body: JSON.stringify({
-                    total_payment: totalAmount,
-                    subtotal: totalSubtotal,
-                    shipping_cost: currentShipping, 
-                    service_fee: biayaLayanan,      
-                    customer_name: nameText,        
-                    customer_phone: phoneText,
-                    customer_address: addressText 
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-CSRF-TOKEN": csrfToken,
+                        "Accept": "application/json"
+                    },
+                    body: JSON.stringify({
+                        total_payment: totalAmount,
+                        subtotal: totalSubtotal,
+                        shipping_cost: currentShipping,
+                        service_fee: biayaLayanan,
+                        customer_name: nameText,
+                        customer_phone: phoneText,
+                        customer_address: addressText,
+                        items: finalItems
+                    })
                 })
-            })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('HTTP error, status = ' + response.status);
-                }
-                return response.json();
-            })
-            .then(data => {
-                if (data.status === 'success' && data.snapToken) {
-                    window.snap.pay(data.snapToken, {
-                        onSuccess: function(result) {
-                            alert("Pembayaran sukses dikonfirmasi!");
-                            window.location.href = '/success'; 
-                        },
-                        onPending: function(result) {
-                            alert("Menunggu kamu menyelesaikan pembayaran.");
-                            resetButtonState();
-                        },
-                        onError: function(result) {
-                            alert("Pembayaran kamu gagal, silahkan coba lagi.");
-                            resetButtonState();
-                        },
-                        onClose: function() {
-                            alert('Kamu menutup halaman pembayaran sebelum selesai.');
-                            resetButtonState();
-                        }
-                    });
-                } else {
-                    alert('Gagal mendapatkan token: ' + (data.message || 'Respons server tidak valid.'));
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('HTTP error, status = ' + response.status);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.status === 'success' && data.snapToken) {
+                        window.snap.pay(data.snapToken, {
+                            onSuccess: function(result) {
+                                alert("Pembayaran sukses dikonfirmasi!");
+                                window.location.href = '/success';
+                            },
+                            onPending: function(result) {
+                                alert("Menunggu kamu menyelesaikan pembayaran.");
+                                resetButtonState();
+                            },
+                            onError: function(result) {
+                                alert("Pembayaran kamu gagal, silahkan coba lagi.");
+                                resetButtonState();
+                            },
+                            onClose: function() {
+                                alert('Kamu menutup halaman pembayaran sebelum selesai.');
+                                resetButtonState();
+                            }
+                        });
+                    } else {
+                        alert('Gagal mendapatkan token: ' + (data.message || 'Respons server tidak valid.'));
+                        resetButtonState();
+                    }
+                })
+                .catch(error => {
+                    console.error('Error Detail:', error);
+                    alert('Terjadi kesalahan koneksi/sistem pembayaran. Silahkan cek konsol browser.');
                     resetButtonState();
-                }
-            })
-            .catch(error => {
-                console.error('Error Detail:', error);
-                alert('Terjadi kesalahan koneksi/sistem pembayaran. Silahkan cek konsol browser.');
-                resetButtonState();
-            });
+                });
         }
 
         function resetButtonState() {
