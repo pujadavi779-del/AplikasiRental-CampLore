@@ -430,7 +430,7 @@
                         window.snap.pay(data.snapToken, {
                             onSuccess: function(result) {
                                 alert("Pembayaran sukses dikonfirmasi!");
-                                window.location.href = '/success';
+                                window.location.href = '/sewa?status=dikemas'; 
                             },
                             onPending: function(result) {
                                 alert("Menunggu kamu menyelesaikan pembayaran.");

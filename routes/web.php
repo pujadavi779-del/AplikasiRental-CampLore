@@ -26,6 +26,7 @@ use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\AdminAuthController;
 use App\Http\Controllers\OtpController;
 use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\SewaController;
 use App\Models\Product;
 use App\Models\Cart;
 use App\Http\Controllers\Auth\ForgotPasswordController;
@@ -224,3 +225,5 @@ Route::middleware(['auth'])->group(function () {
 
 // Route Webhook untuk menerima notifikasi dari Midtrans (Jangan diberi middleware auth)
 Route::post('/payment/webhook', [PaymentController::class, 'webhook']);
+
+Route::get('/sewa', [SewaController::class, 'index'])->name('pelanggan.sewa');
