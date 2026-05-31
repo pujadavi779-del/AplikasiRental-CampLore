@@ -29,7 +29,8 @@ use App\Http\Controllers\PaymentController;
 use App\Models\Product;
 use App\Models\Cart;
 use App\Http\Controllers\Auth\ForgotPasswordController;
-
+use App\Http\Controllers\Admin\ReviewController;
+ 
 
 /*
 |--------------------------------------------------------------------------
@@ -224,3 +225,12 @@ Route::middleware(['auth'])->group(function () {
 
 // Route Webhook untuk menerima notifikasi dari Midtrans (Jangan diberi middleware auth)
 Route::post('/payment/webhook', [PaymentController::class, 'webhook']);
+
+// ============================================================
+// 1. ROUTES  →  Ulasan Pelanggan (Admin)
+// ============================================================
+
+Route::middleware(['auth', 'admin.auth'])->prefix('admin')->name('admin.')->group(function () {
+    Route::get('/reviews', [ReviewController::class, 'index'])->name('reviews.index');
+    Route::put('/reviews/{review}/reply', [ReviewController::class, 'reply'])->name('reviews.reply');
+});

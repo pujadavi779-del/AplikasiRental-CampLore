@@ -2,15 +2,13 @@
 
 @section('title', 'Detail Pengiriman - Camplore Admin')
 
+@php
+    $NavParent = 'Manajemen Operasional';
+    $section = 'Pengguna';
+@endphp
 @section('content')
 
-<div class="mb-6">
-    @include('components.navbar_judul_LP', [
-        'NavParent' => 'Manajemen Operasional',
-        'NavChild'  => 'Pengiriman',
-        'section'   => 'Detail #' . ($pengiriman['id_pesanan'] ?? 'CMP-000')
-    ])
-</div>
+
 
 @php
     $status     = $pengiriman['status'] ?? 'proses';

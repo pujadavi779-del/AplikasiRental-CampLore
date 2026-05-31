@@ -2,6 +2,10 @@
 
 @section('title', 'Transaksi Pembayaran - CampLore')
 
+@php
+    $NavParent = 'Manajemen Operasional';
+    $section = 'Pengguna';
+@endphp
 @section('content')
 
 <style>
@@ -14,12 +18,6 @@
 
 <div x-data="{ openDetail: false, selectedData: {} }" class="max-w-full">
 
-    <div class="mb-6">
-        @include('components.navbar_judul_LP', [
-            'NavParent' => 'Manajemen Pesanan',
-            'section'   => 'Transaksi Pembayaran'
-        ])
-    </div>
 
     <div class="max-w-full">
         <div class="bg-white rounded-[28px] border border-[#d7e6de] shadow-sm overflow-hidden">

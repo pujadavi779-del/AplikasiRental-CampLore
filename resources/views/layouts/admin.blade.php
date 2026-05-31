@@ -24,8 +24,15 @@
 
     {{-- Content --}}
     <main class="lg:ml-[272px] min-h-screen px-6 pt-20 lg:pt-6">
-        @yield('content')
-    </main>
+    <div class="mb-4">
+        @include('components.navbar_judul_LP', [
+            'NavParent' => $NavParent ?? 'Management Rental',
+            'section'   => $section ?? 'Dashboard',
+            'unrepliedCount' => $unrepliedCount ?? 0
+        ])
+    </div>
+    @yield('content')
+</main> 
 
     @stack('scripts')
 </body>

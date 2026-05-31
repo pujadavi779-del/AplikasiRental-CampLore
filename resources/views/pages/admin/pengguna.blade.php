@@ -2,14 +2,13 @@
 
 @section('title', 'Pengguna - Camplore Admin')
 
+@php
+    $NavParent = 'Manajemen Operasional';
+    $section = 'Pengguna';
+@endphp
 @section('content')
 
-<div class="mb-6">
-    @include('components.navbar_judul_LP', [
-    'NavParent' => 'Manajemen Operasional',
-    'section' => 'Pengguna'
-    ])
-</div>
+
 
 <div class="max-w-full">
     <div class="bg-white rounded-[28px] border border-[#d7e6de] shadow-sm overflow-hidden">

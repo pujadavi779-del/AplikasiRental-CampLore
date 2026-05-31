@@ -55,14 +55,15 @@
 
     <main class="lg:ml-[272px] min-h-screen pb-10 px-6 pt-6">
 
-        {{-- Navbar Judul --}}
-        {{-- Navbar Judul --}}
-        <div class="mb-6 animate-fade-up">
-            @include('components.navbar_judul_LP', [
+    {{-- Navbar Admin (lonceng notifikasi) --}}
+    <div class="mb-4">
+        @include('components.navbar_judul_LP', [
             'NavParent' => '',
-            'section' => 'Beranda'
-            ])
-        </div>
+            'section' => 'Beranda',
+            'unrepliedCount' => $unrepliedCount ?? 0
+        ])
+    </div>
+
 
         {{-- STAT CARDS --}}
         <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
