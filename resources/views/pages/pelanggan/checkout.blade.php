@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -31,9 +32,15 @@
                     <p class="font-bold text-gray-900">
                         <span id="display-name">{{ auth()->user()->name ?? '-' }}</span>
                         <span class="text-gray-400 font-normal mx-1">·</span>
-                        <span id="display-phone" class="text-gray-500 font-semibold text-sm">— Belum ada no. HP</span>
+
+                        <span id="display-phone" class="text-gray-500 font-semibold text-sm">
+                            {{ auth()->user()->no_tlp ?? '— Belum ada no. HP' }}
+                        </span>
                     </p>
-                    <p id="display-address" class="text-sm text-gray-500 mt-0.5">Masukkan alamat pengiriman kamu</p>
+
+                    <p id="display-address" class="text-sm text-gray-500 mt-0.5">
+                        {{ optional(auth()->user()->shippingAddress)->full_address ?? 'Masukkan alamat pengiriman kamu' }}
+                    </p>
                 </div>
                 <button onclick="openAddressModal()" type="button"
                     class="text-xs font-bold text-blue-500 hover:underline flex-shrink-0 ml-4 relative z-10 cursor-pointer">
@@ -50,7 +57,7 @@
                 </svg>
                 <span class="text-xs font-bold uppercase tracking-widest">Metode Pengantaran</span>
             </div>
-            
+
             <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
                 <label id="delivery-pickup-label" class="flex items-center justify-between p-4 border-2 border-[#FF6B95] bg-pink-50 rounded-xl cursor-pointer transition active:scale-98">
                     <div class="flex items-center gap-3">
@@ -68,7 +75,7 @@
                         <input type="radio" name="shipping_method" value="10000" onchange="updateShipping(10000)" class="accent-[#FF6B95] h-4 w-4">
                         <div>
                             <p class="text-sm font-bold text-gray-900">Diantar Ke Tujuan</p>
-                            <p class="text-xs text-gray-400 mt-0.5">Antar dan bayar di lokasi tujuan</p>
+                            <p class="text-xs text-gray-400 mt-0.5">Antar langsung ke lokasi pilihan Anda</p>
                         </div>
                     </div>
                     <span class="text-sm font-extrabold text-gray-700">Rp10.000</span>
@@ -83,8 +90,8 @@
                 <div class="flex items-center gap-4">
                     <p class="text-sm font-bold text-gray-900">Produk Dipesan</p>
                     @php
-                        $itemNames = $carts->map(fn($c) => $c->product->name ?? '')->filter()->join(', ');
-                        $waText = urlencode('Halo Admin Camplore, saya ingin tanya pesanan: ' . $itemNames);
+                    $itemNames = $carts->map(fn($c) => $c->product->name ?? '')->filter()->join(', ');
+                    $waText = urlencode('Halo Admin Camplore, saya ingin tanya pesanan: ' . $itemNames);
                     @endphp
                     <a href="https://wa.me/6281276903211?text={{ $waText }}" target="_blank"
                         class="flex items-center gap-1.5 text-xs font-bold text-green-600 hover:text-green-700 transition">
@@ -105,11 +112,11 @@
             @php $totalSubtotal = 0; @endphp
             @forelse($carts as $cart)
             @php
-                $days = ($cart->start_date && $cart->end_date)
-                    ? max(1, \Carbon\Carbon::parse($cart->start_date)->diffInDays($cart->end_date))
-                    : 1;
-                $subtotal = ($cart->product->price_per_day ?? 0) * $cart->quantity * $days;
-                $totalSubtotal += $subtotal;
+            $days = ($cart->start_date && $cart->end_date)
+            ? max(1, \Carbon\Carbon::parse($cart->start_date)->diffInDays($cart->end_date))
+            : 1;
+            $subtotal = ($cart->product->price_per_day ?? 0) * $cart->quantity * $days;
+            $totalSubtotal += $subtotal;
             @endphp
 
             <div class="border-b border-gray-100 last:border-0">
@@ -118,7 +125,7 @@
                     <div class="flex items-center gap-3 min-w-0">
                         <div class="w-12 h-12 rounded-xl bg-gray-100 flex items-center justify-center flex-shrink-0 overflow-hidden text-xl">
                             @if($cart->product && $cart->product->image)
-                            <img src="{{ str_starts_with($cart->product->image, 'http') ? $cart->product->image : asset($cart->product->image) }}"
+                            <img src="{{ str_starts_with($cart->product->image, 'http') ? $cart->product->image : asset('storage/' . $cart->product->image) }}"
                                 class="w-full h-full object-cover" alt="{{ $cart->product->name }}">
                             @else
                             📦
@@ -184,7 +191,7 @@
                 {{-- Catatan --}}
                 <div class="mx-4 md:mx-5 mb-4">
                     <p class="text-[10px] text-gray-400 font-semibold mb-1">Catatan (opsional)</p>
-                    <textarea rows="2" placeholder="Contoh: tolong bawa baterai cadangan, kondisi harus mulus, dll."
+                    <textarea id="note-{{ $cart->id }}" rows="2" placeholder="Contoh: tolong bawa baterai cadangan, kondisi harus mulus, dll."
                         class="w-full text-sm p-3 border border-gray-200 rounded-xl outline-none focus:border-[#FF6B95] transition resize-none text-gray-700 placeholder-gray-300"></textarea>
                 </div>
             </div>
@@ -197,8 +204,8 @@
         <div class="border border-gray-200 rounded-2xl p-5 mb-4">
             @foreach($carts as $cart)
             @php
-                $d = ($cart->start_date && $cart->end_date) ? max(1, \Carbon\Carbon::parse($cart->start_date)->diffInDays($cart->end_date)) : 1;
-                $sub = ($cart->product->price_per_day ?? 0) * $cart->quantity * $d;
+            $d = ($cart->start_date && $cart->end_date) ? max(1, \Carbon\Carbon::parse($cart->start_date)->diffInDays($cart->end_date)) : 1;
+            $sub = ($cart->product->price_per_day ?? 0) * $cart->quantity * $d;
             @endphp
             <div class="flex justify-between text-sm text-gray-500 mb-2">
                 <span class="truncate pr-4">{{ $cart->product->name ?? '-' }} ({{ $d }} hari)</span>
@@ -207,9 +214,9 @@
             @endforeach
 
             @php
-                $biayaLayanan = 2000;
-                $ongkirAwal = 0; 
-                $totalBayarAwal = $totalSubtotal + $biayaLayanan + $ongkirAwal;
+            $biayaLayanan = 2000;
+            $ongkirAwal = 0;
+            $totalBayarAwal = $totalSubtotal + $biayaLayanan + $ongkirAwal;
             @endphp
 
             <div class="border-t border-gray-100 mt-3 pt-4 space-y-2">
@@ -290,189 +297,174 @@
     </div>
 
     <script>
-    const totalSubtotal = {{ $totalSubtotal }};
-    const biayaLayanan = 2000;
-    const ktpSudahAda = "{{ auth()->user()->foto_ktp ? '1' : '0' }}";
-    
-    let currentShipping = 0; 
+        const totalSubtotal = {{ $totalSubtotal }};
+        const biayaLayanan = 2000;
+        const ktpSudahAda = "{{ auth()->user()->foto_ktp ? '1' : '0' }}";
+        const cartItems = [
+            @foreach($carts as $cart)
+            {
+                id: {{ $cart->id }},
+                product_id: {{ $cart->product_id ?? 'null' }},
+                quantity: {{ $cart->quantity }},
+                days: {{ ($cart->start_date && $cart->end_date) ? max(1, \Carbon\Carbon::parse($cart->start_date)->diffInDays($cart->end_date)) : 1 }}
+            },
+            @endforeach
+        ];
 
-    let isProcessing = false;
+        let currentShipping = 0;
+        let isProcessing = false;
 
-    function formatRupiah(number) {
-        return 'Rp' + number.toLocaleString('id-ID');
-    }
-
-    function updateShipping(amount) {
-        currentShipping = amount; 
-
-        const displayOngkir = document.getElementById('display-ongkir');
-        const totalPembayaran = document.getElementById('total-pembayaran');
-        const totalBottom = document.getElementById('total-bottom');
-        
-        const labelPickup = document.getElementById('delivery-pickup-label');
-        const labelCod = document.getElementById('delivery-cod-label');
-
-        const newTotal = totalSubtotal + biayaLayanan + amount;
-
-        if (amount === 0) {
-            displayOngkir.innerText = 'Gratis';
-            displayOngkir.className = 'font-bold text-green-600';
-            
-            labelPickup.className = 'flex items-center justify-between p-4 border-2 border-[#FF6B95] bg-pink-50 rounded-xl cursor-pointer transition active:scale-98';
-            labelCod.className = 'flex items-center justify-between p-4 border border-gray-200 rounded-xl cursor-pointer transition hover:border-[#FF6B95]/50 active:scale-98';
-        } else {
-            displayOngkir.innerText = formatRupiah(amount);
-            displayOngkir.className = 'font-bold text-gray-700';
-
-            labelPickup.className = 'flex items-center justify-between p-4 border border-gray-200 rounded-xl cursor-pointer transition hover:border-[#FF6B95]/50 active:scale-98';
-            labelCod.className = 'flex items-center justify-between p-4 border-2 border-[#FF6B95] bg-pink-50 rounded-xl cursor-pointer transition active:scale-98';
+        function formatRupiah(number) {
+            return 'Rp' + number.toLocaleString('id-ID');
         }
 
-        totalPembayaran.innerText = formatRupiah(newTotal);
-        totalBottom.innerText = formatRupiah(newTotal);
-    }
+        function updateShipping(amount) {
+            currentShipping = amount;
 
-    function selectPayment(btn) {
-        document.querySelectorAll('[onclick="selectPayment(this)"]').forEach(b => {
-            b.className = 'px-6 py-2 border-2 border-gray-200 text-gray-400 rounded-xl font-bold text-sm hover:border-[#FF6B95] hover:text-[#FF6B95] transition';
-        });
-        btn.className = 'px-6 py-2 border-2 border-[#FF6B95] text-[#FF6B95] rounded-xl font-bold text-sm bg-pink-50';
-    }
+            const displayOngkir = document.getElementById('display-ongkir');
+            const totalPembayaran = document.getElementById('total-pembayaran');
+            const totalBottom = document.getElementById('total-bottom');
 
-    function openAddressModal() {
-        const phone = document.getElementById('display-phone').innerText.trim();
-        const address = document.getElementById('display-address').innerText.trim();
-        
-        document.getElementById('input-name').value = document.getElementById('display-name').innerText.trim();
-        document.getElementById('input-phone').value = phone === '— Belum ada no. HP' ? '' : phone;
-        document.getElementById('input-address').value = address === 'Masukkan alamat pengiriman kamu' ? '' : address;
-        
-        document.getElementById('addressModal').classList.remove('hidden');
-        document.getElementById('addressModal').classList.add('flex');
-    }
+            const labelPickup = document.getElementById('delivery-pickup-label');
+            const labelCod = document.getElementById('delivery-cod-label');
 
-    function closeAddressModal() {
-        document.getElementById('addressModal').classList.remove('flex');
-        document.getElementById('addressModal').classList.add('hidden');
-    }
+            const newTotal = totalSubtotal + biayaLayanan + amount;
 
-    function saveAddress() {
-        const name = document.getElementById('input-name').value.trim();
-        const phone = document.getElementById('input-phone').value.trim();
-        const address = document.getElementById('input-address').value.trim();
-        
-        if (!name || !phone || !address) { 
-            alert('Harap isi semua data dengan benar!'); 
-            return; 
+            if (amount === 0) {
+                displayOngkir.innerText = 'Gratis';
+                displayOngkir.className = 'font-bold text-green-600';
+
+                labelPickup.className = 'flex items-center justify-between p-4 border-2 border-[#FF6B95] bg-pink-50 rounded-xl cursor-pointer transition active:scale-98';
+                labelCod.className = 'flex items-center justify-between p-4 border border-gray-200 rounded-xl cursor-pointer transition hover:border-[#FF6B95]/50 active:scale-98';
+            } else {
+                displayOngkir.innerText = formatRupiah(amount);
+                displayOngkir.className = 'font-bold text-gray-700';
+
+                labelPickup.className = 'flex items-center justify-between p-4 border border-gray-200 rounded-xl cursor-pointer transition hover:border-[#FF6B95]/50 active:scale-98';
+                labelCod.className = 'flex items-center justify-between p-4 border-2 border-[#FF6B95] bg-pink-50 rounded-xl cursor-pointer transition active:scale-98';
+            }
+
+            totalPembayaran.innerText = formatRupiah(newTotal);
+            totalBottom.innerText = formatRupiah(newTotal);
         }
-        
-        document.getElementById('display-name').innerText = name;
-        document.getElementById('display-phone').innerText = phone;
-        document.getElementById('display-address').innerText = address;
-        
-        closeAddressModal();
-    }
 
-    function handleCheckout() {
-    if (isProcessing) {
-        alert("Mohon tunggu, pesanan sedang diproses. Jangan klik dua kali!");
-        return;
-    }
+        function openAddressModal() {
+            const phone = document.getElementById('display-phone').innerText.trim();
+            const address = document.getElementById('display-address').innerText.trim();
 
-    const phoneText = document.getElementById('display-phone').innerText.trim();
-    const addressText = document.getElementById('display-address').innerText.trim();
-    const nameText = document.getElementById('display-name').innerText.trim();
+            document.getElementById('input-name').value = document.getElementById('display-name').innerText.trim();
+            document.getElementById('input-phone').value = phone === '— Belum ada no. HP' ? '' : phone;
+            document.getElementById('input-address').value = address === 'Masukkan alamat pengiriman kamu' ? '' : address;
 
-    if (ktpSudahAda !== "1") {
-    alert("Gagal membuat pesanan! Anda belum mengunggah foto KTP sebagai jaminan rental. Silakan lengkapi KTP di halaman Profil Anda terlebih dahulu.");
-    {{ route('pages.pelanggan.settings') }}";
-    return; 
-}
-
-    if (phoneText === "— Belum ada no. HP" || !phoneText) {
-    alert("Nomor HP Anda belum lengkap. Silakan isi terlebih dahulu!");
-    openAddressModal(); 
-    return; 
-}
-
-if (addressText === "Masukkan alamat pengiriman kamu" || !addressText) {
-    alert("Alamat pengiriman belum diisi. Silakan lengkapi alamat Anda!");
-    openAddressModal(); 
-    return; 
-}
-
-    isProcessing = true;
-    const checkoutBtn = document.getElementById('btn-checkout');
-    checkoutBtn.disabled = true;
-
-    const totalText = document.getElementById('total-pembayaran').innerText;
-    const totalAmount = parseInt(totalText.replace(/[^0-9]/g, ''));
-    const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-
-    // Mengirim data ke Controller
-    fetch("{{ route('payment.token') }}", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-            "X-CSRF-TOKEN": csrfToken,
-            "Accept": "application/json"
-        },
-        body: JSON.stringify({
-            total_payment: totalAmount,
-            subtotal: totalSubtotal,
-            shipping_cost: currentShipping, 
-            service_fee: biayaLayanan,      
-            customer_name: nameText,        
-            customer_phone: phoneText,
-            customer_address: addressText 
-        })
-    })
-    .then(response => {
-        // PERBAIKAN 1: Cek status HTTP sebelum di-parse ke JSON
-        if (!response.ok) {
-            throw new Error('HTTP error, status = ' + response.status);
+            document.getElementById('addressModal').classList.remove('hidden');
+            document.getElementById('addressModal').classList.add('flex');
         }
-        return response.json();
-    })
-    .then(data => {
-        if (data.status === 'success' && data.snapToken) {
-            window.snap.pay(data.snapToken, {
-                onSuccess: function(result) {
-                    alert("Pembayaran sukses dikonfirmasi!");
-                    window.location.href = '/success'; 
-                },
-                onPending: function(result) {
-                    alert("Menunggu kamu menyelesaikan pembayaran.");
-                    resetButtonState();
-                },
-                onError: function(result) {
-                    alert("Pembayaran kamu gagal, silahkan coba lagi.");
-                    resetButtonState();
-                },
-                onClose: function() {
-                    alert('Kamu menutup halaman pembayaran sebelum selesai.');
-                    resetButtonState();
-                }
+
+        function handleCheckout() {
+            if (isProcessing) {
+                alert("Mohon tunggu, pesanan sedang diproses. Jangan klik dua kali!");
+                return;
+            }
+
+            const phoneText = document.getElementById('display-phone').innerText.trim();
+            const addressText = document.getElementById('display-address').innerText.trim();
+            const nameText = document.getElementById('display-name').innerText.trim();
+
+            if (ktpSudahAda !== "1") {
+                alert("Gagal membuat pesanan! Anda belum mengunggah foto KTP sebagai jaminan rental. Silakan lengkapi KTP di halaman Profil Anda terlebih dahulu.");
+                window.location.href = "{{ route('pages.pelanggan.settings') }}";
+                return;
+            }
+
+            if (phoneText === "— Belum ada no. HP" || !phoneText) {
+                alert("Nomor HP Anda belum lengkap. Silakan isi terlebih dahulu di halaman pengubahan data pengiriman!");
+                return;
+            }
+
+            if (addressText === "Masukkan alamat pengiriman kamu" || !addressText) {
+                alert("Alamat pengiriman belum diisi. Silakan lengkapi alamat Anda terlebih dahulu!");
+                return;
+            }
+
+            isProcessing = true;
+            const checkoutBtn = document.getElementById('btn-checkout');
+            checkoutBtn.disabled = true;
+
+            const totalText = document.getElementById('total-pembayaran').innerText;
+            const totalAmount = parseInt(totalText.replace(/[^0-9]/g, ''));
+            const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+            const finalItems = cartItems.map(item => {
+                const noteElement = document.getElementById(`note-${item.id}`);
+                return {
+                    ...item,
+                    note: noteElement ? noteElement.value.trim() : ''
+                };
             });
-        } else {
-            alert('Gagal mendapatkan token: ' + (data.message || 'Respons server tidak valid.'));
-            resetButtonState();
-        }
-    })
-    .catch(error => {
-        console.error('Error Detail:', error);
-        alert('Terjadi kesalahan koneksi/sistem pembayaran. Silahkan cek konsol browser.');
-        resetButtonState();
-    });
-}
 
-    function resetButtonState() {
-        isProcessing = false;
-        const checkoutBtn = document.getElementById('btn-checkout');
-        if (checkoutBtn) {
-            checkoutBtn.disabled = false;
+            fetch("{{ route('payment.token') }}", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-CSRF-TOKEN": csrfToken,
+                        "Accept": "application/json"
+                    },
+                    body: JSON.stringify({
+                        total_payment: totalAmount,
+                        subtotal: totalSubtotal,
+                        shipping_cost: currentShipping,
+                        service_fee: biayaLayanan,
+                        customer_name: nameText,
+                        customer_phone: phoneText,
+                        customer_address: addressText,
+                        items: finalItems
+                    })
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('HTTP error, status = ' + response.status);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.status === 'success' && data.snapToken) {
+                        window.snap.pay(data.snapToken, {
+                            onSuccess: function(result) {
+                                alert("Pembayaran sukses dikonfirmasi!");
+                                window.location.href = '/sewa?status=dikemas'; 
+                            },
+                            onPending: function(result) {
+                                alert("Menunggu kamu menyelesaikan pembayaran.");
+                                resetButtonState();
+                            },
+                            onError: function(result) {
+                                alert("Pembayaran kamu gagal, silahkan coba lagi.");
+                                resetButtonState();
+                            },
+                            onClose: function() {
+                                alert('Kamu menutup halaman pembayaran sebelum selesai.');
+                                resetButtonState();
+                            }
+                        });
+                    } else {
+                        alert('Gagal mendapatkan token: ' + (data.message || 'Respons server tidak valid.'));
+                        resetButtonState();
+                    }
+                })
+                .catch(error => {
+                    console.error('Error Detail:', error);
+                    alert('Terjadi kesalahan koneksi/sistem pembayaran. Silahkan cek konsol browser.');
+                    resetButtonState();
+                });
         }
-    }
-</script>
+
+        function resetButtonState() {
+            isProcessing = false;
+            const checkoutBtn = document.getElementById('btn-checkout');
+            if (checkoutBtn) {
+                checkoutBtn.disabled = false;
+            }
+        }
+    </script>
 </body>
+
 </html>

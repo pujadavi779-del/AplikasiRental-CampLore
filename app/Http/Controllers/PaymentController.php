@@ -70,7 +70,6 @@ class PaymentController extends Controller
                 ];
             }
 
-            // 2. STRUKTUR ALAMAT UNTUK MIDTRANS
             $address_details = [
                 'first_name'   => $customerName,
                 'phone'        => $customerPhone,
@@ -78,7 +77,6 @@ class PaymentController extends Controller
                 'country_code' => 'IDN'
             ];
 
-            // 3. PASANG KE CUSTOMER DETAILS
             $customer_details = [
                 'first_name'       => $customerName,
                 'email'            => auth()->user()->email ?? 'customer@camplore.com',

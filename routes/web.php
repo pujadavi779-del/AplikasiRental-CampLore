@@ -26,6 +26,7 @@ use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\AdminAuthController;
 use App\Http\Controllers\OtpController;
 use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\SewaController;
 use App\Models\Product;
 use App\Models\Cart;
 use App\Http\Controllers\Auth\ForgotPasswordController;
@@ -227,10 +228,21 @@ Route::middleware(['auth'])->group(function () {
 Route::post('/payment/webhook', [PaymentController::class, 'webhook']);
 
 // ============================================================
-// 1. ROUTES  →  Ulasan Pelanggan (Admin)
+// 1. ROUTES → Ulasan Pelanggan (Admin)
 // ============================================================
 
-Route::middleware(['auth', 'admin.auth'])->prefix('admin')->name('admin.')->group(function () {
-    Route::get('/reviews', [ReviewController::class, 'index'])->name('reviews.index');
-    Route::put('/reviews/{review}/reply', [ReviewController::class, 'reply'])->name('reviews.reply');
-});
+Route::middleware(['auth', 'admin.auth'])
+    ->prefix('admin')
+    ->name('admin.')
+    ->group(function () {
+
+        Route::get('/reviews', [ReviewController::class, 'index'])
+            ->name('reviews.index');
+
+        Route::put('/reviews/{review}/reply', [ReviewController::class, 'reply'])
+            ->name('reviews.reply');
+    });
+
+// Route Sewa Pelanggan
+Route::get('/sewa', [SewaController::class, 'index'])
+    ->name('pelanggan.sewa');
