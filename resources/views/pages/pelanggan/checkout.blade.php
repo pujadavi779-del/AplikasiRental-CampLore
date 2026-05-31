@@ -67,7 +67,7 @@
                     <div class="flex items-center gap-3">
                         <input type="radio" name="shipping_method" value="10000" onchange="updateShipping(10000)" class="accent-[#FF6B95] h-4 w-4">
                         <div>
-                            <p class="text-sm font-bold text-gray-900">Pengantaran COD</p>
+                            <p class="text-sm font-bold text-gray-900">Diantar Ke Tujuan</p>
                             <p class="text-xs text-gray-400 mt-0.5">Antar dan bayar di lokasi tujuan</p>
                         </div>
                     </div>
@@ -193,27 +193,6 @@
             @endforelse
         </div>
 
-        {{-- Metode Pembayaran --}}
-        <div class="border border-gray-200 rounded-2xl p-5 mb-4">
-            <div class="flex items-center gap-2 text-[#FF6B95] mb-4">
-                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
-                </svg>
-                <span class="text-xs font-bold uppercase tracking-widest">Metode Pembayaran</span>
-            </div>
-            <div class="flex flex-wrap gap-3">
-                <button onclick="selectPayment(this)" class="px-6 py-2 border-2 border-[#FF6B95] text-[#FF6B95] rounded-xl font-bold text-sm bg-pink-50">
-                    Transfer Bank
-                </button>
-                <button onclick="selectPayment(this)" class="px-6 py-2 border-2 border-gray-200 text-gray-400 rounded-xl font-bold text-sm hover:border-[#FF6B95] hover:text-[#FF6B95] transition">
-                    QRIS
-                </button>
-                <button onclick="selectPayment(this)" class="px-6 py-2 border-2 border-gray-200 text-gray-400 rounded-xl font-bold text-sm hover:border-[#FF6B95] hover:text-[#FF6B95] transition">
-                    Gopay
-                </button>
-            </div>
-        </div>
-
         {{-- Ringkasan --}}
         <div class="border border-gray-200 rounded-2xl p-5 mb-4">
             @foreach($carts as $cart)
@@ -311,169 +290,189 @@
     </div>
 
     <script>
-        const totalSubtotal = {{ $totalSubtotal }};
-        const biayaLayanan = 2000;
-        const ktpSudahAda = "1"; 
+    const totalSubtotal = {{ $totalSubtotal }};
+    const biayaLayanan = 2000;
+    const ktpSudahAda = "{{ auth()->user()->foto_ktp ? '1' : '0' }}";
+    
+    let currentShipping = 0; 
 
-        // State global untuk mencegah double submit / klik ganda
-        let isProcessing = false;
+    let isProcessing = false;
 
-        function formatRupiah(number) {
-            return 'Rp' + number.toLocaleString('id-ID');
-        }
+    function formatRupiah(number) {
+        return 'Rp' + number.toLocaleString('id-ID');
+    }
 
-        function updateShipping(amount) {
-            const displayOngkir = document.getElementById('display-ongkir');
-            const totalPembayaran = document.getElementById('total-pembayaran');
-            const totalBottom = document.getElementById('total-bottom');
+    function updateShipping(amount) {
+        currentShipping = amount; 
+
+        const displayOngkir = document.getElementById('display-ongkir');
+        const totalPembayaran = document.getElementById('total-pembayaran');
+        const totalBottom = document.getElementById('total-bottom');
+        
+        const labelPickup = document.getElementById('delivery-pickup-label');
+        const labelCod = document.getElementById('delivery-cod-label');
+
+        const newTotal = totalSubtotal + biayaLayanan + amount;
+
+        if (amount === 0) {
+            displayOngkir.innerText = 'Gratis';
+            displayOngkir.className = 'font-bold text-green-600';
             
-            const labelPickup = document.getElementById('delivery-pickup-label');
-            const labelCod = document.getElementById('delivery-cod-label');
+            labelPickup.className = 'flex items-center justify-between p-4 border-2 border-[#FF6B95] bg-pink-50 rounded-xl cursor-pointer transition active:scale-98';
+            labelCod.className = 'flex items-center justify-between p-4 border border-gray-200 rounded-xl cursor-pointer transition hover:border-[#FF6B95]/50 active:scale-98';
+        } else {
+            displayOngkir.innerText = formatRupiah(amount);
+            displayOngkir.className = 'font-bold text-gray-700';
 
-            const newTotal = totalSubtotal + biayaLayanan + amount;
-
-            if (amount === 0) {
-                displayOngkir.innerText = 'Gratis';
-                displayOngkir.className = 'font-bold text-green-600';
-                
-                labelPickup.className = 'flex items-center justify-between p-4 border-2 border-[#FF6B95] bg-pink-50 rounded-xl cursor-pointer transition active:scale-98';
-                labelCod.className = 'flex items-center justify-between p-4 border border-gray-200 rounded-xl cursor-pointer transition hover:border-[#FF6B95]/50 active:scale-98';
-            } else {
-                displayOngkir.innerText = formatRupiah(amount);
-                displayOngkir.className = 'font-bold text-gray-700';
-
-                labelPickup.className = 'flex items-center justify-between p-4 border border-gray-200 rounded-xl cursor-pointer transition hover:border-[#FF6B95]/50 active:scale-98';
-                labelCod.className = 'flex items-center justify-between p-4 border-2 border-[#FF6B95] bg-pink-50 rounded-xl cursor-pointer transition active:scale-98';
-            }
-
-            totalPembayaran.innerText = formatRupiah(newTotal);
-            totalBottom.innerText = formatRupiah(newTotal);
+            labelPickup.className = 'flex items-center justify-between p-4 border border-gray-200 rounded-xl cursor-pointer transition hover:border-[#FF6B95]/50 active:scale-98';
+            labelCod.className = 'flex items-center justify-between p-4 border-2 border-[#FF6B95] bg-pink-50 rounded-xl cursor-pointer transition active:scale-98';
         }
 
-        function selectPayment(btn) {
-            document.querySelectorAll('[onclick="selectPayment(this)"]').forEach(b => {
-                b.className = 'px-6 py-2 border-2 border-gray-200 text-gray-400 rounded-xl font-bold text-sm hover:border-[#FF6B95] hover:text-[#FF6B95] transition';
-            });
-            btn.className = 'px-6 py-2 border-2 border-[#FF6B95] text-[#FF6B95] rounded-xl font-bold text-sm bg-pink-50';
+        totalPembayaran.innerText = formatRupiah(newTotal);
+        totalBottom.innerText = formatRupiah(newTotal);
+    }
+
+    function selectPayment(btn) {
+        document.querySelectorAll('[onclick="selectPayment(this)"]').forEach(b => {
+            b.className = 'px-6 py-2 border-2 border-gray-200 text-gray-400 rounded-xl font-bold text-sm hover:border-[#FF6B95] hover:text-[#FF6B95] transition';
+        });
+        btn.className = 'px-6 py-2 border-2 border-[#FF6B95] text-[#FF6B95] rounded-xl font-bold text-sm bg-pink-50';
+    }
+
+    function openAddressModal() {
+        const phone = document.getElementById('display-phone').innerText.trim();
+        const address = document.getElementById('display-address').innerText.trim();
+        
+        document.getElementById('input-name').value = document.getElementById('display-name').innerText.trim();
+        document.getElementById('input-phone').value = phone === '— Belum ada no. HP' ? '' : phone;
+        document.getElementById('input-address').value = address === 'Masukkan alamat pengiriman kamu' ? '' : address;
+        
+        document.getElementById('addressModal').classList.remove('hidden');
+        document.getElementById('addressModal').classList.add('flex');
+    }
+
+    function closeAddressModal() {
+        document.getElementById('addressModal').classList.remove('flex');
+        document.getElementById('addressModal').classList.add('hidden');
+    }
+
+    function saveAddress() {
+        const name = document.getElementById('input-name').value.trim();
+        const phone = document.getElementById('input-phone').value.trim();
+        const address = document.getElementById('input-address').value.trim();
+        
+        if (!name || !phone || !address) { 
+            alert('Harap isi semua data dengan benar!'); 
+            return; 
         }
+        
+        document.getElementById('display-name').innerText = name;
+        document.getElementById('display-phone').innerText = phone;
+        document.getElementById('display-address').innerText = address;
+        
+        closeAddressModal();
+    }
 
-        function openAddressModal() {
-            const phone = document.getElementById('display-phone').innerText;
-            const address = document.getElementById('display-address').innerText;
-            document.getElementById('input-name').value = document.getElementById('display-name').innerText;
-            document.getElementById('input-phone').value = phone === '— Belum ada no. HP' ? '' : phone;
-            document.getElementById('input-address').value = address === 'Masukkan alamat pengiriman kamu' ? '' : address;
-            document.getElementById('addressModal').className = document.getElementById('addressModal').className.replace('hidden', 'flex');
+    function handleCheckout() {
+    if (isProcessing) {
+        alert("Mohon tunggu, pesanan sedang diproses. Jangan klik dua kali!");
+        return;
+    }
+
+    const phoneText = document.getElementById('display-phone').innerText.trim();
+    const addressText = document.getElementById('display-address').innerText.trim();
+    const nameText = document.getElementById('display-name').innerText.trim();
+
+    if (ktpSudahAda !== "1") {
+    alert("Gagal membuat pesanan! Anda belum mengunggah foto KTP sebagai jaminan rental. Silakan lengkapi KTP di halaman Profil Anda terlebih dahulu.");
+    {{ route('pages.pelanggan.settings') }}";
+    return; 
+}
+
+    if (phoneText === "— Belum ada no. HP" || !phoneText) {
+    alert("Nomor HP Anda belum lengkap. Silakan isi terlebih dahulu!");
+    openAddressModal(); 
+    return; 
+}
+
+if (addressText === "Masukkan alamat pengiriman kamu" || !addressText) {
+    alert("Alamat pengiriman belum diisi. Silakan lengkapi alamat Anda!");
+    openAddressModal(); 
+    return; 
+}
+
+    isProcessing = true;
+    const checkoutBtn = document.getElementById('btn-checkout');
+    checkoutBtn.disabled = true;
+
+    const totalText = document.getElementById('total-pembayaran').innerText;
+    const totalAmount = parseInt(totalText.replace(/[^0-9]/g, ''));
+    const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+
+    // Mengirim data ke Controller
+    fetch("{{ route('payment.token') }}", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "X-CSRF-TOKEN": csrfToken,
+            "Accept": "application/json"
+        },
+        body: JSON.stringify({
+            total_payment: totalAmount,
+            subtotal: totalSubtotal,
+            shipping_cost: currentShipping, 
+            service_fee: biayaLayanan,      
+            customer_name: nameText,        
+            customer_phone: phoneText,
+            customer_address: addressText 
+        })
+    })
+    .then(response => {
+        // PERBAIKAN 1: Cek status HTTP sebelum di-parse ke JSON
+        if (!response.ok) {
+            throw new Error('HTTP error, status = ' + response.status);
         }
-
-        function closeAddressModal() {
-            document.getElementById('addressModal').className = document.getElementById('addressModal').className.replace('flex', 'hidden');
-            
-            resetButtonState();
-        }
-
-        function saveAddress() {
-            const name = document.getElementById('input-name').value.trim();
-            const phone = document.getElementById('input-phone').value.trim();
-            const address = document.getElementById('input-address').value.trim();
-            if (!name || !phone || !address) { alert('Harap isi semua data!'); return; }
-            document.getElementById('display-name').innerText = name;
-            document.getElementById('display-phone').innerText = phone;
-            document.getElementById('display-address').innerText = address;
-            closeAddressModal();
-        }
-
-        // Fungsi Utama yang dipanggil saat tombol diklik
-        function handleCheckout() {
-            // 1. Cek jika sedang memproses data (Anti double-click)
-            if (isProcessing) {
-                alert("Mohon tunggu, pesanan sedang diproses. Jangan klik dua kali!");
-                return;
-            }
-
-            // Kunci tombol di latar belakang agar tidak bisa diklik lagi selama pengecekan
-            isProcessing = true;
-            const checkoutBtn = document.getElementById('btn-checkout');
-            checkoutBtn.disabled = true;
-
-            // 2. AMBIL DATA UNTUK VALIDASI
-            const phoneText = document.getElementById('display-phone').innerText.trim();
-            const addressText = document.getElementById('display-address').innerText.trim();
-
-            // 3. JALANKAN VALIDASI SATU PER SATU
-
-            // KONDISI A: Cek apakah KTP sudah lengkap
-            // Catatan: Di kode atas variabel ktpSudahAda = "1" (artinya lengkap). 
-            // Jika kondisinya "0" atau selain "1", maka akan memunculkan alert.
-            if (ktpSudahAda !== "1") {
-                alert("Tolong lengkapi KTP terlebih dahulu di profil Anda!");
-                resetButtonState(); // Buka kembali kunci tombol
-                return; // Batalkan proses ke Midtrans
-            }
-
-            // KONDISI B: Cek apakah Alamat dan No HP sudah diisi
-            if (phoneText === "— Belum ada no. HP" || addressText === "Masukkan alamat pengiriman kamu" || !phoneText || !addressText) {
-                alert("Tolong lengkapi nomor HP dan alamat pengiriman Anda terlebih dahulu!");
-                openAddressModal(); // Otomatis bukakan modal alamat agar user langsung bisa isi
-                resetButtonState(); // Buka kembali kunci tombol
-                return; // Batalkan proses ke Midtrans
-            }
-
-            // 4. JIKA SEMUA VALIDASI LOLOS, BARU MUNCULKAN POP-UP MIDTRANS
-            const totalText = document.getElementById('total-pembayaran').innerText;
-            const totalAmount = parseInt(totalText.replace(/[^0-9]/g, ''));
-            const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-
-            fetch("{{ route('payment.token') }}", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    "X-CSRF-TOKEN": csrfToken
+        return response.json();
+    })
+    .then(data => {
+        if (data.status === 'success' && data.snapToken) {
+            window.snap.pay(data.snapToken, {
+                onSuccess: function(result) {
+                    alert("Pembayaran sukses dikonfirmasi!");
+                    window.location.href = '/success'; 
                 },
-                body: JSON.stringify({
-                    total_payment: totalAmount
-                })
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.status === 'success') {
-                    window.snap.pay(data.snapToken, {
-                        onSuccess: function(result) {
-                            alert("Pembayaran sukses dikonfirmasi!");
-                            window.location.href = '/success'; 
-                        },
-                        onPending: function(result) {
-                            alert("Menunggu kamu menyelesaikan pembayaran.");
-                            resetButtonState();
-                        },
-                        onError: function(result) {
-                            alert("Pembayaran kamu gagal, silahkan coba lagi.");
-                            resetButtonState();
-                        },
-                        onClose: function() {
-                            alert('Kamu menutup halaman pembayaran sebelum selesai.');
-                            resetButtonState();
-                        }
-                    });
-                } else {
-                    alert('Gagal mendapatkan token pembayaran dari server.');
+                onPending: function(result) {
+                    alert("Menunggu kamu menyelesaikan pembayaran.");
+                    resetButtonState();
+                },
+                onError: function(result) {
+                    alert("Pembayaran kamu gagal, silahkan coba lagi.");
+                    resetButtonState();
+                },
+                onClose: function() {
+                    alert('Kamu menutup halaman pembayaran sebelum selesai.');
                     resetButtonState();
                 }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('Terjadi kesalahan koneksi sistem pembayaran.');
-                resetButtonState();
             });
+        } else {
+            alert('Gagal mendapatkan token: ' + (data.message || 'Respons server tidak valid.'));
+            resetButtonState();
         }
+    })
+    .catch(error => {
+        console.error('Error Detail:', error);
+        alert('Terjadi kesalahan koneksi/sistem pembayaran. Silahkan cek konsol browser.');
+        resetButtonState();
+    });
+}
 
-        // Helper untuk mengembalikan kondisi tombol jika transaksi batal/gagal
-        function resetButtonState() {
-            isProcessing = false;
-            const checkoutBtn = document.getElementById('btn-checkout');
+    function resetButtonState() {
+        isProcessing = false;
+        const checkoutBtn = document.getElementById('btn-checkout');
+        if (checkoutBtn) {
             checkoutBtn.disabled = false;
-            checkoutBtn.innerText = "Buat Pesanan Sekarang";
         }
-    </script>
+    }
+</script>
 </body>
 </html>
