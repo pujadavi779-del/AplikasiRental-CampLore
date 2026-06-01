@@ -112,7 +112,7 @@ Route::middleware('auth')->group(function () {
 
     // Dashboard
     Route::get('/home', fn() => view('pages.landing.landing'))->name('landing.landing');
-    Route::get('/dashboard_pelanggan', fn() => view('pages.pelanggan.dashboard.pesanan_saya'))->name('dashboard_pelanggan');
+    Route::get('/dashboard_pelanggan', [SewaController::class, 'index'])->name('dashboard_pelanggan');
 
     // Keranjang
     Route::get('/keranjang', function () {
@@ -222,6 +222,9 @@ Route::prefix('admin')->middleware('admin.auth')->name('admin.')->group(function
 // Route untuk meminta token pembayaran (harus login)
 Route::middleware(['auth'])->group(function () {
     Route::post('/payment/token', [PaymentController::class, 'getToken'])->name('payment.token');
+    Route::post('/payment/snap-token', [PaymentController::class, 'getSnapToken'])->name('payment.snap-token');
+    Route::post('/order/cancel', [OrderController::class, 'cancel'])->name('order.cancel');  // ← tambah ini
+    Route::post('/order/store', [OrderController::class, 'store'])->name('order.store');     // ← pindah ini juga kalau masih di admin
 });
 
 // Route Webhook untuk menerima notifikasi dari Midtrans (Jangan diberi middleware auth)

@@ -8,7 +8,6 @@
     <title>Checkout - Camplore</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Playfair+Display:wght@400;700;900&display=swap" rel="stylesheet">
-    <script type="text/javascript" src="https://app.sandbox.midtrans.com/snap/snap.js" data-client-key="{{ env('MIDTRANS_CLIENT_KEY') }}"></script>
 </head>
 
 <body class="text-gray-800 pb-32 font-['Inter'] bg-white">
@@ -298,156 +297,141 @@
         </div>
     </div>
 
-    <script>
-        // Perbaikan di baris ini (semuanya ditulis dalam satu baris lurus)
-        const totalSubtotal = {{$totalSubtotal}};
-        const biayaLayanan = 2000;
-        const ktpSudahAda = "{{ auth()->user()->foto_ktp ? '1' : '0' }}";
-        const cartItems = [
-            @foreach($carts as $cart) 
-            {
-                id: {{ $cart->id }},
-                product_id: {{ $cart->product_id ?? 'null' }},
-                quantity: {{ $cart->quantity }},
-                days: {{ ($cart->start_date && $cart->end_date) ? max(1, \Carbon\Carbon::parse($cart->start_date)->diffInDays($cart->end_date)) : 1 }}
-            },
-            @endforeach
-        ];
+<script>
+const totalSubtotal = {{ $totalSubtotal }};
+const biayaLayanan = 2000;
+const ktpSudahAda = "{{ auth()->user()->foto_ktp ? '1' : '0' }}";
+const cartItems = [
+    @foreach($carts as $cart)
+    {
+        id: {{ $cart->id }},
+        product_id: {{ $cart->product_id ?? 0 }},
+        quantity: {{ $cart->quantity }},
+        days: {{ ($cart->start_date && $cart->end_date) ? max(1, \Carbon\Carbon::parse($cart->start_date)->diffInDays($cart->end_date)) : 1 }}
+    },
+    @endforeach
+];
 
-        let currentShipping = 0;
-        let isProcessing = false;
+let currentShipping = 0;
+let isProcessing = false;
 
-        function formatRupiah(number) {
-            return 'Rp' + number.toLocaleString('id-ID');
-        }
+function formatRupiah(number) {
+    return 'Rp' + number.toLocaleString('id-ID');
+}
 
-        function updateShipping(amount) {
-            currentShipping = amount;
+function updateShipping(amount) {
+    currentShipping = amount;
+    const displayOngkir = document.getElementById('display-ongkir');
+    const totalPembayaran = document.getElementById('total-pembayaran');
+    const totalBottom = document.getElementById('total-bottom');
+    const labelPickup = document.getElementById('delivery-pickup-label');
+    const labelCod = document.getElementById('delivery-cod-label');
+    const newTotal = totalSubtotal + biayaLayanan + amount;
+    if (amount === 0) {
+        displayOngkir.innerText = 'Gratis';
+        displayOngkir.className = 'font-bold text-green-600';
+        labelPickup.className = 'flex items-center justify-between p-4 border-2 border-[#FF6B95] bg-pink-50 rounded-xl cursor-pointer transition active:scale-98';
+        labelCod.className = 'flex items-center justify-between p-4 border border-gray-200 rounded-xl cursor-pointer transition hover:border-[#FF6B95]/50 active:scale-98';
+    } else {
+        displayOngkir.innerText = formatRupiah(amount);
+        displayOngkir.className = 'font-bold text-gray-700';
+        labelPickup.className = 'flex items-center justify-between p-4 border border-gray-200 rounded-xl cursor-pointer transition hover:border-[#FF6B95]/50 active:scale-98';
+        labelCod.className = 'flex items-center justify-between p-4 border-2 border-[#FF6B95] bg-pink-50 rounded-xl cursor-pointer transition active:scale-98';
+    }
+    totalPembayaran.innerText = formatRupiah(newTotal);
+    totalBottom.innerText = formatRupiah(newTotal);
+}
 
-            const displayOngkir = document.getElementById('display-ongkir');
-            const totalPembayaran = document.getElementById('total-pembayaran');
-            const totalBottom = document.getElementById('total-bottom');
+function openAddressModal() {
+    const phone = document.getElementById('display-phone').innerText.trim();
+    const address = document.getElementById('display-address').innerText.trim();
+    document.getElementById('input-name').value = document.getElementById('display-name').innerText.trim();
+    document.getElementById('input-phone').value = phone === '— Belum ada no. HP' ? '' : phone;
+    document.getElementById('input-address').value = address === 'Masukkan alamat pengiriman kamu' ? '' : address;
+    document.getElementById('addressModal').classList.remove('hidden');
+    document.getElementById('addressModal').classList.add('flex');
+}
 
-            const labelPickup = document.getElementById('delivery-pickup-label');
-            const labelCod = document.getElementById('delivery-cod-label');
+function closeAddressModal() {
+    document.getElementById('addressModal').classList.add('hidden');
+    document.getElementById('addressModal').classList.remove('flex');
+}
 
-            const newTotal = totalSubtotal + biayaLayanan + amount;
+function saveAddress() {
+    const name = document.getElementById('input-name').value.trim();
+    const phone = document.getElementById('input-phone').value.trim();
+    const address = document.getElementById('input-address').value.trim();
+    if (name) document.getElementById('display-name').innerText = name;
+    if (phone) document.getElementById('display-phone').innerText = phone;
+    if (address) document.getElementById('display-address').innerText = address;
+    closeAddressModal();
+}
 
-            if (amount === 0) {
-                displayOngkir.innerText = 'Gratis';
-                displayOngkir.className = 'font-bold text-green-600';
+function handleCheckout() {
+    if (isProcessing) { alert("Mohon tunggu, pesanan sedang diproses."); return; }
+    const phoneText = document.getElementById('display-phone').innerText.trim();
+    const addressText = document.getElementById('display-address').innerText.trim();
+    const nameText = document.getElementById('display-name').innerText.trim();
+    if (ktpSudahAda !== "1") {
+        alert("Anda belum mengunggah foto KTP. Silakan lengkapi di halaman Profil.");
+        return;
+    }
+    if (phoneText === "— Belum ada no. HP" || !phoneText) { alert("Nomor HP belum diisi!"); return; }
+    if (addressText === "Masukkan alamat pengiriman kamu" || !addressText) { alert("Alamat pengiriman belum diisi!"); return; }
 
-                labelPickup.className = 'flex items-center justify-between p-4 border-2 border-[#FF6B95] bg-pink-50 rounded-xl cursor-pointer transition active:scale-98';
-                labelCod.className = 'flex items-center justify-between p-4 border border-gray-200 rounded-xl cursor-pointer transition hover:border-[#FF6B95]/50 active:scale-98';
-            } else {
-                displayOngkir.innerText = formatRupiah(amount);
-                displayOngkir.className = 'font-bold text-gray-700';
+    isProcessing = true;
+    const checkoutBtn = document.getElementById('btn-checkout');
+    if (checkoutBtn) { checkoutBtn.disabled = true; checkoutBtn.textContent = 'Memproses...'; }
 
-                labelPickup.className = 'flex items-center justify-between p-4 border border-gray-200 rounded-xl cursor-pointer transition hover:border-[#FF6B95]/50 active:scale-98';
-                labelCod.className = 'flex items-center justify-between p-4 border-2 border-[#FF6B95] bg-pink-50 rounded-xl cursor-pointer transition active:scale-98';
-            }
+    const totalText = document.getElementById('total-pembayaran').innerText;
+    const totalAmount = parseInt(totalText.replace(/[^0-9]/g, ''));
+    const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+    const finalItems = cartItems.map(item => {
+        const noteElement = document.getElementById('note-' + item.id);
+        return { ...item, note: noteElement ? noteElement.value.trim() : '' };
+    });
 
-            totalPembayaran.innerText = formatRupiah(newTotal);
-            totalBottom.innerText = formatRupiah(newTotal);
-        }
+    fetch("{{ route('order.store') }}", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "X-CSRF-TOKEN": csrfToken,
+            "Accept": "application/json"
+        },
+        body: JSON.stringify({
+            total_payment: totalAmount,
+            subtotal: totalSubtotal,
+            shipping_cost: currentShipping,
+            service_fee: biayaLayanan,
+            shipping_method: currentShipping > 0 ? 'delivery' : 'pickup',
+            customer_name: nameText,
+            customer_phone: phoneText,
+            customer_address: addressText,
+            items: finalItems
+        })
+    })
+.then(r => {
+    console.log('HTTP Status:', r.status);
+    return r.text();
+})
+.then(text => {
+    console.log('Raw response:', text);
+    const data = JSON.parse(text);
+    if (data.status === 'success') {
+        window.location.href = "{{ route('pelanggan.sewa') }}?status=belum_bayar";
+    } else {
+        alert('Gagal: ' + (data.message || ''));
+        resetButtonState();
+    }
+})
+}
 
-        function openAddressModal() {
-            const phone = document.getElementById('display-phone').innerText.trim();
-            const address = document.getElementById('display-address').innerText.trim();
-
-            document.getElementById('input-name').value = document.getElementById('display-name').innerText.trim();
-            document.getElementById('input-phone').value = phone === '— Belum ada no. HP' ? '' : phone;
-            document.getElementById('input-address').value = address === 'Masukkan alamat pengiriman kamu' ? '' : address;
-
-            document.getElementById('addressModal').classList.remove('hidden');
-            document.getElementById('addressModal').classList.add('flex');
-        }
-
-        function handleCheckout() {
-            if (isProcessing) {
-                alert("Mohon tunggu, pesanan sedang diproses.");
-                return;
-            }
-
-            const phoneText = document.getElementById('display-phone').innerText.trim();
-            const addressText = document.getElementById('display-address').innerText.trim();
-            const nameText = document.getElementById('display-name').innerText.trim();
-
-            if (ktpSudahAda !== "1") {
-                alert("Anda belum mengunggah foto KTP. Silakan lengkapi di halaman Profil.");
-                return;
-            }
-            if (phoneText === "— Belum ada no. HP" || !phoneText) {
-                alert("Nomor HP belum diisi!");
-                return;
-            }
-            if (addressText === "Masukkan alamat pengiriman kamu" || !addressText) {
-                alert("Alamat pengiriman belum diisi!");
-                return;
-            }
-
-            isProcessing = true;
-            const checkoutBtn = document.getElementById('btn-checkout');
-            if (checkoutBtn) {
-                checkoutBtn.disabled = true;
-                checkoutBtn.textContent = 'Memproses...';
-            }
-
-            const totalText = document.getElementById('total-pembayaran').innerText;
-            const totalAmount = parseInt(totalText.replace(/[^0-9]/g, ''));
-            const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-
-            const finalItems = cartItems.map(item => {
-                const noteElement = document.getElementById(`note-${item.id}`);
-                return {
-                    ...item,
-                    note: noteElement ? noteElement.value.trim() : ''
-                };
-            });
-
-            fetch("{{ route('order.store') }}", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                        "X-CSRF-TOKEN": csrfToken,
-                        "Accept": "application/json"
-                    },
-                    body: JSON.stringify({
-                        total_payment: totalAmount,
-                        subtotal: totalSubtotal,
-                        shipping_cost: currentShipping,
-                        service_fee: biayaLayanan,
-                        shipping_method: currentShipping > 0 ? 'delivery' : 'pickup',
-                        customer_name: nameText,
-                        customer_phone: phoneText,
-                        customer_address: addressText,
-                        items: finalItems
-                    })
-                })
-                .then(r => r.json())
-                .then(data => {
-                    if (data.status === 'success') {
-                        window.location.href = "{{ route('pelanggan.sewa') }}?status=belum_bayar";
-                    } else {
-                        alert('Gagal membuat pesanan: ' + (data.message || 'Coba lagi.'));
-                        resetButtonState();
-                    }
-                })
-                .catch(() => {
-                    alert('Terjadi kesalahan koneksi.');
-                    resetButtonState();
-                });
-        }
-
-        function resetButtonState() {
-            isProcessing = false;
-            const checkoutBtn = document.getElementById('btn-checkout');
-            if (checkoutBtn) {
-                checkoutBtn.disabled = false;
-                checkoutBtn.textContent = 'Buat Pesanan';
-            }
-        }
-    </script>
+function resetButtonState() {
+    isProcessing = false;
+    const checkoutBtn = document.getElementById('btn-checkout');
+    if (checkoutBtn) { checkoutBtn.disabled = false; checkoutBtn.textContent = 'Buat Pesanan'; }
+}
+</script>
 </body>
 
 </html>
