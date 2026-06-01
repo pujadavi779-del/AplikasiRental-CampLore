@@ -224,7 +224,9 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/payment/token', [PaymentController::class, 'getToken'])->name('payment.token');
     Route::post('/payment/snap-token', [PaymentController::class, 'getSnapToken'])->name('payment.snap-token');
     Route::post('/order/cancel', [OrderController::class, 'cancel'])->name('order.cancel');  // ← tambah ini
-    Route::post('/order/store', [OrderController::class, 'store'])->name('order.store');     // ← pindah ini juga kalau masih di admin
+    Route::post('/order/store', [OrderController::class, 'store'])->name('order.store');  
+        Route::post('/payment/update-status', [PaymentController::class, 'updateStatusAfterPay'])
+        ->name('payment.update-status');
 });
 
 // Route Webhook untuk menerima notifikasi dari Midtrans (Jangan diberi middleware auth)

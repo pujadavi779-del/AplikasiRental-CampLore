@@ -3,7 +3,7 @@
 @section('title', 'Sewa Saya - Camplore')
 
 @push('styles')
-<script type="text/javascript" src="https://app.sandbox.midtrans.com/snap/snap.js" data-client-key="{{ env('MIDTRANS_CLIENT_KEY') }}"></script>
+
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,700;0,800;1,700&display=swap" rel="stylesheet">
 <style>
     *,
@@ -439,112 +439,129 @@
 </div>
 
 {{-- Midtrans Snap --}}
+{{-- Midtrans Snap --}}
 <script src="https://app.sandbox.midtrans.com/snap/snap.js"
     data-client-key="{{ env('MIDTRANS_CLIENT_KEY') }}"></script>
 
 <script>
-    // Auto-hide flash
-    setTimeout(function() {
-        var el = document.getElementById('flash-msg');
-        if (el) {
-            el.style.transition = 'opacity 0.4s';
-            el.style.opacity = '0';
-            setTimeout(function() {
-                el.remove();
-            }, 400);
-        }
-    }, 4000);
+    document.addEventListener('DOMContentLoaded', function() {
 
-    // Countdown timers
-    function updateCountdowns() {
-        var els = document.querySelectorAll('.timer-countdown[data-deadline]');
-        for (var i = 0; i < els.length; i++) {
-            var el = els[i];
-            var deadline = parseInt(el.getAttribute('data-deadline')) * 1000;
-            var diff = Math.max(0, Math.floor((deadline - Date.now()) / 1000));
-            if (diff <= 0) {
-                el.textContent = '00:00:00';
-                continue;
+        // Auto-hide flash
+        setTimeout(function() {
+            var el = document.getElementById('flash-msg');
+            if (el) {
+                el.style.transition = 'opacity 0.4s';
+                el.style.opacity = '0';
+                setTimeout(function() {
+                    el.remove();
+                }, 400);
             }
-            var h = String(Math.floor(diff / 3600)).padStart(2, '0');
-            var m = String(Math.floor((diff % 3600) / 60)).padStart(2, '0');
-            var s = String(diff % 60).padStart(2, '0');
-            el.textContent = h + ':' + m + ':' + s;
-        }
-    }
-    updateCountdowns();
-    setInterval(updateCountdowns, 1000);
+        }, 4000);
 
-    // Toggle hidden items
-    function toggleItems(rentalId, hiddenCount) {
-        var wrap = document.getElementById('hidden-items-' + rentalId);
-        var btn = document.getElementById('toggle-btn-' + rentalId);
-        if (!wrap || !btn) return;
-        var isOpen = wrap.style.display === 'block';
-        if (isOpen) {
-            wrap.style.display = 'none';
-            btn.classList.remove('open');
-            btn.innerHTML = '<svg fill="none" viewBox="0 0 24 24" stroke="currentColor" width="14" height="14"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/></svg> + ' + hiddenCount + ' produk lainnya';
-        } else {
-            wrap.style.display = 'block';
-            btn.classList.add('open');
-            btn.innerHTML = '<svg fill="none" viewBox="0 0 24 24" stroke="currentColor" width="14" height="14"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 15l7-7 7 7"/></svg> Sembunyikan';
-        }
-    }
-
-    // Bayar Sekarang — ambil snap token lalu buka Midtrans
-    function bayarSekarang(orderId) {
-        fetch('/payment/snap-token', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
-                    'Accept': 'application/json'
-                },
-                body: JSON.stringify({
-                    order_id: orderId
-                })
-            })
-            .then(r => r.json())
-            .then(data => {
-                if (data.snapToken) {
-                    window.snap.pay(data.snapToken, {
-                        onSuccess: () => window.location.href = '/sewa?status=dikemas',
-                        onPending: () => window.location.reload(),
-                        onError: () => alert('Pembayaran gagal, silahkan coba lagi.'),
-                        onClose: () => {}
-                    });
-                } else {
-                    alert('Gagal memuat pembayaran: ' + (data.message || 'Coba lagi.'));
+        // Countdown timers
+        function updateCountdowns() {
+            var els = document.querySelectorAll('.timer-countdown[data-deadline]');
+            for (var i = 0; i < els.length; i++) {
+                var el = els[i];
+                var deadline = parseInt(el.getAttribute('data-deadline')) * 1000;
+                var diff = Math.max(0, Math.floor((deadline - Date.now()) / 1000));
+                if (diff <= 0) {
+                    el.textContent = '00:00:00';
+                    continue;
                 }
-            })
-            .catch(() => alert('Terjadi kesalahan koneksi.'));
-    }
+                var h = String(Math.floor(diff / 3600)).padStart(2, '0');
+                var m = String(Math.floor((diff % 3600) / 60)).padStart(2, '0');
+                var s = String(diff % 60).padStart(2, '0');
+                el.textContent = h + ':' + m + ':' + s;
+            }
+        }
+        updateCountdowns();
+        setInterval(updateCountdowns, 1000);
 
-    // Batalkan pesanan
-    function batalkanPesanan(orderId) {
-        if (!confirm('Yakin ingin membatalkan pesanan ini?')) return;
+        // Toggle hidden items
+        window.toggleItems = function(rentalId, hiddenCount) {
+            var wrap = document.getElementById('hidden-items-' + rentalId);
+            var btn = document.getElementById('toggle-btn-' + rentalId);
+            if (!wrap || !btn) return;
+            var isOpen = wrap.style.display === 'block';
+            if (isOpen) {
+                wrap.style.display = 'none';
+                btn.classList.remove('open');
+                btn.innerHTML = '<svg fill="none" viewBox="0 0 24 24" stroke="currentColor" width="14" height="14"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/></svg> + ' + hiddenCount + ' produk lainnya';
+            } else {
+                wrap.style.display = 'block';
+                btn.classList.add('open');
+                btn.innerHTML = '<svg fill="none" viewBox="0 0 24 24" stroke="currentColor" width="14" height="14"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 15l7-7 7 7"/></svg> Sembunyikan';
+            }
+        };
 
-        fetch('{{ url("/order/cancel") }}', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                    'Accept': 'application/json'
-                },
-                body: JSON.stringify({
-                    order_id: orderId
+        // Bayar Sekarang
+        window.bayarSekarang = function(orderId) {
+            fetch('/payment/snap-token', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        order_id: orderId
+                    })
                 })
-            })
-            .then(r => r.json())
-            .then(data => {
-                if (data.status === 'success') {
-                    window.location.reload();
-                } else {
-                    alert('Gagal membatalkan: ' + (data.message || ''));
-                }
-            })
-            .catch(() => alert('Terjadi kesalahan koneksi.'));
-    }
+                .then(r => r.json())
+                .then(data => {
+                    if (data.snapToken) {
+                        window.snap.pay(data.snapToken, {
+                            onSuccess: function() {
+                                fetch('/payment/update-status', {
+                                    method: 'POST',
+                                    headers: {
+                                        'Content-Type': 'application/json',
+                                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                                        'Accept': 'application/json'
+                                    },
+                                    body: JSON.stringify({
+                                        order_id: orderId
+                                    })
+                                });
+                                window.location.href = '/sewa?status=dikemas';
+                            },
+                            onPending: () => window.location.reload(),
+                            onError: () => alert('Pembayaran gagal, silahkan coba lagi.'),
+                            onClose: () => {}
+                        });
+                    } else {
+                        alert('Gagal memuat pembayaran: ' + (data.message || 'Coba lagi.'));
+                    }
+                })
+                .catch(() => alert('Terjadi kesalahan koneksi.'));
+        };
+
+        // Batalkan pesanan
+        window.batalkanPesanan = function(orderId) {
+            if (!confirm('Yakin ingin membatalkan pesanan ini?')) return;
+            fetch('{{ url("/order/cancel") }}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        order_id: orderId
+                    })
+                })
+                .then(r => r.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        window.location.reload();
+                    } else {
+                        alert('Gagal membatalkan: ' + (data.message || ''));
+                    }
+                })
+                .catch(() => alert('Terjadi kesalahan koneksi.'));
+        };
+
+    }); // end DOMContentLoaded
 </script>
 @endsection

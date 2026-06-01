@@ -106,69 +106,118 @@ class PaymentController extends Controller
     }
 
     public function getSnapToken(Request $request)
-{
-    \Midtrans\Config::$serverKey = env('MIDTRANS_SERVER_KEY');
-    \Midtrans\Config::$isProduction = false;
-    \Midtrans\Config::$isSanitized = true;
-    \Midtrans\Config::$is3ds = true;
+    {
+        \Midtrans\Config::$serverKey = env('MIDTRANS_SERVER_KEY');
+        \Midtrans\Config::$isProduction = false;
+        \Midtrans\Config::$isSanitized = true;
+        \Midtrans\Config::$is3ds = true;
 
-    try {
-        $orderId = $request->input('order_id');
-        $orders = \App\Models\Order::where('order_id', $orderId)
-            ->where('user_id', auth()->id())
-            ->with('product')
-            ->get();
+        try {
+            $orderId = $request->input('order_id');
+            $orders = \App\Models\Order::where('order_id', $orderId)
+                ->where('user_id', auth()->id())
+                ->with('product')
+                ->get();
 
-        if ($orders->isEmpty()) {
-            return response()->json(['status' => 'error', 'message' => 'Order tidak ditemukan'], 404);
+            if ($orders->isEmpty()) {
+                return response()->json(['status' => 'error', 'message' => 'Order tidak ditemukan'], 404);
+            }
+
+            $first = $orders->first();
+
+            // Kalau snap_token sudah ada, langsung pakai
+            if ($first->snap_token) {
+                return response()->json(['snapToken' => $first->snap_token]);
+            }
+
+            $subtotal = $orders->sum('total_price');
+            $total    = $subtotal + $first->shipping_cost + $first->service_fee;
+
+            $itemDetails = $orders->map(fn($o) => [
+                'id'       => 'prod-' . $o->product_id,
+                'price'    => (int) ($o->price_per_day * $o->quantity * $o->days),
+                'quantity' => 1,
+                'name'     => substr($o->product->name ?? 'Produk', 0, 50),
+            ])->toArray();
+
+            $total = collect($itemDetails)->sum('price');
+
+            if ($first->service_fee > 0) {
+                $itemDetails[] = ['id' => 'service', 'price' => (int)$first->service_fee, 'quantity' => 1, 'name' => 'Biaya Layanan'];
+                $total += (int)$first->service_fee;
+            }
+            if ($first->shipping_cost > 0) {
+                $itemDetails[] = ['id' => 'shipping', 'price' => (int)$first->shipping_cost, 'quantity' => 1, 'name' => 'Biaya Pengantaran'];
+                $total += (int)$first->shipping_cost;
+            }
+
+            $params = [
+                'transaction_details' => [
+                    'order_id'     => $orderId,
+                    'gross_amount' => $total,
+                ],
+                'item_details'     => $itemDetails,
+                'customer_details' => [
+                    'first_name' => $first->customer_name,
+                    'email'      => auth()->user()->email,
+                    'phone'      => $first->customer_phone,
+                ],
+            ];
+
+            $snapToken = \Midtrans\Snap::getSnapToken($params);
+
+            // Simpan snap_token
+            \App\Models\Order::where('order_id', $orderId)->update(['snap_token' => $snapToken]);
+
+            return response()->json(['snapToken' => $snapToken]);
+        } catch (\Exception $e) {
+            return response()->json(['status' => 'error', 'message' => $e->getMessage()], 500);
         }
-
-        $first = $orders->first();
-
-        // Kalau snap_token sudah ada, langsung pakai
-        if ($first->snap_token) {
-            return response()->json(['snapToken' => $first->snap_token]);
-        }
-
-        $subtotal = $orders->sum('total_price');
-        $total    = $subtotal + $first->shipping_cost + $first->service_fee;
-
-        $itemDetails = $orders->map(fn($o) => [
-            'id'       => 'prod-' . $o->product_id,
-            'price'    => (int) ($o->price_per_day * $o->quantity * $o->days),
-            'quantity' => 1,
-            'name'     => substr($o->product->name ?? 'Produk', 0, 50),
-        ])->toArray();
-
-        if ($first->service_fee > 0) {
-            $itemDetails[] = ['id' => 'service', 'price' => $first->service_fee, 'quantity' => 1, 'name' => 'Biaya Layanan'];
-        }
-        if ($first->shipping_cost > 0) {
-            $itemDetails[] = ['id' => 'shipping', 'price' => $first->shipping_cost, 'quantity' => 1, 'name' => 'Biaya Pengantaran'];
-        }
-
-        $params = [
-            'transaction_details' => [
-                'order_id'     => $orderId,
-                'gross_amount' => $total,
-            ],
-            'item_details'     => $itemDetails,
-            'customer_details' => [
-                'first_name' => $first->customer_name,
-                'email'      => auth()->user()->email,
-                'phone'      => $first->customer_phone,
-            ],
-        ];
-
-        $snapToken = \Midtrans\Snap::getSnapToken($params);
-
-        // Simpan snap_token
-        \App\Models\Order::where('order_id', $orderId)->update(['snap_token' => $snapToken]);
-
-        return response()->json(['snapToken' => $snapToken]);
-
-    } catch (\Exception $e) {
-        return response()->json(['status' => 'error', 'message' => $e->getMessage()], 500);
     }
-}
+
+    public function webhook(Request $request)
+    {
+        \Midtrans\Config::$serverKey = env('MIDTRANS_SERVER_KEY');
+        \Midtrans\Config::$isProduction = false;
+
+        try {
+            $notif = new \Midtrans\Notification();
+
+            $orderId           = $notif->order_id;
+            $transactionStatus = $notif->transaction_status;
+            $fraudStatus       = $notif->fraud_status ?? null;
+
+            if ($transactionStatus === 'capture') {
+                $newStatus = ($fraudStatus === 'challenge') ? 'belum_bayar' : 'dikemas';
+            } elseif ($transactionStatus === 'settlement') {
+                $newStatus = 'dikemas';
+            } elseif (in_array($transactionStatus, ['cancel', 'deny', 'expire'])) {
+                $newStatus = 'dibatalkan';
+            } else {
+                $newStatus = 'belum_bayar'; // pending
+            }
+
+            \App\Models\Order::where('order_id', $orderId)
+                ->update(['status' => $newStatus]);
+
+            return response()->json(['status' => 'ok']);
+        } catch (\Exception $e) {
+            return response()->json(['status' => 'error', 'message' => $e->getMessage()], 500);
+        }
+    }
+
+    public function updateStatusAfterPay(Request $request)
+    {
+        $orderId = $request->input('order_id');
+
+        $updated = \App\Models\Order::where('order_id', $orderId)
+            ->where('user_id', auth()->id())
+            ->update(['status' => 'dikemas']);
+
+        if ($updated) {
+            return response()->json(['status' => 'success']);
+        }
+
+        return response()->json(['status' => 'error', 'message' => 'Order tidak ditemukan'], 404);
+    }
 }
