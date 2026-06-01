@@ -197,7 +197,7 @@ $accordions = [
             @endif
 
             <h1 class="text-xl font-bold text-gray-900 leading-snug mb-1">{{ $item->name }}</h1>
-            <div class="flex items-baseline gap-2 mb-1">
+            <div class="flex items-baseline gap-1 mb-1">
                 <p class="text-2xl font-bold text-orange-600" id="displayPrice">Rp {{ number_format($item->price_per_day, 0, ',', '.') }}</p>
                 <span class="text-sm text-gray-400">/ hari</span>
             </div>
@@ -471,41 +471,41 @@ $accordions = [
             }));
     }
 
-    function rentNow(itemId) {
-        if (!isLoggedIn) {
-            window.location.href = "{{ route('login') }}";
-            return;
-        }
-        const {
-            startDate,
-            endDate
-        } = getFormData();
-        if (!startDate || !endDate) {
-            showToast('Pilih tanggal penyewaan terlebih dahulu', 'error');
-            return;
-        }
-
-        fetch('/cart/add', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json',
-                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                },
-                body: JSON.stringify({
-                    product_id: itemId,
-                    quantity: qty,
-                    start_date: startDate,
-                    end_date: endDate
-                })
-            })
-            .then(r => r.status === 401 ? window.location.href = "{{ route('login') }}" : r.json())
-            .then(data => {
-                if (data?.success) window.location.href = '/checkout';
-                else showToast(data?.message ?? 'Gagal', 'error');
-            })
-            .catch(() => showToast('Terjadi kesalahan, coba lagi', 'error'));
+function rentNow(itemId) {
+    if (!isLoggedIn) {
+        window.location.href = "{{ route('login') }}";
+        return;
     }
+    const { startDate, endDate } = getFormData();
+    if (!startDate || !endDate) {
+        showToast('Pilih tanggal penyewaan terlebih dahulu', 'error');
+        return;
+    }
+
+    fetch('/cart/add', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+            },
+            body: JSON.stringify({
+                product_id: itemId,
+                quantity: qty,
+                start_date: startDate,
+                end_date: endDate
+            })
+        })
+        .then(r => r.status === 401 ? window.location.href = "{{ route('login') }}" : r.json())
+        .then(data => {
+            if (data?.success && data?.cart_id) {
+                window.location.href = '/checkout?ids[]=' + data.cart_id;
+            } else {
+                showToast(data?.message ?? 'Gagal', 'error');
+            }
+        })
+        .catch(() => showToast('Terjadi kesalahan, coba lagi', 'error'));
+}
 
     function shareProduct() {
         if (navigator.share) navigator.share({

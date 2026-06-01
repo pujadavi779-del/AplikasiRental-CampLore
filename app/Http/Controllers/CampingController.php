@@ -78,6 +78,12 @@ class CampingController extends Controller
     public function destroy($id)
     {
         $item = Product::findOrFail($id);
+        
+        // Opsional: Hapus file gambar dari public folder saat data dihapus
+        if ($item->image && file_exists(public_path($item->image))) {
+            @unlink(public_path($item->image));
+        }
+
         $item->delete();
 
         return redirect()->route('camping.index')
@@ -94,11 +100,17 @@ class CampingController extends Controller
             ->take(5)
             ->get();
 
+        // perbaikan: Ditambahkan array accordions agar view details_LP tidak error
         return view('pages.landing.kategori.details_LP', [
             'item'          => $item,
             'relatedItems'  => $relatedItems,
             'category'      => 'camping',
             'categoryLabel' => 'Camping',
+            'accordions'    => [
+                ['title' => 'Tentang Alat ini', 'deskripsi' => $item->deskripsi ?? 'Deskripsi tidak tersedia.', 'open' => true],
+                ['title' => 'Sorotan',          'deskripsi' => $item->highlights ?? 'Spesifikasi unggulan tidak tersedia.', 'open' => false],
+                ['title' => 'Isi Paket',        'deskripsi' => $item->isi_paket ?? 'Informasi isi paket tidak tersedia.', 'open' => false],
+            ],
         ]);
     }
 
@@ -120,6 +132,7 @@ class CampingController extends Controller
         ));
     }
 
+    // 🔹 STORE
     public function store(Request $request)
     {
         $request->validate([
@@ -138,7 +151,11 @@ class CampingController extends Controller
         $imagePath = null;
 
         if ($request->hasFile('image')) {
-            $imagePath = $request->file('image')->store('products', 'public');
+            // Disesuaikan agar strukturnya sama seperti img_foto/camping/ di database kamu
+            $file = $request->file('image');
+            $filename = time() . '_' . $file->getClientOriginalName();
+            $file->move(public_path('img_foto/camping'), $filename);
+            $imagePath = 'img_foto/camping/' . $filename;
         }
 
         Product::create([
@@ -158,6 +175,7 @@ class CampingController extends Controller
             ->with('success', 'Produk berhasil ditambahkan');
     }
 
+    // 🔹 UPDATE
     public function update(Request $request, $id)
     {
         $product = Product::findOrFail($id);
@@ -188,7 +206,15 @@ class CampingController extends Controller
         ];
 
         if ($request->hasFile('image')) {
-            $data['image'] = $request->file('image')->store('products', 'public');
+            // Hapus gambar lama jika ada file baru yang masuk
+            if ($product->image && file_exists(public_path($product->image))) {
+                @unlink(public_path($product->image));
+            }
+            
+            $file = $request->file('image');
+            $filename = time() . '_' . $file->getClientOriginalName();
+            $file->move(public_path('img_foto/camping'), $filename);
+            $data['image'] = 'img_foto/camping/' . $filename;
         }
 
         $product->update($data);

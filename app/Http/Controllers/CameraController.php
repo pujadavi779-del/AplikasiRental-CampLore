@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Product;
 use App\Models\Category;
+use Illuminate\Support\Facades\Storage; // Tambahkan jika pakai upload file resmi
 
 class CameraController extends Controller
 {
@@ -46,25 +47,42 @@ class CameraController extends Controller
 
     public function index()
     {
-        // Ganti ke Product
         $items = Product::where('category', 'Kamera')->get();
         return view('camera.index', compact('items'));
     }
 
     public function create()
     {
-        return view('camera.create_camera');
+        // Ambil data kategori untuk dropdown di form tambah kamera
+        $types = Category::where('main_category', 'Kamera')->where('attribute_type', 'Tipe')->get();
+        $brands = Category::where('main_category', 'Kamera')->where('attribute_type', 'Merek')->get();
+        
+        return view('camera.create_camera', compact('types', 'brands'));
     }
 
     public function store(Request $request)
     {
+        // Tambahkan proses upload gambar jika input berupa file
+        $imagePath = $request->image;
+        if ($request->hasFile('image')) {
+            // Contoh menyimpan ke folder public/img_foto/camera
+            $file = $request->file('image');
+            $filename = time() . '_' . $file->getClientOriginalName();
+            $file->move(public_path('img_foto/camera'), $filename);
+            $imagePath = 'img_foto/camera/' . $filename;
+        }
+
         Product::create([
-            'name' => $request->name,
-            'stock' => $request->stock,
-            'price_per_day' => $request->price,
-            'category' => 'Kamera',
-            'image'         => $request->image,
-            'deskripsi' => $request->deskripsi,
+            'name'              => $request->name,
+            'type_category_id'  => $request->type_category_id,  // Hubungkan foreign key tipe
+            'brand_category_id' => $request->brand_category_id, // Hubungkan foreign key merek
+            'stock'             => $request->stock,
+            'price_per_day'     => $request->price,
+            'category'          => 'Kamera',
+            'image'             => $imagePath,
+            'deskripsi'         => $request->deskripsi,
+            'highlights'        => $request->highlights,         // Hubungkan kolom highlights
+            'isi_paket'         => $request->isi_paket,           // Hubungkan kolom isi_paket
         ]);
 
         return redirect()->route('camera.index');
@@ -73,19 +91,38 @@ class CameraController extends Controller
     public function edit($id)
     {
         $item = Product::findOrFail($id);
-        return view('camera.edit_camera', compact('item'));
+        $types = Category::where('main_category', 'Kamera')->where('attribute_type', 'Tipe')->get();
+        $brands = Category::where('main_category', 'Kamera')->where('attribute_type', 'Merek')->get();
+        
+        return view('camera.edit_camera', compact('item', 'types', 'brands'));
     }
 
     public function update(Request $request, $id)
     {
         $item = Product::findOrFail($id);
 
-        // Update sesuai nama kolom di tabel products
+        $imagePath = $item->image;
+        if ($request->hasFile('image')) {
+            // Hapus gambar lama jika ada file baru yang diupload
+            if ($item->image && file_exists(public_path($item->image))) {
+                @unlink(public_path($item->image));
+            }
+            $file = $request->file('image');
+            $filename = time() . '_' . $file->getClientOriginalName();
+            $file->move(public_path('img_foto/camera'), $filename);
+            $imagePath = 'img_foto/camera/' . $filename;
+        }
+
         $item->update([
-            'name' => $request->name,
-            'stock' => $request->stock,
-            'price_per_day' => $request->price,
-            'deskripsi' => $request->deskripsi,
+            'name'              => $request->name,
+            'type_category_id'  => $request->type_category_id,  // Update foreign key tipe
+            'brand_category_id' => $request->brand_category_id, // Update foreign key merek
+            'stock'             => $request->stock,
+            'price_per_day'     => $request->price,
+            'image'             => $imagePath,
+            'deskripsi'         => $request->deskripsi,
+            'highlights'        => $request->highlights,         // Update kolom highlights
+            'isi_paket'         => $request->isi_paket,           // Update kolom isi_paket
         ]);
 
         return redirect()->route('camera.index');
@@ -94,8 +131,13 @@ class CameraController extends Controller
     public function destroy($id)
     {
         $item = Product::findOrFail($id);
-        $item->delete();
+        
+        // Opsional: Hapus file gambar dari local storage saat data dihapus
+        if ($item->image && file_exists(public_path($item->image))) {
+            @unlink(public_path($item->image));
+        }
 
+        $item->delete();
         return redirect()->route('camera.index');
     }
 
@@ -115,8 +157,8 @@ class CameraController extends Controller
             'categoryLabel' => 'Kamera',
             'accordions'    => [
                 ['title' => 'Tentang Kamera ini', 'deskripsi' => $item->deskripsi ?? 'Deskripsi tidak tersedia.', 'open' => true],
-                ['title' => 'Sorotan',            'deskripsi' => 'Spesifikasi unggulan untuk ' . $item->name . '.', 'open' => false],
-                ['title' => 'Isi Paket',          'deskripsi' => $item->stock > 0 ? 'Tersedia — ' . $item->stock . ' unit siap disewa.' : 'Stok sedang kosong.', 'open' => false],
+                ['title' => 'Sorotan',            'deskripsi' => $item->highlights ?? 'Spesifikasi unggulan tidak tersedia.', 'open' => false], // Dinamis dari DB
+                ['title' => 'Isi Paket',          'deskripsi' => $item->isi_paket ?? 'Informasi isi paket tidak tersedia.', 'open' => false],  // Dinamis dari DB
             ],
         ]);
     }

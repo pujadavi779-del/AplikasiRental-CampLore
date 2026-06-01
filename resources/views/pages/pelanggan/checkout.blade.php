@@ -125,7 +125,7 @@
                     <div class="flex items-center gap-3 min-w-0">
                         <div class="w-12 h-12 rounded-xl bg-gray-100 flex items-center justify-center flex-shrink-0 overflow-hidden text-xl">
                             @if($cart->product && $cart->product->image)
-                            <img src="{{ str_starts_with($cart->product->image, 'http') ? $cart->product->image : asset('storage/' . $cart->product->image) }}"
+                            <img src="{{ str_starts_with($cart->product->image, 'http') ? $cart->product->image : asset($cart->product->image) }}"
                                 class="w-full h-full object-cover" alt="{{ $cart->product->name }}">
                             @else
                             📦
@@ -137,8 +137,10 @@
                         </div>
                     </div>
                     <div class="text-center">
-                        <p class="text-sm font-bold text-gray-700">Rp{{ number_format($cart->product->price_per_day ?? 0, 0, ',', '.') }}</p>
-                        <p class="text-[10px] text-gray-400">/ hari</p>
+                        <p class="text-sm font-bold text-gray-700">
+                            Rp{{ number_format($cart->product->price_per_day ?? 0, 0, ',', '.') }}
+                            <span class="text-[10px] font-normal text-gray-400">/ hari</span>
+                        </p>
                     </div>
                     <div class="text-center text-sm font-bold text-gray-700">{{ $cart->quantity }}</div>
                     <div class="text-right text-sm font-bold text-[#FF6B95]">
@@ -150,7 +152,7 @@
                 <div class="md:hidden flex items-center gap-3 px-4 pt-4 pb-2">
                     <div class="w-14 h-14 rounded-xl bg-gray-100 flex-shrink-0 overflow-hidden">
                         @if($cart->product && $cart->product->image)
-                        <img src="{{ str_starts_with($cart->product->image, 'http') ? $cart->product->image : asset('storage/'.$cart->product->image) }}"
+                        <img src="{{ str_starts_with($cart->product->image, 'http') ? $cart->product->image : asset($cart->product->image) }}"
                             class="w-full h-full object-cover" alt="{{ $cart->product->name }}">
                         @else
                         <div class="w-full h-full flex items-center justify-center text-2xl">📦</div>
@@ -255,7 +257,7 @@
             </div>
             <button id="btn-checkout" onclick="handleCheckout()"
                 class="bg-[#FF6B95] hover:bg-[#ff5282] text-white px-8 py-3 rounded-xl font-black text-sm uppercase tracking-widest transition-all active:scale-95 disabled:bg-gray-300 disabled:text-gray-500 disabled:scale-100 disabled:cursor-not-allowed">
-                Buat Pesanan Sekarang
+                Buat Pesanan
             </button>
         </div>
     </div>
@@ -297,11 +299,12 @@
     </div>
 
     <script>
-        const totalSubtotal = {{ $totalSubtotal }};
+        // Perbaikan di baris ini (semuanya ditulis dalam satu baris lurus)
+        const totalSubtotal = {{$totalSubtotal}};
         const biayaLayanan = 2000;
         const ktpSudahAda = "{{ auth()->user()->foto_ktp ? '1' : '0' }}";
         const cartItems = [
-            @foreach($carts as $cart)
+            @foreach($carts as $cart) 
             {
                 id: {{ $cart->id }},
                 product_id: {{ $cart->product_id ?? 'null' }},
@@ -362,7 +365,7 @@
 
         function handleCheckout() {
             if (isProcessing) {
-                alert("Mohon tunggu, pesanan sedang diproses. Jangan klik dua kali!");
+                alert("Mohon tunggu, pesanan sedang diproses.");
                 return;
             }
 
@@ -371,28 +374,29 @@
             const nameText = document.getElementById('display-name').innerText.trim();
 
             if (ktpSudahAda !== "1") {
-                alert("Gagal membuat pesanan! Anda belum mengunggah foto KTP sebagai jaminan rental. Silakan lengkapi KTP di halaman Profil Anda terlebih dahulu.");
-                window.location.href = "{{ route('pages.pelanggan.settings') }}";
+                alert("Anda belum mengunggah foto KTP. Silakan lengkapi di halaman Profil.");
                 return;
             }
-
             if (phoneText === "— Belum ada no. HP" || !phoneText) {
-                alert("Nomor HP Anda belum lengkap. Silakan isi terlebih dahulu di halaman pengubahan data pengiriman!");
+                alert("Nomor HP belum diisi!");
                 return;
             }
-
             if (addressText === "Masukkan alamat pengiriman kamu" || !addressText) {
-                alert("Alamat pengiriman belum diisi. Silakan lengkapi alamat Anda terlebih dahulu!");
+                alert("Alamat pengiriman belum diisi!");
                 return;
             }
 
             isProcessing = true;
             const checkoutBtn = document.getElementById('btn-checkout');
-            checkoutBtn.disabled = true;
+            if (checkoutBtn) {
+                checkoutBtn.disabled = true;
+                checkoutBtn.textContent = 'Memproses...';
+            }
 
             const totalText = document.getElementById('total-pembayaran').innerText;
             const totalAmount = parseInt(totalText.replace(/[^0-9]/g, ''));
             const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+
             const finalItems = cartItems.map(item => {
                 const noteElement = document.getElementById(`note-${item.id}`);
                 return {
@@ -401,7 +405,7 @@
                 };
             });
 
-            fetch("{{ route('payment.token') }}", {
+            fetch("{{ route('order.store') }}", {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",
@@ -413,46 +417,24 @@
                         subtotal: totalSubtotal,
                         shipping_cost: currentShipping,
                         service_fee: biayaLayanan,
+                        shipping_method: currentShipping > 0 ? 'delivery' : 'pickup',
                         customer_name: nameText,
                         customer_phone: phoneText,
                         customer_address: addressText,
                         items: finalItems
                     })
                 })
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('HTTP error, status = ' + response.status);
-                    }
-                    return response.json();
-                })
+                .then(r => r.json())
                 .then(data => {
-                    if (data.status === 'success' && data.snapToken) {
-                        window.snap.pay(data.snapToken, {
-                            onSuccess: function(result) {
-                                alert("Pembayaran sukses dikonfirmasi!");
-                                window.location.href = '/sewa?status=dikemas'; 
-                            },
-                            onPending: function(result) {
-                                alert("Menunggu kamu menyelesaikan pembayaran.");
-                                resetButtonState();
-                            },
-                            onError: function(result) {
-                                alert("Pembayaran kamu gagal, silahkan coba lagi.");
-                                resetButtonState();
-                            },
-                            onClose: function() {
-                                alert('Kamu menutup halaman pembayaran sebelum selesai.');
-                                resetButtonState();
-                            }
-                        });
+                    if (data.status === 'success') {
+                        window.location.href = "{{ route('pelanggan.sewa') }}?status=belum_bayar";
                     } else {
-                        alert('Gagal mendapatkan token: ' + (data.message || 'Respons server tidak valid.'));
+                        alert('Gagal membuat pesanan: ' + (data.message || 'Coba lagi.'));
                         resetButtonState();
                     }
                 })
-                .catch(error => {
-                    console.error('Error Detail:', error);
-                    alert('Terjadi kesalahan koneksi/sistem pembayaran. Silahkan cek konsol browser.');
+                .catch(() => {
+                    alert('Terjadi kesalahan koneksi.');
                     resetButtonState();
                 });
         }
@@ -462,6 +444,7 @@
             const checkoutBtn = document.getElementById('btn-checkout');
             if (checkoutBtn) {
                 checkoutBtn.disabled = false;
+                checkoutBtn.textContent = 'Buat Pesanan';
             }
         }
     </script>
