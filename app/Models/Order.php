@@ -27,6 +27,12 @@ class Order extends Model
         'status',
     ];
 
+    // Tambahkan properti ini di bawah $fillable
+    protected $casts = [
+        'start_date' => 'date',
+        'end_date' => 'date',
+    ];
+
     public function product()
     {
         return $this->belongsTo(Product::class);

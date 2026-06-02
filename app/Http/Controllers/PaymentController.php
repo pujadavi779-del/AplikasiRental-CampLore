@@ -220,4 +220,29 @@ class PaymentController extends Controller
 
         return response()->json(['status' => 'error', 'message' => 'Order tidak ditemukan'], 404);
     }
+
+    public function adminIndex(Request $request)
+{
+    // Ambil 1 row per order_id (yang pertama), lalu eager load
+    $query = \App\Models\Order::with(['user', 'product'])
+        ->orderBy('created_at', 'desc')
+        // Group by order_id supaya tidak duplikat
+        ->whereIn('id', function($sub) {
+            $sub->selectRaw('MIN(id)')
+                ->from('orders')
+                ->groupBy('order_id');
+        });
+
+    if ($request->filled('search')) {
+        $search = $request->search;
+        $query->where(function ($q) use ($search) {
+            $q->where('order_id', 'like', '%' . $search . '%')
+              ->orWhere('created_at', 'like', '%' . $search . '%');
+        });
+    }
+
+    $payments = $query->paginate(10)->withQueryString();
+
+    return view('pages.admin.pembayaran', compact('payments'));
+}
 }

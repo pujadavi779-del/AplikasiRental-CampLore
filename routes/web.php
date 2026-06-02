@@ -166,11 +166,8 @@ Route::prefix('admin')->middleware('admin.auth')->name('admin.')->group(function
     Route::get('/pemesanan/{id}/edit', [PemesananController::class, 'edit'])->name('orders.edit');
     Route::put('/pemesanan/{id}',      [PemesananController::class, 'update'])->name('orders.update');
 
-    // Pembayaran
-    Route::get('/pembayaran', function () {
-        $payments = collect();
-        return view('pages.admin.pembayaran', compact('payments'));
-    })->name('pembayaran');
+    // Pembayaran - BARU
+    Route::get('/pembayaran', [PaymentController::class, 'adminIndex'])->name('pembayaran');
 
     // Pengiriman
     Route::get('/pengiriman',                 [DeliveryController::class, 'pengiriman'])->name('pengiriman');
