@@ -341,16 +341,26 @@ function submitTiba() {
     var formData = new FormData();
     formData.append('status', 'tiba');
     formData.append('foto_terima', foto);
-    formData.append('_method', 'PATCH');
+    formData.append('_method', 'PATCH'); // Menyesuaikan spoofing method PATCH di route
     formData.append('_token', document.querySelector('meta[name="csrf-token"]').content);
 
     fetch('{{ route("admin.pengiriman.update-status", $idPesanan) }}', {
         method: 'POST',
-        deskripsi: formData
+        body: formData, // ← SUDAH DIPERBAKI: Sebelumnya 'deskripsi:', diganti jadi 'body:'
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest' // Menandakan bahwa ini Request AJAX/JSON
+        }
     }).then(function(res) {
-        if (res.ok) { window.location.reload(); }
-        else { alert('Gagal menyimpan. Coba lagi.'); }
-    }).catch(function() { alert('Terjadi kesalahan jaringan.'); });
+        return res.json();
+    }).then(function(data) {
+        if (data.success) { 
+            window.location.reload(); 
+        } else { 
+            alert('Gagal menyimpan: ' + (data.message || 'Coba lagi.')); 
+        }
+    }).catch(function() { 
+        alert('Terjadi kesalahan jaringan.'); 
+    });
 }
 function cetakSuratJalan() {
     window.print();

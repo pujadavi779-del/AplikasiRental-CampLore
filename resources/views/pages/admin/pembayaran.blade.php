@@ -64,14 +64,11 @@
 
                         @forelse($payments as $order)
                         @php
-                            // Mapping status order ke label tampilan
+                            // Mapping status order ke label tampilan (Revisi Baru: proses, selesai, dibatalkan)
                             $statusMap = [
-                                'belum_bayar'  => ['label' => 'Belum Bayar', 'bg' => 'bg-gray-100',       'text' => 'text-gray-500',    'border' => 'border-gray-200'],
-                                'dikemas'      => ['label' => 'Dikemas',      'bg' => 'bg-orange-50',      'text' => 'text-orange-700',  'border' => 'border-orange-200'],
-                                'dikirim'      => ['label' => 'Dikirim',      'bg' => 'bg-blue-50',        'text' => 'text-blue-700',    'border' => 'border-blue-200'],
-                                'selesai'      => ['label' => 'Selesai',      'bg' => 'bg-emerald-100',    'text' => 'text-[#22543D]',   'border' => 'border-emerald-200'],
-                                'pengembalian' => ['label' => 'Pengembalian', 'bg' => 'bg-purple-50',      'text' => 'text-purple-700',  'border' => 'border-purple-200'],
-                                'dibatalkan'   => ['label' => 'Dibatalkan',   'bg' => 'bg-red-50',         'text' => 'text-red-600',     'border' => 'border-red-200'],
+                                'belum_bayar' => ['label' => 'Proses',    'bg' => 'bg-gray-100',    'text' => 'text-gray-600',  'border' => 'border-gray-300'],
+                                'dikemas'     => ['label' => 'Selesai',   'bg' => 'bg-emerald-100', 'text' => 'text-[#22543D]', 'border' => 'border-emerald-200'],
+                                'dibatalkan'  => ['label' => 'Dibatalkan','bg' => 'bg-red-50',      'text' => 'text-red-600',   'border' => 'border-red-200'],
                             ];
                             $st = $statusMap[$order->status] ?? ['label' => ucfirst($order->status), 'bg' => 'bg-gray-100', 'text' => 'text-gray-600', 'border' => 'border-gray-200'];
 
@@ -117,11 +114,11 @@
                                         email: '{{ $order->user->email ?? '' }}',
                                         inisial: '{{ $inisial }}',
                                         status: '{{ $st['label'] }}',
-                                        statusColor: '{{ in_array($order->status, ['selesai','dikemas']) ? 'emerald' : (in_array($order->status, ['dikirim']) ? 'blue' : (in_array($order->status, ['dibatalkan']) ? 'red' : 'orange')) }}',
+                                        statusColor: '{{ $order->status === 'selesai' ? 'emerald' : ($order->status === 'dibatalkan' ? 'red' : 'orange') }}',
                                         metode: 'QRIS / Transfer',
                                         total: 'Rp {{ number_format($totalBayar, 0, ',', '.') }}',
-                                        mulai: '{{ optional($order->start_date)->format('d M Y') ?? '-' }}',
-                                        selesai: '{{ optional($order->end_date)->format('d M Y') ?? '-' }}',
+                                        mulai: '{{ $order->start_date ? \Carbon\Carbon::parse($order->start_date)->format('d M Y') : '-' }}',
+                                        selesai: '{{ $order->end_date ? \Carbon\Carbon::parse($order->end_date)->format('d M Y') : '-' }}',
                                         noHp: '{{ $order->customer_phone ?? '-' }}',
                                         alamat: '{{ addslashes($order->customer_address ?? '-') }}',
                                         items: {{ json_encode($orderItems->values()) }}
@@ -281,9 +278,9 @@
 
             </div>
 
-            {{-- Footer --}}
-            <div class="px-5 py-3 border-t border-gray-100 text-center">
-                <button @click="openDetail = false" class="text-sm text-gray-400 hover:text-gray-600 transition-colors">
+            {{-- Footer & Action Button --}}
+            <div class="px-5 py-4 border-t border-gray-100 bg-gray-50/50 flex flex-col gap-2.5">
+                <button @click="openDetail = false" class="w-full text-xs text-gray-400 hover:text-gray-600 font-medium py-1 transition-colors">
                     Tutup
                 </button>
             </div>
@@ -292,5 +289,4 @@
     </div>
 
 </div>
-
 @endsection

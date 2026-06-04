@@ -168,6 +168,7 @@ Route::prefix('admin')->middleware('admin.auth')->name('admin.')->group(function
 
     // Pembayaran - BARU
     Route::get('/pembayaran', [PaymentController::class, 'adminIndex'])->name('pembayaran');
+    Route::post('/pembayaran/{id}/kirim', [PaymentController::class, 'kirimPesanan'])->name('pembayaran.kirim'); // ← Tambahkan baris ini
 
     // Pengiriman
     Route::get('/pengiriman',                 [DeliveryController::class, 'pengiriman'])->name('pengiriman');
