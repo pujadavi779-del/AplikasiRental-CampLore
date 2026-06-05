@@ -117,23 +117,33 @@
             {{-- RENTAL LIST --}}
             @forelse($rentals as $index => $rental)
 
-            @php
+           @php
             $status = strtolower($rental->status ?? 'belum_bayar');
 
             $badgeClass = 'bg-[#f3f4f6] text-[#6b7280] border border-[#e5e7eb]';
             $badgeLabel = ucfirst($status);
+            
             if ($status === 'belum_bayar') { $badgeClass = 'bg-[#fff7ed] text-[#c2410c] border border-[#fed7aa]'; $badgeLabel = 'Belum Bayar'; }
             if ($status === 'dikemas') { $badgeClass = 'bg-[#f0fdf4] text-[#15803d] border border-[#bbf7d0]'; $badgeLabel = 'Dikemas'; }
-            if ($status === 'dikirim') { $badgeClass = 'bg-[#eff6ff] text-[#1d4ed8] border border-[#bfdbfe]'; $badgeLabel = 'Dikirim'; }
-            if ($status === 'selesai') { $badgeClass = 'bg-[#f0fdf4] text-[#166534] border border-[#86efac]'; $badgeLabel = 'Selesai'; }
+            if ($status === 'dikirim' || $status === 'jalan') { $badgeClass = 'bg-[#eff6ff] text-[#1d4ed8] border border-[#bfdbfe]'; $badgeLabel = 'Dikirim'; }
+            if ($status === 'selesai' || $status === 'tiba') { $badgeClass = 'bg-[#f0fdf4] text-[#166534] border border-[#86efac]'; $badgeLabel = 'Selesai'; }
             if ($status === 'dibatalkan') { $badgeClass = 'bg-[#fef2f2] text-[#991b1b] border border-[#fecaca]'; $badgeLabel = 'Dibatalkan'; }
             if ($status === 'pengembalian') { $badgeClass = 'bg-[#faf5ff] text-[#7e22ce] border border-[#e9d5ff]'; $badgeLabel = 'Pengembalian'; }
 
-            $stepIndex = 0;
-            if ($status === 'dikemas') $stepIndex = 1;
-            if ($status === 'dikirim') $stepIndex = 2;
-            if ($status === 'selesai') $stepIndex = 3;
-            $showProgress = in_array($status, ['dikemas','dikirim','selesai']);
+            // LOGIKA STEP INDEX UNTUK MENYALAKAN GARIS PROGRESS
+            $stepIndex = 0; 
+            if (in_array($status, ['dikemas', 'dikirim', 'jalan', 'selesai', 'tiba'])) {
+                $stepIndex = 1; // Menyalakan titik "Dikemas"
+            }
+            if (in_array($status, ['dikirim', 'jalan', 'selesai', 'tiba'])) {
+                $stepIndex = 2; // Menyalakan titik & garis sampai ke "Dikirim"
+            }
+            if (in_array($status, ['selesai', 'tiba'])) {
+                $stepIndex = 3; // Menyalakan titik & garis sampai ke "Diterima/Selesai"
+            }
+
+            // Progress bar akan muncul jika status ada di list ini
+            $showProgress = in_array($status, ['dikemas', 'jalan', 'dikirim', 'tiba', 'selesai']);
 
             $items = $rental->items ?? [];
             $itemCount = count($items);

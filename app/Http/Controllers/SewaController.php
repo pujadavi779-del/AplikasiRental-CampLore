@@ -16,8 +16,14 @@ class SewaController extends Controller
             ->orderBy('created_at', 'desc');
 
         if ($activeStatus !== 'semua') {
-            $query->where('status', $activeStatus);
-        }
+    if ($activeStatus === 'dikirim') {
+        $query->whereIn('status', ['dikirim', 'jalan']);
+    } elseif ($activeStatus === 'selesai') {
+        $query->whereIn('status', ['selesai', 'tiba']);
+    } else {
+        $query->where('status', $activeStatus);
+    }
+}
 
         $orders = $query->get()->groupBy('order_id')->map(function ($items) {
             $first = $items->first();

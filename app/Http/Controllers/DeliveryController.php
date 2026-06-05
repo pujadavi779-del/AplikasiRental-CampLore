@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Order;
-use Illuminate\Http\Request;  
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\BarangTibaMail;
 use Illuminate\Support\Facades\Storage;
@@ -11,45 +11,47 @@ use Illuminate\Support\Facades\Storage;
 class DeliveryController extends Controller
 {
     // 1. TAMPILAN DAFTAR PENGIRIMAN
-public function pengiriman()
-{
-    // Sistem otomatis mengambil data transaksi yang statusnya 'selesai', 'jalan', atau 'tiba'
-    $orders = \App\Models\Order::with(['user', 'product'])
-        ->whereIn('status', ['dikemas', 'jalan', 'tiba'])
-        ->get()
-        ->groupBy('order_id');
+    public function pengiriman()
+    {
+        $orders = \App\Models\Order::with(['user', 'product'])
+            ->whereIn('status', ['dikemas', 'jalan', 'tiba'])
+            ->get()
+            ->groupBy('order_id');
 
-    $pengiriman = [];
+        $pengiriman = [];
 
-            foreach ($orders as $orderId => $items) {
+        foreach ($orders as $orderId => $items) {
             $firstItem = $items->first();
 
-            // Mapping status DB → label pengiriman
-            $statusPengiriman = 'proses'; // default
+            // Mapping status DB → status pengiriman
             if ($firstItem->status === 'dikemas') {
                 $statusPengiriman = 'proses'; // Menunggu Pengantaran
             } elseif ($firstItem->status === 'jalan') {
-                $statusPengiriman = 'jalan';
+                $statusPengiriman = 'jalan';  // Sedang Diantar
             } elseif ($firstItem->status === 'tiba') {
-                $statusPengiriman = 'tiba';
+                $statusPengiriman = 'tiba';   // Sampai di Tujuan
+            } else {
+                $statusPengiriman = 'proses';
             }
 
             $pengiriman[] = [
                 'id_pesanan'    => $orderId,
                 'pemesan'       => $firstItem->customer_name ?? ($firstItem->user->name ?? '-'),
-                'alamat'        => $firstItem->customer_address,
-                'no_hp'         => $firstItem->customer_phone,
-                'tanggal_mulai' => \Carbon\Carbon::parse($firstItem->start_date)->format('d M Y'),
+                'alamat'        => $firstItem->customer_address ?? '-',
+                'no_hp'         => $firstItem->customer_phone ?? '-',
+                'tanggal_mulai' => $firstItem->start_date
+                    ? \Carbon\Carbon::parse($firstItem->start_date)->format('d M Y')
+                    : '-',
                 'barang'        => $items->map(fn($item) => [
                     'nama'   => $item->product->name ?? 'Produk',
-                    'jumlah' => $item->quantity
+                    'jumlah' => $item->quantity ?? 1,
                 ])->toArray(),
-                'status' => $statusPengiriman,
+                'status'        => $statusPengiriman,
             ];
         }
 
-    return view('pages.admin.pengiriman', compact('pengiriman'));
-}
+        return view('pages.admin.pengiriman', compact('pengiriman'));
+    }
 
     // 2. TAMPILAN DETAIL PENGIRIMAN
     public function detail($id)
@@ -64,33 +66,47 @@ public function pengiriman()
 
         $firstItem = $items->first();
 
-        // Mapping ke array agar blade view kamu tidak perlu dirombak total
+        // Mapping status DB → status pengiriman detail
+        if ($firstItem->status === 'dikemas') {
+            $statusDetail = 'proses';
+        } elseif ($firstItem->status === 'jalan') {
+            $statusDetail = 'jalan';
+        } elseif ($firstItem->status === 'tiba' || $firstItem->status === 'disewa') {
+            $statusDetail = 'tiba';
+        } else {
+            $statusDetail = 'proses';
+        }
+
         $pengiriman = [
             'id_pesanan'      => $firstItem->order_id,
-            'pemesan'         => $firstItem->customer_name ?? $firstItem->user->name,
-            'alamat'          => $firstItem->customer_address,
-            'no_hp'           => $firstItem->customer_phone,
-            'tanggal_mulai'   => \Carbon\Carbon::parse($firstItem->start_date)->format('d M Y'),
-            'tanggal_selesai' => \Carbon\Carbon::parse($firstItem->end_date)->format('d M Y'),
-            'status'          => $firstItem->status,
-            'foto_terima'     => $firstItem->note_admin ? asset('storage/' . $firstItem->note_admin) : null,
+            'pemesan'         => $firstItem->customer_name ?? ($firstItem->user->name ?? '-'),
+            'alamat'          => $firstItem->customer_address ?? '-',
+            'no_hp'           => $firstItem->customer_phone ?? '-',
+            'tanggal_mulai'   => $firstItem->start_date
+                ? \Carbon\Carbon::parse($firstItem->start_date)->format('d M Y')
+                : '-',
+            'tanggal_selesai' => $firstItem->end_date
+                ? \Carbon\Carbon::parse($firstItem->end_date)->format('d M Y')
+                : '-',
+            'status'          => $statusDetail,
+            'foto_terima'     => $firstItem->note_admin
+                ? asset('storage/' . $firstItem->note_admin)
+                : null,
             'barang'          => $items->map(fn($item) => [
                 'nama'     => $item->product->name ?? 'Produk Dihapus',
                 'kategori' => $item->product->category ?? '-',
-                'jumlah'   => $item->quantity
-            ])->toArray()
+                'jumlah'   => $item->quantity ?? 1,
+            ])->toArray(),
         ];
 
         return view('pages.admin.pengiriman_detail', compact('pengiriman'));
     }
 
-    // 3. UPDATE STATUS & UPLOAD FOTO (API/Fetch & Form)
+    // 3. UPDATE STATUS (Kurir Berangkat → jalan, Konfirmasi Diterima → tiba)
     public function updateStatus(Request $request, $id)
     {
-        // Validasi input status
         $statusBaru = $request->input('status');
-        
-        // Cari semua row item dengan order_id yang sama
+
         $orders = Order::where('order_id', $id)->get();
 
         if ($orders->isEmpty()) {
@@ -102,38 +118,52 @@ public function pengiriman()
 
         $updateData = ['status' => $statusBaru];
 
-        // Jika ada file foto bukti diterima saat status diset ke 'tiba' (dari Modal)
+        // Jika ada foto bukti diterima (status tiba)
         if ($request->hasFile('foto_terima')) {
             $file = $request->file('foto_terima');
             $path = $file->store('bukti_diterima', 'public');
-            
-            // Kita simpan path gambar ke note_admin (atau kolom foto jika kamu punya)
             $updateData['note_admin'] = $path;
-            
-            // Jika status tiba, sekalian ubah status order menjadi 'disewa' sesuai alur sewa jalan
-            $updateData['status'] = 'disewa'; 
+            $updateData['status']     = 'tiba';
         }
 
-        // Jalankan Update untuk seluruh item dalam order_id tersebut
+        // Update semua item dalam order_id ini
         Order::where('order_id', $id)->update($updateData);
 
-        // Kirim Email Notifikasi jika barang sudah sampai / disewa
-        if ($statusBaru === 'tiba' || $updateData['status'] === 'disewa') {
+        // Kirim email notifikasi kalau barang sudah tiba
+        if (($updateData['status'] ?? '') === 'tiba') {
             try {
                 $firstOrder = $orders->first();
-                // Kirim email ke user pemilik order
                 Mail::to($firstOrder->user->email)->send(new BarangTibaMail($firstOrder));
             } catch (\Exception $e) {
-                // Log error atau abaikan agar aplikasi tidak crash
+                // Abaikan error email agar app tidak crash
             }
         }
 
-        // Response balik berdasarkan cara panggil (Fetch JS / Form submit)
         if ($request->expectsJson()) {
             return response()->json(['success' => true]);
         }
 
         return redirect()->route('admin.pengiriman.detail', $id)
             ->with('success', 'Status pengiriman berhasil diperbarui.');
+
+        if ($request->hasFile('foto_terima')) {
+            \Log::info('File ada: ' . $request->file('foto_terima')->getClientOriginalName());
+            $file = $request->file('foto_terima');
+            $path = $file->store('bukti_diterima', 'public');
+            \Log::info('Path tersimpan: ' . $path);
+            $updateData['note_admin'] = $path;
+            $updateData['status'] = 'tiba';
+        } else {
+            \Log::info('TIDAK ADA FILE foto_terima di request!');
+        }
+    }
+
+    // Tandai sudah tiba (route lama, tetap dipertahankan)
+    public function tandaiSudahTiba($id)
+    {
+        Order::where('order_id', $id)->update(['status' => 'tiba']);
+
+        return redirect()->route('admin.pengiriman.detail', $id)
+            ->with('success', 'Pesanan ditandai sudah tiba.');
     }
 }

@@ -8,36 +8,35 @@
 @endphp
 @section('content')
 
-
-
 @php
     $status     = $pengiriman['status'] ?? 'proses';
-    $idPesanan = $pengiriman['id_pesanan'] ?? 'CMP-000';
-    $pemesan   = $pengiriman['pemesan'] ?? '-';
-    $noHp      = $pengiriman['no_hp'] ?? '-';
-    $alamat    = $pengiriman['alamat'] ?? '-';
-    $tglMulai  = $pengiriman['tanggal_mulai'] ?? '-';
-    $tglSelesai= $pengiriman['tanggal_selesai'] ?? '-';
-    $fotoTerima= $pengiriman['foto_terima'] ?? null;
-    $barangList= is_array($pengiriman['barang'] ?? null) ? $pengiriman['barang'] : [['nama' => $pengiriman['barang'] ?? '-', 'kategori' => $pengiriman['kategori'] ?? '-']];
+    $idPesanan  = $pengiriman['id_pesanan'] ?? 'CMP-000';
+    $pemesan    = $pengiriman['pemesan'] ?? '-';
+    $noHp       = $pengiriman['no_hp'] ?? '-';
+    $alamat     = $pengiriman['alamat'] ?? '-';
+    $tglMulai   = $pengiriman['tanggal_mulai'] ?? '-';
+    $tglSelesai = $pengiriman['tanggal_selesai'] ?? '-';
+    $fotoTerima = $pengiriman['foto_terima'] ?? null;
+    $barangList = is_array($pengiriman['barang'] ?? null)
+        ? $pengiriman['barang']
+        : [['nama' => $pengiriman['barang'] ?? '-', 'kategori' => $pengiriman['kategori'] ?? '-']];
 
-    // Urutan tetap 3: Menunggu Pengantaran -> Sedang Diantar -> Sampai di Tujuan
     $steps = [
-        ['key' => 'proses',  'label' => 'Menunggu Pengantaran',  'desc' => 'Barang siap diantar oleh kurir.'],
-        ['key' => 'jalan',   'label' => 'Sedang Diantar',        'desc' => 'Barang dalam perjalanan ke tujuan.'],
-        ['key' => 'tiba',    'label' => 'Sampai di Tujuan',      'desc' => 'Barang telah diterima oleh pelanggan.'],
+        ['key' => 'proses', 'label' => 'Menunggu Pengantaran', 'desc' => 'Barang siap diantar oleh kurir.'],
+        ['key' => 'jalan',  'label' => 'Sedang Diantar',       'desc' => 'Barang dalam perjalanan ke tujuan.'],
+        ['key' => 'tiba',   'label' => 'Sampai di Tujuan',     'desc' => 'Barang telah diterima oleh pelanggan.'],
     ];
 
-    $orderMap = ['proses' => 0, 'jalan' => 1, 'tiba' => 2];
+    $orderMap   = ['proses' => 0, 'jalan' => 1, 'tiba' => 2];
     $currentIdx = $orderMap[$status] ?? 0;
 @endphp
 
 <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 max-w-full">
 
-    {{-- ══ KIRI: Status Kendaraan + Info ══ --}}
+    {{-- ══ KIRI (col-span-2) ══ --}}
     <div class="lg:col-span-2 flex flex-col gap-5">
 
-        {{-- Card: Status Aksi Driver --}}
+        {{-- Card: Status Kendaraan --}}
         <div class="bg-white rounded-[24px] border border-[#d7e6de] shadow-sm overflow-hidden">
             <div class="p-5 flex items-start justify-between gap-3 border-b border-[#eef4f0]">
                 <div>
@@ -62,10 +61,8 @@
                 </span>
             </div>
 
-            {{-- Action Buttons --}}
             <div class="p-5 flex flex-col gap-3">
                 @if($status === 'proses')
-                    {{-- Status awal: Menunggu Pengantaran, tombolnya langsung mengubah ke 'jalan' --}}
                     <div class="flex items-center gap-3 px-5 py-4 rounded-2xl bg-amber-50 border border-amber-200">
                         <div class="w-9 h-9 rounded-xl bg-amber-100 flex items-center justify-center flex-shrink-0">
                             <svg class="w-5 h-5 text-amber-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -77,7 +74,6 @@
                             <div class="text-[11px] text-amber-600">Kurir siap berangkat dari Hub Logistik</div>
                         </div>
                     </div>
-                    
                     <form method="POST" action="{{ route('admin.pengiriman.update-status', $idPesanan) }}">
                         @csrf @method('PATCH')
                         <input type="hidden" name="status" value="jalan">
@@ -112,7 +108,6 @@
                             <div class="text-[11px] text-blue-600">Kurir dalam perjalanan menuju tujuan</div>
                         </div>
                     </div>
-                    {{-- Konfirmasi diterima dengan upload foto --}}
                     <button type="button" onclick="bukaKonfirmasiTiba()"
                         class="w-full flex items-center justify-between gap-4 bg-emerald-600 hover:bg-emerald-700 text-white rounded-2xl px-5 py-4 transition-colors group">
                         <div class="flex items-center gap-3">
@@ -143,15 +138,6 @@
                             <div class="text-[11px] text-emerald-600">Pengiriman telah selesai</div>
                         </div>
                     </div>
-                    @if($fotoTerima)
-                    <a href="{{ $fotoTerima }}" target="_blank"
-                        class="flex items-center gap-3 px-5 py-3 rounded-2xl border border-[#d7e6de] bg-[#f0fdf4] hover:bg-[#d1fae5] transition-colors">
-                        <svg class="w-5 h-5 text-[#22543D]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
-                        </svg>
-                        <span class="text-sm font-semibold text-[#22543D]">Lihat Foto Bukti Diterima</span>
-                    </a>
-                    @endif
                 @endif
             </div>
         </div>
@@ -178,14 +164,50 @@
                     <span class="text-[10px] font-bold uppercase tracking-widest text-[#7c8b84]">Item</span>
                 </div>
                 @foreach($barangList as $b)
-                <div class="text-sm font-bold text-gray-800">{{ $b['nama'] }}</div>
-                @if(isset($b['jumlah']))
-                <div class="text-[11px] text-gray-500 mt-0.5">{{ $b['jumlah'] }}x {{ $b['kategori'] ?? '' }}</div>
-                @endif
+                    <div class="text-sm font-bold text-gray-800">{{ $b['nama'] }}</div>
+                    @if(isset($b['jumlah']))
+                        <div class="text-[11px] text-gray-500 mt-0.5">{{ $b['jumlah'] }}x {{ $b['kategori'] ?? '' }}</div>
+                    @endif
                 @endforeach
             </div>
         </div>
-    </div>
+
+        {{-- Card: Foto Dokumentasi (hanya muncul kalau status tiba) --}}
+        @if($fotoTerima)
+        <div class="bg-white rounded-[20px] border border-[#d7e6de] shadow-sm overflow-hidden">
+            <div class="flex items-center justify-between px-5 py-4 border-b border-[#eef4f0]">
+                <div class="flex items-center gap-2">
+                    <svg class="w-5 h-5 text-[#22543D]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                    </svg>
+                    <span class="font-bold text-gray-800 text-sm">Foto Dokumentasi Diterima</span>
+                </div>
+                <div class="flex gap-2">
+                    <a href="{{ $fotoTerima }}" target="_blank"
+                        class="p-2 rounded-lg hover:bg-gray-100 text-gray-500 transition" title="Perbesar">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7"/>
+                        </svg>
+                    </a>
+                    <a href="{{ $fotoTerima }}" download
+                        class="p-2 rounded-lg hover:bg-gray-100 text-gray-500 transition" title="Unduh">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+                        </svg>
+                    </a>
+                </div>
+            </div>
+            <div class="p-5 bg-gray-50">
+                <div class="rounded-xl overflow-hidden border border-gray-200 shadow-sm bg-white">
+                    <img src="{{ $fotoTerima }}"
+                        alt="Bukti Diterima {{ $pemesan }}"
+                        class="w-full object-contain max-h-80">
+                </div>
+            </div>
+        </div>
+        @endif
+
+    </div>{{-- tutup lg:col-span-2 --}}
 
     {{-- ══ KANAN: Timeline + Info Penerima ══ --}}
     <div class="flex flex-col gap-5">
@@ -193,7 +215,6 @@
         {{-- Status Timeline --}}
         <div class="bg-white rounded-[24px] border border-[#d7e6de] shadow-sm p-5">
             <div class="text-[10px] font-bold uppercase tracking-widest text-[#7c8b84] mb-4">Status Timeline</div>
-
             <div class="flex flex-col gap-0">
                 @foreach($steps as $i => $step)
                 @php
@@ -201,7 +222,6 @@
                     $current = $i === $currentIdx;
                 @endphp
                 <div class="flex gap-3">
-                    {{-- dot + line --}}
                     <div class="flex flex-col items-center w-7 flex-shrink-0">
                         <div class="w-7 h-7 rounded-full flex items-center justify-center mt-0.5
                             {{ $done ? 'bg-[#22543D]' : 'bg-gray-100 border border-gray-200' }}">
@@ -217,7 +237,6 @@
                             <div class="w-0.5 flex-1 my-1 {{ $done ? 'bg-[#22543D]/30' : 'bg-gray-100' }}"></div>
                         @endif
                     </div>
-                    {{-- text --}}
                     <div class="pb-4 flex-1 pt-0.5">
                         <div class="text-sm font-{{ $current ? 'bold' : 'semibold' }} {{ $done ? 'text-gray-800' : 'text-gray-400' }}">
                             {{ $step['label'] }}
@@ -268,8 +287,10 @@
                 Hubungi Penerima
             </a>
         </div>
-    </div>
-</div>
+
+    </div>{{-- tutup kolom kanan --}}
+
+</div>{{-- tutup grid --}}
 
 {{-- ══ MODAL KONFIRMASI TERIMA ══ --}}
 <div id="modalKonfTiba" style="display:none; position:fixed; inset:0; z-index:99999; background:rgba(0,0,0,0.55); overflow-y:auto;" onclick="if(event.target===this)tutupKonfirmasiTiba()">
@@ -282,7 +303,6 @@
 
         <div style="padding:20px 22px;">
             <label style="font-size:11px; font-weight:600; color:#374151; display:block; margin-bottom:10px;">Foto Bukti Diterima <span style="color:#ef4444;">*</span></label>
-
             <div id="dropZoneTiba" onclick="document.getElementById('fotoTerimaTiba').click()"
                 style="border:2px dashed #d1d5db; border-radius:16px; padding:24px 16px; background:#f9fafb; cursor:pointer; text-align:center; transition:all .2s;">
                 <div style="font-size:28px; margin-bottom:6px;">🖼️</div>
@@ -290,7 +310,6 @@
                 <div style="font-size:11px; color:#9ca3af; margin-top:3px;">JPG, PNG, WEBP — maks. 5 MB</div>
                 <input type="file" id="fotoTerimaTiba" accept="image/*" style="display:none;" onchange="previewFotoTiba(this)">
             </div>
-
             <div id="previewWrapTiba" style="display:none; margin-top:12px; border-radius:14px; overflow:hidden; border:1px solid #d1fae5;">
                 <img id="previewImgTiba" src="" alt="Preview" style="width:100%; max-height:200px; object-fit:cover; display:block;">
                 <div style="padding:10px 12px; display:flex; align-items:center; justify-content:space-between; background:#f0fdf4;">
@@ -338,32 +357,51 @@ function submitTiba() {
     var foto = document.getElementById('fotoTerimaTiba').files[0];
     if (!foto) { alert('Mohon upload foto bukti terlebih dahulu.'); return; }
 
+    var btn = document.querySelector('button[onclick="submitTiba()"]');
+    btn.disabled = true;
+    btn.textContent = 'Menyimpan...';
+
+    var csrfToken = document.querySelector('meta[name="csrf-token"]');
+    if (!csrfToken) {
+        alert('CSRF token tidak ditemukan!');
+        btn.disabled = false;
+        btn.textContent = 'Simpan & Konfirmasi';
+        return;
+    }
+
     var formData = new FormData();
     formData.append('status', 'tiba');
     formData.append('foto_terima', foto);
-    formData.append('_method', 'PATCH'); // Menyesuaikan spoofing method PATCH di route
-    formData.append('_token', document.querySelector('meta[name="csrf-token"]').content);
+    formData.append('_method', 'PATCH');
+    formData.append('_token', csrfToken.content);
 
     fetch('{{ route("admin.pengiriman.update-status", $idPesanan) }}', {
         method: 'POST',
-        body: formData, // ← SUDAH DIPERBAKI: Sebelumnya 'deskripsi:', diganti jadi 'body:'
-        headers: {
-            'X-Requested-With': 'XMLHttpRequest' // Menandakan bahwa ini Request AJAX/JSON
+        body: formData,
+        headers: { 'X-Requested-With': 'XMLHttpRequest' }
+    })
+    .then(function(res) {
+        if (!res.ok) {
+            return res.text().then(function(text) {
+                throw new Error('Server error ' + res.status + ': ' + text.substring(0, 200));
+            });
         }
-    }).then(function(res) {
         return res.json();
-    }).then(function(data) {
-        if (data.success) { 
-            window.location.reload(); 
-        } else { 
-            alert('Gagal menyimpan: ' + (data.message || 'Coba lagi.')); 
+    })
+    .then(function(data) {
+        if (data.success) {
+            window.location.reload();
+        } else {
+            alert('Gagal: ' + (data.message || 'Coba lagi.'));
+            btn.disabled = false;
+            btn.textContent = 'Simpan & Konfirmasi';
         }
-    }).catch(function() { 
-        alert('Terjadi kesalahan jaringan.'); 
+    })
+    .catch(function(err) {
+        alert('Error: ' + err.message);
+        btn.disabled = false;
+        btn.textContent = 'Simpan & Konfirmasi';
     });
-}
-function cetakSuratJalan() {
-    window.print();
 }
 </script>
 
