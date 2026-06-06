@@ -89,8 +89,8 @@
             ['label' => 'Belum Bayar', 'value' => 'belum_bayar'],
             ['label' => 'Dikemas', 'value' => 'dikemas'],
             ['label' => 'Dikirim', 'value' => 'dikirim'],
-            ['label' => 'Selesai', 'value' => 'selesai'],
             ['label' => 'Pengembalian', 'value' => 'pengembalian'],
+            ['label' => 'Selesai', 'value' => 'selesai'],
             ['label' => 'Dibatalkan', 'value' => 'dibatalkan'],
             ];
             @endphp
@@ -109,7 +109,16 @@
 
             {{-- Sort rentals by status --}}
             @php
-            $statusOrder = ['belum_bayar'=>1,'dikemas'=>2,'dikirim'=>3,'pengembalian'=>4,'selesai'=>5,'dibatalkan'=>6];
+            $statusOrder = [
+            'belum_bayar' => 1,
+            'dikemas' => 2,
+            'dikirim' => 3,
+            'jalan' => 3,
+            'pengembalian' => 4,
+            'selesai' => 5,
+            'tiba' => 5,
+            'dibatalkan' => 6,
+            ];
             usort($orders, fn($a,$b) => ($statusOrder[$a->status]??99) - ($statusOrder[$b->status]??99));
             $rentals = $orders;
             @endphp
@@ -117,12 +126,12 @@
             {{-- RENTAL LIST --}}
             @forelse($rentals as $index => $rental)
 
-           @php
+            @php
             $status = strtolower($rental->status ?? 'belum_bayar');
 
             $badgeClass = 'bg-[#f3f4f6] text-[#6b7280] border border-[#e5e7eb]';
             $badgeLabel = ucfirst($status);
-            
+
             if ($status === 'belum_bayar') { $badgeClass = 'bg-[#fff7ed] text-[#c2410c] border border-[#fed7aa]'; $badgeLabel = 'Belum Bayar'; }
             if ($status === 'dikemas') { $badgeClass = 'bg-[#f0fdf4] text-[#15803d] border border-[#bbf7d0]'; $badgeLabel = 'Dikemas'; }
             if ($status === 'dikirim' || $status === 'jalan') { $badgeClass = 'bg-[#eff6ff] text-[#1d4ed8] border border-[#bfdbfe]'; $badgeLabel = 'Dikirim'; }
@@ -131,19 +140,19 @@
             if ($status === 'pengembalian') { $badgeClass = 'bg-[#faf5ff] text-[#7e22ce] border border-[#e9d5ff]'; $badgeLabel = 'Pengembalian'; }
 
             // LOGIKA STEP INDEX UNTUK MENYALAKAN GARIS PROGRESS
-            $stepIndex = 0; 
+            $stepIndex = 0;
             if (in_array($status, ['dikemas', 'dikirim', 'jalan', 'selesai', 'tiba'])) {
-                $stepIndex = 1; // Menyalakan titik "Dikemas"
+            $stepIndex = 1; // Menyalakan titik "Dikemas"
             }
             if (in_array($status, ['dikirim', 'jalan', 'selesai', 'tiba'])) {
-                $stepIndex = 2; // Menyalakan titik & garis sampai ke "Dikirim"
+            $stepIndex = 2; // Menyalakan titik & garis sampai ke "Dikirim"
             }
             if (in_array($status, ['selesai', 'tiba'])) {
-                $stepIndex = 3; // Menyalakan titik & garis sampai ke "Diterima/Selesai"
+            $stepIndex = 3; // Menyalakan titik & garis sampai ke "Diterima/Selesai"
             }
 
             // Progress bar akan muncul jika status ada di list ini
-            $showProgress = in_array($status, ['dikemas', 'jalan', 'dikirim', 'tiba', 'selesai']);
+            $showProgress = in_array($status, ['dikemas', 'jalan', 'dikirim', 'tiba', 'pengembalian', 'selesai']);
 
             $items = $rental->items ?? [];
             $itemCount = count($items);
@@ -317,10 +326,10 @@
                 {{-- Pengembalian info --}}
                 @if($status === 'pengembalian')
                 <div class="grid grid-cols-2 gap-2.5 mt-3.5">
-                    <div class="bg-[#f5f6f4] border border-[#e5e7eb] rounded-xl px-3.5 py-3">
-                        <div class="text-[11px] font-semibold text-[#6b7280] mb-1">Tanggal sewa</div>
-                        <div class="text-[15px] font-extrabold text-[#1a1a1a]">
-                            {{ isset($items[0]) ? \Carbon\Carbon::parse($items[0]->start_date)->format('d M Y') : '-' }}
+                    <div class="bg-[#fef2f2] border border-[#fecaca] rounded-xl px-3.5 py-3">
+                        <div class="text-[11px] font-semibold text-[#dc2626] mb-1">Batas Pengembalian</div>
+                        <div class="text-[15px] font-extrabold text-[#dc2626]">
+                            {{ isset($items[0]) ? \Carbon\Carbon::parse($items[0]->end_date)->format('d M Y') : '-' }}
                         </div>
                     </div>
                     <div class="bg-[#fef2f2] border border-[#fecaca] rounded-xl px-3.5 py-3">
@@ -337,10 +346,21 @@
                     </div>
                     <div class="flex gap-2 items-center">
                         <a href="#" class="px-[18px] py-[9px] rounded-[10px] text-xs font-bold bg-[#1a5c3a] text-white
-                                           hover:bg-[#2d7a52] transition-colors duration-200 no-underline inline-flex items-center gap-1.5">
+                           hover:bg-[#2d7a52] transition-colors duration-200 no-underline inline-flex items-center gap-1.5">
                             Bayar
                         </a>
                     </div>
+                </div>
+
+                {{-- Note denda -- tambahkan ini --}}
+                <div class="flex items-start gap-2 mt-2 px-1">
+                    <svg class="w-3.5 h-3.5 text-[#c2410c] flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" />
+                    </svg>
+                    <p class="text-[11px] text-[#c2410c] font-semibold leading-relaxed">
+                        Keterlambatan pengembalian dikenakan denda <span class="font-extrabold">Rp 10.000 per hari</span>. Segera kembalikan barang untuk menghindari denda tambahan.
+                    </p>
                 </div>
                 @endif
 
@@ -352,6 +372,13 @@
 
                 {{-- Progress bar --}}
                 @if($showProgress)
+                @php
+                $stepIndex = 0;
+                if (in_array($status, ['dikemas','dikirim','jalan','pengembalian','selesai','tiba'])) $stepIndex = 1;
+                if (in_array($status, ['dikirim','jalan','pengembalian','selesai','tiba'])) $stepIndex = 2;
+                if (in_array($status, ['pengembalian','selesai'])) $stepIndex = 3;
+                if ($status === 'selesai') $stepIndex = 4;
+                @endphp
                 <div class="mt-3.5">
                     <div class="flex items-center">
                         <div class="w-[13px] h-[13px] rounded-full bg-[#1a5c3a] flex-shrink-0"></div>
@@ -361,12 +388,15 @@
                         <div class="w-[13px] h-[13px] rounded-full flex-shrink-0 {{ $stepIndex >= 2 ? 'bg-[#1a5c3a]' : 'bg-[#e5e7eb]' }}"></div>
                         <div class="{{ $stepIndex >= 3 ? 'prog-line-on' : 'prog-line-off' }}"></div>
                         <div class="w-[13px] h-[13px] rounded-full flex-shrink-0 {{ $stepIndex >= 3 ? 'bg-[#1a5c3a]' : 'bg-[#e5e7eb]' }}"></div>
+                        <div class="{{ $stepIndex >= 4 ? 'prog-line-on' : 'prog-line-off' }}"></div>
+                        <div class="w-[13px] h-[13px] rounded-full flex-shrink-0 {{ $stepIndex >= 4 ? 'bg-[#1a5c3a]' : 'bg-[#e5e7eb]' }}"></div>
                     </div>
                     <div class="flex mt-1.5">
                         <div class="flex-1 text-center text-[10px] font-bold text-[#1a5c3a]">Pesanan dibuat</div>
                         <div class="flex-1 text-center text-[10px] {{ $stepIndex >= 1 ? 'font-bold text-[#1a5c3a]' : 'font-semibold text-[#9ca3af]' }}">Dikemas</div>
                         <div class="flex-1 text-center text-[10px] {{ $stepIndex >= 2 ? 'font-bold text-[#1a5c3a]' : 'font-semibold text-[#9ca3af]' }}">Dikirim</div>
-                        <div class="flex-1 text-center text-[10px] {{ $stepIndex >= 3 ? 'font-bold text-[#1a5c3a]' : 'font-semibold text-[#9ca3af]' }}">Diterima</div>
+                        <div class="flex-1 text-center text-[10px] {{ $stepIndex >= 3 ? 'font-bold text-[#1a5c3a]' : 'font-semibold text-[#9ca3af]' }}">Pengembalian</div>
+                        <div class="flex-1 text-center text-[10px] {{ $stepIndex >= 4 ? 'font-bold text-[#1a5c3a]' : 'font-semibold text-[#9ca3af]' }}">Selesai</div>
                     </div>
                 </div>
                 @endif
@@ -444,7 +474,7 @@
     </div>
     @endforelse
 
-</main>
+    </main>
 </div>
 </div>
 
@@ -455,110 +485,121 @@
     data-client-key="{{ env('MIDTRANS_CLIENT_KEY') }}"></script>
 
 <script>
-document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', function() {
 
-    // Auto-hide flash
-    setTimeout(function() {
-        var el = document.getElementById('flash-msg');
-        if (el) {
-            el.style.transition = 'opacity 0.4s';
-            el.style.opacity = '0';
-            setTimeout(function() { el.remove(); }, 400);
+        // Auto-hide flash
+        setTimeout(function() {
+            var el = document.getElementById('flash-msg');
+            if (el) {
+                el.style.transition = 'opacity 0.4s';
+                el.style.opacity = '0';
+                setTimeout(function() {
+                    el.remove();
+                }, 400);
+            }
+        }, 4000);
+
+        // Countdown timers
+        function updateCountdowns() {
+            var els = document.querySelectorAll('.timer-countdown[data-deadline]');
+            for (var i = 0; i < els.length; i++) {
+                var el = els[i];
+                var deadline = parseInt(el.getAttribute('data-deadline')) * 1000;
+                var diff = Math.max(0, Math.floor((deadline - Date.now()) / 1000));
+                if (diff <= 0) {
+                    el.textContent = '00:00:00';
+                    continue;
+                }
+                var h = String(Math.floor(diff / 3600)).padStart(2, '0');
+                var m = String(Math.floor((diff % 3600) / 60)).padStart(2, '0');
+                var s = String(diff % 60).padStart(2, '0');
+                el.textContent = h + ':' + m + ':' + s;
+            }
         }
-    }, 4000);
+        updateCountdowns();
+        setInterval(updateCountdowns, 1000);
 
-    // Countdown timers
-    function updateCountdowns() {
-        var els = document.querySelectorAll('.timer-countdown[data-deadline]');
-        for (var i = 0; i < els.length; i++) {
-            var el = els[i];
-            var deadline = parseInt(el.getAttribute('data-deadline')) * 1000;
-            var diff = Math.max(0, Math.floor((deadline - Date.now()) / 1000));
-            if (diff <= 0) { el.textContent = '00:00:00'; continue; }
-            var h = String(Math.floor(diff / 3600)).padStart(2, '0');
-            var m = String(Math.floor((diff % 3600) / 60)).padStart(2, '0');
-            var s = String(diff % 60).padStart(2, '0');
-            el.textContent = h + ':' + m + ':' + s;
-        }
-    }
-    updateCountdowns();
-    setInterval(updateCountdowns, 1000);
+        window.toggleItems = function(rentalId, hiddenCount) {
+            var wrap = document.getElementById('hidden-items-' + rentalId);
+            var btn = document.getElementById('toggle-btn-' + rentalId);
+            if (!wrap || !btn) return;
+            var isOpen = wrap.style.display === 'block';
+            if (isOpen) {
+                wrap.style.display = 'none';
+                btn.classList.remove('open');
+                btn.innerHTML = '<svg fill="none" viewBox="0 0 24 24" stroke="currentColor" width="14" height="14"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/></svg> + ' + hiddenCount + ' produk lainnya';
+            } else {
+                wrap.style.display = 'block';
+                btn.classList.add('open');
+                btn.innerHTML = '<svg fill="none" viewBox="0 0 24 24" stroke="currentColor" width="14" height="14"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 15l7-7 7 7"/></svg> Sembunyikan';
+            }
+        };
 
-    window.toggleItems = function(rentalId, hiddenCount) {
-        var wrap = document.getElementById('hidden-items-' + rentalId);
-        var btn = document.getElementById('toggle-btn-' + rentalId);
-        if (!wrap || !btn) return;
-        var isOpen = wrap.style.display === 'block';
-        if (isOpen) {
-            wrap.style.display = 'none';
-            btn.classList.remove('open');
-            btn.innerHTML = '<svg fill="none" viewBox="0 0 24 24" stroke="currentColor" width="14" height="14"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/></svg> + ' + hiddenCount + ' produk lainnya';
-        } else {
-            wrap.style.display = 'block';
-            btn.classList.add('open');
-            btn.innerHTML = '<svg fill="none" viewBox="0 0 24 24" stroke="currentColor" width="14" height="14"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 15l7-7 7 7"/></svg> Sembunyikan';
-        }
-    };
-
-    window.bayarSekarang = function(orderId) {
-        fetch('/payment/snap-token', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
-                'Accept': 'application/json'
-            },
-            body: JSON.stringify({ order_id: orderId })
-        })
-        .then(r => r.json())
-        .then(data => {
-            if (data.snapToken) {
-                window.snap.pay(data.snapToken, {
-                    onSuccess: function() {
-                        fetch('/payment/update-status', {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
-                                'Accept': 'application/json'
-                            },
-                            body: JSON.stringify({ order_id: orderId })
-                        });
-                        window.location.href = '/sewa?status=dikemas';
+        window.bayarSekarang = function(orderId) {
+            fetch('/payment/snap-token', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                        'Accept': 'application/json'
                     },
-                    onPending: () => window.location.reload(),
-                    onError: () => alert('Pembayaran gagal, silahkan coba lagi.'),
-                    onClose: () => {}
-                });
-            } else {
-                alert('Gagal memuat pembayaran: ' + (data.message || 'Coba lagi.'));
-            }
-        })
-        .catch(() => alert('Terjadi kesalahan koneksi.'));
-    };
+                    body: JSON.stringify({
+                        order_id: orderId
+                    })
+                })
+                .then(r => r.json())
+                .then(data => {
+                    if (data.snapToken) {
+                        window.snap.pay(data.snapToken, {
+                            onSuccess: function() {
+                                fetch('/payment/update-status', {
+                                    method: 'POST',
+                                    headers: {
+                                        'Content-Type': 'application/json',
+                                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                                        'Accept': 'application/json'
+                                    },
+                                    body: JSON.stringify({
+                                        order_id: orderId
+                                    })
+                                });
+                                window.location.href = '/sewa?status=dikemas';
+                            },
+                            onPending: () => window.location.reload(),
+                            onError: () => alert('Pembayaran gagal, silahkan coba lagi.'),
+                            onClose: () => {}
+                        });
+                    } else {
+                        alert('Gagal memuat pembayaran: ' + (data.message || 'Coba lagi.'));
+                    }
+                })
+                .catch(() => alert('Terjadi kesalahan koneksi.'));
+        };
 
-    window.batalkanPesanan = function(orderId) {
-        if (!confirm('Yakin ingin membatalkan pesanan ini?')) return;
-        fetch('{{ url("/order/cancel") }}', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                'Accept': 'application/json'
-            },
-            body: JSON.stringify({ order_id: orderId })
-        })
-        .then(r => r.json())
-        .then(data => {
-            if (data.status === 'success') {
-                window.location.reload();
-            } else {
-                alert('Gagal membatalkan: ' + (data.message || ''));
-            }
-        })
-        .catch(() => alert('Terjadi kesalahan koneksi.'));
-    };
+        window.batalkanPesanan = function(orderId) {
+            if (!confirm('Yakin ingin membatalkan pesanan ini?')) return;
+            fetch('{{ url("/order/cancel") }}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        order_id: orderId
+                    })
+                })
+                .then(r => r.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        window.location.reload();
+                    } else {
+                        alert('Gagal membatalkan: ' + (data.message || ''));
+                    }
+                })
+                .catch(() => alert('Terjadi kesalahan koneksi.'));
+        };
 
-}); // end DOMContentLoaded
+    }); // end DOMContentLoaded
 </script>
 @endpush

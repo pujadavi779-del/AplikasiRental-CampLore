@@ -76,8 +76,10 @@ class DeliveryController extends Controller
             $statusDetail = 'proses';
         } elseif ($firstItem->status === 'jalan') {
             $statusDetail = 'jalan';
+        } elseif (in_array($firstItem->status, ['pengembalian', 'selesai'])) {
+            $statusDetail = 'pengembalian'; // ← tambah ini
         } elseif (in_array($firstItem->status, ['tiba', 'disewa'])) {
-            $statusDetail = 'tiba';
+            $statusDetail = 'pengembalian'; // tiba juga masuk pengembalian sekarang
         } else {
             $statusDetail = 'proses';
         }

@@ -179,6 +179,7 @@ Route::prefix('admin')->middleware('admin.auth')->name('admin.')->group(function
 
     // Pengembalian
     Route::get('/pengembalian', [PengembalianController::class, 'index'])->name('pengembalian');
+    Route::post('/pengembalian/{orderId}/konfirmasi', [PengembalianController::class, 'konfirmasi'])->name('pengembalian.konfirmasi');
 
     // Kategori
     Route::get('/kategori_produk',                  [KategoriController::class, 'index'])->name('kategori_produk');

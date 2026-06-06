@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
@@ -16,14 +17,14 @@ class SewaController extends Controller
             ->orderBy('created_at', 'desc');
 
         if ($activeStatus !== 'semua') {
-    if ($activeStatus === 'dikirim') {
-        $query->whereIn('status', ['dikirim', 'jalan']);
-    } elseif ($activeStatus === 'selesai') {
-        $query->whereIn('status', ['selesai', 'tiba']);
-    } else {
-        $query->where('status', $activeStatus);
-    }
-}
+            if ($activeStatus === 'dikirim') {
+                $query->whereIn('status', ['dikirim', 'jalan']);
+            } elseif ($activeStatus === 'selesai') {
+                $query->whereIn('status', ['selesai', 'tiba']);
+            } else {
+                $query->where('status', $activeStatus);
+            }
+        }
 
         $orders = $query->get()->groupBy('order_id')->map(function ($items) {
             $first = $items->first();
@@ -34,8 +35,8 @@ class SewaController extends Controller
                 'status'           => $first->status,
                 'total_price'      => $items->sum('total_price') + $first->shipping_cost + $first->service_fee,
                 'payment_deadline' => $first->created_at->addHours(24),
-                'overdue_days'     => 0,
-                'late_fee'         => 0,
+                'overdue_days' => $first->overdue_days ?? 0,
+                'late_fee'     => $first->late_fee ?? 0,
                 'snap_token'       => $first->snap_token,
                 'items'            => $items->map(fn($o) => (object)[
                     'name'       => $o->product->name ?? '-',

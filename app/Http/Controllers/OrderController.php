@@ -64,12 +64,18 @@ class OrderController extends Controller
 
                 if (!$cart) continue;
 
+                $startDate = $cart->start_date;
+                $endDate   = $cart->end_date;
+                if ($startDate > $endDate) {
+                    [$startDate, $endDate] = [$endDate, $startDate]; // swap
+                }
+
                 Order::create([
                     'order_id'         => $orderId,
                     'user_id'          => auth()->id(),
                     'product_id'       => $item['product_id'],
-                    'start_date'       => $cart->start_date,
-                    'end_date'         => $cart->end_date,
+                    'start_date'       => $startDate,
+                    'end_date'         => $endDate,
                     'days'             => $item['days'],
                     'quantity'         => $item['quantity'],
                     'note'             => $item['note'] ?? '',

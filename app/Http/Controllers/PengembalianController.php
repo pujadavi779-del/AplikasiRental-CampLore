@@ -3,42 +3,67 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
-use App\Models\Pemesanan;
+use App\Models\Order;
 use Illuminate\Http\Request;
-use Illuminate\Support\Collection;
+use Carbon\Carbon;
 
 class PengembalianController extends Controller
 {
     public function index()
     {
-        // ── DATA DUMMY untuk presentasi ──────────────────────────────
-        $data_pengembalian = collect([
-    ['id'=>1,'id_pesanan'=>'CMP-20250722-001','tanggal_kembali'=>today()->subDays(3)->toDateString(),'status'=>'disewa',
-     'user'=>(object)['name'=>'Rizka Nur','no_hp'=>'081234567890'],
-     'products'=>[(object)['name'=>'Canon EOS R6','kategori'=>'Kamera','tipe'=>'Mirrorless','merek'=>'Canon'],(object)['name'=>'Lensa 50mm f1.4','kategori'=>'Kamera','tipe'=>'Aksesori','merek'=>'Canon']],
-     'product'=>(object)['name'=>'Canon EOS R6','kategori'=>'Kamera','tipe'=>'Mirrorless','merek'=>'Canon','brand'=>'Canon']],
-    ['id'=>2,'id_pesanan'=>'CMP-20250722-002','tanggal_kembali'=>today()->addDays(2)->toDateString(),'status'=>'disewa',
-     'user'=>(object)['name'=>'Budi Santoso','no_hp'=>'082345678901'],
-     'products'=>[(object)['name'=>'Tenda Dome 4P','kategori'=>'Camping','tipe'=>'Tenda','merek'=>'Consina']],
-     'product'=>(object)['name'=>'Tenda Dome 4P','kategori'=>'Camping','tipe'=>'Tenda','merek'=>'Consina','brand'=>'Consina']],
-    ['id'=>3,'id_pesanan'=>'CMP-20250722-003','tanggal_kembali'=>today()->subDays(1)->toDateString(),'status'=>'disewa',
-     'user'=>(object)['name'=>'Sari Dewi','no_hp'=>'083456789012'],
-     'products'=>[(object)['name'=>'Sony ZV-E10','kategori'=>'Kamera','tipe'=>'Kamera Video','merek'=>'Sony']],
-     'product'=>(object)['name'=>'Sony ZV-E10','kategori'=>'Kamera','tipe'=>'Kamera Video','merek'=>'Sony','brand'=>'Sony']],
-    ['id'=>4,'id_pesanan'=>'CMP-20250722-004','tanggal_kembali'=>today()->addDays(5)->toDateString(),'status'=>'disewa',
-     'user'=>(object)['name'=>'Andi Prasetyo','no_hp'=>'084567890123'],
-     'products'=>[(object)['name'=>'Sleeping Bag Alpine','kategori'=>'Camping','tipe'=>'Sleeping Bag','merek'=>'Eiger']],
-     'product'=>(object)['name'=>'Sleeping Bag Alpine','kategori'=>'Camping','tipe'=>'Sleeping Bag','merek'=>'Eiger','brand'=>'Eiger']],
-    ['id'=>5,'id_pesanan'=>'CMP-20250722-005','tanggal_kembali'=>today()->toDateString(),'status'=>'disewa',
-     'user'=>(object)['name'=>'Maya Lestari','no_hp'=>'085678901234'],
-     'products'=>[(object)['name'=>'Carrier 60L','kategori'=>'Camping','tipe'=>'Carrier / Backpack','merek'=>'Deuter']],
-     'product'=>(object)['name'=>'Carrier 60L','kategori'=>'Camping','tipe'=>'Carrier / Backpack','merek'=>'Deuter','brand'=>'Deuter']],
-    ['id'=>6,'id_pesanan'=>'CMP-20250722-006','tanggal_kembali'=>today()->subDays(5)->toDateString(),'status'=>'disewa',
-     'user'=>(object)['name'=>'Fajar Ramadhan','no_hp'=>'086789012345'],
-     'products'=>[(object)['name'=>'Fujifilm Instax Mini 12','kategori'=>'Kamera','tipe'=>'Kamera Instan (Polaroid)','merek'=>'Fujifilm']],
-     'product'=>(object)['name'=>'Fujifilm Instax Mini 12','kategori'=>'Kamera','tipe'=>'Kamera Instan (Polaroid)','merek'=>'Fujifilm','brand'=>'Fujifilm']],
-])->map(fn($d) => (object)$d);
+        $orders = Order::with(['user', 'product'])
+            ->where('status', 'pengembalian')
+            ->get()
+            ->groupBy('order_id');
 
-return view('pages.admin.pengembalian', compact('data_pengembalian'));
+        $today = Carbon::now()->startOfDay();
+
+        $data_pengembalian = $orders->map(function ($items, $orderId) use ($today) {
+            $first       = $items->first();
+            $endDate     = $first->end_date ? Carbon::parse($first->end_date)->startOfDay() : null;
+            $isOverdue   = $endDate && $today->gt($endDate);
+            $overdueDays = $first->overdue_days ?? ($isOverdue ? (int) $endDate->diffInDays($today) : 0);
+            $lateFee     = $first->late_fee ?? ($overdueDays * 10000);
+
+            return (object) [
+                'id'          => $orderId, // pakai order_id sebagai identifier
+                'id_pesanan'  => $orderId,
+                'user'        => (object) [
+                    'name'  => $first->customer_name ?? ($first->user->name ?? '-'),
+                    'email' => $first->user->email ?? '-',
+                    'no_hp' => $first->customer_phone ?? '-',
+                ],
+                'products'    => $items->map(fn($i) => (object) [
+                    'name'    => $i->product->name ?? 'Produk Dihapus',
+                    'kategori'=> $i->product->category ?? '-',
+                    'tipe'    => '-',
+                    'merek'   => '-',
+                    'quantity'=> $i->quantity ?? 1,
+                ])->values()->all(),
+                'tanggal_kembali' => $first->end_date,
+                'overdue_days'    => $overdueDays,
+                'late_fee'        => $lateFee,
+                'minta_perpanjangan' => false,
+            ];
+        })->values()->all();
+
+        return view('pages.admin.pengembalian', compact('data_pengembalian'));
+    }
+
+    public function konfirmasi(Request $request, $orderId)
+    {
+        $orders = Order::where('order_id', $orderId)->get();
+
+        if ($orders->isEmpty()) {
+            return response()->json(['success' => false, 'message' => 'Order tidak ditemukan'], 404);
+        }
+
+        Order::where('order_id', $orderId)->update([
+            'status'       => 'selesai',
+            'overdue_days' => 0,
+            'late_fee'     => 0,
+        ]);
+
+        return response()->json(['success' => true]);
     }
 }
