@@ -4,141 +4,204 @@
 
 @php
     $NavParent = 'Manajemen Operasional';
-    $section = 'Pengguna';
+    $section = 'Pengiriman';
 @endphp
+
 @section('content')
 
 @php
-    $status     = $pengiriman['status'] ?? 'proses';
-    $idPesanan  = $pengiriman['id_pesanan'] ?? 'CMP-000';
-    $pemesan    = $pengiriman['pemesan'] ?? '-';
-    $noHp       = $pengiriman['no_hp'] ?? '-';
-    $alamat     = $pengiriman['alamat'] ?? '-';
-    $tglMulai   = $pengiriman['tanggal_mulai'] ?? '-';
-    $tglSelesai = $pengiriman['tanggal_selesai'] ?? '-';
-    $fotoTerima = $pengiriman['foto_terima'] ?? null;
-    $barangList = is_array($pengiriman['barang'] ?? null)
+    $status        = $pengiriman['status'] ?? 'proses';
+    $idPesanan     = $pengiriman['id_pesanan'] ?? 'CMP-000';
+    $pemesan       = $pengiriman['pemesan'] ?? '-';
+    $noHp          = $pengiriman['no_hp'] ?? '-';
+    $alamat        = $pengiriman['alamat'] ?? '-';
+    $tglMulai      = $pengiriman['tanggal_mulai'] ?? '-';
+    $tglSelesai    = $pengiriman['tanggal_selesai'] ?? '-';
+    $isPickup      = ($pengiriman['shipping_method'] ?? 'delivery') === 'pickup';
+    $barangList    = is_array($pengiriman['barang'] ?? null)
         ? $pengiriman['barang']
         : [['nama' => $pengiriman['barang'] ?? '-', 'kategori' => $pengiriman['kategori'] ?? '-']];
 
-    $steps = [
-        ['key' => 'proses', 'label' => 'Menunggu Pengantaran', 'desc' => 'Barang siap diantar oleh kurir.'],
-        ['key' => 'jalan',  'label' => 'Sedang Diantar',       'desc' => 'Barang dalam perjalanan ke tujuan.'],
-        ['key' => 'tiba',   'label' => 'Sampai di Tujuan',     'desc' => 'Barang telah diterima oleh pelanggan.'],
-    ];
+    if ($isPickup) {
+        $steps = [
+            ['key' => 'proses',       'label' => 'Menunggu Diambil', 'desc' => 'Barang siap diambil di toko.'],
+            ['key' => 'pengembalian', 'label' => 'Sudah Diambil',    'desc' => 'Pelanggan telah mengambil barang.'],
+        ];
+        $orderMap = ['proses' => 0, 'pengembalian' => 1, 'selesai' => 1];
+    } else {
+        $steps = [
+            ['key' => 'proses',       'label' => 'Menunggu Pengantaran', 'desc' => 'Barang siap diantar oleh kurir.'],
+            ['key' => 'jalan',        'label' => 'Sedang Diantar',       'desc' => 'Barang dalam perjalanan ke pelanggan.'],
+            ['key' => 'pengembalian', 'label' => 'Menunggu Pengembalian','desc' => 'Masa sewa selesai, menunggu barang dikembalikan.'],
+        ];
+        $orderMap = ['proses' => 0, 'jalan' => 1, 'pengembalian' => 2, 'selesai' => 2];
+    }
 
-    $orderMap   = ['proses' => 0, 'jalan' => 1, 'tiba' => 2];
     $currentIdx = $orderMap[$status] ?? 0;
 @endphp
 
 <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 max-w-full">
 
-    {{-- ══ KIRI (col-span-2) ══ --}}
+    {{-- ══ KIRI ══ --}}
     <div class="lg:col-span-2 flex flex-col gap-5">
 
-        {{-- Card: Status Kendaraan --}}
+        {{-- Card: Status --}}
         <div class="bg-white rounded-[24px] border border-[#d7e6de] shadow-sm overflow-hidden">
             <div class="p-5 flex items-start justify-between gap-3 border-b border-[#eef4f0]">
                 <div>
-                    <div class="text-[10px] font-bold uppercase tracking-widest text-[#7c8b84] mb-1">Status Kendaraan</div>
-                    @if($status === 'tiba')
-                        <h2 class="text-xl font-bold text-[#22543D]" style="font-family:'Playfair Display',Georgia,serif;">Pengiriman Selesai</h2>
-                        <p class="text-xs text-[#7c8b84] mt-1">Barang telah diterima oleh pelanggan.</p>
+                    <div class="text-[10px] font-bold uppercase tracking-widest text-[#7c8b84] mb-1">
+                        {{ $isPickup ? 'Status Pickup' : 'Status Pengiriman' }}
+                    </div>
+                    @if($status === 'pengembalian' || $status === 'selesai')
+                        <h2 class="text-xl font-bold text-[#22543D]" style="font-family:'Playfair Display',Georgia,serif;">
+                            {{ $isPickup ? 'Sudah Diambil' : 'Menunggu Pengembalian' }}
+                        </h2>
+                        <p class="text-xs text-[#7c8b84] mt-1">
+                            {{ $isPickup ? 'Pelanggan telah mengambil barang dari toko.' : 'Barang sedang digunakan pelanggan, menunggu dikembalikan.' }}
+                        </p>
                     @elseif($status === 'jalan')
                         <h2 class="text-xl font-bold text-[#22543D]" style="font-family:'Playfair Display',Georgia,serif;">Sedang Diantar</h2>
                         <p class="text-xs text-[#7c8b84] mt-1">Kurir sedang dalam perjalanan menuju pelanggan.</p>
                     @else
-                        <h2 class="text-xl font-bold text-[#22543D]" style="font-family:'Playfair Display',Georgia,serif;">Mulai Pengantaran</h2>
-                        <p class="text-xs text-[#7c8b84] mt-1">Update status pengiriman secara manual untuk mensinkronkan sistem.</p>
+                        <h2 class="text-xl font-bold text-[#22543D]" style="font-family:'Playfair Display',Georgia,serif;">
+                            {{ $isPickup ? 'Menunggu Diambil' : 'Mulai Pengantaran' }}
+                        </h2>
+                        <p class="text-xs text-[#7c8b84] mt-1">
+                            {{ $isPickup ? 'Barang siap diambil oleh pelanggan di toko.' : 'Klik tombol di bawah saat kurir mulai berangkat.' }}
+                        </p>
                     @endif
                 </div>
                 <span class="px-3 py-1.5 rounded-full text-[10px] font-bold uppercase whitespace-nowrap
-                    @if($status === 'tiba') bg-emerald-50 text-emerald-700 border border-emerald-200
+                    @if(in_array($status, ['pengembalian','selesai'])) bg-purple-50 text-purple-700 border border-purple-200
                     @elseif($status === 'jalan') bg-blue-50 text-blue-700 border border-blue-200
                     @else bg-amber-50 text-amber-700 border border-amber-200
                     @endif">
-                    {{ $status === 'tiba' ? 'Diterima' : ($status === 'jalan' ? 'Sedang Diantar' : 'Menunggu Pengantaran') }}
+                    @if($status === 'pengembalian') {{ $isPickup ? 'Sudah Diambil' : 'Pengembalian' }}
+                    @elseif($status === 'selesai') Selesai
+                    @elseif($status === 'jalan') Sedang Diantar
+                    @else {{ $isPickup ? 'Menunggu Diambil' : 'Menunggu Pengantaran' }}
+                    @endif
                 </span>
             </div>
 
             <div class="p-5 flex flex-col gap-3">
-                @if($status === 'proses')
-                    <div class="flex items-center gap-3 px-5 py-4 rounded-2xl bg-amber-50 border border-amber-200">
-                        <div class="w-9 h-9 rounded-xl bg-amber-100 flex items-center justify-center flex-shrink-0">
-                            <svg class="w-5 h-5 text-amber-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                            </svg>
-                        </div>
-                        <div>
-                            <div class="font-bold text-sm text-amber-800">Menunggu Pengantaran</div>
-                            <div class="text-[11px] text-amber-600">Kurir siap berangkat dari Hub Logistik</div>
-                        </div>
-                    </div>
-                    <form method="POST" action="{{ route('admin.pengiriman.update-status', $idPesanan) }}">
-                        @csrf @method('PATCH')
-                        <input type="hidden" name="status" value="jalan">
-                        <button type="submit"
-                            class="w-full flex items-center justify-between gap-4 bg-[#22543D] hover:bg-[#1a4230] text-white rounded-2xl px-5 py-4 transition-colors group">
-                            <div class="flex items-center gap-3">
-                                <div class="w-9 h-9 rounded-xl bg-white/15 flex items-center justify-center flex-shrink-0">
-                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/>
-                                    </svg>
-                                </div>
-                                <div class="text-left">
-                                    <div class="font-bold text-sm">Kurir Berangkat</div>
-                                    <div class="text-[11px] text-white/70">Klik saat kurir mulai mengantar barang</div>
-                                </div>
-                            </div>
-                            <svg class="w-5 h-5 text-white/50 group-hover:text-white transition-colors" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
-                            </svg>
-                        </button>
-                    </form>
 
-                @elseif($status === 'jalan')
-                    <div class="flex items-center gap-3 px-5 py-4 rounded-2xl bg-blue-50 border border-blue-200">
-                        <div class="w-9 h-9 rounded-xl bg-blue-100 flex items-center justify-center flex-shrink-0">
-                            <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14M12 5l7 7-7 7"/>
-                            </svg>
+                {{-- ══ PICKUP FLOW ══ --}}
+                @if($isPickup)
+                    @if($status === 'proses')
+                        <div class="flex items-center gap-3 px-5 py-4 rounded-2xl bg-amber-50 border border-amber-200">
+                            <div class="w-9 h-9 rounded-xl bg-amber-100 flex items-center justify-center flex-shrink-0">
+                                <svg class="w-5 h-5 text-amber-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/>
+                                </svg>
+                            </div>
+                            <div>
+                                <div class="font-bold text-sm text-amber-800">Menunggu Diambil</div>
+                                <div class="text-[11px] text-amber-600">Barang sudah siap di toko, menunggu pelanggan datang</div>
+                            </div>
                         </div>
-                        <div>
-                            <div class="font-bold text-sm text-blue-800">Sedang Diantar</div>
-                            <div class="text-[11px] text-blue-600">Kurir dalam perjalanan menuju tujuan</div>
-                        </div>
-                    </div>
-                    <button type="button" onclick="bukaKonfirmasiTiba()"
-                        class="w-full flex items-center justify-between gap-4 bg-emerald-600 hover:bg-emerald-700 text-white rounded-2xl px-5 py-4 transition-colors group">
-                        <div class="flex items-center gap-3">
-                            <div class="w-9 h-9 rounded-xl bg-white/15 flex items-center justify-center flex-shrink-0">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        {{-- Pickup: langsung update ke pengembalian (pelanggan bawa barang) --}}
+                        <form method="POST" action="{{ route('admin.pengiriman.update-status', $idPesanan) }}">
+                            @csrf @method('PATCH')
+                            <input type="hidden" name="status" value="pengembalian">
+                            <button type="submit"
+                                onclick="return confirm('Konfirmasi pelanggan sudah mengambil barang?')"
+                                class="w-full flex items-center justify-between gap-4 bg-[#22543D] hover:bg-[#1a4230] text-white rounded-2xl px-5 py-4 transition-colors group">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-9 h-9 rounded-xl bg-white/15 flex items-center justify-center flex-shrink-0">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
+                                        </svg>
+                                    </div>
+                                    <div class="text-left">
+                                        <div class="font-bold text-sm">Verifikasi Sudah Diambil</div>
+                                        <div class="text-[11px] text-white/70">Barang berpindah ke tangan pelanggan</div>
+                                    </div>
+                                </div>
+                                <svg class="w-5 h-5 text-white/50 group-hover:text-white transition-colors" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
+                                </svg>
+                            </button>
+                        </form>
+                    @else
+                        <div class="flex items-center gap-3 px-5 py-4 rounded-2xl bg-purple-50 border border-purple-200">
+                            <div class="w-9 h-9 rounded-xl bg-purple-100 flex items-center justify-center flex-shrink-0">
+                                <svg class="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
                                 </svg>
                             </div>
-                            <div class="text-left">
-                                <div class="font-bold text-sm">Konfirmasi Diterima</div>
-                                <div class="text-[11px] text-white/70">Upload foto bukti penerimaan barang</div>
+                            <div>
+                                <div class="font-bold text-sm text-purple-800">Barang Sudah Diambil</div>
+                                <div class="text-[11px] text-purple-600">Menunggu pelanggan mengembalikan barang</div>
                             </div>
                         </div>
-                        <svg class="w-5 h-5 text-white/50 group-hover:text-white transition-colors" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
-                        </svg>
-                    </button>
+                    @endif
 
+                {{-- ══ DELIVERY FLOW ══ --}}
                 @else
-                    <div class="flex items-center gap-3 px-5 py-4 rounded-2xl bg-emerald-50 border border-emerald-200">
-                        <div class="w-9 h-9 rounded-xl bg-emerald-100 flex items-center justify-center flex-shrink-0">
-                            <svg class="w-5 h-5 text-emerald-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
-                            </svg>
+                    @if($status === 'proses')
+                        <div class="flex items-center gap-3 px-5 py-4 rounded-2xl bg-amber-50 border border-amber-200">
+                            <div class="w-9 h-9 rounded-xl bg-amber-100 flex items-center justify-center flex-shrink-0">
+                                <svg class="w-5 h-5 text-amber-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                </svg>
+                            </div>
+                            <div>
+                                <div class="font-bold text-sm text-amber-800">Menunggu Pengantaran</div>
+                                <div class="text-[11px] text-amber-600">Kurir siap berangkat dari toko</div>
+                            </div>
                         </div>
-                        <div>
-                            <div class="font-bold text-sm text-emerald-800">Barang Sudah Diterima</div>
-                            <div class="text-[11px] text-emerald-600">Pengiriman telah selesai</div>
+                        <form method="POST" action="{{ route('admin.pengiriman.update-status', $idPesanan) }}">
+                            @csrf @method('PATCH')
+                            <input type="hidden" name="status" value="jalan">
+                            <button type="submit"
+                                class="w-full flex items-center justify-between gap-4 bg-[#22543D] hover:bg-[#1a4230] text-white rounded-2xl px-5 py-4 transition-colors group">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-9 h-9 rounded-xl bg-white/15 flex items-center justify-center flex-shrink-0">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/>
+                                        </svg>
+                                    </div>
+                                    <div class="text-left">
+                                        <div class="font-bold text-sm">Kurir Berangkat</div>
+                                        <div class="text-[11px] text-white/70">Klik saat kurir mulai mengantar barang</div>
+                                    </div>
+                                </div>
+                                <svg class="w-5 h-5 text-white/50 group-hover:text-white transition-colors" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
+                                </svg>
+                            </button>
+                        </form>
+
+                    @elseif($status === 'jalan')
+                        <div class="flex items-center gap-3 px-5 py-4 rounded-2xl bg-blue-50 border border-blue-200">
+                            <div class="w-9 h-9 rounded-xl bg-blue-100 flex items-center justify-center flex-shrink-0">
+                                <svg class="w-5 h-5 text-blue-600 animate-pulse" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14M12 5l7 7-7 7"/>
+                                </svg>
+                            </div>
+                            <div>
+                                <div class="font-bold text-sm text-blue-800">Sedang Diantar</div>
+                                <div class="text-[11px] text-blue-600">Kurir dalam perjalanan — status pengembalian otomatis saat masa sewa habis</div>
+                            </div>
                         </div>
-                    </div>
+
+                    @else
+                        {{-- pengembalian / selesai --}}
+                        <div class="flex items-center gap-3 px-5 py-4 rounded-2xl bg-purple-50 border border-purple-200">
+                            <div class="w-9 h-9 rounded-xl bg-purple-100 flex items-center justify-center flex-shrink-0">
+                                <svg class="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"/>
+                                </svg>
+                            </div>
+                            <div>
+                                <div class="font-bold text-sm text-purple-800">Menunggu Pengembalian</div>
+                                <div class="text-[11px] text-purple-600">Masa sewa selesai — barang harus dikembalikan ke toko</div>
+                            </div>
+                        </div>
+                    @endif
                 @endif
+
             </div>
         </div>
 
@@ -147,13 +210,24 @@
             <div class="bg-white rounded-[20px] border border-[#d7e6de] shadow-sm p-4">
                 <div class="flex items-center gap-2 mb-2">
                     <svg class="w-4 h-4 text-[#22543D]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        @if($isPickup)
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/>
+                        @else
                         <path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
                         <path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+                        @endif
                     </svg>
-                    <span class="text-[10px] font-bold uppercase tracking-widest text-[#7c8b84]">Tujuan</span>
+                    <span class="text-[10px] font-bold uppercase tracking-widest text-[#7c8b84]">
+                        {{ $isPickup ? 'Metode' : 'Tujuan' }}
+                    </span>
                 </div>
-                <div class="text-sm font-bold text-gray-800">{{ $pemesan }}</div>
-                <div class="text-[11px] text-gray-500 mt-1 leading-relaxed">{{ $alamat }}</div>
+                @if($isPickup)
+                    <div class="text-sm font-bold text-gray-800">Ambil di Toko</div>
+                    <div class="text-[11px] text-gray-500 mt-1">Pelanggan datang langsung ke toko Camplore</div>
+                @else
+                    <div class="text-sm font-bold text-gray-800">{{ $pemesan }}</div>
+                    <div class="text-[11px] text-gray-500 mt-1 leading-relaxed">{{ $alamat }}</div>
+                @endif
             </div>
 
             <div class="bg-white rounded-[20px] border border-[#d7e6de] shadow-sm p-4">
@@ -172,47 +246,12 @@
             </div>
         </div>
 
-        {{-- Card: Foto Dokumentasi (hanya muncul kalau status tiba) --}}
-        @if($fotoTerima)
-        <div class="bg-white rounded-[20px] border border-[#d7e6de] shadow-sm overflow-hidden">
-            <div class="flex items-center justify-between px-5 py-4 border-b border-[#eef4f0]">
-                <div class="flex items-center gap-2">
-                    <svg class="w-5 h-5 text-[#22543D]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
-                    </svg>
-                    <span class="font-bold text-gray-800 text-sm">Foto Dokumentasi Diterima</span>
-                </div>
-                <div class="flex gap-2">
-                    <a href="{{ $fotoTerima }}" target="_blank"
-                        class="p-2 rounded-lg hover:bg-gray-100 text-gray-500 transition" title="Perbesar">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7"/>
-                        </svg>
-                    </a>
-                    <a href="{{ $fotoTerima }}" download
-                        class="p-2 rounded-lg hover:bg-gray-100 text-gray-500 transition" title="Unduh">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
-                        </svg>
-                    </a>
-                </div>
-            </div>
-            <div class="p-5 bg-gray-50">
-                <div class="rounded-xl overflow-hidden border border-gray-200 shadow-sm bg-white">
-                    <img src="{{ $fotoTerima }}"
-                        alt="Bukti Diterima {{ $pemesan }}"
-                        class="w-full object-contain max-h-80">
-                </div>
-            </div>
-        </div>
-        @endif
+    </div>
 
-    </div>{{-- tutup lg:col-span-2 --}}
-
-    {{-- ══ KANAN: Timeline + Info Penerima ══ --}}
+    {{-- ══ KANAN: Timeline + Info ══ --}}
     <div class="flex flex-col gap-5">
 
-        {{-- Status Timeline --}}
+        {{-- Timeline --}}
         <div class="bg-white rounded-[24px] border border-[#d7e6de] shadow-sm p-5">
             <div class="text-[10px] font-bold uppercase tracking-widest text-[#7c8b84] mb-4">Status Timeline</div>
             <div class="flex flex-col gap-0">
@@ -238,13 +277,13 @@
                         @endif
                     </div>
                     <div class="pb-4 flex-1 pt-0.5">
-                        <div class="text-sm font-{{ $current ? 'bold' : 'semibold' }} {{ $done ? 'text-gray-800' : 'text-gray-400' }}">
+                        <div class="text-sm {{ $current ? 'font-bold' : 'font-semibold' }} {{ $done ? 'text-gray-800' : 'text-gray-400' }}">
                             {{ $step['label'] }}
                         </div>
                         <div class="text-[11px] {{ $done ? 'text-gray-500' : 'text-gray-300' }} mt-0.5 leading-relaxed">
                             {{ $step['desc'] }}
                         </div>
-                        @if($current && $status !== 'tiba')
+                        @if($current && !in_array($status, ['pengembalian','selesai']))
                         <div class="mt-1 text-[10px] text-[#22543D] font-bold">● Status saat ini</div>
                         @endif
                     </div>
@@ -262,7 +301,7 @@
                 </div>
                 <div>
                     <div class="font-bold text-sm text-gray-800">{{ $pemesan }}</div>
-                    <div class="text-[11px] text-gray-500">Penerima</div>
+                    <div class="text-[11px] text-gray-500">{{ $isPickup ? 'Pickup' : 'Penerima' }}</div>
                 </div>
             </div>
             <div class="flex flex-col gap-3">
@@ -270,6 +309,12 @@
                     <span class="text-[11px] text-gray-500">Kontak</span>
                     <span class="text-[11px] font-semibold text-gray-700">{{ $noHp }}</span>
                 </div>
+                @if(!$isPickup)
+                <div class="flex justify-between items-start">
+                    <span class="text-[11px] text-gray-500">Alamat</span>
+                    <span class="text-[11px] font-semibold text-gray-700 text-right max-w-[60%]">{{ $alamat }}</span>
+                </div>
+                @endif
                 <div class="flex justify-between items-start">
                     <span class="text-[11px] text-gray-500">Waktu Sewa</span>
                     <span class="text-[11px] font-semibold text-gray-700">{{ $tglMulai }} – {{ $tglSelesai }}</span>
@@ -277,6 +322,13 @@
                 <div class="flex justify-between items-start">
                     <span class="text-[11px] text-gray-500">ID Pesanan</span>
                     <span class="text-[11px] font-semibold text-[#22543D]">{{ $idPesanan }}</span>
+                </div>
+                <div class="flex justify-between items-start">
+                    <span class="text-[11px] text-gray-500">Metode</span>
+                    <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold
+                        {{ $isPickup ? 'bg-emerald-50 text-emerald-700' : 'bg-blue-50 text-blue-600' }}">
+                        {{ $isPickup ? 'PICKUP' : 'KURIR' }}
+                    </span>
                 </div>
             </div>
             <a href="tel:{{ $noHp }}"
@@ -288,121 +340,8 @@
             </a>
         </div>
 
-    </div>{{-- tutup kolom kanan --}}
-
-</div>{{-- tutup grid --}}
-
-{{-- ══ MODAL KONFIRMASI TERIMA ══ --}}
-<div id="modalKonfTiba" style="display:none; position:fixed; inset:0; z-index:99999; background:rgba(0,0,0,0.55); overflow-y:auto;" onclick="if(event.target===this)tutupKonfirmasiTiba()">
-    <div style="position:relative; margin:60px auto; background:white; border-radius:24px; width:90%; max-width:420px; overflow:hidden; box-shadow:0 25px 60px rgba(0,0,0,0.25); font-family:'Inter',sans-serif;">
-
-        <div style="padding:20px 22px 16px; border-bottom:1px solid #eef4f0;">
-            <div style="font-weight:700; font-size:16px; color:#22543D; font-family:'Playfair Display',Georgia,serif;">Konfirmasi Diterima</div>
-            <div style="font-size:12px; color:#9ca3af; margin-top:4px;">Upload foto bukti barang telah diterima oleh pelanggan.</div>
-        </div>
-
-        <div style="padding:20px 22px;">
-            <label style="font-size:11px; font-weight:600; color:#374151; display:block; margin-bottom:10px;">Foto Bukti Diterima <span style="color:#ef4444;">*</span></label>
-            <div id="dropZoneTiba" onclick="document.getElementById('fotoTerimaTiba').click()"
-                style="border:2px dashed #d1d5db; border-radius:16px; padding:24px 16px; background:#f9fafb; cursor:pointer; text-align:center; transition:all .2s;">
-                <div style="font-size:28px; margin-bottom:6px;">🖼️</div>
-                <div style="font-size:13px; font-weight:600; color:#6b7280;">Klik untuk pilih foto</div>
-                <div style="font-size:11px; color:#9ca3af; margin-top:3px;">JPG, PNG, WEBP — maks. 5 MB</div>
-                <input type="file" id="fotoTerimaTiba" accept="image/*" style="display:none;" onchange="previewFotoTiba(this)">
-            </div>
-            <div id="previewWrapTiba" style="display:none; margin-top:12px; border-radius:14px; overflow:hidden; border:1px solid #d1fae5;">
-                <img id="previewImgTiba" src="" alt="Preview" style="width:100%; max-height:200px; object-fit:cover; display:block;">
-                <div style="padding:10px 12px; display:flex; align-items:center; justify-content:space-between; background:#f0fdf4;">
-                    <div style="font-size:11px; font-weight:700; color:#1f2937;" id="namaFileTiba">-</div>
-                    <button type="button" onclick="hapusFotoTiba()" style="background:#fee2e2; border:none; border-radius:8px; padding:5px 10px; font-size:10px; font-weight:700; color:#ef4444; cursor:pointer;">Hapus</button>
-                </div>
-            </div>
-        </div>
-
-        <div style="padding:12px 22px; border-top:1px solid #eef4f0; display:flex; gap:10px;">
-            <button onclick="tutupKonfirmasiTiba()" style="flex:1; padding:11px; border:1px solid #e5e7eb; border-radius:12px; background:white; cursor:pointer; font-size:12px; font-weight:600; font-family:'Inter',sans-serif;">Batal</button>
-            <button onclick="submitTiba()" style="flex:1; padding:11px; border:none; border-radius:12px; background:#22543D; color:white; cursor:pointer; font-size:12px; font-weight:700; font-family:'Inter',sans-serif;">Simpan & Konfirmasi</button>
-        </div>
     </div>
+
 </div>
-
-<script>
-function bukaKonfirmasiTiba() {
-    document.getElementById('modalKonfTiba').style.display = 'block';
-}
-function tutupKonfirmasiTiba() {
-    document.getElementById('modalKonfTiba').style.display = 'none';
-    hapusFotoTiba();
-}
-function previewFotoTiba(input) {
-    if (!input.files || !input.files[0]) return;
-    var file = input.files[0];
-    if (file.size > 5 * 1024 * 1024) { alert('Ukuran foto maksimal 5 MB.'); input.value = ''; return; }
-    var reader = new FileReader();
-    reader.onload = function(e) {
-        document.getElementById('previewImgTiba').src = e.target.result;
-        document.getElementById('namaFileTiba').textContent = file.name;
-        document.getElementById('dropZoneTiba').style.display = 'none';
-        document.getElementById('previewWrapTiba').style.display = 'block';
-    };
-    reader.readAsDataURL(file);
-}
-function hapusFotoTiba() {
-    document.getElementById('fotoTerimaTiba').value = '';
-    document.getElementById('previewImgTiba').src = '';
-    document.getElementById('previewWrapTiba').style.display = 'none';
-    document.getElementById('dropZoneTiba').style.display = 'block';
-}
-function submitTiba() {
-    var foto = document.getElementById('fotoTerimaTiba').files[0];
-    if (!foto) { alert('Mohon upload foto bukti terlebih dahulu.'); return; }
-
-    var btn = document.querySelector('button[onclick="submitTiba()"]');
-    btn.disabled = true;
-    btn.textContent = 'Menyimpan...';
-
-    var csrfToken = document.querySelector('meta[name="csrf-token"]');
-    if (!csrfToken) {
-        alert('CSRF token tidak ditemukan!');
-        btn.disabled = false;
-        btn.textContent = 'Simpan & Konfirmasi';
-        return;
-    }
-
-    var formData = new FormData();
-    formData.append('status', 'tiba');
-    formData.append('foto_terima', foto);
-    formData.append('_method', 'PATCH');
-    formData.append('_token', csrfToken.content);
-
-    fetch('{{ route("admin.pengiriman.update-status", $idPesanan) }}', {
-        method: 'POST',
-        body: formData,
-        headers: { 'X-Requested-With': 'XMLHttpRequest' }
-    })
-    .then(function(res) {
-        if (!res.ok) {
-            return res.text().then(function(text) {
-                throw new Error('Server error ' + res.status + ': ' + text.substring(0, 200));
-            });
-        }
-        return res.json();
-    })
-    .then(function(data) {
-        if (data.success) {
-            window.location.reload();
-        } else {
-            alert('Gagal: ' + (data.message || 'Coba lagi.'));
-            btn.disabled = false;
-            btn.textContent = 'Simpan & Konfirmasi';
-        }
-    })
-    .catch(function(err) {
-        alert('Error: ' + err.message);
-        btn.disabled = false;
-        btn.textContent = 'Simpan & Konfirmasi';
-    });
-}
-</script>
 
 @endsection
