@@ -31,7 +31,7 @@ use App\Models\Product;
 use App\Models\Cart;
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Admin\ReviewController;
- 
+
 
 /*
 |--------------------------------------------------------------------------
@@ -169,6 +169,9 @@ Route::prefix('admin')->middleware('admin.auth')->name('admin.')->group(function
     // Pembayaran - BARU
     Route::get('/pembayaran', [PaymentController::class, 'adminIndex'])->name('pembayaran');
     Route::post('/pembayaran/{id}/kirim', [PaymentController::class, 'kirimPesanan'])->name('pembayaran.kirim'); // ← Tambahkan baris ini
+    Route::get('/pembayaran/export', [PaymentController::class, 'exportExcel'])->name('pembayaran.export');
+
+
 
     // Pengiriman
     Route::get('/pengiriman',                 [DeliveryController::class, 'pengiriman'])->name('pengiriman');
@@ -201,7 +204,7 @@ Route::prefix('admin')->middleware('admin.auth')->name('admin.')->group(function
     })->name('products');
 
     Route::get('/products/create', [ProductController::class, 'create'])
-    ->name('products.create');
+        ->name('products.create');
     Route::post('/products',          [CreateProductController::class, 'store'])->name('products.store');
     Route::get('/products/{id}/edit', [ProductController::class, 'edit'])->name('products.edit');
     Route::put('/products/{id}',      [ProductController::class, 'update'])->name('products.update');
@@ -223,8 +226,8 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/payment/token', [PaymentController::class, 'getToken'])->name('payment.token');
     Route::post('/payment/snap-token', [PaymentController::class, 'getSnapToken'])->name('payment.snap-token');
     Route::post('/order/cancel', [OrderController::class, 'cancel'])->name('order.cancel');  // ← tambah ini
-    Route::post('/order/store', [OrderController::class, 'store'])->name('order.store');  
-        Route::post('/payment/update-status', [PaymentController::class, 'updateStatusAfterPay'])
+    Route::post('/order/store', [OrderController::class, 'store'])->name('order.store');
+    Route::post('/payment/update-status', [PaymentController::class, 'updateStatusAfterPay'])
         ->name('payment.update-status');
 });
 

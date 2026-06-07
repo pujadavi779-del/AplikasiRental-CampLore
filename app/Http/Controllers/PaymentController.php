@@ -176,25 +176,25 @@ class PaymentController extends Controller
     }
 
     public function webhook(Request $request)
-{
-    // ... kode verifikasi signature Midtrans kamu yang sudah ada ...
-    
-    $transactionStatus = $request->input('transaction_status');
-    $orderId = $request->input('order_id'); // Ini order_id dari pelanggan
+    {
+        // ... kode verifikasi signature Midtrans kamu yang sudah ada ...
 
-    if ($transactionStatus == 'settlement' || $transactionStatus == 'capture') {
-        
-        // SISTEM OTOMATIS MENGUBAH STATUS MENJADI SELESAI BEGITU LUAS SUDAH DIBAYAR
-        \App\Models\Order::where('order_id', $orderId)->update([
-            'status' => 'selesai'
-        ]);
+        $transactionStatus = $request->input('transaction_status');
+        $orderId = $request->input('order_id'); // Ini order_id dari pelanggan
 
-        // Catatan: Karena di DeliveryController fungsi pengiriman() kita sudah membaca 
-        // status 'selesai', maka otomatis data ini langsung muncul di halaman Pengiriman Admin!
+        if ($transactionStatus == 'settlement' || $transactionStatus == 'capture') {
+
+            // SISTEM OTOMATIS MENGUBAH STATUS MENJADI SELESAI BEGITU LUAS SUDAH DIBAYAR
+            \App\Models\Order::where('order_id', $orderId)->update([
+                'status' => 'selesai'
+            ]);
+
+            // Catatan: Karena di DeliveryController fungsi pengiriman() kita sudah membaca 
+            // status 'selesai', maka otomatis data ini langsung muncul di halaman Pengiriman Admin!
+        }
+
+        return response()->json(['status' => 'success']);
     }
-
-    return response()->json(['status' => 'success']);
-}
 
     public function updateStatusAfterPay(Request $request)
     {
@@ -212,59 +212,70 @@ class PaymentController extends Controller
     }
 
     public function adminIndex(Request $request)
-{
-    $query = \App\Models\Order::with(['user', 'product'])
-        ->orderBy('created_at', 'desc')
-        ->whereIn('status', ['belum_bayar', 'dikemas', 'dibatalkan'])  // ← tambah ini
-        ->whereIn('id', function($sub) {
-            $sub->selectRaw('MIN(id)')
-                ->from('orders')
-                ->groupBy('order_id');
-        });
+    {
+        $query = \App\Models\Order::with(['user', 'product'])
+            ->orderBy('created_at', 'desc')
+            ->whereIn('status', ['dikemas', 'selesai', 'dibatalkan']) // ← hanya yang sudah bayar
+            ->whereIn('id', function ($sub) {
+                $sub->selectRaw('MIN(id)')
+                    ->from('orders')
+                    ->groupBy('order_id');
+            });
 
-    if ($request->filled('search')) {
-        $search = $request->search;
-        $query->where(function ($q) use ($search) {
-            $q->where('order_id', 'like', '%' . $search . '%')
-              ->orWhere('created_at', 'like', '%' . $search . '%');
-        });
-    }
-
-    $payments = $query->paginate(10)->withQueryString();
-
-    return view('pages.admin.pembayaran', compact('payments'));
-}
-
-public function kirimPesanan($id)
-{
-    try {
-        // Cari pesanan berdasarkan ID atau Order ID
-        // Karena satu transaksi bisa berisi banyak barang dengan order_id yang sama
-        $orders = \App\Models\Order::where('order_id', $id)->get();
-
-        if ($orders->isEmpty()) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Data transaksi tidak ditemukan.'
-            ], 404);
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function ($q) use ($search) {
+                $q->where('order_id', 'like', '%' . $search . '%')
+                    ->orWhere('created_at', 'like', '%' . $search . '%');
+            });
         }
 
-        // Jalankan update status untuk semua item di dalam transaksi tersebut
-        // Diubah menjadi 'selesai' agar otomatis lolos filter masuk ke menu Pengiriman
-        \App\Models\Order::where('order_id', $id)->update([
-            'status' => 'selesai' 
-        ]);
+        $payments = $query->paginate(10)->withQueryString();
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Status transaksi berhasil diubah menjadi Selesai dan diteruskan ke Pengiriman!'
-        ]);
-
-    } catch (\Exception $e) {
-        return response()->json([
-            'success' => false,
-            'message' => 'Terjadi kesalahan: ' . $e->getMessage()
-        ], 500);
+        return view('pages.admin.pembayaran', compact('payments'));
     }
+    public function kirimPesanan($id)
+    {
+        try {
+            // Cari pesanan berdasarkan ID atau Order ID
+            // Karena satu transaksi bisa berisi banyak barang dengan order_id yang sama
+            $orders = \App\Models\Order::where('order_id', $id)->get();
+
+            if ($orders->isEmpty()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Data transaksi tidak ditemukan.'
+                ], 404);
+            }
+
+            // Jalankan update status untuk semua item di dalam transaksi tersebut
+            // Diubah menjadi 'selesai' agar otomatis lolos filter masuk ke menu Pengiriman
+            \App\Models\Order::where('order_id', $id)->update([
+                'status' => 'dikirim'
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Status transaksi berhasil diubah menjadi Selesai dan diteruskan ke Pengiriman!'
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Terjadi kesalahan: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+public function exportExcel()
+{
+    $orders = \App\Models\Order::with(['user', 'product'])
+        ->whereIn('status', ['dikemas', 'selesai', 'dibatalkan'])
+        ->whereIn('id', function ($sub) {
+            $sub->selectRaw('MIN(id)')->from('orders')->groupBy('order_id');
+        })
+        ->orderBy('created_at', 'desc')
+        ->get();
+
+    return (new \App\Exports\PembayaranExport($orders))->download();
 }
 }
