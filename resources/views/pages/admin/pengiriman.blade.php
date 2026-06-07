@@ -187,23 +187,10 @@
 
                         {{-- Aksi --}}
                         <td class="px-6 py-4">
-                            <div class="flex items-center gap-3">
-                                @if($isPickup && $status !== 'tiba')
-                                <form method="POST" action="{{ route('admin.pengiriman.tiba', $idPesanan) }}">
-                                    @csrf
-                                    @method('PATCH')
-                                    <button type="submit"
-                                        onclick="return confirm('Tandai pesanan ini sudah diambil?')"
-                                        class="text-xs font-bold text-emerald-600 hover:text-emerald-800 transition-colors whitespace-nowrap">
-                                        Verifikasi Ambil
-                                    </button>
-                                </form>
-                                @endif
-                                <a href="{{ route('admin.pengiriman.detail', $idPesanan) }}"
-                                    class="text-sm font-semibold text-gray-500 hover:text-gray-800 transition-colors">
-                                    {{ $status === 'tiba' ? 'Detail' : 'Lacak' }}
-                                </a>
-                            </div>
+                            <a href="{{ route('admin.pengiriman.detail', $idPesanan) }}"
+                                class="text-sm font-semibold text-gray-500 hover:text-gray-800 transition-colors">
+                                {{ in_array($status, ['tiba', 'pengembalian']) ? 'Detail' : 'Lacak' }}
+                            </a>
                         </td>
 
                     </tr>

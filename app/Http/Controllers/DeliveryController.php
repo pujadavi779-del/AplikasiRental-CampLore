@@ -128,7 +128,6 @@ class DeliveryController extends Controller
         if ($request->hasFile('foto_terima')) {
             $path = $request->file('foto_terima')->store('bukti_diterima', 'public');
             $updateData['bukti_pengiriman'] = $path;
-            $updateData['status']     = 'tiba';
         }
 
         Order::where('order_id', $id)->update($updateData);
