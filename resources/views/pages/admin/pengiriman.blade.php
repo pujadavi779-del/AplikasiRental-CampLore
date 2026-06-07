@@ -167,7 +167,7 @@
                                     <span class="w-1.5 h-1.5 rounded-full bg-amber-500 inline-block"></span>
                                     {{ $isPickup ? 'Menunggu Diambil' : 'Menunggu Pengantaran' }}
                                 </span>
-                            @elseif($status === 'jalan')
+                            @elseif($status === 'dikirim')
                                 <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-semibold bg-blue-50 text-blue-600">
                                     <span class="w-1.5 h-1.5 rounded-full bg-blue-500 inline-block animate-pulse"></span>Sedang Diantar
                                 </span>

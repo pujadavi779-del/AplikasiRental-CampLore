@@ -12,7 +12,7 @@ class DeliveryController extends Controller
     public function pengiriman()
     {
         $orders = Order::with(['user', 'product'])
-            ->whereIn('status', ['dikemas', 'jalan', 'tiba'])
+            ->whereIn('status', ['dikemas', 'jalan', 'pengembalian'])
             ->get()
             ->groupBy('order_id');
 
@@ -28,8 +28,8 @@ class DeliveryController extends Controller
                 $statusPengiriman = 'proses';
             } elseif ($firstItem->status === 'jalan') {
                 $statusPengiriman = 'jalan';
-            } elseif ($firstItem->status === 'tiba') {
-                $statusPengiriman = 'tiba';
+            } elseif ($firstItem->status === 'pengembalian') {
+                $statusPengiriman = 'pengembalian';
             } else {
                 $statusPengiriman = 'proses';
             }
@@ -38,7 +38,7 @@ class DeliveryController extends Controller
             $stats['total']++;
             if ($statusPengiriman === 'jalan') $stats['diantar']++;
             if ($shippingMethod === 'pickup') $stats['pickup']++;
-            if ($statusPengiriman === 'tiba') $stats['selesai']++;
+            if ($statusPengiriman === 'pengembalian') $stats['selesai']++;
 
             $pengiriman[] = [
                 'id_pesanan'      => $orderId,
@@ -79,7 +79,7 @@ class DeliveryController extends Controller
         } elseif (in_array($firstItem->status, ['pengembalian', 'selesai'])) {
             $statusDetail = 'pengembalian'; // ← tambah ini
         } elseif (in_array($firstItem->status, ['tiba', 'disewa'])) {
-            $statusDetail = 'pengembalian'; // tiba juga masuk pengembalian sekarang
+            $statusDetail = 'pengembalian';
         } else {
             $statusDetail = 'proses';
         }
@@ -97,8 +97,8 @@ class DeliveryController extends Controller
                 ? \Carbon\Carbon::parse($firstItem->end_date)->format('d M Y')
                 : '-',
             'status'          => $statusDetail,
-            'foto_terima'     => $firstItem->note_admin
-                ? asset('storage/' . $firstItem->note_admin)
+            'foto_terima'     => $firstItem->bukti_pengiriman
+                ? asset('storage/' . $firstItem->bukti_pengiriman)
                 : null,
             'barang'          => $items->map(fn($item) => [
                 'nama'     => $item->product->name ?? 'Produk Dihapus',
@@ -127,7 +127,7 @@ class DeliveryController extends Controller
 
         if ($request->hasFile('foto_terima')) {
             $path = $request->file('foto_terima')->store('bukti_diterima', 'public');
-            $updateData['note_admin'] = $path;
+            $updateData['bukti_pengiriman'] = $path;
             $updateData['status']     = 'tiba';
         }
 

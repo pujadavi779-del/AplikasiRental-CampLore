@@ -17,9 +17,9 @@ class UpdateOrderStatusToReturn extends Command
     {
         $today = Carbon::today();
 
-        // Ubah jalan/tiba → pengembalian jika end_date sudah lewat
-        $orders = Order::whereIn('status', ['jalan', 'tiba'])
-            ->whereDate('end_date', '<', $today)
+        // Ubah jalan → pengembalian jika end_date sudah lewat
+        $orders = Order::whereIn('status', ['jalan'])
+            ->whereRaw('DATE(end_date) < ?', [$today->toDateString()])
             ->get()
             ->groupBy('order_id');
 
@@ -40,7 +40,7 @@ class UpdateOrderStatusToReturn extends Command
 
         // Update denda harian untuk yang sudah pengembalian
         $returning = Order::where('status', 'pengembalian')
-            ->whereDate('end_date', '<', $today)
+            ->whereRaw('DATE(end_date) < ?', [$today->toDateString()])
             ->get()
             ->groupBy('order_id');
 
@@ -54,6 +54,8 @@ class UpdateOrderStatusToReturn extends Command
                 'overdue_days' => max(0, $overdueDays),
                 'late_fee'     => $lateFee,
             ]);
+
+            $this->info("Denda diperbarui: Order {$orderId} | telat {$overdueDays} hari | denda Rp " . number_format($lateFee, 0, ',', '.'));
         }
 
         $this->info('Selesai.');

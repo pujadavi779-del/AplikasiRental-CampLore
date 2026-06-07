@@ -25,6 +25,8 @@ class Order extends Model
         'customer_address',
         'snap_token',
         'status',
+        'bukti_pembayaran',
+        'bukti_pengiriman',
     ];
 
     // Tambahkan properti ini di bawah $fillable

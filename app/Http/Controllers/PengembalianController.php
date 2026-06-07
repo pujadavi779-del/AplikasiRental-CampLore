@@ -21,29 +21,28 @@ class PengembalianController extends Controller
         $data_pengembalian = $orders->map(function ($items, $orderId) use ($today) {
             $first       = $items->first();
             $endDate     = $first->end_date ? Carbon::parse($first->end_date)->startOfDay() : null;
-            $isOverdue   = $endDate && $today->gt($endDate);
-            $overdueDays = $first->overdue_days ?? ($isOverdue ? (int) $endDate->diffInDays($today) : 0);
-            $lateFee     = $first->late_fee ?? ($overdueDays * 10000);
+            $overdueDays = $first->overdue_days ?? 0;
+            $lateFee     = $first->late_fee ?? 0;
 
             return (object) [
-                'id'          => $orderId, // pakai order_id sebagai identifier
-                'id_pesanan'  => $orderId,
-                'user'        => (object) [
+                'id'                 => $orderId,
+                'id_pesanan'         => $orderId,
+                'tanggal_kembali'    => $first->end_date,
+                'minta_perpanjangan' => false,
+                'user' => (object) [
                     'name'  => $first->customer_name ?? ($first->user->name ?? '-'),
                     'email' => $first->user->email ?? '-',
                     'no_hp' => $first->customer_phone ?? '-',
                 ],
-                'products'    => $items->map(fn($i) => (object) [
-                    'name'    => $i->product->name ?? 'Produk Dihapus',
-                    'kategori'=> $i->product->category ?? '-',
-                    'tipe'    => '-',
-                    'merek'   => '-',
-                    'quantity'=> $i->quantity ?? 1,
+                'products' => $items->map(fn($i) => (object) [
+                    'name'     => $i->product->name ?? 'Produk Dihapus',
+                    'kategori' => $i->product->category ?? '-',
+                    'tipe'     => '-',
+                    'merek'    => '-',
+                    'quantity' => $i->quantity ?? 1,
                 ])->values()->all(),
-                'tanggal_kembali' => $first->end_date,
-                'overdue_days'    => $overdueDays,
-                'late_fee'        => $lateFee,
-                'minta_perpanjangan' => false,
+                'overdue_days' => $overdueDays,
+                'late_fee'     => $lateFee,
             ];
         })->values()->all();
 
@@ -58,11 +57,7 @@ class PengembalianController extends Controller
             return response()->json(['success' => false, 'message' => 'Order tidak ditemukan'], 404);
         }
 
-        Order::where('order_id', $orderId)->update([
-            'status'       => 'selesai',
-            'overdue_days' => 0,
-            'late_fee'     => 0,
-        ]);
+        Order::where('order_id', $orderId)->update(['status' => 'selesai']);
 
         return response()->json(['success' => true]);
     }

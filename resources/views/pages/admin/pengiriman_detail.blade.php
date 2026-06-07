@@ -31,10 +31,10 @@ $orderMap = ['proses' => 0, 'pengembalian' => 1, 'selesai' => 1];
 } else {
 $steps = [
 ['key' => 'proses', 'label' => 'Menunggu Pengantaran', 'desc' => 'Barang siap diantar oleh kurir.'],
-['key' => 'jalan', 'label' => 'Sedang Diantar', 'desc' => 'Barang dalam perjalanan ke pelanggan.'],
+['key' => 'dikirim', 'label' => 'Sedang Diantar', 'desc' => 'Barang dalam perjalanan ke pelanggan.'],
 ['key' => 'pengembalian', 'label' => 'Menunggu Pengembalian','desc' => 'Masa sewa selesai, menunggu barang dikembalikan.'],
 ];
-$orderMap = ['proses' => 0, 'jalan' => 1, 'pengembalian' => 2, 'selesai' => 2];
+$orderMap = ['proses' => 0, 'dikirim' => 1, 'pengembalian' => 2, 'selesai' => 2];
 }
 
 $currentIdx = $orderMap[$status] ?? 0;
@@ -59,7 +59,7 @@ $currentIdx = $orderMap[$status] ?? 0;
                     <p class="text-xs text-[#7c8b84] mt-1">
                         {{ $isPickup ? 'Pelanggan telah mengambil barang dari toko.' : 'Barang sedang digunakan pelanggan, menunggu dikembalikan.' }}
                     </p>
-                    @elseif($status === 'jalan')
+                    @elseif($status === 'dikirim')
                     <h2 class="text-xl font-bold text-[#22543D]" style="font-family:'Playfair Display',Georgia,serif;">Sedang Diantar</h2>
                     <p class="text-xs text-[#7c8b84] mt-1">Kurir sedang dalam perjalanan menuju pelanggan.</p>
                     @else
@@ -73,12 +73,12 @@ $currentIdx = $orderMap[$status] ?? 0;
                 </div>
                 <span class="px-3 py-1.5 rounded-full text-[10px] font-bold uppercase whitespace-nowrap
                     @if(in_array($status, ['pengembalian','selesai'])) bg-purple-50 text-purple-700 border border-purple-200
-                    @elseif($status === 'jalan') bg-blue-50 text-blue-700 border border-blue-200
+                    @elseif($status === 'dikirim') bg-blue-50 text-blue-700 border border-blue-200
                     @else bg-amber-50 text-amber-700 border border-amber-200
                     @endif">
                     @if($status === 'pengembalian') {{ $isPickup ? 'Sudah Diambil' : 'Pengembalian' }}
                     @elseif($status === 'selesai') Selesai
-                    @elseif($status === 'jalan') Sedang Diantar
+                    @elseif($status === 'dikirim') Sedang Diantar
                     @else {{ $isPickup ? 'Menunggu Diambil' : 'Menunggu Pengantaran' }}
                     @endif
                 </span>
@@ -185,28 +185,175 @@ $currentIdx = $orderMap[$status] ?? 0;
                         <div class="text-[11px] text-blue-600">Kurir dalam perjalanan menuju pelanggan</div>
                     </div>
                 </div>
-                <form method="POST" action="{{ route('admin.pengiriman.update-status', $idPesanan) }}">
-                    @csrf @method('PATCH')
-                    <input type="hidden" name="status" value="pengembalian">
-                    <button type="submit"
-                        onclick="return confirm('Tandai masa sewa selesai dan masuk ke pengembalian?')"
-                        class="w-full flex items-center justify-between gap-4 bg-[#22543D] hover:bg-[#1a4230] text-white rounded-2xl px-5 py-4 transition-colors group">
-                        <div class="flex items-center gap-3">
-                            <div class="w-9 h-9 rounded-xl bg-white/15 flex items-center justify-center flex-shrink-0">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6" />
-                                </svg>
-                            </div>
-                            <div class="text-left">
-                                <div class="font-bold text-sm">Tandai Selesai Diantar</div>
-                                <div class="text-[11px] text-white/70">Pindahkan ke status pengembalian</div>
-                            </div>
+                {{-- Tombol buka modal bukti foto --}}
+                <button type="button" onclick="document.getElementById('modalBuktiFoto').classList.remove('hidden')"
+                    class="w-full flex items-center justify-between gap-4 bg-[#22543D] hover:bg-[#1a4230] text-white rounded-2xl px-5 py-4 transition-colors group">
+                    <div class="flex items-center gap-3">
+                        <div class="w-9 h-9 rounded-xl bg-white/15 flex items-center justify-center flex-shrink-0">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6" />
+                            </svg>
                         </div>
-                        <svg class="w-5 h-5 text-white/50 group-hover:text-white transition-colors" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
-                        </svg>
-                    </button>
-                </form>
+                        <div class="text-left">
+                            <div class="font-bold text-sm">Tandai Selesai Diantar</div>
+                            <div class="text-[11px] text-white/70">Pindahkan ke status pengembalian</div>
+                        </div>
+                    </div>
+                    <svg class="w-5 h-5 text-white/50 group-hover:text-white transition-colors" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+                    </svg>
+                </button>
+
+                {{-- ══ MODAL BUKTI FOTO PENGIRIMAN ══ --}}
+                <div id="modalBuktiFoto" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm px-4">
+                    <div class="bg-white rounded-[24px] shadow-2xl w-full max-w-lg overflow-hidden">
+
+                        {{-- Header Modal --}}
+                        <div class="flex items-center justify-between px-6 py-4 border-b border-[#eef4f0]">
+                            <div>
+                                <h3 class="font-bold text-base text-gray-800" style="font-family:'Playfair Display',Georgia,serif;">Bukti Foto Pengiriman</h3>
+                                <p class="text-[11px] text-gray-400 mt-0.5">Upload foto sebagai konfirmasi barang sudah diterima pelanggan</p>
+                            </div>
+                            <button type="button" onclick="tutupModal()"
+                                class="w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center transition-colors">
+                                <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                                </svg>
+                            </button>
+                        </div>
+
+                        <form method="POST" action="{{ route('admin.pengiriman.update-status', $idPesanan) }}" enctype="multipart/form-data">
+                            @csrf @method('PATCH')
+                            <input type="hidden" name="status" value="pengembalian">
+
+                            <div class="px-6 py-5 flex flex-col gap-5">
+
+                                {{-- Area Upload Foto --}}
+                                <div>
+                                    <label class="text-[10px] font-bold uppercase tracking-widest text-[#7c8b84] mb-2 block">Foto Bukti Penerimaan</label>
+
+                                    {{-- Drop zone --}}
+                                    <div id="dropZone"
+                                        class="relative border-2 border-dashed border-[#d7e6de] rounded-[20px] bg-[#f8fdf9] hover:border-[#22543D] hover:bg-[#f0fdf4] transition-colors cursor-pointer overflow-hidden"
+                                        onclick="document.getElementById('inputFotoBukti').click()"
+                                        ondragover="event.preventDefault(); this.classList.add('border-[#22543D]','bg-[#f0fdf4]')"
+                                        ondragleave="this.classList.remove('border-[#22543D]','bg-[#f0fdf4]')"
+                                        ondrop="handleDrop(event)">
+
+                                        {{-- Placeholder (sebelum ada foto) --}}
+                                        <div id="dropPlaceholder" class="flex flex-col items-center justify-center py-10 px-4 gap-3">
+                                            <div class="w-14 h-14 rounded-2xl bg-[#22543D]/10 flex items-center justify-center">
+                                                <svg class="w-7 h-7 text-[#22543D]" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" />
+                                                </svg>
+                                            </div>
+                                            <div class="text-center">
+                                                <div class="text-sm font-semibold text-[#22543D]">Klik atau seret foto ke sini</div>
+                                                <div class="text-[11px] text-gray-400 mt-0.5">JPG, PNG, WEBP · Maks. 5MB</div>
+                                            </div>
+                                        </div>
+
+                                        {{-- Preview foto setelah dipilih --}}
+                                        <div id="previewFoto" class="hidden relative">
+                                            <img id="imgPreview" src="" alt="Preview" class="w-full object-cover max-h-64 rounded-[18px]">
+                                            <div class="absolute inset-0 bg-black/0 hover:bg-black/10 transition-colors rounded-[18px] flex items-end justify-center pb-3 opacity-0 hover:opacity-100">
+                                                <span class="text-[11px] text-white bg-black/50 px-3 py-1 rounded-full">Klik untuk ganti foto</span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <input type="file" id="inputFotoBukti" name="foto_terima" accept="image/*" class="hidden" onchange="previewGambar(this)">
+                                </div>
+
+                                {{-- Panduan --}}
+                                <div class="bg-amber-50 border border-amber-200 rounded-2xl p-4">
+                                    <div class="text-[10px] font-bold uppercase tracking-widest text-amber-700 mb-2">Panduan Foto Bukti</div>
+                                    <ul class="flex flex-col gap-1.5">
+                                        <li class="flex items-start gap-2 text-[11px] text-amber-800">
+                                            <span class="mt-0.5 text-amber-500">•</span>
+                                            Pastikan barang terlihat jelas di tangan pelanggan.
+                                        </li>
+                                        <li class="flex items-start gap-2 text-[11px] text-amber-800">
+                                            <span class="mt-0.5 text-amber-500">•</span>
+                                            Foto diambil di lokasi pengiriman, bukan di toko.
+                                        </li>
+                                        <li class="flex items-start gap-2 text-[11px] text-amber-800">
+                                            <span class="mt-0.5 text-amber-500">•</span>
+                                            Jika foto buram atau tidak sesuai, upload ulang sebelum konfirmasi.
+                                        </li>
+                                    </ul>
+                                </div>
+
+                            </div>
+
+                            {{-- Footer Modal --}}
+                            <div class="px-6 pb-5 flex gap-3">
+                                <button type="button" onclick="tutupModal()"
+                                    class="flex-1 py-3 rounded-2xl border border-[#d7e6de] text-sm font-semibold text-gray-600 hover:bg-gray-50 transition-colors">
+                                    Batal
+                                </button>
+                                <button type="submit" id="btnKonfirmasi" disabled
+                                    class="flex-1 py-3 rounded-2xl bg-[#22543D] text-white text-sm font-bold transition-colors disabled:opacity-40 disabled:cursor-not-allowed hover:bg-[#1a4230]">
+                                    <span class="flex items-center justify-center gap-2">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                        </svg>
+                                        Konfirmasi Diterima
+                                    </span>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <script>
+                    function tutupModal() {
+                        document.getElementById('modalBuktiFoto').classList.add('hidden');
+                        // Reset preview jika modal ditutup
+                        document.getElementById('previewFoto').classList.add('hidden');
+                        document.getElementById('dropPlaceholder').classList.remove('hidden');
+                        document.getElementById('inputFotoBukti').value = '';
+                        document.getElementById('btnKonfirmasi').disabled = true;
+                    }
+
+                    function previewGambar(input) {
+                        if (input.files && input.files[0]) {
+                            const file = input.files[0];
+                            if (file.size > 5 * 1024 * 1024) {
+                                alert('Ukuran foto maksimal 5MB.');
+                                input.value = '';
+                                return;
+                            }
+                            const reader = new FileReader();
+                            reader.onload = function(e) {
+                                document.getElementById('imgPreview').src = e.target.result;
+                                document.getElementById('dropPlaceholder').classList.add('hidden');
+                                document.getElementById('previewFoto').classList.remove('hidden');
+                                document.getElementById('btnKonfirmasi').disabled = false;
+                            };
+                            reader.readAsDataURL(file);
+                        }
+                    }
+
+                    function handleDrop(event) {
+                        event.preventDefault();
+                        const dropZone = document.getElementById('dropZone');
+                        dropZone.classList.remove('border-[#22543D]', 'bg-[#f0fdf4]');
+                        const file = event.dataTransfer.files[0];
+                        if (file && file.type.startsWith('image/')) {
+                            const input = document.getElementById('inputFotoBukti');
+                            const dt = new DataTransfer();
+                            dt.items.add(file);
+                            input.files = dt.files;
+                            previewGambar(input);
+                        }
+                    }
+
+                    // Tutup modal jika klik di luar area
+                    document.getElementById('modalBuktiFoto').addEventListener('click', function(e) {
+                        if (e.target === this) tutupModal();
+                    });
+                </script>
 
                 @else
                 {{-- pengembalian / selesai --}}
@@ -267,6 +414,82 @@ $currentIdx = $orderMap[$status] ?? 0;
                 @endforeach
             </div>
         </div>
+
+        {{-- Card: Foto Bukti Pengiriman (tampil saat status pengembalian/selesai) --}}
+        @if(!$isPickup && in_array($status, ['pengembalian', 'selesai']))
+        @php $fotoBukti = $pengiriman['foto_terima'] ?? null; @endphp
+        <div class="bg-white rounded-[24px] border border-[#d7e6de] shadow-sm overflow-hidden">
+            {{-- Header card --}}
+            <div class="flex items-center justify-between px-5 py-4 border-b border-[#eef4f0]">
+                <div class="flex items-center gap-2">
+                    <svg class="w-4 h-4 text-[#22543D]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
+                    </svg>
+                    <span class="text-[10px] font-bold uppercase tracking-widest text-[#7c8b84]">Foto Bukti Pengiriman</span>
+                </div>
+                @if($fotoBukti)
+                <div class="flex items-center gap-2">
+                    <button type="button" onclick="document.getElementById('modalZoomFoto').classList.remove('hidden')"
+                        class="w-8 h-8 rounded-lg bg-gray-100 hover:bg-gray-200 flex items-center justify-center transition-colors" title="Perbesar">
+                        <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7" />
+                        </svg>
+                    </button>
+                    <a href="{{ $fotoBukti }}" download
+                        class="w-8 h-8 rounded-lg bg-gray-100 hover:bg-gray-200 flex items-center justify-center transition-colors" title="Unduh">
+                        <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                        </svg>
+                    </a>
+                </div>
+                @endif
+            </div>
+
+            {{-- Foto atau placeholder --}}
+            <div class="p-4">
+                @if($fotoBukti)
+                <div class="rounded-[18px] overflow-hidden border border-[#eef4f0] bg-gray-50">
+                    <img src="{{ $fotoBukti }}"
+                        alt="Bukti Pengiriman"
+                        class="w-full object-cover max-h-72 cursor-pointer hover:opacity-95 transition-opacity"
+                        onclick="document.getElementById('modalZoomFoto').classList.remove('hidden')">
+                </div>
+                @else
+                <div class="rounded-[18px] border-2 border-dashed border-[#d7e6de] bg-[#f8fdf9] flex flex-col items-center justify-center py-10 gap-3">
+                    <div class="w-14 h-14 rounded-2xl bg-gray-100 flex items-center justify-center">
+                        <svg class="w-7 h-7 text-gray-300" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
+                        </svg>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-sm font-semibold text-gray-400">Belum ada foto bukti</div>
+                        <div class="text-[11px] text-gray-300 mt-0.5">Foto akan muncul setelah pengiriman dikonfirmasi</div>
+                    </div>
+                </div>
+                @endif
+            </div>
+        </div>
+
+        {{-- Modal Zoom Foto --}}
+        @if($fotoBukti)
+        <div id="modalZoomFoto" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm px-4"
+            onclick="this.classList.add('hidden')">
+            <div class="relative max-w-3xl w-full" onclick="event.stopPropagation()">
+                <button onclick="document.getElementById('modalZoomFoto').classList.add('hidden')"
+                    class="absolute -top-4 -right-4 w-9 h-9 rounded-full bg-white/20 hover:bg-white/30 flex items-center justify-center transition-colors z-10">
+                    <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+                <img src="{{ $fotoBukti }}"
+                    alt="Bukti Pengiriman"
+                    class="w-full rounded-[20px] shadow-2xl object-contain max-h-[80vh]">
+            </div>
+        </div>
+        @endif
+        @endif
 
     </div>
 
