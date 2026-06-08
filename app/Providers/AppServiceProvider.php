@@ -5,35 +5,39 @@ namespace App\Providers;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\View;
 use App\Models\Review;
+use App\Models\Cart;
 
 class AppServiceProvider extends ServiceProvider
 {
-    /**
-     * Register any application services.
-     */
     public function register(): void
     {
         //
     }
 
-    /**
-     * Bootstrap any application services.
-     */
     public function boot(): void
     {
-        {
         View::composer('*', function ($view) {
+
+            // Badge keranjang untuk pelanggan
+            $cartCount = auth()->check()
+                ? Cart::where('user_id', auth()->id())->sum('quantity')
+                : 0;
+
+            $data = [
+                'cartCount' => $cartCount,
+            ];
+
+            // Data khusus admin
             if (auth()->check() && auth()->user()->is_admin) {
-                $view->with([
-                    'recentReviews'  => Review::with(['user', 'product'])
-                                            ->latest()
-                                            ->take(5)
-                                            ->get(),
-                    'unrepliedCount' => Review::where('is_replied', false)->count(),
-                ]);
-        }
-    });
-}
+                $data['recentReviews'] = Review::with(['user', 'product'])
+                    ->latest()
+                    ->take(5)
+                    ->get();
+
+                $data['unrepliedCount'] = Review::where('is_replied', false)->count();
+            }
+
+            $view->with($data);
+        });
     }
-    
 }

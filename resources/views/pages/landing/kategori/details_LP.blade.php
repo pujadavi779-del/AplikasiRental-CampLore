@@ -461,8 +461,19 @@ $accordions = [
             })
             .then(r => r.status === 401 ? window.location.href = "{{ route('login') }}" : r.json())
             .then(data => {
-                if (data?.success) showToast('Berhasil ditambahkan ke keranjang ✓');
-                else showToast(data?.message ?? 'Gagal menambahkan', 'error');
+            if (data?.success) {
+
+                showToast('Berhasil ditambahkan ke keranjang ✓');
+
+                const badge = document.getElementById('cart-badge');
+
+                if (badge) {
+                    badge.textContent = data.total;
+                }
+
+            } else {
+                showToast(data?.message ?? 'Gagal menambahkan', 'error');
+            }
             })
             .catch(() => showToast('Terjadi kesalahan, coba lagi', 'error'))
             .finally(() => btns.forEach(b => {
