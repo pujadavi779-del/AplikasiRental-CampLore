@@ -10,18 +10,18 @@ class Product extends Model
 {
     use HasFactory;
     protected $fillable = [
-    'type_category_id',
-    'brand_category_id',
-    'name',
-    'category',
-    'price_per_day',
-    'image',
-    'deskripsi',
-    'highlights',
-    'isi_paket',
-    'stock',
+        'type_category_id',
+        'brand_category_id',
+        'name',
+        'category',
+        'price_per_day',
+        'image',
+        'deskripsi',
+        'highlights',
+        'isi_paket',
+        'stock',
     ];
-    
+
 
     /**
      * Tipe produk (misal: Mirrorless, DSLR, Sleeping Bag, dst.)
@@ -37,5 +37,10 @@ class Product extends Model
     public function brandCategory(): BelongsTo
     {
         return $this->belongsTo(Category::class, 'brand_category_id');
+    }
+
+    public function orders()
+    {
+        return $this->hasMany(\App\Models\Order::class);
     }
 }

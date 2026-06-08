@@ -6,29 +6,29 @@
 
 {{-- Import Google Fonts: Inter + Playfair Display --}}
 @once
-    @push('styles')
-        <link rel="preconnect" href="https://fonts.googleapis.com">
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@700;800&display=swap" rel="stylesheet">
-        <style>
-            /* Terapkan Inter sebagai font utama sidebar */
-            aside, aside * {
-                font-family: 'Inter', sans-serif;
-            }
-            /* Playfair Display untuk nama brand/logo */
-            .sidebar-brand {
-                font-family: 'Playfair Display', serif;
-            }
-        </style>
-    @endpush
+@push('styles')
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@700;800&display=swap" rel="stylesheet">
+<style>
+    /* Terapkan Inter sebagai font utama sidebar */
+    aside,
+    aside * {
+        font-family: 'Inter', sans-serif;
+    }
+
+    /* Playfair Display untuk nama brand/logo */
+    .sidebar-brand {
+        font-family: 'Playfair Display', serif;
+    }
+</style>
+@endpush
 @endonce
 
 <div x-data="{
         sidebarOpen: false,
-        openRiwayat: {{ request()->is('admin/riwayat*') ? 'true' : 'false' }}
      }"
-     @keydown.escape.window="sidebarOpen = false"
->
+    @keydown.escape.window="sidebarOpen = false">
 
     {{-- =====================================================
          BURGER BUTTON — hanya muncul di bawah lg (< 1024px)
@@ -42,23 +42,22 @@
                hover:bg-emerald-700 active:scale-95
                transition-all duration-150"
         aria-label="Toggle Sidebar"
-        :aria-expanded="sidebarOpen"
-    >
+        :aria-expanded="sidebarOpen">
         {{-- Icon Hamburger --}}
         <svg x-show="!sidebarOpen"
-             xmlns="http://www.w3.org/2000/svg"
-             class="h-5 w-5 pointer-events-none"
-             fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-5 w-5 pointer-events-none"
+            fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                  d="M4 6h16M4 12h16M4 18h16" />
+                d="M4 6h16M4 12h16M4 18h16" />
         </svg>
         {{-- Icon X --}}
         <svg x-show="sidebarOpen" x-cloak
-             xmlns="http://www.w3.org/2000/svg"
-             class="h-5 w-5 pointer-events-none"
-             fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-5 w-5 pointer-events-none"
+            fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                  d="M6 18L18 6M6 6l12 12" />
+                d="M6 18L18 6M6 6l12 12" />
         </svg>
     </button>
 
@@ -76,8 +75,7 @@
         x-transition:leave-start="opacity-100"
         x-transition:leave-end="opacity-0"
         class="fixed inset-0 bg-black/50 backdrop-blur-[1px] z-30 lg:hidden"
-        aria-hidden="true"
-    ></div>
+        aria-hidden="true"></div>
 
     {{-- =====================================================
          SIDEBAR
@@ -90,13 +88,12 @@
                bg-gradient-to-b from-[#22543D] to-[#163527]
                fixed top-0 left-0 bottom-0
                flex flex-col z-40 overflow-y-auto
-               transition-transform duration-300 ease-in-out"
-    >
+               transition-transform duration-300 ease-in-out">
 
         {{-- Logo --}}
         <a href="{{ url('/admin/dashboard_admin') }}"
-           @click="sidebarOpen = false"
-           class="flex items-center gap-3 px-6 py-6 border-b border-white/10 hover:bg-white/5 transition-colors">
+            @click="sidebarOpen = false"
+            class="flex items-center gap-3 px-6 py-6 border-b border-white/10 hover:bg-white/5 transition-colors">
             <span class="sidebar-brand text-white font-extrabold text-lg tracking-tight">
                 Camp<span class="text-[#ED64A6]">lore</span>
             </span>
@@ -107,12 +104,12 @@
 
             {{-- Beranda --}}
             <a href="{{ url('/admin/dashboard_admin') }}"
-               @click="sidebarOpen = false"
-               class="flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-semibold transition-all
+                @click="sidebarOpen = false"
+                class="flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-semibold transition-all
                       {{ request()->is('admin/dashboard_admin') ? 'bg-white/15 text-white' : 'text-emerald-100 hover:text-white hover:bg-white/10' }}">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                          d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                        d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
                 </svg>
                 Beranda
             </a>
@@ -124,12 +121,12 @@
 
             {{-- Transaksi Pembayaran --}}
             <a href="{{ url('/admin/pembayaran') }}"
-               @click="sidebarOpen = false"
-               class="flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-semibold transition-all
+                @click="sidebarOpen = false"
+                class="flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-semibold transition-all
                       {{ request()->is('admin/pembayaran*') ? 'bg-white/15 text-white' : 'text-emerald-100 hover:text-white hover:bg-white/10' }}">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                          d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
+                        d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
                 </svg>
                 Transaksi Pembayaran
             </a>
@@ -141,36 +138,36 @@
 
             {{-- Pengguna --}}
             <a href="{{ url('/admin/customers') }}"
-               @click="sidebarOpen = false"
-               class="flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-semibold transition-all
+                @click="sidebarOpen = false"
+                class="flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-semibold transition-all
                       {{ request()->is('admin/customers*') ? 'bg-white/15 text-white' : 'text-emerald-100 hover:text-white hover:bg-white/10' }}">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                          d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />
+                        d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />
                 </svg>
                 Pengguna
             </a>
 
             {{-- Pengiriman --}}
             <a href="{{ url('/admin/pengiriman') }}"
-               @click="sidebarOpen = false"
-               class="flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-semibold transition-all
+                @click="sidebarOpen = false"
+                class="flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-semibold transition-all
                       {{ request()->is('admin/pengiriman*') ? 'bg-white/15 text-white' : 'text-emerald-100 hover:text-white hover:bg-white/10' }}">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                          d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4" />
+                        d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4" />
                 </svg>
                 Pengiriman
             </a>
 
             {{-- Pengembalian --}}
             <a href="{{ url('/admin/pengembalian') }}"
-               @click="sidebarOpen = false"
-               class="flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-semibold transition-all
+                @click="sidebarOpen = false"
+                class="flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-semibold transition-all
                       {{ request()->is('admin/pengembalian*') ? 'bg-white/15 text-white' : 'text-emerald-100 hover:text-white hover:bg-white/10' }}">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                          d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6" />
+                        d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6" />
                 </svg>
                 Pengembalian
             </a>
@@ -181,77 +178,47 @@
             </p>
 
             <a href="{{ url('/admin/kategori_produk') }}"
-               @click="sidebarOpen = false"
-               class="flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-semibold transition-all
+                @click="sidebarOpen = false"
+                class="flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-semibold transition-all
                       {{ request()->is('admin/kategori_produk*') ? 'bg-white/15 text-white' : 'text-emerald-100 hover:text-white hover:bg-white/10' }}">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                          d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+                        d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
                 </svg>
                 Kategori Produk
             </a>
 
             {{-- Produk --}}
             <a href="{{ url('/admin/products') }}"
-               @click="sidebarOpen = false"
-               class="flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-semibold transition-all
+                @click="sidebarOpen = false"
+                class="flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-semibold transition-all
                       {{ request()->is('admin/products*') ? 'bg-white/15 text-white' : 'text-emerald-100 hover:text-white hover:bg-white/10' }}">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                          d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+                        d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
                 </svg>
                 Produk
             </a>
 
-            {{-- Dropdown: Riwayat Produk --}}
-            <div>
-                <button
-                    @click="openRiwayat = !openRiwayat"
-                    :aria-expanded="openRiwayat"
-                    class="w-full flex items-center justify-between px-4 py-2.5 rounded-xl text-sm font-semibold transition-all cursor-pointer
-                           {{ request()->is('admin/riwayat*') ? 'bg-white/15 text-white' : 'text-emerald-100 hover:text-white hover:bg-white/10' }}"
-                >
-                    <span class="flex items-center gap-3">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                  d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
-                        Riwayat Produk
-                    </span>
-                    <svg :class="openRiwayat ? 'rotate-180' : 'rotate-0'"
-                         class="h-3 w-3 transition-transform duration-200 text-emerald-400 flex-shrink-0"
-                         xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                    </svg>
-                </button>
+            {{-- Riwayat Produk --}}
+            <a href="{{ route('admin.riwayat-produk') }}"
+                @click="sidebarOpen = false"
+                class="flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-semibold transition-all
+          {{ request()->is('admin/riwayat-produk*') ? 'bg-white/15 text-white' : 'text-emerald-100 hover:text-white hover:bg-white/10' }}">
 
-                <div
-                    x-show="openRiwayat"
-                    x-cloak
-                    x-transition:enter="transition-all duration-200 ease-out"
-                    x-transition:enter-start="opacity-0 -translate-y-1"
-                    x-transition:enter-end="opacity-100 translate-y-0"
-                    x-transition:leave="transition-all duration-150 ease-in"
-                    x-transition:leave-start="opacity-100 translate-y-0"
-                    x-transition:leave-end="opacity-0 -translate-y-1"
-                    class="pl-11 pr-4 py-1 space-y-0.5"
-                >
-                    <a href="{{ url('/admin/riwayat/kamera') }}"
-                       @click="sidebarOpen = false"
-                       class="flex items-center gap-2 py-2 pl-3 rounded-lg text-[13px] font-medium transition-colors
-                              {{ request()->is('admin/riwayat/kamera*') ? 'text-white bg-white/10' : 'text-emerald-200/80 hover:text-white hover:bg-white/5' }}">
-                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 flex-shrink-0"></span>
-                        Kamera
-                    </a>
-                    <a href="{{ url('/admin/riwayat/camping') }}"
-                       @click="sidebarOpen = false"
-                       class="flex items-center gap-2 py-2 pl-3 rounded-lg text-[13px] font-medium transition-colors
-                              {{ request()->is('admin/riwayat/camping*') ? 'text-white bg-white/10' : 'text-emerald-200/80 hover:text-white hover:bg-white/5' }}">
-                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 flex-shrink-0"></span>
-                        Alat Camping
-                    </a>
-                </div>
-            </div>
+                <svg xmlns="http://www.w3.org/2000/svg"
+                    class="h-4 w-4 flex-shrink-0"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor">
+                    <path stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+
+                Riwayat Produk
+            </a>
 
         </nav>
 
@@ -268,10 +235,10 @@
             <form method="POST" action="{{ route('admin.logout') }}">
                 @csrf
                 <button type="submit" title="Logout"
-                        class="text-emerald-400 hover:text-[#ED64A6] transition-colors p-1 rounded-lg hover:bg-white/5">
+                    class="text-emerald-400 hover:text-[#ED64A6] transition-colors p-1 rounded-lg hover:bg-white/5">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                              d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                            d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
                     </svg>
                 </button>
             </form>

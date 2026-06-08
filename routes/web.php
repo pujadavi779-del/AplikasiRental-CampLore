@@ -31,6 +31,7 @@ use App\Models\Product;
 use App\Models\Cart;
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Admin\ReviewController;
+use App\Http\Controllers\RiwayatProdukController;
 
 
 /*
@@ -214,8 +215,10 @@ Route::prefix('admin')->middleware('admin.auth')->name('admin.')->group(function
     Route::delete('/orders/{id}', [OrderController::class, 'destroy'])->name('orders.destroy');
 
     // Riwayat
-    Route::get('/riwayat/kamera',  fn() => view('pages.admin.riwayat.kamera'))->name('riwayat.kamera');
-    Route::get('/riwayat/camping', fn() => view('pages.admin.riwayat.camping'))->name('riwayat.camping');
+    Route::get(
+        '/riwayat-produk',
+        [RiwayatProdukController::class, 'index']
+    )->name('riwayat-produk');
 
     // Customers
     Route::resource('customers', CustomerController::class);
