@@ -32,6 +32,7 @@ use App\Models\Cart;
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Admin\ReviewController;
 use App\Http\Controllers\RiwayatProdukController;
+use App\Http\Controllers\CustomerReviewController;
 
 
 /*
@@ -254,5 +255,11 @@ Route::middleware(['auth', 'admin.auth'])
     });
 
 // Route Sewa Pelanggan
-Route::get('/sewa', [SewaController::class, 'index'])
+Route::middleware('auth')->group(function () {
+    Route::get('/ulasan/{orderId}/tulis', [CustomerReviewController::class, 'create'])
+        ->name('pelanggan.ulasan.create');
+    Route::post('/ulasan/{orderId}/simpan', [CustomerReviewController::class, 'store'])
+        ->name('pelanggan.ulasan.store');
+    Route::get('/sewa', [SewaController::class, 'index'])
     ->name('pelanggan.sewa');
+});

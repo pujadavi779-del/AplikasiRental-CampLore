@@ -437,11 +437,48 @@
                     @endif
 
                     @if($status === 'selesai')
+                    @php
+                        // Cek apakah sudah pernah review (ambil product_id dari item pertama)
+                        $firstProductId = $items[0]->product_id ?? null;
+                        $sudahReview = $firstProductId
+                            ? \App\Models\Review::where('user_id', auth()->id())
+                                ->where('product_id', $firstProductId)
+                                ->exists()
+                            : true;
+                    @endphp
                     <a href="/catalog"
                         class="px-[18px] py-[9px] rounded-[10px] text-xs font-bold no-underline inline-flex items-center gap-1.5
-                                  bg-[#e8567a] text-white hover:bg-[#d4466a] transition-colors duration-200">
+                                bg-[#e8567a] text-white hover:bg-[#d4466a] transition-colors duration-200">
                         Sewa Lagi
                     </a>
+                    @if(!$sudahReview)
+                    @php
+                        $productId = $items[0]->product_id ?? null;
+                        $productCategory = null;
+                        if ($productId) {
+                            $prod = \App\Models\Product::find($productId);
+                            $productCategory = $prod ? strtolower($prod->category) : null;
+                        }
+                        $reviewRoute = $productCategory === 'kamera'
+                            ? route('camera.show', $productId)
+                            : route('camping.show', $productId);
+                    @endphp
+                    <a href="{{ $reviewRoute }}"
+                        class="px-[18px] py-[9px] rounded-[10px] text-xs font-bold no-underline inline-flex items-center gap-1.5
+                                bg-white border-[1.5px] border-[#1a5c3a] text-[#1a5c3a]
+                                hover:bg-[#eef5f0] transition-colors duration-200">
+                        <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"/>
+                        </svg>
+                        Tulis Ulasan
+                    </a>
+                    @else
+                    <span class="px-[18px] py-[9px] rounded-[10px] text-xs font-bold inline-flex items-center gap-1.5
+                                bg-[#f3f4f6] text-[#9ca3af] cursor-not-allowed">
+                        Sudah Diulas
+                    </span>
+                    @endif
                     @endif
 
                 </div>

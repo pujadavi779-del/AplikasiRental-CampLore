@@ -92,27 +92,50 @@ class CampingController extends Controller
 
     // 🔹 DETAIL PRODUK (SHOW)
     public function show($id)
-    {
-        $item = Product::findOrFail($id);
+{
+    $item = Product::findOrFail($id);
 
-        $relatedItems = Product::where('category', 'Camping')
-            ->where('id', '!=', $item->id)
-            ->take(5)
-            ->get();
+    $relatedItems = Product::where('category', 'Camping')
+        ->where('id', '!=', $item->id)
+        ->take(5)
+        ->get();
 
-        // perbaikan: Ditambahkan array accordions agar view details_LP tidak error
-        return view('pages.landing.kategori.details_LP', [
-            'item'          => $item,
-            'relatedItems'  => $relatedItems,
-            'category'      => 'camping',
-            'categoryLabel' => 'Camping',
-            'accordions'    => [
-                ['title' => 'Tentang Alat ini', 'deskripsi' => $item->deskripsi ?? 'Deskripsi tidak tersedia.', 'open' => true],
-                ['title' => 'Sorotan',          'deskripsi' => $item->highlights ?? 'Spesifikasi unggulan tidak tersedia.', 'open' => false],
-                ['title' => 'Isi Paket',        'deskripsi' => $item->isi_paket ?? 'Informasi isi paket tidak tersedia.', 'open' => false],
-            ],
-        ]);
+    $reviews = \App\Models\Review::with('user')
+        ->where('product_id', $id)
+        ->latest()
+        ->get();
+
+    $avgRating = $reviews->count() ? round($reviews->avg('rating'), 1) : 0;
+
+    $canReview = false;
+    $reviewOrder = null;
+    if (auth()->check()) {
+        $reviewOrder = \App\Models\Order::where('user_id', auth()->id())
+            ->where('product_id', $id)
+            ->where('status', 'selesai')
+            ->first();
+        $alreadyReviewed = \App\Models\Review::where('user_id', auth()->id())
+            ->where('product_id', $id)
+            ->exists();
+        $canReview = $reviewOrder && !$alreadyReviewed;
     }
+
+    return view('pages.landing.kategori.details_LP', [
+        'item'          => $item,
+        'relatedItems'  => $relatedItems,
+        'category'      => 'camping',
+        'categoryLabel' => 'Camping',
+        'reviews'       => $reviews,
+        'avgRating'     => $avgRating,
+        'canReview'     => $canReview,
+        'reviewOrder'   => $reviewOrder,
+        'accordions'    => [
+            ['title' => 'Tentang Alat ini', 'deskripsi' => $item->deskripsi ?? 'Deskripsi tidak tersedia.', 'open' => true],
+            ['title' => 'Sorotan',          'deskripsi' => $item->highlights ?? 'Spesifikasi unggulan tidak tersedia.', 'open' => false],
+            ['title' => 'Isi Paket',        'deskripsi' => $item->isi_paket ?? 'Informasi isi paket tidak tersedia.', 'open' => false],
+        ],
+    ]);
+}
 
     public function create()
     {

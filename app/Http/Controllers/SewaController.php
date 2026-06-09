@@ -31,6 +31,7 @@ class SewaController extends Controller
             return (object)[
                 'id'               => $first->id,
                 'order_id'         => $first->order_id,
+                'order_db_id'      => $first->id,
                 'order_number'     => $first->order_id,
                 'status'           => $first->status,
                 'total_price'      => $items->sum('total_price') + $first->shipping_cost + $first->service_fee,
@@ -47,6 +48,7 @@ class SewaController extends Controller
                     'price'      => $o->price_per_day,
                     'quantity'   => $o->quantity,
                     'overdue'    => false,
+                    'product_id' => $o->product_id,  // ← tambah ini
                 ])->values()->all(),
             ];
         })->values()->all();

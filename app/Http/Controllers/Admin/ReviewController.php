@@ -35,17 +35,18 @@ class ReviewController extends Controller
      * Kirim / update balasan admin untuk satu ulasan.
      */
     public function reply(Request $request, Review $review)
-    {
-        $request->validate([
-            'reply' => 'required|string|max:1000',
-        ]);
+{
+    $request->validate([
+        'reply' => 'required|string|max:1000',
+    ]);
 
-        $review->update([
-            'reply'      => $request->reply,
-            'is_replied' => true,
-            'replied_at' => now(),
-        ]);
+    $review->update([
+        'reply'      => $request->reply,
+        'is_replied' => true,
+        'replied_at' => now(),
+    ]);
 
-        return view('pages.admin.ulasan.index', compact('reviews', 'unrepliedCount'));
-    }
+    return redirect()->route('admin.reviews.index')
+        ->with('success', 'Balasan berhasil dikirim!');
+}
 }

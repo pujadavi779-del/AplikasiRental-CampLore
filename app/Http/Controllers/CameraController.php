@@ -142,24 +142,50 @@ class CameraController extends Controller
     }
 
     public function show($id)
-    {
-        $item = Product::findOrFail($id);
+{
+    $item = Product::findOrFail($id);
 
-        $relatedItems = Product::where('category', 'Kamera')
-            ->where('id', '!=', $item->id)
-            ->take(5)
-            ->get();
+    $relatedItems = Product::where('category', 'Kamera')
+        ->where('id', '!=', $item->id)
+        ->take(5)
+        ->get();
 
-        return view('pages.landing.kategori.details_LP', [
-            'item'          => $item,
-            'relatedItems'  => $relatedItems,
-            'category'      => 'camera',
-            'categoryLabel' => 'Kamera',
-            'accordions'    => [
-                ['title' => 'Tentang Kamera ini', 'deskripsi' => $item->deskripsi ?? 'Deskripsi tidak tersedia.', 'open' => true],
-                ['title' => 'Sorotan',            'deskripsi' => $item->highlights ?? 'Spesifikasi unggulan tidak tersedia.', 'open' => false], // Dinamis dari DB
-                ['title' => 'Isi Paket',          'deskripsi' => $item->isi_paket ?? 'Informasi isi paket tidak tersedia.', 'open' => false],  // Dinamis dari DB
-            ],
-        ]);
+    // Ambil reviews dengan user
+    $reviews = \App\Models\Review::with('user')
+        ->where('product_id', $id)
+        ->latest()
+        ->get();
+
+    $avgRating = $reviews->count() ? round($reviews->avg('rating'), 1) : 0;
+
+    // Cek apakah user yang login boleh review
+    $canReview = false;
+    $reviewOrder = null;
+    if (auth()->check()) {
+        $reviewOrder = \App\Models\Order::where('user_id', auth()->id())
+            ->where('product_id', $id)
+            ->where('status', 'selesai')
+            ->first();
+        $alreadyReviewed = \App\Models\Review::where('user_id', auth()->id())
+            ->where('product_id', $id)
+            ->exists();
+        $canReview = $reviewOrder && !$alreadyReviewed;
     }
+
+    return view('pages.landing.kategori.details_LP', [
+        'item'          => $item,
+        'relatedItems'  => $relatedItems,
+        'category'      => 'camera',
+        'categoryLabel' => 'Kamera',
+        'reviews'       => $reviews,
+        'avgRating'     => $avgRating,
+        'canReview'     => $canReview,
+        'reviewOrder'   => $reviewOrder,
+        'accordions'    => [
+            ['title' => 'Tentang Kamera ini', 'deskripsi' => $item->deskripsi ?? 'Deskripsi tidak tersedia.', 'open' => true],
+            ['title' => 'Sorotan',            'deskripsi' => $item->highlights ?? 'Spesifikasi unggulan tidak tersedia.', 'open' => false],
+            ['title' => 'Isi Paket',          'deskripsi' => $item->isi_paket ?? 'Informasi isi paket tidak tersedia.', 'open' => false],
+        ],
+    ]);
+}
 }
