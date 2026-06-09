@@ -474,10 +474,25 @@
                         Tulis Ulasan
                     </a>
                     @else
-                    <span class="px-[18px] py-[9px] rounded-[10px] text-xs font-bold inline-flex items-center gap-1.5
-                                bg-[#f3f4f6] text-[#9ca3af] cursor-not-allowed">
-                        Sudah Diulas
-                    </span>
+                                        @php
+                        $myReview = \App\Models\Review::where('user_id', auth()->id())
+                            ->where('product_id', $firstProductId)
+                            ->first();
+                    @endphp
+                    @if($myReview)
+                    <a href="{{ route('pelanggan.ulasan.show', $myReview->id) }}"
+                        class="px-[18px] py-[9px] rounded-[10px] text-xs font-bold no-underline inline-flex items-center gap-1.5
+                                bg-white border-[1.5px] border-[#6b7280] text-[#6b7280]
+                                hover:border-[#1a5c3a] hover:text-[#1a5c3a] transition-colors duration-200">
+                        <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                        </svg>
+                        Lihat Penilaian
+                    </a>
+                    @endif
                     @endif
                     @endif
 

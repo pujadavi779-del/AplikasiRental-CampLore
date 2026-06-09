@@ -76,4 +76,13 @@ class CustomerReviewController extends Controller
         return redirect()->route('pelanggan.sewa')
             ->with('success', 'Ulasan berhasil dikirim! Terima kasih atas penilaianmu.');
     }
+    public function show($reviewId)
+    {
+        $review = Review::with(['product', 'user'])
+            ->where('id', $reviewId)
+            ->where('user_id', Auth::id())
+            ->firstOrFail();
+
+        return view('pages.pelanggan.ulasan.detail', compact('review'));
+    }
 }

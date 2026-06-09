@@ -262,4 +262,7 @@ Route::middleware('auth')->group(function () {
         ->name('pelanggan.ulasan.store');
     Route::get('/sewa', [SewaController::class, 'index'])
     ->name('pelanggan.sewa');
+    //ualsan detail pelanggan
+    Route::get('/ulasan/{reviewId}/detail', [CustomerReviewController::class, 'show'])
+    ->name('pelanggan.ulasan.show');
 });
