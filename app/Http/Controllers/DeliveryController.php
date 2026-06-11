@@ -125,6 +125,36 @@ class DeliveryController extends Controller
 
         $updateData = ['status' => $statusBaru];
 
+        // Kirim WA sesuai status
+        $firstOrder = $orders->first()->load('user');
+        if ($firstOrder && $firstOrder->user) {
+            $phone = $firstOrder->user->no_tlp;
+            if (str_starts_with($phone, '0')) {
+                $phone = '62' . substr($phone, 1);
+            }
+
+            $messages = [
+                'jalan'        => "Halo! Perlengkapan sewa Anda dari Camplore sedang dalam perjalanan! 🚚 Pastikan ada orang di rumah untuk menerima paket. Terima kasih telah menyewa di Camplore! 🏕️",
+                'selesai'      => "Pesanan sewa Anda telah selesai! 🎉 Terima kasih telah mempercayakan kebutuhan petualangan Anda kepada Camplore. Sampai jumpa di petualangan berikutnya! 🏕️",
+            ];
+
+            // Pesan pengembalian tergantung kondisi
+            if ($statusBaru === 'pengembalian') {
+                $endDate = \Carbon\Carbon::parse($firstOrder->end_date);
+                $isOverdue = $endDate->isPast();
+                $pesanPengembalian = $isOverdue
+                    ? "Halo! Masa sewa perlengkapan Camplore Anda telah berakhir. Mohon segera kembalikan barang sesuai perjanjian. Keterlambatan akan dikenakan denda Rp 10.000/hari. Terima kasih! 🏕️"
+                    : "Halo! Perlengkapan sewa Anda dari Camplore telah tiba dan siap digunakan. 📦 Selamat menikmati petualangan Anda, jaga barang dengan baik ya! Jangan lupa kembalikan perlengkapan tepat waktu sesuai tanggal sewa. Jika ada kendala, jangan ragu hubungi kami. Terima kasih telah menyewa di Camplore! 🏕️";
+                sendWhatsapp($phone, $pesanPengembalian);
+            } elseif (isset($messages[$statusBaru])) {
+                sendWhatsapp($phone, $messages[$statusBaru]);
+            }
+
+            if (isset($messages[$statusBaru])) {
+                sendWhatsapp($phone, $messages[$statusBaru]);
+            }
+        }
+
         if ($request->hasFile('foto_terima')) {
             $path = $request->file('foto_terima')->store('bukti_diterima', 'public');
             $updateData['bukti_pengiriman'] = $path;

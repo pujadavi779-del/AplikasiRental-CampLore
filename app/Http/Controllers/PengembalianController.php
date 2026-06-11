@@ -51,13 +51,22 @@ class PengembalianController extends Controller
 
     public function konfirmasi(Request $request, $orderId)
     {
-        $orders = Order::where('order_id', $orderId)->get();
+        $orders = Order::where('order_id', $orderId)->with('user')->get();
 
         if ($orders->isEmpty()) {
             return response()->json(['success' => false, 'message' => 'Order tidak ditemukan'], 404);
         }
 
         Order::where('order_id', $orderId)->update(['status' => 'selesai']);
+
+        $firstOrder = $orders->first();
+        if ($firstOrder->user && $firstOrder->user->no_tlp) {
+            $phone = $firstOrder->user->no_tlp;
+            if (str_starts_with($phone, '0')) {
+                $phone = '62' . substr($phone, 1);
+            }
+            sendWhatsapp($phone, "Pesanan sewa Anda telah selesai! 🎉 Terima kasih telah mempercayakan kebutuhan petualangan Anda kepada Camplore. Sampai jumpa di petualangan berikutnya! 🏕️");
+        }
 
         return response()->json(['success' => true]);
     }

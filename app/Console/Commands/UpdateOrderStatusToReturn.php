@@ -20,6 +20,7 @@ class UpdateOrderStatusToReturn extends Command
         // Ubah jalan → pengembalian jika end_date sudah lewat
         $orders = Order::whereIn('status', ['jalan'])
             ->whereRaw('DATE(end_date) < ?', [$today->toDateString()])
+            ->with('user')
             ->get()
             ->groupBy('order_id');
 
@@ -34,6 +35,16 @@ class UpdateOrderStatusToReturn extends Command
                 'overdue_days' => max(0, $overdueDays),
                 'late_fee'     => $lateFee,
             ]);
+
+            // Kirim WA notif pengembalian
+            $user = $firstItem->user;
+            if ($user && $user->no_tlp) {
+                $phone = $user->no_tlp;
+                if (str_starts_with($phone, '0')) {
+                    $phone = '62' . substr($phone, 1);
+                }
+                sendWhatsapp($phone, "Halo! Masa sewa perlengkapan Camplore Anda telah berakhir. Mohon segera kembalikan barang sesuai perjanjian. Keterlambatan akan dikenakan denda Rp 10.000/hari. Terima kasih! 🏕️");
+            }
 
             $this->info("Order {$orderId} → pengembalian | telat {$overdueDays} hari | denda Rp " . number_format($lateFee, 0, ',', '.'));
         }

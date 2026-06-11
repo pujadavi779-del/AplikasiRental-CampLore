@@ -200,17 +200,28 @@ class PaymentController extends Controller
     {
         $orderId = $request->input('order_id');
 
-        $updated = \App\Models\Order::where('order_id', $orderId)
+        $order = \App\Models\Order::where('order_id', $orderId)
             ->where('user_id', auth()->id())
-            ->update(['status' => 'dikemas']);
+            ->with('user')
+            ->first();
 
-        if ($updated) {
-            return response()->json(['status' => 'success']);
+        if (!$order) {
+            return response()->json(['status' => 'error', 'message' => 'Order tidak ditemukan'], 404);
         }
 
-        return response()->json(['status' => 'error', 'message' => 'Order tidak ditemukan'], 404);
-    }
+        $order->update(['status' => 'dikemas']);
 
+        $phone = $order->user->no_tlp;
+
+        if (str_starts_with($phone, '0')) {
+            $phone = '62' . substr($phone, 1);
+        }
+        $message = "Pembayaran Anda telah kami terima! 🎉 Pesanan sewa Anda kini sedang kami siapkan. Kami akan segera memproses dan mengemas perlengkapan Anda. Jika ada informasi pesanan yang perlu dikoreksi, segera hubungi kami sebelum barang dikirim. Terima kasih telah menyewa di Camplore! 🏕️";
+
+        sendWhatsapp($phone, $message);
+
+        return response()->json(['status' => 'success']);
+    }
     public function adminIndex(Request $request)
     {
         $query = \App\Models\Order::with(['user', 'product'])
@@ -254,6 +265,15 @@ class PaymentController extends Controller
                 'status' => 'dikirim'
             ]);
 
+            $order = \App\Models\Order::where('order_id', $id)->with('user')->first();
+            if ($order && $order->user) {
+                $phone = $order->user->no_tlp;
+                if (str_starts_with($phone, '0')) {
+                    $phone = '62' . substr($phone, 1);
+                }
+                sendWhatsapp($phone, "Halo! Perlengkapan sewa Anda dari Camplore sedang dalam perjalanan! 🚚 Kurir kami akan segera mengantarkan barang ke alamat Anda. Pastikan ada orang di rumah untuk menerima paket. Terima kasih telah menyewa di Camplore! 🏕️");
+            }
+
             return response()->json([
                 'success' => true,
                 'message' => 'Status transaksi berhasil diubah menjadi Selesai dan diteruskan ke Pengiriman!'
@@ -266,16 +286,16 @@ class PaymentController extends Controller
         }
     }
 
-public function exportExcel()
-{
-    $orders = \App\Models\Order::with(['user', 'product'])
-        ->whereIn('status', ['dikemas', 'selesai', 'dibatalkan'])
-        ->whereIn('id', function ($sub) {
-            $sub->selectRaw('MIN(id)')->from('orders')->groupBy('order_id');
-        })
-        ->orderBy('created_at', 'desc')
-        ->get();
+    public function exportExcel()
+    {
+        $orders = \App\Models\Order::with(['user', 'product'])
+            ->whereIn('status', ['dikemas', 'selesai', 'dibatalkan'])
+            ->whereIn('id', function ($sub) {
+                $sub->selectRaw('MIN(id)')->from('orders')->groupBy('order_id');
+            })
+            ->orderBy('created_at', 'desc')
+            ->get();
 
-    return (new \App\Exports\PembayaranExport($orders))->download();
-}
+        return (new \App\Exports\PembayaranExport($orders))->download();
+    }
 }
