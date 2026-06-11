@@ -113,10 +113,8 @@
             'belum_bayar' => 1,
             'dikemas' => 2,
             'dikirim' => 3,
-            'jalan' => 3,
             'pengembalian' => 4,
             'selesai' => 5,
-            'tiba' => 5,
             'dibatalkan' => 6,
             ];
             usort($orders, fn($a,$b) => ($statusOrder[$a->status]??99) - ($statusOrder[$b->status]??99));
@@ -134,25 +132,20 @@
 
             if ($status === 'belum_bayar') { $badgeClass = 'bg-[#fff7ed] text-[#c2410c] border border-[#fed7aa]'; $badgeLabel = 'Belum Bayar'; }
             if ($status === 'dikemas') { $badgeClass = 'bg-[#f0fdf4] text-[#15803d] border border-[#bbf7d0]'; $badgeLabel = 'Dikemas'; }
-            if ($status === 'dikirim' || $status === 'jalan') { $badgeClass = 'bg-[#eff6ff] text-[#1d4ed8] border border-[#bfdbfe]'; $badgeLabel = 'Dikirim'; }
-            if ($status === 'selesai' || $status === 'tiba') { $badgeClass = 'bg-[#f0fdf4] text-[#166534] border border-[#86efac]'; $badgeLabel = 'Selesai'; }
+            if ($status === 'dikirim') { $badgeClass = 'bg-[#eff6ff] text-[#1d4ed8] border border-[#bfdbfe]'; $badgeLabel = 'Dikirim'; }
+            if ($status === 'selesai') { $badgeClass = 'bg-[#f0fdf4] text-[#166534] border border-[#86efac]'; $badgeLabel = 'Selesai'; }
             if ($status === 'dibatalkan') { $badgeClass = 'bg-[#fef2f2] text-[#991b1b] border border-[#fecaca]'; $badgeLabel = 'Dibatalkan'; }
             if ($status === 'pengembalian') { $badgeClass = 'bg-[#faf5ff] text-[#7e22ce] border border-[#e9d5ff]'; $badgeLabel = 'Pengembalian'; }
 
             // LOGIKA STEP INDEX UNTUK MENYALAKAN GARIS PROGRESS
             $stepIndex = 0;
-            if (in_array($status, ['dikemas', 'dikirim', 'jalan', 'selesai', 'tiba'])) {
-            $stepIndex = 1; // Menyalakan titik "Dikemas"
-            }
-            if (in_array($status, ['dikirim', 'jalan', 'selesai', 'tiba'])) {
-            $stepIndex = 2; // Menyalakan titik & garis sampai ke "Dikirim"
-            }
-            if (in_array($status, ['selesai', 'tiba'])) {
-            $stepIndex = 3; // Menyalakan titik & garis sampai ke "Diterima/Selesai"
-            }
+            if (in_array($status, ['dikemas', 'dikirim', 'pengembalian', 'selesai'])) $stepIndex = 1;
+            if (in_array($status, ['dikirim', 'pengembalian', 'selesai'])) $stepIndex = 2;
+            if (in_array($status, ['pengembalian', 'selesai'])) $stepIndex = 3;
+            if ($status === 'selesai') $stepIndex = 4;
 
             // Progress bar akan muncul jika status ada di list ini
-            $showProgress = in_array($status, ['dikemas', 'jalan', 'dikirim', 'tiba', 'pengembalian', 'selesai']);
+            $showProgress = in_array($status, ['dikemas', 'dikirim', 'pengembalian', 'selesai']);
 
             $items = $rental->items ?? [];
             $itemCount = count($items);
@@ -374,8 +367,8 @@
                 @if($showProgress)
                 @php
                 $stepIndex = 0;
-                if (in_array($status, ['dikemas','dikirim','jalan','pengembalian','selesai','tiba'])) $stepIndex = 1;
-                if (in_array($status, ['dikirim','jalan','pengembalian','selesai','tiba'])) $stepIndex = 2;
+                if (in_array($status, ['dikemas','dikirim','pengembalian','selesai'])) $stepIndex = 1;
+                if (in_array($status, ['dikirim','pengembalian','selesai'])) $stepIndex = 2;
                 if (in_array($status, ['pengembalian','selesai'])) $stepIndex = 3;
                 if ($status === 'selesai') $stepIndex = 4;
                 @endphp
@@ -438,13 +431,13 @@
 
                     @if($status === 'selesai')
                     @php
-                        // Cek apakah sudah pernah review (ambil product_id dari item pertama)
-                        $firstProductId = $items[0]->product_id ?? null;
-                        $sudahReview = $firstProductId
-                            ? \App\Models\Review::where('user_id', auth()->id())
-                                ->where('product_id', $firstProductId)
-                                ->exists()
-                            : true;
+                    // Cek apakah sudah pernah review (ambil product_id dari item pertama)
+                    $firstProductId = $items[0]->product_id ?? null;
+                    $sudahReview = $firstProductId
+                    ? \App\Models\Review::where('user_id', auth()->id())
+                    ->where('product_id', $firstProductId)
+                    ->exists()
+                    : true;
                     @endphp
                     <a href="/catalog"
                         class="px-[18px] py-[9px] rounded-[10px] text-xs font-bold no-underline inline-flex items-center gap-1.5
@@ -453,15 +446,15 @@
                     </a>
                     @if(!$sudahReview)
                     @php
-                        $productId = $items[0]->product_id ?? null;
-                        $productCategory = null;
-                        if ($productId) {
-                            $prod = \App\Models\Product::find($productId);
-                            $productCategory = $prod ? strtolower($prod->category) : null;
-                        }
-                        $reviewRoute = $productCategory === 'kamera'
-                            ? route('camera.show', $productId)
-                            : route('camping.show', $productId);
+                    $productId = $items[0]->product_id ?? null;
+                    $productCategory = null;
+                    if ($productId) {
+                    $prod = \App\Models\Product::find($productId);
+                    $productCategory = $prod ? strtolower($prod->category) : null;
+                    }
+                    $reviewRoute = $productCategory === 'kamera'
+                    ? route('camera.show', $productId)
+                    : route('camping.show', $productId);
                     @endphp
                     <a href="{{ $reviewRoute }}"
                         class="px-[18px] py-[9px] rounded-[10px] text-xs font-bold no-underline inline-flex items-center gap-1.5
@@ -469,15 +462,15 @@
                                 hover:bg-[#eef5f0] transition-colors duration-200">
                         <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"/>
+                                d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
                         </svg>
                         Tulis Ulasan
                     </a>
                     @else
-                                        @php
-                        $myReview = \App\Models\Review::where('user_id', auth()->id())
-                            ->where('product_id', $firstProductId)
-                            ->first();
+                    @php
+                    $myReview = \App\Models\Review::where('user_id', auth()->id())
+                    ->where('product_id', $firstProductId)
+                    ->first();
                     @endphp
                     @if($myReview)
                     <a href="{{ route('pelanggan.ulasan.show', $myReview->id) }}"
@@ -486,9 +479,9 @@
                                 hover:border-[#1a5c3a] hover:text-[#1a5c3a] transition-colors duration-200">
                         <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                                d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                                d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                         </svg>
                         Lihat Penilaian
                     </a>

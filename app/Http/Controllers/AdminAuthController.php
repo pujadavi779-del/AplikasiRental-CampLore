@@ -13,7 +13,9 @@ class AdminAuthController extends Controller
      */
     public function showLogin()
     {
+        //guard pintu masuk untuk admin
         if (Auth::guard('admin')->check()) {
+            // redirect: araahkan ke halaman lain
             return redirect()->route('admin.dashboard');
         }
         return view('pages.login.login_admin');
@@ -22,6 +24,8 @@ class AdminAuthController extends Controller
     /**
      * Proses login admin.
      */
+
+    //(Request $request)  "terima data yang dikirim dari form"
     public function login(Request $request)
     {
         $credentials = $request->validate([
@@ -29,8 +33,13 @@ class AdminAuthController extends Controller
             'password' => 'required',
         ]);
 
+        //attempt = coba
         if (Auth::guard('admin')->attempt($credentials)) {
+            //session data yang tersimpan sementara dibrowser
+            //regenerate buat ulang ID sesi nya
             $request->session()->regenerate();
+            //redirect: arahkan ke halaman lain
+            //route: nama rute yang sudah didefinisikan di web.php
             return redirect()->route('admin.dashboard');
         }
 
@@ -44,9 +53,13 @@ class AdminAuthController extends Controller
      */
     public function logout(Request $request)
     {
+        // logout dari sisi admin
         Auth::guard('admin')->logout();
+        // invalidate: hapus semua data sesi yang tersimpan
         $request->session()->invalidate();
+        // regenerateToken: buat ulang token sesi untuk mencegah serangan CSRF
         $request->session()->regenerateToken();
+        // redirect: arahkan ke halaman lain
         return redirect()->route('admin.login');
     }
 }
