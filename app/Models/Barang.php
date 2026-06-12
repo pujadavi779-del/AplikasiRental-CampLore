@@ -6,20 +6,21 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class Product extends Model
+class Barang extends Model
 {
     use HasFactory;
+    protected $table = 'barang';
     protected $fillable = [
-        'type_category_id',
-        'brand_category_id',
+        'tipe_kategori_id',
+        'merek_kategori_id',
         'name',
-        'category',
-        'price_per_day',
+        'kategori',
+        'harga_per_hari',
         'image',
         'deskripsi',
-        'highlights',
+        'sorotan',
         'isi_paket',
-        'stock',
+        'stok',
     ];
 
 
@@ -28,7 +29,7 @@ class Product extends Model
      */
     public function typeCategory(): BelongsTo
     {
-        return $this->belongsTo(Category::class, 'type_category_id');
+        return $this->belongsTo(Category::class, 'tipe_kategori_id');
     }
 
     /**
@@ -36,7 +37,7 @@ class Product extends Model
      */
     public function brandCategory(): BelongsTo
     {
-        return $this->belongsTo(Category::class, 'brand_category_id');
+        return $this->belongsTo(Category::class, 'merek_kategori_id');
     }
 
     public function orders()

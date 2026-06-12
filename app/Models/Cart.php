@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Barang;
 
 class Cart extends Model
 {
@@ -22,7 +23,7 @@ protected $fillable = [
 
     public function product()
     {
-        return $this->belongsTo(Product::class);
+        return $this->belongsTo(Barang::class);
     }
 
     public function getDaysAttribute(): int
@@ -35,7 +36,7 @@ protected $fillable = [
     {
         if (!$this->product) return 0;
 
-        return $this->product->price_per_day
+        return $this->product->harga_per_hari
             * $this->days
             * $this->quantity;
     }

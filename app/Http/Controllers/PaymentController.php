@@ -135,7 +135,7 @@ class PaymentController extends Controller
 
             $itemDetails = $orders->map(fn($o) => [
                 'id'       => 'prod-' . $o->product_id,
-                'price'    => (int) ($o->price_per_day * $o->quantity * $o->days),
+                'price'    => (int) ($o->harga_per_hari * $o->quantity * $o->days),
                 'quantity' => 1,
                 'name'     => substr($o->product->name ?? 'Produk', 0, 50),
             ])->toArray();

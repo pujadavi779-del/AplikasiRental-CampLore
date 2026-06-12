@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('category'); // Ini kolom yang dicari-cari tadi
-            $table->integer('stock');
+            $table->integer('stok');
             $table->integer('price');
             $table->text('deskripsi');
             $table->timestamps();

@@ -8,8 +8,8 @@ class Camping extends Model
 {
     protected $fillable = [
         'name',
-        'category',
+        'kategori',
         'price',
-        'stock'
+        'stok'
     ];
 }

@@ -100,8 +100,8 @@
                         <td class='py-4 font-bold text-gray-950'>${product.name}</td>
                         <td class='py-4 text-gray-500 font-medium'>${product.tipe}</td>
                         <td class='py-4'>
-                            <span class='px-2.5 py-1 ${product.stock > 0 ? 'bg-green-50 text-green-600' : 'bg-red-50 text-red-600'} rounded-full text-[10px] font-extrabold tracking-wide uppercase'>
-                                ${product.stock} Unit Siap Sewa
+                            <span class='px-2.5 py-1 ${product.stok > 0 ? 'bg-green-50 text-green-600' : 'bg-red-50 text-red-600'} rounded-full text-[10px] font-extrabold tracking-wide uppercase'>
+                                ${product.stok} Unit Siap Sewa
                             </span>
                         </td>
                         <td class='py-4 text-gray-600 italic font-medium'>${hargaFormatted} / hari</td>

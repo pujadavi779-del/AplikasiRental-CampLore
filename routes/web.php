@@ -27,7 +27,7 @@ use App\Http\Controllers\AdminAuthController;
 use App\Http\Controllers\OtpController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\SewaController;
-use App\Models\Product;
+use App\Models\Barang;
 use App\Models\Cart;
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Admin\ReviewController;
@@ -198,7 +198,7 @@ Route::prefix('admin')->middleware('admin.auth')->name('admin.')->group(function
 
     // Products
     Route::get('/products', function (Request $request) {
-        $query = Product::query();
+        $query = Barang::query();
         if ($request->category) $query->where('category', $request->category);
         if ($request->search)   $query->where('name', 'like', '%' . $request->search . '%');
         $products = $query->paginate(10)->withQueryString();

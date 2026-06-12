@@ -2,8 +2,8 @@
     // ── State ──────────────────────────────────────────────
     let thumbOffset = 0;
     let qty = 1;
-    const PRICE_PER_DAY = {{ $item->price_per_day }};
-    const MAX_STOCK = {{ $item->stock ?? 99 }};
+    const PRICE_PER_DAY = {{ $item->harga_per_hari }};
+    const MAX_STOCK = {{ $item->stok ?? 99 }};
 
     // ── Accordion ──────────────────────────────────────────
     function toggleAcc(button) {

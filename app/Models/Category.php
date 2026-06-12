@@ -4,6 +4,9 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use App\Models\Barang;
+
+
 
 class Category extends Model
 {
@@ -22,17 +25,17 @@ class Category extends Model
     /**
      * Produk yang menggunakan category ini sebagai Tipe.
      */
-    public function productsAsType(): HasMany
+    public function barangSebagaiTipe(): HasMany
     {
-        return $this->hasMany(Product::class, 'type_category_id');
+        return $this->hasMany(Barang::class, 'tipe_kategori_id');
     }
 
     /**
      * Produk yang menggunakan category ini sebagai Merek.
      */
-    public function productsAsBrand(): HasMany
+    public function barangSebagaiMerek(): HasMany
     {
-        return $this->hasMany(Product::class, 'brand_category_id');
+        return $this->hasMany(Barang::class, 'merek_kategori_id');
     }
 
     // ── Scope helpers ──────────────────────────────────────────────────

@@ -90,8 +90,8 @@
                         <label class="block text-[11px] font-black text-gray-400 uppercase tracking-widest mb-2">
                             Stok
                         </label>
-                        <input type="number" name="stock" required min="0"
-                            value="{{ old('stock', $product->stock) }}"
+                        <input type="number" name="stok" required min="0"
+                            value="{{ old('stok', $product->stok) }}"
                             class="w-full px-4 py-3 bg-gray-50 border border-[#eef4f0] rounded-xl text-sm">
                     </div>
 
@@ -124,14 +124,14 @@
                             Tipe
                         </label>
 
-                        <select name="type_category_id" required
+                        <select name="tipe_kategori_id" required
                             class="w-full px-4 py-3 bg-gray-50 border border-[#eef4f0] rounded-xl text-sm">
 
                             <option value="">Pilih Tipe</option>
 
                             @foreach($types as $type)
                             <option value="{{ $type->id }}"
-                                {{ old('type_category_id', $product->type_category_id) == $type->id ? 'selected' : '' }}>
+                                {{ old('tipe_kategori_id', $product->tipe_kategori_id) == $type->id ? 'selected' : '' }}>
                                 {{ $type->name }}
                             </option>
                             @endforeach
@@ -144,14 +144,14 @@
                             Merek
                         </label>
 
-                        <select name="brand_category_id" required
+                        <select name="merek_kategori_id" required
                             class="w-full px-4 py-3 bg-gray-50 border border-[#eef4f0] rounded-xl text-sm">
 
                             <option value="">Pilih Merek</option>
 
                             @foreach($brands as $brand)
                             <option value="{{ $brand->id }}"
-                                {{ old('brand_category_id', $product->brand_category_id) == $brand->id ? 'selected' : '' }}>
+                                {{ old('merek_kategori_id', $product->merek_kategori_id) == $brand->id ? 'selected' : '' }}>
                                 {{ $brand->name }}
                             </option>
                             @endforeach
@@ -166,15 +166,15 @@
                         <div class="relative">
                             <span class="absolute inset-y-0 left-0 pl-4 flex items-center
                                          text-[#22543D] font-bold text-xs pointer-events-none">IDR</span>
-                            <input type="number" name="price_per_day" min="0"
-                                value="{{ old('price_per_day', intval($product->price_per_day)) }}"
+                            <input type="number" name="harga_per_hari" min="0"
+                                value="{{ old('harga_per_hari', intval($product->harga_per_hari)) }}"
                                 required
                                 placeholder="0"
                                 class="w-full pl-12 pr-4 py-3 bg-gray-50 border border-[#eef4f0] rounded-xl text-sm
                                           focus:ring-2 focus:ring-[#22543D]/20 focus:border-[#22543D] outline-none transition-all
-                                          @error('price_per_day') border-red-400 @enderror">
+                                          @error('harga_per_hari') border-red-400 @enderror">
                         </div>
-                        @error('price_per_day')
+                        @error('harga_per_hari')
                         <p class="mt-1 text-[10px] text-red-500 font-bold">{{ $message }}</p>
                         @enderror
                     </div>
@@ -193,10 +193,10 @@
                     {{-- Sorotan --}}
                     <div>
                         <label class="block text-[11px] font-black text-gray-400 uppercase tracking-widest mb-2">Sorotan</label>
-                        <textarea name="highlights" required
+                        <textarea name="sorotan" required
                             placeholder="Tuliskan kepentingan atau keunggulan alat secara singkat..."
-                            class="w-full px-4 py-3 bg-gray-50 border border-[#eef4f0] rounded-xl text-sm focus:ring-2 focus:ring-[#22543D]/20 focus:border-[#22543D] outline-none transition-all">{{ old('highlights', $product->highlights) }}</textarea>
-                        @error('highlights')
+                            class="w-full px-4 py-3 bg-gray-50 border border-[#eef4f0] rounded-xl text-sm focus:ring-2 focus:ring-[#22543D]/20 focus:border-[#22543D] outline-none transition-all">{{ old('sorotan', $product->sorotan) }}</textarea>
+                        @error('sorotan')
                         <p class="mt-1 text-[10px] text-red-500 font-bold">{{ $message }}</p>
                         @enderror
                     </div>
@@ -226,7 +226,7 @@
 
                         {{-- Preview gambar baru --}}
                         <div id="preview-container" class="hidden absolute inset-0 p-2">
-                            <img id="image-preview" src="#"
+                            <img id="gambar_barang-preview" src="#"
                                 class="w-full h-full object-cover rounded-[20px]">
                             <button type="button" onclick="resetImage()"
                                 class="absolute top-4 right-4 bg-red-500 text-white p-1.5 rounded-full shadow-lg hover:bg-red-600">
@@ -239,11 +239,11 @@
 
                         {{-- Gambar existing --}}
                         <div id="existing-container"
-                            class="{{ $product->image ? '' : 'hidden' }} absolute inset-0 p-2">
-                            <img id="existing-image"
-                                src="{{ Str::startsWith($product->image, 'http') 
-    ? $product->image 
-    : asset($product->image) }}"
+                            class="{{ $product->gambar_barang ? '' : 'hidden' }} absolute inset-0 p-2">
+                            <img id="existing-gambar_barang"
+                                src="{{ Str::startsWith($product->gambar_barang, 'http') 
+    ? $product->gambar_barang 
+    : asset($product->gambar_barang) }}"
                                 onerror="this.src='https://via.placeholder.com/400x300?text=No+Image'"
                                 class="w-full h-full object-cover rounded-[20px]">
                             <div class="absolute inset-0 flex items-end p-4 rounded-[20px]
@@ -256,7 +256,7 @@
 
                         {{-- Placeholder --}}
                         <div id="placeholder-info"
-                            class="{{ $product->image ? 'hidden' : '' }} text-center z-10 pointer-events-none">
+                            class="{{ $product->gambar_barang ? 'hidden' : '' }} text-center z-10 pointer-events-none">
                             <div class="w-16 h-16 bg-white rounded-2xl shadow-sm border border-[#eef4f0]
                                         flex items-center justify-center mx-auto mb-4
                                         group-hover:scale-110 transition-transform">
@@ -271,13 +271,13 @@
                             </p>
                         </div>
 
-                        <input type="file" name="image" id="product_image"
+                        <input type="file" name="gambar_barang" id="product_image"
                             class="absolute inset-0 opacity-0 cursor-pointer z-20"
-                            accept="image/*"
+                            accept="gambar_barang/*"
                             onchange="previewImage(this)">
                     </div>
 
-                    @error('image')
+                    @error('gambar_barang')
                     <p class="mt-2 text-[10px] text-red-500 font-bold">{{ $message }}</p>
                     @enderror
 
@@ -329,7 +329,7 @@
 
 <script>
     function previewImage(input) {
-        const preview = document.getElementById('image-preview');
+        const preview = document.getElementById('gambar_barang-preview');
         const container = document.getElementById('preview-container');
         const existing = document.getElementById('existing-container');
         const info = document.getElementById('placeholder-info');
@@ -348,7 +348,7 @@
 
     function resetImage() {
         const input = document.getElementById('product_image');
-        const preview = document.getElementById('image-preview');
+        const preview = document.getElementById('gambar_barang-preview');
         const container = document.getElementById('preview-container');
         const existing = document.getElementById('existing-container');
 

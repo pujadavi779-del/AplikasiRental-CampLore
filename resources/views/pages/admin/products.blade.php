@@ -95,7 +95,7 @@
                             <div class="flex items-center gap-4">
                                 {{-- Kotak Gambar --}}
                                 <div class="w-12 h-12 rounded-xl bg-gray-100 border border-[#d7e6de] overflow-hidden shadow-sm flex items-center justify-center flex-shrink-0">
-                                    <img src="{{ Str::startsWith($product->image, 'http') ? $product->image : asset($product->image) }}"
+                                    <img src="{{ Str::startsWith($product->gambar_barang, 'http') ? $product->gambar_barang : asset($product->gambar_barang) }}"
                                         onerror="this.src='https://via.placeholder.com/100?text=No+Image'"
                                         class="w-full h-full object-cover">
                                 </div>
@@ -103,9 +103,9 @@
                                 <div>
                                     <div class="text-sm font-bold text-[#22543D] mb-0.5">{{ $product->name }}</div>
                                     <div class="text-[10px] font-bold flex items-center gap-1">
-                                        @if($product->stock > 0)
+                                        @if($product->stok > 0)
                                         <span class="text-emerald-500 text-[8px]">●</span>
-                                        <span class="text-emerald-500">Tersedia: {{ $product->stock }} Unit</span>
+                                        <span class="text-emerald-500">Tersedia: {{ $product->stok }} Unit</span>
                                         @else
                                         <span class="text-red-400 text-[8px]">●</span>
                                         <span class="text-red-400">Habis</span>
@@ -124,7 +124,7 @@
 
                         {{-- HARGA --}}
                         <td class="px-6 py-4 vertical-align-middle">
-                            <div class="text-xs font-bold text-[#22543D]">IDR {{ number_format($product->price_per_day, 2) }}</div>
+                            <div class="text-xs font-bold text-[#22543D]">IDR {{ number_format($product->harga_per_hari, 2) }}</div>
                         </td>
 
                         {{-- TINDAKAN --}}

@@ -17,7 +17,7 @@
         'accordions'    => [
             ['title' => 'Tentang Kamera ini',  'deskripsi' => $item->deskripsi ?? 'Deskripsi tidak tersedia.', 'open' => true],
             ['title' => 'Sorotan',             'deskripsi' => 'Spesifikasi unggulan untuk ' . $item->name . '.', 'open' => false],
-            ['title' => 'Isi Paket',           'deskripsi' => $item->stock > 0 ? 'Tersedia — '.$item->stock.' unit siap disewa.' : 'Stok sedang kosong.', 'open' => false],
+            ['title' => 'Isi Paket',           'deskripsi' => $item->stok > 0 ? 'Tersedia — '.$item->stok.' unit siap disewa.' : 'Stok sedang kosong.', 'open' => false],
         ],
     ]);
 
@@ -29,7 +29,7 @@
         'accordions'    => [
             ['title' => 'Tentang Alat ini', 'deskripsi' => $item->description ?? 'Deskripsi belum tersedia.', 'open' => true],
             ['title' => 'Sorotan',          'deskripsi' => 'Kualitas premium untuk perlengkapan outdoor ' . $item->name . '.', 'open' => false],
-            ['title' => 'Isi Paket',        'deskripsi' => $item->stock > 0 ? 'Tersedia — '.$item->stock.' unit siap disewa.' : 'Produk ini sedang habis disewa.', 'open' => false],
+            ['title' => 'Isi Paket',        'deskripsi' => $item->stok > 0 ? 'Tersedia — '.$item->stok.' unit siap disewa.' : 'Produk ini sedang habis disewa.', 'open' => false],
         ],
     ]);
 --}}
@@ -41,7 +41,7 @@ if (!isset($accordions)) {
 $accordions = [
 ['title' => 'Tentang Produk ini', 'deskripsi' => $item->deskripsi ?? $item->description ?? 'Deskripsi tidak tersedia.', 'open' => true],
 ['title' => 'Sorotan', 'deskripsi' => 'Spesifikasi unggulan untuk ' . $item->name . '.', 'open' => false],
-['title' => 'Isi Paket', 'deskripsi' => $item->stock > 0 ? 'Tersedia — '.$item->stock.' unit siap disewa.' : 'Maaf, stok sedang kosong.', 'open' => false],
+['title' => 'Isi Paket', 'deskripsi' => $item->stok > 0 ? 'Tersedia — '.$item->stok.' unit siap disewa.' : 'Maaf, stok sedang kosong.', 'open' => false],
 ];
 }
 @endphp
@@ -52,7 +52,7 @@ $accordions = [
     <nav class="flex items-center gap-2 px-4 py-4 text-xs text-gray-400 max-w-6xl mx-auto">
         <a href="/" class="hover:text-gray-900 transition-colors">BERANDA</a>
         <span>/</span>
-        <a href="{{ route($category . '.LP') }}" class="hover:text-gray-900 transition-colors">{{ $categoryLabel }}</a>
+        <a href="{{ route($kategori . '.LP') }}" class="hover:text-gray-900 transition-colors">{{ $categoryLabel }}</a>
         <span>/</span>
         <span class="text-orange-600 font-medium truncate">{{ $item->name }}</span>
     </nav>
@@ -65,11 +65,11 @@ $accordions = [
         {{-- Main Image --}}
         <div class="relative bg-gray-100 w-full" style="aspect-ratio:1/1;">
             <!-- <img id="mainImgMobile"
-                src="{{ str_starts_with($item->image, 'http') ? $item->image : asset('storage/'.$item->image) }}" -->
+                src="{{ str_starts_with($item->gambar_barang, 'http') ? $item->gambar_barang : asset('storage/'.$item->gambar_barang) }}" -->
             <img id="mainImgMobile"
-                src="{{ str_starts_with($item->image, 'http') 
-        ? $item->image 
-        : asset($item->image) }}"
+                src="{{ str_starts_with($item->gambar_barang, 'http') 
+        ? $item->gambar_barang 
+        : asset($item->gambar_barang) }}"
                 alt="{{ $item->name }}"
                 class="w-full h-full object-cover">
         </div>
@@ -97,7 +97,7 @@ $accordions = [
             </div>
 
             <h1 class="text-xl font-bold text-gray-900 leading-snug mb-2">{{ $item->name }}</h1>
-            <p class="text-2xl font-bold text-orange-600 mb-1">Rp {{ number_format($item->price_per_day, 0, ',', '.') }}</p>
+            <p class="text-2xl font-bold text-orange-600 mb-1">Rp {{ number_format($item->harga_per_hari, 0, ',', '.') }}</p>
             <p class="text-xs text-gray-400 mb-5" id="totalPriceNoteMobile"></p>
 
             {{-- Tanggal --}}
@@ -170,7 +170,7 @@ $accordions = [
                 <div id="thumbList" class="flex flex-col gap-2 overflow-hidden" style="max-height:400px;">
                     @foreach($relatedItems as $related)
                     <a href="{{ route($category . '.show', $related->id) }}" class="block rounded-lg overflow-hidden border-2 border-gray-200 hover:border-gray-900 transition-all" style="width:72px;height:72px;">
-                <img src="{{ str_starts_with($related->image, 'http') ? $related->image : asset('storage/'.$related->image) }}" class="w-full h-full object-cover">
+                <img src="{{ str_starts_with($related->gambar_barang, 'http') ? $related->gambar_barang : asset('storage/'.$related->gambar_barang) }}" class="w-full h-full object-cover">
                 </a>
                 @endforeach
             </div>
@@ -181,9 +181,9 @@ $accordions = [
         {{-- Main Image --}}
         <div class="flex-1 rounded-2xl overflow-hidden bg-gray-100 group" style="aspect-ratio:1/1;min-width:0;">
             <img id="mainImg"
-                src="{{ str_starts_with($item->image, 'http') 
-        ? $item->image 
-        : asset($item->image) }}"
+                src="{{ str_starts_with($item->gambar_barang, 'http') 
+        ? $item->gambar_barang 
+        : asset($item->gambar_barang) }}"
                 
             alt="{{ $item->name }}"
             class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
@@ -198,7 +198,7 @@ $accordions = [
 
             <h1 class="text-xl font-bold text-gray-900 leading-snug mb-1">{{ $item->name }}</h1>
             <div class="flex items-baseline gap-1 mb-1">
-                <p class="text-2xl font-bold text-orange-600" id="displayPrice">Rp {{ number_format($item->price_per_day, 0, ',', '.') }}</p>
+                <p class="text-2xl font-bold text-orange-600" id="displayPrice">Rp {{ number_format($item->harga_per_hari, 0, ',', '.') }}</p>
                 <span class="text-sm text-gray-400">/ hari</span>
             </div>
             <p class="text-xs text-gray-400 mb-5" id="totalPriceNote"></p>
@@ -273,9 +273,9 @@ $accordions = [
     let thumbOffset = 0,
         qty = 1;
         
-    const PRICE_PER_DAY = {{ $item->price_per_day }};
+    const PRICE_PER_DAY = {{ $item->harga_per_hari }};
 
-    const MAX_STOCK = {{ $item->stock ?? 99 }};
+    const MAX_STOCK = {{ $item->stok ?? 99 }};
 
     // ── Qty ────────────────────────────────────────────────────
     function syncQty() {

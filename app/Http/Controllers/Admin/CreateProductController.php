@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\Product;
+use App\Models\Barang;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -14,14 +14,14 @@ class CreateProductController extends Controller
         // 1. Validasi Input
         $request->validate([
             'name'          => 'required|string|max:255',
-            'category'      => 'required|string',
-            'price_per_day' => 'required|numeric',
-            'stock'         => 'required|integer|min:0',
+            'kategori'      => 'required|string',
+            'harga_per_hari' => 'required|numeric',
+            'stok'         => 'required|integer|min:0',
             'deskripsi'     => 'nullable|string',
-            'highlights'    => 'nullable|string',
+            'sorotan'    => 'nullable|string',
             'isi_paket'     => 'nullable|string',
-            'type_category_id'  => 'nullable|exists:categories,id',
-            'brand_category_id' => 'nullable|exists:categories,id',
+            'tipe_kategori_id'  => 'nullable|exists:categories,id',
+            'merek_kategori_id' => 'nullable|exists:categories,id',
             'image'         => 'required|image|mimes:jpeg,png,jpg|max:2048',
         ]);
 
@@ -31,16 +31,16 @@ class CreateProductController extends Controller
         }
 
         // 3. Simpan ke Database
-        Product::create([
+        Barang::create([
             'name'              => $request->name,
-            'category'          => $request->category,
-            'price_per_day'     => $request->price_per_day,
-            'stock'             => $request->stock,
+            'kategori'          => $request->kategori,
+            'harga_per_hari'     => $request->harga_per_hari,
+            'stok'             => $request->stok,
             'deskripsi'         => $request->deskripsi,
-            'highlights'        => $request->highlights,
+            'sorotan'        => $request->sorotan,
             'isi_paket'         => $request->isi_paket,
-            'type_category_id'  => $request->type_category_id,
-            'brand_category_id' => $request->brand_category_id,
+            'tipe_kategori_id'  => $request->tipe_kategori_id,
+            'merek_kategori_id' => $request->merek_kategori_id,
             'image'             => $imagePath,
         ]);
 

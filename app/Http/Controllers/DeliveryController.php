@@ -102,7 +102,7 @@ class DeliveryController extends Controller
                 : null,
             'barang'          => $items->map(fn($item) => [
                 'nama'     => $item->product->name ?? 'Produk Dihapus',
-                'kategori' => $item->product->category ?? '-',
+                'kategori' => $item->product->kategori ?? '-',
                 'jumlah'   => $item->quantity ?? 1,
             ])->toArray(),
         ];
@@ -134,23 +134,18 @@ class DeliveryController extends Controller
             }
 
             $messages = [
-                'jalan'        => "Halo! Perlengkapan sewa Anda dari Camplore sedang dalam perjalanan! 🚚 Pastikan ada orang di rumah untuk menerima paket. Terima kasih telah menyewa di Camplore! 🏕️",
-                'selesai'      => "Pesanan sewa Anda telah selesai! 🎉 Terima kasih telah mempercayakan kebutuhan petualangan Anda kepada Camplore. Sampai jumpa di petualangan berikutnya! 🏕️",
+                'jalan'   => "Halo! Perlengkapan sewa Anda dari Camplore sedang dalam perjalanan! 🚚 Pastikan ada orang di rumah untuk menerima paket. Terima kasih telah menyewa di Camplore! 🏕️",
+                'selesai' => "Pesanan sewa Anda telah selesai! 🎉 Terima kasih telah mempercayakan kebutuhan petualangan Anda kepada Camplore. Sampai jumpa di petualangan berikutnya! 🏕️",
             ];
 
-            // Pesan pengembalian tergantung kondisi
             if ($statusBaru === 'pengembalian') {
                 $endDate = \Carbon\Carbon::parse($firstOrder->end_date);
                 $isOverdue = $endDate->isPast();
                 $pesanPengembalian = $isOverdue
                     ? "Halo! Masa sewa perlengkapan Camplore Anda telah berakhir. Mohon segera kembalikan barang sesuai perjanjian. Keterlambatan akan dikenakan denda Rp 10.000/hari. Terima kasih! 🏕️"
-                    : "Halo! Perlengkapan sewa Anda dari Camplore telah tiba dan siap digunakan. 📦 Selamat menikmati petualangan Anda, jaga barang dengan baik ya! Jangan lupa kembalikan perlengkapan tepat waktu sesuai tanggal sewa. Jika ada kendala, jangan ragu hubungi kami. Terima kasih telah menyewa di Camplore! 🏕️";
+                    : "Halo! Perlengkapan sewa Anda dari Camplore telah tiba dan siap digunakan. 📦 Selamat menikmati petualangan Anda, jaga barang dengan baik ya! Jangan lupa kembalikan perlengkapan tepat waktu sesuai tanggal sewa. Terima kasih telah menyewa di Camplore! 🏕️";
                 sendWhatsapp($phone, $pesanPengembalian);
             } elseif (isset($messages[$statusBaru])) {
-                sendWhatsapp($phone, $messages[$statusBaru]);
-            }
-
-            if (isset($messages[$statusBaru])) {
                 sendWhatsapp($phone, $messages[$statusBaru]);
             }
         }

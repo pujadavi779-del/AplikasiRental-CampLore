@@ -25,8 +25,8 @@
         $days = ($cart->start_date && $cart->end_date)
         ? max(1, \Carbon\Carbon::parse($cart->start_date)->diffInDays($cart->end_date))
         : 1;
-        $subtotal = ($cart->product->price_per_day ?? 0) * $cart->quantity * $days;
-        $rawImage = $cart->product->image ?? null;
+        $subtotal = ($cart->product->harga_per_hari ?? 0) * $cart->quantity * $days;
+        $rawImage = $cart->product->gambar_barang ?? null;
         $cleanImage = $rawImage ? trim($rawImage) : null;
         $imgSrc = $cleanImage
         ? (str_starts_with($cleanImage, 'http') ? $cleanImage : asset($cleanImage))
@@ -35,7 +35,7 @@
 
         <div class="card-item border-b border-gray-100 last:border-0"
             data-id="{{ $cart->id }}"
-            data-price="{{ $cart->product->price_per_day ?? 0 }}"
+            data-price="{{ $cart->product->harga_per_hari ?? 0 }}"
             data-days="{{ $days }}">
 
             {{-- ══════ DESKTOP ROW ══════ --}}
@@ -64,7 +64,7 @@
                 </div>
 
                 <div class="text-center">
-                    <p class="text-sm font-bold text-gray-700">Rp{{ number_format($cart->product->price_per_day ?? 0, 0, ',', '.') }}</p>
+                    <p class="text-sm font-bold text-gray-700">Rp{{ number_format($cart->product->harga_per_hari ?? 0, 0, ',', '.') }}</p>
                 </div>
 
                 <div class="flex items-center justify-center">
@@ -107,7 +107,7 @@
             <div class="flex-1 min-w-0">
                 <p class="text-sm font-bold text-gray-900 truncate">{{ $cart->product->name ?? '-' }}</p>
                 <p class="text-[11px] font-semibold text-[#FF6B95] uppercase tracking-wide mt-0.5">{{ $cart->product->category ?? '-' }}</p>
-                <p class="text-sm font-bold text-gray-800 mt-1">Rp{{ number_format($cart->product->price_per_day ?? 0, 0, ',', '.') }}<span class="text-xs font-normal text-gray-400">/hari</span></p>
+                <p class="text-sm font-bold text-gray-800 mt-1">Rp{{ number_format($cart->product->harga_per_hari ?? 0, 0, ',', '.') }}<span class="text-xs font-normal text-gray-400">/hari</span></p>
             </div>
             <button onclick="removeItem(this)" class="p-1.5 text-gray-300 hover:text-red-500 transition flex-shrink-0">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

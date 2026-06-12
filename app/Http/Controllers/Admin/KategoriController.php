@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Category;
-use App\Models\Product;
+use App\Models\Barang;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -124,13 +124,13 @@ class KategoriController extends Controller
     /**
      * Update Tipe.
      */
-    public function updateType(Request $request, Category $category)
+    public function updateType(Request $request, Category $kategori)
     {
         $request->validate([
             'name' => 'required|string|max:255',
         ]);
 
-        $category->update(['name' => $request->name]);
+        $kategori->update(['name' => $request->name]);
 
         return back()->with('success', 'Tipe berhasil diperbarui.');
     }
@@ -138,7 +138,7 @@ class KategoriController extends Controller
     /**
      * Update Merek (nama, logo, status aktif).
      */
-    public function updateBrand(Request $request, Category $category)
+    public function updateBrand(Request $request, Category $kategori)
     {
         $request->validate([
             'name' => 'required|string|max:255',
@@ -152,13 +152,13 @@ class KategoriController extends Controller
 
         if ($request->hasFile('logo')) {
             // Hapus logo lama jika ada
-            if ($category->logo) {
-                Storage::disk('public')->delete($category->logo);
+            if ($kategori->logo) {
+                Storage::disk('public')->delete($kategori->logo);
             }
             $data['logo'] = $request->file('logo')->store('brands', 'public');
         }
 
-        $category->update($data);
+        $kategori->update($data);
 
         return back()->with('success', 'Merek berhasil diperbarui.');
     }
@@ -166,86 +166,86 @@ class KategoriController extends Controller
     /**
      * Hapus Tipe — hanya bisa jika tidak ada produk yang memakai tipe ini.
      */
-    public function destroyType(Category $category)
+    public function destroyType(Category $kategori)
     {
-        $productCount = Product::where('type_category_id', $category->id)->count();
+        $productCount = Barang::where('tipe_kategori_id', $kategori->id)->count();
 
         if ($productCount > 0) {
             return back()->with('error', 'Tidak bisa menghapus tipe ini karena masih digunakan oleh ' . $productCount . ' produk.');
         }
 
-        $category->delete();
+        $kategori->delete();
 
-        return back()->with('success', 'Tipe "' . $category->name . '" berhasil dihapus.');
+        return back()->with('success', 'Tipe "' . $kategori->name . '" berhasil dihapus.');
     }
 
     /**
      * Hapus Merek — hanya bisa jika tidak ada produk yang memakai merek ini.
      */
-    public function destroyBrand(Category $category)
+    public function destroyBrand(Category $kategori)
     {
-        $productCount = Product::where('brand_category_id', $category->id)->count();
+        $productCount = Barang::where('merek_kategori_id', $kategori->id)->count();
 
         if ($productCount > 0) {
             return back()->with('error', 'Tidak bisa menghapus merek ini karena masih digunakan oleh ' . $productCount . ' produk.');
         }
 
-        if ($category->logo) {
-            Storage::disk('public')->delete($category->logo);
+        if ($kategori->logo) {
+            Storage::disk('public')->delete($kategori->logo);
         }
 
-        $category->delete();
+        $kategori->delete();
 
-        return back()->with('success', 'Merek "' . $category->name . '" berhasil dihapus.');
+        return back()->with('success', 'Merek "' . $kategori->name . '" berhasil dihapus.');
     }
 
     /**
      * Ambil detail merek: daftar produk yang menggunakan merek ini.
      * Dipakai via AJAX untuk modal detail merek.
      */
-    public function brandDetail(Category $category)
+    public function brandDetail(Category $kategori)
     {
-        $products = Product::with(['typeCategory'])
-            ->where('brand_category_id', $category->id)
-            ->select('id', 'name', 'type_category_id', 'stock', 'price_per_day', 'category')
+        $products = Barang::with(['typeCategory'])
+            ->where('merek_kategori_id', $kategori->id)
+            ->select('id', 'name', 'tipe_kategori_id', 'stok', 'harga_per_hari', 'kategori')
             ->get()
             ->map(function ($product) {
                 return [
                     'id'         => $product->id,
                     'name'       => $product->name,
                     'tipe'       => $product->typeCategory?->name ?? '-',
-                    'stock'      => $product->stock,
-                    'price'      => 'Rp ' . number_format($product->price_per_day, 0, ',', '.') . ' / hari',
-                    'category'   => $product->category,
+                    'stok'      => $product->stok,
+                    'price'      => 'Rp ' . number_format($product->harga_per_hari, 0, ',', '.') . ' / hari',
+                    'kategori'   => $product->kategori,
                 ];
             });
 
         return response()->json([
-            'merek'    => $category->name,
-            'logo'     => $category->logo ? asset($category->logo) : null,
+            'merek'    => $kategori->name,
+            'logo'     => $kategori->logo ? asset($kategori->logo) : null,
             'products' => $products,
         ]);
     }
 
-    public function typeDetail(Category $category)
+    public function typeDetail(Category $kategori)
     {
-        $products = Product::with(['brandCategory'])
-            ->where('type_category_id', $category->id)
-            ->select('id', 'name', 'brand_category_id', 'stock', 'price_per_day', 'category')
+        $products = Barang::with(['brandCategory'])
+            ->where('tipe_kategori_id', $kategori->id)
+            ->select('id', 'name', 'merek_kategori_id', 'stok', 'harga_per_hari', 'kategori')
             ->get()
             ->map(function ($product) {
                 return [
                     'id'         => $product->id,
                     'name'       => $product->name,
                     'merek'      => $product->brandCategory?->name ?? '-',
-                    'stock'      => $product->stock,
-                    'price'      => 'Rp ' . number_format($product->price_per_day, 0, ',', '.') . ' / hari',
-                    'category'   => $product->category,
+                    'stok'      => $product->stok,
+                    'price'      => 'Rp ' . number_format($product->harga_per_hari, 0, ',', '.') . ' / hari',
+                    'kategori'   => $product->kategori,
                 ];
             });
 
         return response()->json([
-            'tipe'     => $category->name,
+            'tipe'     => $kategori->name,
             'products' => $products
         ]);
     }

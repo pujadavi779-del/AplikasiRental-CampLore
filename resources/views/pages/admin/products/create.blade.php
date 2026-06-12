@@ -61,7 +61,7 @@
                     <div>
                         <label class="block text-[11px] font-black text-gray-400 uppercase tracking-widest mb-2">STOK</label>
                         <div class="relative">
-                            <input type="number" name="stock" required
+                            <input type="number" name="stok" required
                                 placeholder="0"
                                 class="w-full pl-5 pr-4 py-3 bg-gray-50 border border-[#eef4f0] rounded-xl text-sm focus:ring-2 focus:ring-[#22543D]/20 focus:border-[#22543D] outline-none transition-all">
                         </div>
@@ -71,7 +71,7 @@
                         <label class="block text-[11px] font-black text-gray-400 uppercase tracking-widest mb-2">Harga Rental / Hari</label>
                         <div class="relative">
                             <span class="absolute inset-y-0 left-0 pl-4 flex items-center text-[#22543D] font-bold text-xs">IDR</span>
-                            <input type="number" name="price_per_day" required
+                            <input type="number" name="harga_per_hari" required
                                 placeholder="0"
                                 class="w-full pl-12 pr-4 py-3 bg-gray-50 border border-[#eef4f0] rounded-xl text-sm focus:ring-2 focus:ring-[#22543D]/20 focus:border-[#22543D] outline-none transition-all">
                         </div>
@@ -95,7 +95,7 @@
                             Tipe
                         </label>
 
-                        <select name="type_category_id" required
+                        <select name="tipe_kategori_id" required
                             class="w-full px-4 py-3 bg-gray-50 border border-[#eef4f0] rounded-xl text-sm">
 
                             <option value="">Pilih Tipe</option>
@@ -111,7 +111,7 @@
 
                     <div>
                         <label class="block text-[11px] font-black text-gray-400 uppercase tracking-widest mb-2">Merek</label>
-                        <select name="brand_category_id" required
+                        <select name="merek_kategori_id" required
                             class="w-full px-4 py-3 bg-gray-50 border border-[#eef4f0] rounded-xl text-sm focus:ring-2 focus:ring-[#22543D]/20 focus:border-[#22543D] outline-none transition-all appearance-none">
                             <!-- <option value="" disabled selected>Pilih Merek</option>
                             <option value="Canon">Canon</option>
@@ -140,8 +140,8 @@
                             class="w-full px-4 py-3 bg-gray-50 border border-[#eef4f0] rounded-xl text-sm focus:ring-2 focus:ring-[#22543D]/20 focus:border-[#22543D] outline-none transition-all"></textarea>
                     </div>
                     <div>
-                        <label class="block text-[11px] font-black text-gray-400 uppercase tracking-widest mb-2">Highlights</label>
-                        <textarea name="highlights" required
+                        <label class="block text-[11px] font-black text-gray-400 uppercase tracking-widest mb-2">Sorotan</label>
+                        <textarea name="sorotan" required
                             placeholder="Tuliskan kepentingan atau keunggulan alat secara singkat..."
                             class="w-full px-4 py-3 bg-gray-50 border border-[#eef4f0] rounded-xl text-sm focus:ring-2 focus:ring-[#22543D]/20 focus:border-[#22543D] outline-none transition-all"></textarea>
                     </div>

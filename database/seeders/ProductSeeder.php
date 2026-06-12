@@ -15,7 +15,7 @@ class ProductSeeder extends Seeder
             Product::create([
                 'name' => 'Product ' . $i,
                 'category' => $categories[array_rand($categories)],
-                'price_per_day' => rand(50000, 200000),
+                'harga_per_hari' => rand(50000, 200000),
                 'image' => 'https://picsum.photos/200?random=' . $i
             ]);
         }

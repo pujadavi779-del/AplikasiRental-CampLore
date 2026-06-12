@@ -18,7 +18,7 @@ return new class extends Migration
             $table->date('start_date');
             $table->date('end_date');
             $table->integer('days');
-            $table->decimal('price_per_day', 12, 2);
+            $table->decimal('harga_per_hari', 12, 2);
             $table->decimal('total_price', 12, 2);
             $table->string('status')->default('Menunggu');
             $table->timestamps();

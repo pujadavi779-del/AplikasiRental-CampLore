@@ -112,7 +112,7 @@
                         <div class="space-y-5">
                             <div class="flex justify-between text-xs">
                                 <span class="opacity-70">Harga Sewa / Hari</span>
-                                <span id="display-price" class="font-semibold text-sm">Rp {{ number_format($order->price_per_day, 0, ',', '.') }}</span>
+                                <span id="display-price" class="font-semibold text-sm">Rp {{ number_format($order->harga_per_hari, 0, ',', '.') }}</span>
                             </div>
                             <div class="flex justify-between text-xs">
                                 <span class="opacity-70">Durasi Sewa</span>

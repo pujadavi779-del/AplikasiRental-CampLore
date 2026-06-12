@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Product;
+use App\Models\Barang;
 use App\Models\Category;
 
 class CampingController extends Controller
@@ -11,23 +11,23 @@ class CampingController extends Controller
     // 🔹 TAMPIL DATA (ADMIN INDEX)
     public function index()
     {
-        $items = Product::where('category', 'Camping')->get();
+        $items = Barang::where('kategori', 'Camping')->get();
         return view('admin.camping.camping_LP', compact('items'));
     }
 
     // 🔹 HALAMAN USER (LANDING)
     public function landing(Request $request)
     {
-        $query = Product::where('category', 'Camping');
+        $query = Barang::where('kategori', 'Camping');
 
         // FILTER TIPE
         if ($request->type) {
-            $query->where('type_category_id', $request->type);
+            $query->where('tipe_kategori_id', $request->type);
         }
 
         // FILTER MEREK
         if ($request->brand) {
-            $query->where('brand_category_id', $request->brand);
+            $query->where('merek_kategori_id', $request->brand);
         }
 
         $items = $query->get();
@@ -46,7 +46,7 @@ class CampingController extends Controller
             'items'        => $items,
             'filterTipes'  => $filterTipes,
             'filterMereks' => $filterMereks,
-            'category'     => 'camping',
+            'kategori'     => 'camping',
             'title'        => 'Camping',
             'emptyIcon'    => '🏕️',
         ]);
@@ -55,7 +55,7 @@ class CampingController extends Controller
     // 🔹 EDIT
     public function edit($id)
     {
-        $product = Product::findOrFail($id);
+        $product = Barang::findOrFail($id);
 
         $types = Category::where('main_category', 'Camping')
             ->where('attribute_type', 'Tipe')
@@ -77,11 +77,11 @@ class CampingController extends Controller
     // 🔹 DELETE
     public function destroy($id)
     {
-        $item = Product::findOrFail($id);
+        $item = Barang::findOrFail($id);
         
         // Opsional: Hapus file gambar dari public folder saat data dihapus
-        if ($item->image && file_exists(public_path($item->image))) {
-            @unlink(public_path($item->image));
+        if ($item->gambar_barang && file_exists(public_path($item->gambar_barang))) {
+            @unlink(public_path($item->gambar_barang));
         }
 
         $item->delete();
@@ -93,9 +93,9 @@ class CampingController extends Controller
     // 🔹 DETAIL PRODUK (SHOW)
     public function show($id)
 {
-    $item = Product::findOrFail($id);
+    $item = Barang::findOrFail($id);
 
-    $relatedItems = Product::where('category', 'Camping')
+    $relatedItems = Barang::where('kategori', 'Camping')
         ->where('id', '!=', $item->id)
         ->take(5)
         ->get();
@@ -110,7 +110,7 @@ class CampingController extends Controller
     $canReview = false;
     $reviewOrder = null;
     if (auth()->check()) {
-        $reviewOrder = \App\Models\Order::where('user_id', auth()->id())
+        $reviewOrder = \App\Models\Pemesanan::where('user_id', auth()->id())
             ->where('product_id', $id)
             ->where('status', 'selesai')
             ->first();
@@ -123,7 +123,7 @@ class CampingController extends Controller
     return view('pages.landing.kategori.details_LP', [
         'item'          => $item,
         'relatedItems'  => $relatedItems,
-        'category'      => 'camping',
+        'kategori'      => 'camping',
         'categoryLabel' => 'Camping',
         'reviews'       => $reviews,
         'avgRating'     => $avgRating,
@@ -131,7 +131,7 @@ class CampingController extends Controller
         'reviewOrder'   => $reviewOrder,
         'accordions'    => [
             ['title' => 'Tentang Alat ini', 'deskripsi' => $item->deskripsi ?? 'Deskripsi tidak tersedia.', 'open' => true],
-            ['title' => 'Sorotan',          'deskripsi' => $item->highlights ?? 'Spesifikasi unggulan tidak tersedia.', 'open' => false],
+            ['title' => 'Sorotan',          'deskripsi' => $item->sorotan ?? 'Spesifikasi unggulan tidak tersedia.', 'open' => false],
             ['title' => 'Isi Paket',        'deskripsi' => $item->isi_paket ?? 'Informasi isi paket tidak tersedia.', 'open' => false],
         ],
     ]);
@@ -160,38 +160,38 @@ class CampingController extends Controller
     {
         $request->validate([
             'name' => 'required',
-            'category' => 'required',
-            'type_category_id' => 'required',
-            'brand_category_id' => 'required',
-            'price_per_day' => 'required',
-            'stock' => 'required',
+            'kategori' => 'required',
+            'tipe_kategori_id' => 'required',
+            'merek_kategori_id' => 'required',
+            'harga_per_hari' => 'required',
+            'stok' => 'required',
             'deskripsi' => 'required',
-            'highlights' => 'required',
+            'sorotan' => 'required',
             'isi_paket' => 'required',
-            'image' => 'required|image',
+            'gambar_barang' => 'required|gambar_barang',
         ]);
 
         $imagePath = null;
 
-        if ($request->hasFile('image')) {
+        if ($request->hasFile('gambar_barang')) {
             // Disesuaikan agar strukturnya sama seperti img_foto/camping/ di database kamu
-            $file = $request->file('image');
+            $file = $request->file('gambar_barang');
             $filename = time() . '_' . $file->getClientOriginalName();
             $file->move(public_path('img_foto/camping'), $filename);
             $imagePath = 'img_foto/camping/' . $filename;
         }
 
-        Product::create([
+        Barang::create([
             'name' => $request->name,
-            'category' => $request->category,
-            'type_category_id' => $request->type_category_id,
-            'brand_category_id' => $request->brand_category_id,
-            'price_per_day' => $request->price_per_day,
-            'stock' => $request->stock,
+            'kategori' => $request->kategori,
+            'tipe_kategori_id' => $request->tipe_kategori_id,
+            'merek_kategori_id' => $request->merek_kategori_id,
+            'harga_per_hari' => $request->harga_per_hari,
+            'stok' => $request->stok,
             'deskripsi' => $request->deskripsi,
-            'highlights' => $request->highlights,
+            'sorotan' => $request->sorotan,
             'isi_paket' => $request->isi_paket,
-            'image' => $imagePath,
+            'gambar_barang' => $imagePath,
         ]);
 
         return redirect()->route('camping.index')
@@ -201,43 +201,43 @@ class CampingController extends Controller
     // 🔹 UPDATE
     public function update(Request $request, $id)
     {
-        $product = Product::findOrFail($id);
+        $product = Barang::findOrFail($id);
 
         $request->validate([
             'name' => 'required',
-            'category' => 'required',
-            'type_category_id' => 'required',
-            'brand_category_id' => 'required',
-            'price_per_day' => 'required',
-            'stock' => 'required',
+            'kategori' => 'required',
+            'tipe_kategori_id' => 'required',
+            'merek_kategori_id' => 'required',
+            'harga_per_hari' => 'required',
+            'stok' => 'required',
             'deskripsi' => 'required',
-            'highlights' => 'required',
+            'sorotan' => 'required',
             'isi_paket' => 'required',
-            'image' => 'nullable|image',
+            'gambar_barang' => 'nullable|gambar_barang',
         ]);
 
         $data = [
             'name' => $request->name,
-            'category' => $request->category,
-            'type_category_id' => $request->type_category_id,
-            'brand_category_id' => $request->brand_category_id,
-            'price_per_day' => $request->price_per_day,
-            'stock' => $request->stock,
+            'kategori' => $request->kategori,
+            'tipe_kategori_id' => $request->tipe_kategori_id,
+            'merek_kategori_id' => $request->merek_kategori_id,
+            'harga_per_hari' => $request->harga_per_hari,
+            'stok' => $request->stok,
             'deskripsi' => $request->deskripsi,
-            'highlights' => $request->highlights,
+            'sorotan' => $request->sorotan,
             'isi_paket' => $request->isi_paket,
         ];
 
-        if ($request->hasFile('image')) {
+        if ($request->hasFile('gambar_barang')) {
             // Hapus gambar lama jika ada file baru yang masuk
-            if ($product->image && file_exists(public_path($product->image))) {
-                @unlink(public_path($product->image));
+            if ($product->gambar_barang && file_exists(public_path($product->gambar_barang))) {
+                @unlink(public_path($product->gambar_barang));
             }
             
-            $file = $request->file('image');
+            $file = $request->file('gambar_barang');
             $filename = time() . '_' . $file->getClientOriginalName();
             $file->move(public_path('img_foto/camping'), $filename);
-            $data['image'] = 'img_foto/camping/' . $filename;
+            $data['gambar_barang'] = 'img_foto/camping/' . $filename;
         }
 
         $product->update($data);

@@ -2,14 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Product;
+use App\Models\Barang;
 use App\Models\Order;
 
 class RiwayatProdukController extends Controller
 {
     public function index()
     {
-        $products = Product::with(['typeCategory', 'brandCategory'])
+        $products = Barang::with(['typeCategory', 'brandCategory'])
             ->get();
 
         $dataAlat = $products->map(function ($product) {
@@ -21,7 +21,7 @@ class RiwayatProdukController extends Controller
             return [
                 'id' => $product->id,
                 'nama' => $product->name,
-                'kategori' => $product->category,
+                'kategori' => $product->kategori,
                 'img' => $product->image
                     ? asset($product->image)
                     : asset('img_foto/no-image.png'),

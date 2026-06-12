@@ -12,15 +12,15 @@ return new class extends Migration
     public function up()
     {
         Schema::table('products', function (Blueprint $table) {
-            $table->text('highlights')->nullable()->after('deskripsi');
-            $table->text('isi_paket')->nullable()->after('highlights');
+            $table->text('sorotan')->nullable()->after('deskripsi');
+            $table->text('isi_paket')->nullable()->after('sorotan');
         });
     }
 
     public function down()
     {
         Schema::table('products', function (Blueprint $table) {
-            $table->dropColumn(['highlights', 'isi_paket']);
+            $table->dropColumn(['sorotan', 'isi_paket']);
         });
     }
 };

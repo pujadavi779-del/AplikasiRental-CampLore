@@ -15,7 +15,7 @@ class Order extends Model
         'days',
         'quantity',
         'note',
-        'price_per_day',
+        'harga_per_hari',
         'total_price',
         'shipping_cost',
         'service_fee',
@@ -37,7 +37,7 @@ class Order extends Model
 
     public function product()
     {
-        return $this->belongsTo(Product::class);
+        return $this->belongsTo(Barang::class);
     }
 
     public function user()

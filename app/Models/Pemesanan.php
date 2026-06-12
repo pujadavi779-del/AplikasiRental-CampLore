@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Barang;
 
 class Pemesanan extends Model
 {
@@ -17,7 +18,7 @@ class Pemesanan extends Model
         'start_date', 
         'end_date', 
         'days', 
-        'price_per_day', 
+        'harga_per_hari', 
         'total_price', 
         'status'
     ];
@@ -28,9 +29,9 @@ class Pemesanan extends Model
         return $this->belongsTo(User::class);
     }
 
-    // Relasi ke Product
-    public function product()
+    // Relasi ke Barang
+    public function barang()
     {
-        return $this->belongsTo(Product::class);
+        return $this->belongsTo(Barang::class, 'product_id');
     }
 }

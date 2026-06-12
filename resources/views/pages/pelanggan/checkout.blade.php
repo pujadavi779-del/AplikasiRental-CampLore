@@ -114,7 +114,7 @@
             $days = ($cart->start_date && $cart->end_date)
             ? max(1, \Carbon\Carbon::parse($cart->start_date)->diffInDays($cart->end_date))
             : 1;
-            $subtotal = ($cart->product->price_per_day ?? 0) * $cart->quantity * $days;
+            $subtotal = ($cart->product->harga_per_hari ?? 0) * $cart->quantity * $days;
             $totalSubtotal += $subtotal;
             @endphp
 
@@ -123,8 +123,8 @@
                 <div class="hidden md:grid grid-cols-[1fr_120px_60px_100px] gap-4 items-center px-5 py-4">
                     <div class="flex items-center gap-3 min-w-0">
                         <div class="w-12 h-12 rounded-xl bg-gray-100 flex items-center justify-center flex-shrink-0 overflow-hidden text-xl">
-                            @if($cart->product && $cart->product->image)
-                            <img src="{{ str_starts_with($cart->product->image, 'http') ? $cart->product->image : asset($cart->product->image) }}"
+                            @if($cart->product && $cart->product->gambar_barang)
+                            <img src="{{ str_starts_with($cart->product->gambar_barang, 'http') ? $cart->product->gambar_barang : asset($cart->product->gambar_barang) }}"
                                 class="w-full h-full object-cover" alt="{{ $cart->product->name }}">
                             @else
                             📦
@@ -137,7 +137,7 @@
                     </div>
                     <div class="text-center">
                         <p class="text-sm font-bold text-gray-700">
-                            Rp{{ number_format($cart->product->price_per_day ?? 0, 0, ',', '.') }}
+                            Rp{{ number_format($cart->product->harga_per_hari ?? 0, 0, ',', '.') }}
                             <span class="text-[10px] font-normal text-gray-400">/ hari</span>
                         </p>
                     </div>
@@ -150,8 +150,8 @@
                 {{-- MOBILE --}}
                 <div class="md:hidden flex items-center gap-3 px-4 pt-4 pb-2">
                     <div class="w-14 h-14 rounded-xl bg-gray-100 flex-shrink-0 overflow-hidden">
-                        @if($cart->product && $cart->product->image)
-                        <img src="{{ str_starts_with($cart->product->image, 'http') ? $cart->product->image : asset($cart->product->image) }}"
+                        @if($cart->product && $cart->product->gambar_barang)
+                        <img src="{{ str_starts_with($cart->product->gambar_barang, 'http') ? $cart->product->gambar_barang : asset($cart->product->gambar_barang) }}"
                             class="w-full h-full object-cover" alt="{{ $cart->product->name }}">
                         @else
                         <div class="w-full h-full flex items-center justify-center text-2xl">📦</div>
@@ -162,7 +162,7 @@
                         <p class="text-[11px] font-semibold text-[#FF6B95] mt-0.5">{{ $cart->product->category ?? '-' }}</p>
                         <div class="flex items-center justify-between mt-1.5">
                             <span class="text-sm font-bold text-gray-700">
-                                Rp{{ number_format($cart->product->price_per_day ?? 0, 0, ',', '.') }}
+                                Rp{{ number_format($cart->product->harga_per_hari ?? 0, 0, ',', '.') }}
                                 <span class="text-xs font-normal text-gray-400">/hari × {{ $cart->quantity }}</span>
                             </span>
                             <span class="text-sm font-extrabold text-[#FF6B95]">Rp{{ number_format($subtotal, 0, ',', '.') }}</span>
@@ -206,7 +206,7 @@
             @foreach($carts as $cart)
             @php
             $d = ($cart->start_date && $cart->end_date) ? max(1, \Carbon\Carbon::parse($cart->start_date)->diffInDays($cart->end_date)) : 1;
-            $sub = ($cart->product->price_per_day ?? 0) * $cart->quantity * $d;
+            $sub = ($cart->product->harga_per_hari ?? 0) * $cart->quantity * $d;
             @endphp
             <div class="flex justify-between text-sm text-gray-500 mb-2">
                 <span class="truncate pr-4">{{ $cart->product->name ?? '-' }} ({{ $d }} hari)</span>

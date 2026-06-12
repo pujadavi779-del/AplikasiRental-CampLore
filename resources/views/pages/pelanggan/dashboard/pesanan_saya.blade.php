@@ -185,8 +185,8 @@
                         <div class="flex gap-3.5 items-start py-2.5 first:pt-0 last:border-0 last:pb-0 border-b border-[#e5e7eb]">
                             <div class="w-[68px] h-[68px] rounded-xl border-[1.5px] border-[#e5e7eb] overflow-hidden
                                     flex-shrink-0 bg-[#eef5f0] flex items-center justify-center">
-                                @if(!empty($item->image))
-                                <img src="{{ $item->image }}" alt="{{ $item->name }}" class="w-full h-full object-cover">
+                                @if(!empty($item->gambar_barang))
+                                <img src="{{ $item->gambar_barang }}" alt="{{ $item->name }}" class="w-full h-full object-cover">
                                 @else
                                 <svg class="w-[26px] h-[26px] text-[#1a5c3a] opacity-40" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.2"
@@ -224,8 +224,8 @@
                             <div class="flex gap-3.5 items-start py-2.5 border-b border-[#e5e7eb] last:border-0">
                                 <div class="w-[68px] h-[68px] rounded-xl border-[1.5px] border-[#e5e7eb] overflow-hidden
                                         flex-shrink-0 bg-[#eef5f0] flex items-center justify-center">
-                                    @if(!empty($item->image))
-                                    <img src="{{ $item->image }}" alt="{{ $item->name }}" class="w-full h-full object-cover">
+                                    @if(!empty($item->gambar_barang))
+                                    <img src="{{ $item->gambar_barang }}" alt="{{ $item->name }}" class="w-full h-full object-cover">
                                     @else
                                     <svg class="w-[26px] h-[26px] text-[#1a5c3a] opacity-40" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.2"

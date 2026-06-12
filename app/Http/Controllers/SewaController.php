@@ -45,7 +45,7 @@ class SewaController extends Controller
                     'duration'   => $o->days,
                     'start_date' => $o->start_date,
                     'end_date'   => $o->end_date,
-                    'price'      => $o->price_per_day,
+                    'price'      => $o->harga_per_hari,
                     'quantity'   => $o->quantity,
                     'overdue'    => false,
                     'product_id' => $o->product_id,  // ← tambah ini

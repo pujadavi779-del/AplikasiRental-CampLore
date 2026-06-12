@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\Product;
+use App\Models\Barang;
 use App\Models\Category;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -37,27 +37,27 @@ class ProductController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:255',
-            'stock' => 'required|integer|min:0',
-            'category' => 'required|string',
-            'price_per_day' => 'required|numeric|min:0',
+            'stok' => 'required|integer|min:0',
+            'kategori' => 'required|string',
+            'harga_per_hari' => 'required|numeric|min:0',
             'deskripsi' => 'required|string',
-            'highlights' => 'required|string',
+            'sorotan' => 'required|string',
             'isi_paket' => 'required|string',
-            'type_category_id' => 'nullable|exists:categories,id',
-            'brand_category_id' => 'nullable|exists:categories,id',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'tipe_kategori_id' => 'nullable|exists:categories,id',
+            'merek_kategori_id' => 'nullable|exists:categories,id',
+            'gambar_barang' => 'nullable|gambar_barang|mimes:jpeg,png,jpg|max:2048',
         ]);
 
         $imagePath = null;
 
-        if ($request->hasFile('image')) {
+        if ($request->hasFile('gambar_barang')) {
 
-            $imageName = time() . '.' . $request->image->extension();
+            $imageName = time() . '.' . $request->gambar_barang->extension();
 
             // FOTO KAMERA
-            if ($request->category == 'Kamera') {
+            if ($request->kategori == 'Kamera') {
 
-                $request->image->move(
+                $request->gambar_barang->move(
                     public_path('img_foto/camera'),
                     $imageName
                 );
@@ -66,9 +66,9 @@ class ProductController extends Controller
             }
 
             // FOTO CAMPING
-            elseif ($request->category == 'Camping') {
+            elseif ($request->kategori == 'Camping') {
 
-                $request->image->move(
+                $request->gambar_barang->move(
                     public_path('img_foto/camping'),
                     $imageName
                 );
@@ -77,17 +77,17 @@ class ProductController extends Controller
             }
         }
 
-        Product::create([
+        Barang::create([
             'name' => $request->name,
-            'stock' => $request->stock,
-            'category' => $request->category,
-            'price_per_day' => $request->price_per_day,
+            'stok' => $request->stok,
+            'kategori' => $request->kategori,
+            'harga_per_hari' => $request->harga_per_hari,
             'deskripsi' => $request->deskripsi,
-            'highlights' => $request->highlights,
+            'sorotan' => $request->sorotan,
             'isi_paket' => $request->isi_paket,
-            'type_category_id' => $request->type_category_id,
-            'brand_category_id' => $request->brand_category_id,
-            'image' => $imagePath,
+            'tipe_kategori_id' => $request->tipe_kategori_id,
+            'merek_kategori_id' => $request->merek_kategori_id,
+            'gambar_barang' => $imagePath,
         ]);
 
         return redirect()
@@ -102,7 +102,7 @@ class ProductController extends Controller
     */
     public function edit($id)
     {
-        $product = Product::findOrFail($id);
+        $product = Barang::findOrFail($id);
 
         $types = Category::where('attribute_type', 'Tipe')
             ->where('is_active', 1)
@@ -126,67 +126,67 @@ class ProductController extends Controller
     */
     public function update(Request $request, $id)
     {
-        $product = Product::findOrFail($id);
+        $product = Barang::findOrFail($id);
 
         $request->validate([
             'name'               => 'required|string|max:255',
-            'stock'              => 'required|numeric|min:0',
-            'category'           => 'required|string',
-            'price_per_day'      => 'required|numeric|min:0',
+            'stok'              => 'required|numeric|min:0',
+            'kategori'           => 'required|string',
+            'harga_per_hari'      => 'required|numeric|min:0',
 
             'deskripsi'          => 'required|string',
-            'highlights'         => 'nullable|string',
+            'sorotan'         => 'nullable|string',
             'isi_paket'          => 'nullable|string',
 
-            'type_category_id'   => 'nullable|exists:categories,id',
-            'brand_category_id'  => 'nullable|exists:categories,id',
+            'tipe_kategori_id'   => 'nullable|exists:categories,id',
+            'merek_kategori_id'  => 'nullable|exists:categories,id',
 
-            'image'              => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'gambar_barang'              => 'nullable|gambar_barang|mimes:jpeg,png,jpg|max:2048',
         ]);
 
         $data = [
             'name'               => $request->name,
-            'stock'              => $request->stock,
-            'category'           => $request->category,
-            'price_per_day'      => $request->price_per_day,
+            'stok'              => $request->stok,
+            'kategori'           => $request->kategori,
+            'harga_per_hari'      => $request->harga_per_hari,
 
             'deskripsi'          => $request->deskripsi,
-            'highlights'         => $request->highlights,
+            'sorotan'         => $request->sorotan,
             'isi_paket'          => $request->isi_paket,
 
-            'type_category_id'   => $request->type_category_id,
-            'brand_category_id'  => $request->brand_category_id,
+            'tipe_kategori_id'   => $request->tipe_kategori_id,
+            'merek_kategori_id'  => $request->merek_kategori_id,
         ];
 
-        if ($request->hasFile('image')) {
+        if ($request->hasFile('gambar_barang')) {
 
             // HAPUS FOTO LAMA
-            if ($product->image && file_exists(public_path($product->image))) {
-                unlink(public_path($product->image));
+            if ($product->gambar_barang && file_exists(public_path($product->gambar_barang))) {
+                unlink(public_path($product->gambar_barang));
             }
 
-            $imageName = time() . '.' . $request->image->extension();
+            $imageName = time() . '.' . $request->gambar_barang->extension();
 
             // FOTO KAMERA
-            if ($request->category == 'Kamera') {
+            if ($request->kategori == 'Kamera') {
 
-                $request->image->move(
+                $request->gambar_barang->move(
                     public_path('img_foto/camera'),
                     $imageName
                 );
 
-                $data['image'] = 'img_foto/camera/' . $imageName;
+                $data['gambar_barang'] = 'img_foto/camera/' . $imageName;
             }
 
             // FOTO CAMPING
-            elseif ($request->category == 'Camping') {
+            elseif ($request->kategori == 'Camping') {
 
-                $request->image->move(
+                $request->gambar_barang->move(
                     public_path('img_foto/camping'),
                     $imageName
                 );
 
-                $data['image'] = 'img_foto/camping/' . $imageName;
+                $data['gambar_barang'] = 'img_foto/camping/' . $imageName;
             }
         }
 
@@ -204,10 +204,10 @@ class ProductController extends Controller
     */
     public function destroy($id)
     {
-        $product = Product::findOrFail($id);
+        $product = Barang::findOrFail($id);
 
-        if ($product->image && file_exists(public_path($product->image))) {
-            unlink(public_path($product->image));
+        if ($product->gambar_barang && file_exists(public_path($product->gambar_barang))) {
+            unlink(public_path($product->gambar_barang));
         }
 
         $product->delete();

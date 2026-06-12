@@ -52,7 +52,7 @@
             <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 lg:gap-5">
 
                 @foreach($items as $item)
-                <a href="{{ route($category . '.show', $item->id) }}"
+                <a href="{{ route($kategori . '.show', $item->id) }}"
                     class="group bg-[#ededea] rounded-2xl overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-xl">
 
                     {{-- IMAGE --}}
@@ -65,7 +65,7 @@
                                 Baru
                             </span>
                             @endif
-                            @if($item->stock <= 0)
+                            @if($item->stok <= 0)
                                 <span class="text-[9px] font-semibold uppercase tracking-wide bg-red-500 text-white px-2 py-1 rounded">
                                 Habis
                                 </span>
@@ -73,7 +73,7 @@
                         </div>
 
                         <img
-                            src="{{ asset($item->image) }}"
+                            src="{{ asset($item->gambar_barang) }}"
                             alt="{{ $item->name }}"
                             class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105">
                     </div>
@@ -86,7 +86,7 @@
 
                         <div class="flex justify-between items-end mt-2">
                             <p class="text-sm font-bold text-gray-900">
-                                Rp {{ number_format($item->price_per_day) }}
+                                Rp {{ number_format($item->harga_per_hari) }}
                             </p>
 
                             {{-- BUTTON --}}

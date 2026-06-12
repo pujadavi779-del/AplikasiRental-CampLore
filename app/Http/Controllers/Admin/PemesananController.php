@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Pemesanan;
 use App\Models\User;
-use App\Models\Product;
+use App\Models\Barang;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\BarangTibaMail; // Pastikan Anda sudah membuat mailable ini
@@ -63,7 +63,7 @@ class PemesananController extends Controller
     {
         $order = Pemesanan::findOrFail($id);
         $users = User::all();
-        $products = Product::all();
+        $products = Barang::all();
         return view('admin.orders.edit', compact('order', 'users', 'products'));
     }
 

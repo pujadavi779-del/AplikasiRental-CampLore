@@ -42,7 +42,7 @@
     <div class="space-y-2">
 
         {{-- SEMUA --}}
-        <a href="{{ route($category . '.LP') }}"
+        <a href="{{ route($kategori . '.LP') }}"
             class="flex items-center gap-2 text-sm hover:text-black">
 
             <div class="w-4 h-4 rounded border border-gray-300
@@ -53,7 +53,7 @@
         </a>
 
         @foreach($filterTipes as $tipe)
-        <a href="{{ route($category . '.LP', [
+        <a href="{{ route($kategori . '.LP', [
         'type' => $tipe->id,
         'brand' => request('brand')
     ]) }}"
@@ -77,7 +77,7 @@
     <div class="grid grid-cols-3 gap-3">
 
         {{-- SEMUA --}}
-        <a href="{{ route($category . '.LP', [
+        <a href="{{ route($kategori . '.LP', [
         'type' => request('type')
     ]) }}"
             class="cursor-pointer text-center group">
@@ -94,7 +94,7 @@
         </a>
 
         @foreach($filterMereks as $merek)
-        <a href="{{ route($category . '.LP', [
+        <a href="{{ route($kategori . '.LP', [
         'type' => request('type'),
         'brand' => $merek->id
     ]) }}"

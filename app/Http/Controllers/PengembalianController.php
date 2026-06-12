@@ -36,7 +36,7 @@ class PengembalianController extends Controller
                 ],
                 'products' => $items->map(fn($i) => (object) [
                     'name'     => $i->product->name ?? 'Produk Dihapus',
-                    'kategori' => $i->product->category ?? '-',
+                    'kategori' => $i->product->kategori ?? '-',
                     'tipe'     => '-',
                     'merek'    => '-',
                     'quantity' => $i->quantity ?? 1,

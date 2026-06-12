@@ -15,9 +15,9 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('category'); // Kamera atau Camping
-            $table->decimal('price_per_day', 15, 2);
+            $table->decimal('harga_per_hari', 15, 2);
             $table->string('image')->nullable();
-            $table->integer('stock')->default(0);
+            $table->integer('stok')->default(0);
             $table->timestamps();
         });
     }
