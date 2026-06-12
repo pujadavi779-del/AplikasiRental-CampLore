@@ -242,7 +242,7 @@ Route::post('/payment/webhook', [PaymentController::class, 'webhook']);
 // 1. ROUTES → Ulasan Pelanggan (Admin)
 // ============================================================
 
-Route::middleware(['auth', 'admin.auth'])
+Route::middleware(['auth:admin', 'admin.auth'])
     ->prefix('admin')
     ->name('admin.')
     ->group(function () {

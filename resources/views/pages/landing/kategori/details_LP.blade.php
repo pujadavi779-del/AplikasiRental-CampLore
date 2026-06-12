@@ -650,7 +650,7 @@ function rentNow(itemId) {
                 </div>
                 <span class="text-xs text-gray-400 flex-shrink-0">{{ $review->created_at->diffForHumans() }}</span>
             </div>
-            <p class="text-sm font-bold text-gray-900 mt-3">{{ \Illuminate\Support\Str::words($review->comment, 8, '') }}</p>
+            
             <p class="text-sm text-gray-600 mt-1 leading-relaxed">{{ $review->comment }}</p>
 
             @if($review->is_replied && $review->reply)
