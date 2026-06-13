@@ -116,7 +116,7 @@
                             @php
                                 $sa = $customer->shippingAddress;
                                 echo $sa
-                                    ? implode(', ', array_filter([$sa->full_address, $sa->city, $sa->district, $sa->postal_code]))
+                                    ? implode(', ', array_filter([$sa->alamat_lengkap, $sa->kota, $sa->daerah, $sa->kode_pos]))
                                     : '-';
                             @endphp
                         </span>

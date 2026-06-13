@@ -83,13 +83,13 @@
                                 <div class="flex gap-0.5 my-0.5">
                                     @for($i = 1; $i <= 5; $i++)
                                         <svg width="10" height="10" viewBox="0 0 24 24"
-                                            fill="{{ $i <= $review->rating ? '#f59e0b' : 'none' }}"
+                                            fill="{{ $i <= $review->bintang ? '#f59e0b' : 'none' }}"
                                             stroke="#f59e0b" stroke-width="2">
                                             <polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26" />
                                         </svg>
                                     @endfor
                                 </div>
-                                <p class="text-[11px] text-gray-600 line-clamp-2 leading-snug">{{ $review->comment }}</p>
+                                <p class="text-[11px] text-gray-600 line-clamp-2 leading-snug">{{ $review->komentar }}</p>
                                 <p class="text-[9px] text-[#9ca3af] mt-1">{{ $review->created_at->diffForHumans() }}</p>
                             </div>
                         </div>

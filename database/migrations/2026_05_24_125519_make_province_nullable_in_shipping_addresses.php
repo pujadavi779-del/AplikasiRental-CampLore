@@ -8,14 +8,14 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::table('shipping_addresses', function (Blueprint $table) {
+        Schema::table('alamat_pengiriman', function (Blueprint $table) {
             $table->string('province', 100)->nullable()->change();
         });
     }
 
     public function down(): void
     {
-        Schema::table('shipping_addresses', function (Blueprint $table) {
+        Schema::table('alamat_pengiriman', function (Blueprint $table) {
             $table->string('province', 100)->nullable(false)->change();
         });
     }

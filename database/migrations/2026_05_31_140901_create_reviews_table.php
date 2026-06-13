@@ -16,7 +16,7 @@ return new class extends Migration
         $table->foreignId('user_id')->constrained()->onDelete('cascade');
         $table->foreignId('product_id')->constrained()->onDelete('cascade');
         $table->tinyInteger('rating');         // 1-5 bintang
-        $table->text('comment');               // komentar pelanggan
+        $table->text('komentar');               // komentar pelanggan
         $table->text('reply')->nullable();     // balasan admin
         $table->boolean('is_replied')->default(false);
         $table->timestamp('replied_at')->nullable();

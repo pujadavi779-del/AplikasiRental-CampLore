@@ -38,7 +38,7 @@
                     </p>
 
                     <p id="display-address" class="text-sm text-gray-500 mt-0.5">
-                        {{ optional(auth()->user()->shippingAddress)->full_address ?? 'Masukkan alamat pengiriman kamu' }}
+                        {{ optional(auth()->user()->shippingAddress)->alamat_lengkap ?? 'Masukkan alamat pengiriman kamu' }}
                     </p>
                 </div>
                 <button onclick="openAddressModal()" type="button"

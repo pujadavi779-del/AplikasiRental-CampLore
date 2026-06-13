@@ -6,14 +6,14 @@ use Illuminate\Database\Eloquent\Model;
 
 class ShippingAddress extends Model
 {
-    protected $table = 'shipping_addresses';
+    protected $table = 'alamat_pengiriman';
     protected $fillable = [
         'user_id',
-        'full_address',
-        'city',
+        'alamat_lengkap',
+        'kota',
         'province',
-        'postal_code',
-        'district',
+        'kode_pos',
+        'daerah',
         'notes',
     ];
 

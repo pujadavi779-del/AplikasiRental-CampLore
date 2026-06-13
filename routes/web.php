@@ -250,8 +250,8 @@ Route::middleware(['auth:admin', 'admin.auth'])
         Route::get('/reviews', [ReviewController::class, 'index'])
             ->name('reviews.index');
 
-        Route::put('/reviews/{review}/reply', [ReviewController::class, 'reply'])
-            ->name('reviews.reply');
+        Route::put('/reviews/{review}/balas_pesan', [ReviewController::class, 'balas_pesan'])
+            ->name('reviews.balas_pesan');
     });
 
 // Route Sewa Pelanggan

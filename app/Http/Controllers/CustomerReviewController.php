@@ -57,19 +57,19 @@ class CustomerReviewController extends Controller
         }
 
         $request->validate([
-            'rating'  => 'required|integer|min:1|max:5',
-            'comment' => 'required|string|min:10|max:1000',
+            'bintang'  => 'required|integer|min:1|max:5',
+            'komentar' => 'required|string|min:10|max:1000',
         ], [
-            'rating.required'  => 'Pilih rating bintang terlebih dahulu.',
-            'comment.required' => 'Komentar tidak boleh kosong.',
-            'comment.min'      => 'Komentar minimal 10 karakter.',
+            'bintang.required'  => 'Pilih rating bintang terlebih dahulu.',
+            'komentar.required' => 'Komentar tidak boleh kosong.',
+            'komentar.min'      => 'Komentar minimal 10 karakter.',
         ]);
 
         Review::create([
             'user_id'    => Auth::id(),
             'product_id' => $order->product_id,
-            'rating'     => $request->rating,
-            'comment'    => $request->comment,
+            'bintang'     => $request->bintang,
+            'komentar'    => $request->komentar,
             'is_replied' => false,
         ]);
 

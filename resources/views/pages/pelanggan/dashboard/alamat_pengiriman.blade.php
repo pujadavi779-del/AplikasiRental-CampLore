@@ -35,17 +35,17 @@
 
             <div class="space-y-2">
                 <label class="text-[11px] font-bold text-gray-400 uppercase tracking-widest">Alamat Lengkap</label>
-                <textarea name="full_address" rows="3" class="input-field w-full px-4 py-3 rounded-xl text-sm resize-none" placeholder="Nama Jalan, No. Rumah, RT/RW...">{{ old('full_address', $address->full_address ?? '') }}</textarea>
+                <textarea name="alamat_lengkap" rows="3" class="input-field w-full px-4 py-3 rounded-xl text-sm resize-none" placeholder="Nama Jalan, No. Rumah, RT/RW...">{{ old('alamat_lengkap', $address->alamat_lengkap ?? '') }}</textarea>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div class="space-y-2">
                     <label class="text-[11px] font-bold text-gray-400 uppercase tracking-widest">Kota / Kabupaten</label>
-                    <input type="text" name="city" value="{{ old('city', $address->city ?? '') }}" class="input-field w-full px-4 py-3 rounded-xl text-sm">
+                    <input type="text" name="kota" value="{{ old('kota', $address->kota ?? '') }}" class="input-field w-full px-4 py-3 rounded-xl text-sm">
                 </div>
                 <div class="space-y-2">
                     <label class="text-[11px] font-bold text-gray-400 uppercase tracking-widest">Kecamatan</label>
-                    <input type="text" name="district" value="{{ old('district', $address->district ?? '') }}" class="input-field w-full px-4 py-3 rounded-xl text-sm">
+                    <input type="text" name="daerah" value="{{ old('daerah', $address->daerah ?? '') }}" class="input-field w-full px-4 py-3 rounded-xl text-sm">
                 </div>
                 <!-- <div class="space-y-2">
                     <label class="text-[11px] font-bold text-gray-400 uppercase tracking-widest">Provinsi</label>
@@ -56,7 +56,7 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div class="space-y-2">
                     <label class="text-[11px] font-bold text-gray-400 uppercase tracking-widest">Kode Pos</label>
-                    <input type="text" name="postal_code" value="{{ old('postal_code', $address->postal_code ?? '') }}" class="input-field w-full px-4 py-3 rounded-xl text-sm">
+                    <input type="text" name="kode_pos" value="{{ old('kode_pos', $address->kode_pos ?? '') }}" class="input-field w-full px-4 py-3 rounded-xl text-sm">
                 </div>
 
             </div>

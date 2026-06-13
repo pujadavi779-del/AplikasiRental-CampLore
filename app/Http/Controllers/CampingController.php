@@ -105,7 +105,7 @@ class CampingController extends Controller
         ->latest()
         ->get();
 
-    $avgRating = $reviews->count() ? round($reviews->avg('rating'), 1) : 0;
+    $avgRating = $reviews->count() ? round($reviews->avg('bintang'), 1) : 0;
 
     $canReview = false;
     $reviewOrder = null;

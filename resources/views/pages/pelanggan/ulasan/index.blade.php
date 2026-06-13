@@ -124,23 +124,23 @@
                                     <div class="flex items-center gap-1 mb-2">
                                         @for($i = 1; $i <= 5; $i++)
                                             <svg width="14" height="14" viewBox="0 0 24 24"
-                                                fill="{{ $i <= $review->rating ? '#f59e0b' : '#e5e7eb' }}"
-                                                stroke="{{ $i <= $review->rating ? '#f59e0b' : '#d1d5db' }}"
+                                                fill="{{ $i <= $review->bintang ? '#f59e0b' : '#e5e7eb' }}"
+                                                stroke="{{ $i <= $review->bintang ? '#f59e0b' : '#d1d5db' }}"
                                                 stroke-width="1.5">
                                                 <polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/>
                                             </svg>
                                         @endfor
-                                        <span class="text-xs font-bold text-[#f59e0b] ml-1">{{ number_format($review->rating, 1) }}</span>
+                                        <span class="text-xs font-bold text-[#f59e0b] ml-1">{{ number_format($review->bintang, 1) }}</span>
                                     </div>
 
                                     {{-- Comment --}}
-                                    <p class="text-sm text-gray-700 leading-relaxed">{{ $review->comment }}</p>
+                                    <p class="text-sm text-gray-700 leading-relaxed">{{ $review->komentar }}</p>
 
                                     {{-- Existing Reply --}}
-                                    @if($review->is_replied && $review->reply)
+                                    @if($review->is_replied && $review->balas_pesan)
                                         <div class="mt-3 bg-[#f9fdfb] border-l-4 border-[#22543D] rounded-r-xl px-4 py-3">
                                             <p class="text-[10px] font-bold text-[#22543D] uppercase tracking-wide mb-1">Balasan Admin</p>
-                                            <p class="text-sm text-gray-600 leading-relaxed">{{ $review->reply }}</p>
+                                            <p class="text-sm text-gray-600 leading-relaxed">{{ $review->balas_pesan }}</p>
                                         </div>
                                     @endif
                                 </div>
@@ -168,7 +168,7 @@
                                 style="display:none; padding-left: 60px;"
                                 class="mt-4">
 
-                                <form action="{{ route('admin.reviews.reply', $review->id) }}" method="POST">
+                                <form action="{{ route('admin.reviews.balas_pesan', $review->id) }}" method="POST">
                                     @csrf
                                     @method('PUT')
 
@@ -177,10 +177,10 @@
                                             Balas ulasan dari <span class="text-[#ED64A6]">{{ $review->user->name ?? 'Pengguna' }}</span>
                                         </p>
                                         <textarea
-                                            name="reply"
+                                            name="balas_pesan"
                                             rows="3"
                                             placeholder="Tulis balasan Anda di sini..."
-                                            class="w-full text-sm text-gray-700 bg-white border border-[#d7e6de] rounded-lg px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-[#22543D] focus:border-transparent resize-none transition-all">{{ $review->reply ?? '' }}</textarea>
+                                            class="w-full text-sm text-gray-700 bg-white border border-[#d7e6de] rounded-lg px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-[#22543D] focus:border-transparent resize-none transition-all">{{ $review->balas_pesan ?? '' }}</textarea>
 
                                         <div class="flex items-center justify-between mt-3">
                                             <p class="text-[10px] text-[#9ca3af]">Balasan akan terlihat oleh pelanggan di halaman produk</p>

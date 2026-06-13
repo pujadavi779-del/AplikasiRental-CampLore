@@ -18,31 +18,31 @@ class ShippingAddressController extends Controller
     public function update(Request $request)
     {
         $request->validate([
-            'full_address' => 'required|string',
-            'city'         => 'required|string',
-            'district'     => 'required|string',
-            'postal_code'  => 'required|string',
+            'alamat_lengkap' => 'required|string',
+            'kota'         => 'required|string',
+            'daerah'     => 'required|string',
+            'kode_pos'  => 'required|string',
         ]);
 
         $user = Auth::user();
 
-        // 1. Simpan/update ke tabel shipping_addresses
+        // 1. Simpan/update ke tabel alamat_pengiriman
         ShippingAddress::updateOrCreate(
             ['user_id' => $user->id],
             [
-                'full_address' => $request->full_address,
-                'city'         => $request->city,
-                'district'     => $request->district,
-                'postal_code'  => $request->postal_code,
+                'alamat_lengkap' => $request->alamat_lengkap,
+                'kota'         => $request->kota,
+                'daerah'     => $request->daerah,
+                'kode_pos'  => $request->kode_pos,
             ]
         );
 
         // 2. Gabungkan jadi satu string, simpan ke customers.address
         $alamatGabung = implode(', ', array_filter([
-            $request->full_address,
-            $request->city,
-            $request->district,
-            $request->postal_code,
+            $request->alamat_lengkap,
+            $request->kota,
+            $request->daerah,
+            $request->kode_pos,
         ]));
 
         // 3. Update ke tabel customers

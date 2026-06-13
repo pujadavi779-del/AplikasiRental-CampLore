@@ -69,23 +69,23 @@
                 <div class="flex items-center gap-1 mb-3">
                     @for($i = 1; $i <= 5; $i++)
                     <svg width="20" height="20" viewBox="0 0 24 24"
-                        fill="{{ $i <= $review->rating ? '#f59e0b' : '#e5e7eb' }}"
-                        stroke="{{ $i <= $review->rating ? '#f59e0b' : '#d1d5db' }}"
+                        fill="{{ $i <= $review->bintang ? '#f59e0b' : '#e5e7eb' }}"
+                        stroke="{{ $i <= $review->bintang ? '#f59e0b' : '#d1d5db' }}"
                         stroke-width="1.5">
                         <polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/>
                     </svg>
                     @endfor
                     <span class="text-sm font-bold text-[#f59e0b] ml-1">
-                        {{ ['','Buruk','Kurang','Cukup','Bagus','Sangat Bagus'][$review->rating] }}
+                        {{ ['','Buruk','Kurang','Cukup','Bagus','Sangat Bagus'][$review->bintang] }}
                     </span>
                 </div>
 
                 {{-- Comment --}}
-                <p class="text-sm text-[#1a1a1a] leading-relaxed">{{ $review->comment }}</p>
+                <p class="text-sm text-[#1a1a1a] leading-relaxed">{{ $review->komentar }}</p>
             </div>
 
             {{-- Admin Reply --}}
-            @if($review->is_replied && $review->reply)
+            @if($review->is_replied && $review->balas_pesan)
             <div class="px-6 py-5 bg-[#f9fdfb]">
                 <div class="flex items-start gap-3">
                     <div class="w-8 h-8 rounded-full bg-[#1a5c3a] flex items-center justify-center flex-shrink-0">
@@ -101,7 +101,7 @@
                                 {{ $review->replied_at ? \Carbon\Carbon::parse($review->replied_at)->diffForHumans() : '' }}
                             </span>
                         </div>
-                        <p class="text-sm text-[#374151] leading-relaxed">{{ $review->reply }}</p>
+                        <p class="text-sm text-[#374151] leading-relaxed">{{ $review->balas_pesan }}</p>
                     </div>
                 </div>
             </div>

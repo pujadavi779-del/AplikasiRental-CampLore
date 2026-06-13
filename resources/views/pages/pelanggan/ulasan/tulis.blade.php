@@ -70,7 +70,7 @@
                         Rating <span class="text-[#e8567a]">*</span>
                     </label>
 
-                    <input type="hidden" name="rating" id="rating-input" value="{{ old('rating', 0) }}">
+                    <input type="hidden" name="bintang" id="rating-input" value="{{ old('bintang', 0) }}">
 
                     <div class="flex items-center gap-2" id="star-container">
                         @for($i = 1; $i <= 5; $i++)
@@ -86,28 +86,28 @@
                         <span id="rating-label" class="text-sm font-bold text-[#f59e0b] ml-2"></span>
                     </div>
 
-                    @error('rating')
+                    @error('bintang')
                         <p class="text-xs text-[#dc2626] mt-1.5">{{ $message }}</p>
                     @enderror
                 </div>
 
                 {{-- Comment --}}
                 <div class="mb-6">
-                    <label class="text-sm font-bold text-[#1a1a1a] mb-2 block" for="comment">
+                    <label class="text-sm font-bold text-[#1a1a1a] mb-2 block" for="komentar">
                         Komentar <span class="text-[#e8567a]">*</span>
                     </label>
                     <textarea
-                        id="comment"
-                        name="comment"
+                        id="komentar"
+                        name="komentar"
                         rows="5"
                         maxlength="1000"
                         placeholder="Ceritakan pengalamanmu menyewa produk ini. Kondisi barang, proses pengiriman, responsivitas seller, dll..."
                         class="w-full text-sm text-[#1a1a1a] bg-[#f9fafb] border border-[#e5e7eb] rounded-xl px-4 py-3
                                focus:outline-none focus:ring-2 focus:ring-[#1a5c3a] focus:border-transparent
                                resize-none transition-all placeholder-[#9ca3af]"
-                    >{{ old('comment') }}</textarea>
+                    >{{ old('komentar') }}</textarea>
                     <div class="flex justify-between mt-1">
-                        @error('comment')
+                        @error('komentar')
                             <p class="text-xs text-[#dc2626]">{{ $message }}</p>
                         @else
                             <span></span>
@@ -144,10 +144,10 @@
 <script>
 document.addEventListener('DOMContentLoaded', function () {
     const labels = ['', 'Buruk', 'Kurang', 'Cukup', 'Bagus', 'Sangat Bagus'];
-    const ratingInput = document.getElementById('rating-input');
-    const ratingLabel = document.getElementById('rating-label');
+    const bintangInput = document.getElementById('rating-input');
+    const bintangLabel = document.getElementById('rating-label');
     const stars = document.querySelectorAll('.star-btn');
-    let currentRating = parseInt(ratingInput.value) || 0;
+    let currentBintang = parseInt(bintangInput.value) || 0;
 
     function paintStars(count) {
         stars.forEach(btn => {
@@ -161,26 +161,26 @@ document.addEventListener('DOMContentLoaded', function () {
                 icon.setAttribute('stroke', '#d1d5db');
             }
         });
-        ratingLabel.textContent = labels[count] || '';
+        bintangLabel.textContent = labels[count] || '';
     }
 
-    if (currentRating > 0) paintStars(currentRating);
+    if (currentBintang > 0) paintStars(currentBintang);
 
     stars.forEach(btn => {
         btn.addEventListener('click', function () {
-            currentRating = parseInt(this.dataset.value);
-            ratingInput.value = currentRating;
-            paintStars(currentRating);
+            currentBintang = parseInt(this.dataset.value);
+            bintangInput.value = currentBintang;
+            paintStars(currentBintang);
         });
         btn.addEventListener('mouseenter', function () {
             paintStars(parseInt(this.dataset.value));
         });
         btn.addEventListener('mouseleave', function () {
-            paintStars(currentRating);
+            paintStars(currentBintang);
         });
     });
 
-    const textarea = document.getElementById('comment');
+    const textarea = document.getElementById('komentar');
     const counter  = document.getElementById('char-count');
     if (textarea && counter) {
         counter.textContent = textarea.value.length + ' / 1000';

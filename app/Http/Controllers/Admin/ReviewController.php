@@ -34,16 +34,16 @@ class ReviewController extends Controller
     /**
      * Kirim / update balasan admin untuk satu ulasan.
      */
-    public function reply(Request $request, Review $review)
+    public function balas_pesan(Request $request, Review $review)
 {
     $request->validate([
-        'reply' => 'required|string|max:1000',
+        'balas_pesan' => 'required|string|max:1000',
     ]);
 
     $review->update([
-        'reply'      => $request->reply,
-        'is_replied' => true,
-        'replied_at' => now(),
+        'balas_pesan' => $request->balas_pesan,
+        'is_replied'  => true,
+        'replied_at'  => now(),
     ]);
 
     return redirect()->route('admin.reviews.index')

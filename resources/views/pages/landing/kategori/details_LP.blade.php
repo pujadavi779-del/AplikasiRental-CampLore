@@ -578,7 +578,7 @@ function rentNow(itemId) {
 
         <form action="{{ route('pelanggan.ulasan.store', $reviewOrder->id) }}" method="POST">
             @csrf
-            <input type="hidden" name="rating" id="rating-input-detail" value="{{ old('rating', 0) }}">
+            <input type="hidden" name="bintang" id="rating-input-detail" value="{{ old('bintang', 0) }}">
 
             {{-- Bintang --}}
             <div class="mb-4">
@@ -600,9 +600,9 @@ function rentNow(itemId) {
             {{-- Komentar --}}
             <div class="mb-4">
                 <p class="text-xs font-bold text-gray-700 mb-2">Komentar <span class="text-pink-500">*</span></p>
-                <textarea name="comment" rows="4" maxlength="1000"
+                <textarea name="komentar" rows="4" maxlength="1000"
                     placeholder="Ceritakan pengalamanmu menyewa produk ini..."
-                    class="w-full text-sm bg-white border border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#22543D] resize-none placeholder-gray-300">{{ old('comment') }}</textarea>
+                    class="w-full text-sm bg-white border border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#22543D] resize-none placeholder-gray-300">{{ old('komentar') }}</textarea>
             </div>
 
             <div class="flex justify-end">
@@ -639,8 +639,8 @@ function rentNow(itemId) {
                         <div class="flex items-center gap-0.5 mt-0.5">
                             @for($i = 1; $i <= 5; $i++)
                             <svg width="13" height="13" viewBox="0 0 24 24"
-                                fill="{{ $i <= $review->rating ? '#f59e0b' : '#e5e7eb' }}"
-                                stroke="{{ $i <= $review->rating ? '#f59e0b' : '#d1d5db' }}"
+                                fill="{{ $i <= $review->bintang ? '#f59e0b' : '#e5e7eb' }}"
+                                stroke="{{ $i <= $review->bintang ? '#f59e0b' : '#d1d5db' }}"
                                 stroke-width="1.5">
                                 <polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/>
                             </svg>
@@ -651,12 +651,12 @@ function rentNow(itemId) {
                 <span class="text-xs text-gray-400 flex-shrink-0">{{ $review->created_at->diffForHumans() }}</span>
             </div>
             
-            <p class="text-sm text-gray-600 mt-1 leading-relaxed">{{ $review->comment }}</p>
+            <p class="text-sm text-gray-600 mt-1 leading-relaxed">{{ $review->komentar }}</p>
 
-            @if($review->is_replied && $review->reply)
+            @if($review->is_replied && $review->balas_pesan)
             <div class="mt-3 bg-gray-50 border-l-4 border-gray-900 rounded-r-xl px-4 py-3">
                 <p class="text-[10px] font-bold text-gray-500 uppercase tracking-wide mb-1">Balasan Penjual</p>
-                <p class="text-sm text-gray-600">{{ $review->reply }}</p>
+                <p class="text-sm text-gray-600">{{ $review->balas_pesan }}</p>
             </div>
             @endif
         </div>
@@ -682,8 +682,8 @@ function rentNow(itemId) {
                         <div class="flex items-center gap-0.5 mt-0.5">
                             @for($i = 1; $i <= 5; $i++)
                             <svg width="13" height="13" viewBox="0 0 24 24"
-                                fill="{{ $i <= $review->rating ? '#f59e0b' : '#e5e7eb' }}"
-                                stroke="{{ $i <= $review->rating ? '#f59e0b' : '#d1d5db' }}"
+                                fill="{{ $i <= $review->bintang ? '#f59e0b' : '#e5e7eb' }}"
+                                stroke="{{ $i <= $review->bintang ? '#f59e0b' : '#d1d5db' }}"
                                 stroke-width="1.5">
                                 <polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/>
                             </svg>
@@ -693,11 +693,11 @@ function rentNow(itemId) {
                 </div>
                 <span class="text-xs text-gray-400 flex-shrink-0">{{ $review->created_at->diffForHumans() }}</span>
             </div>
-            <p class="text-sm text-gray-600 mt-3 leading-relaxed">{{ $review->comment }}</p>
-            @if($review->is_replied && $review->reply)
+            <p class="text-sm text-gray-600 mt-3 leading-relaxed">{{ $review->komentar }}</p>
+            @if($review->is_replied && $review->balas_pesan)
             <div class="mt-3 bg-gray-50 border-l-4 border-gray-900 rounded-r-xl px-4 py-3">
                 <p class="text-[10px] font-bold text-gray-500 uppercase tracking-wide mb-1">Balasan Penjual</p>
-                <p class="text-sm text-gray-600">{{ $review->reply }}</p>
+                <p class="text-sm text-gray-600">{{ $review->balas_pesan }}</p>
             </div>
             @endif
         </div>

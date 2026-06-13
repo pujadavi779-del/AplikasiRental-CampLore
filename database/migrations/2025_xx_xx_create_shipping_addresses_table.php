@@ -8,14 +8,14 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('shipping_addresses', function (Blueprint $table) {
+        Schema::create('alamat_pengiriman', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->text('full_address');
-            $table->string('city', 100);
+            $table->text('alamat_lengkap');
+            $table->string('kota', 100);
             $table->string('province', 100);
-            $table->string('postal_code', 10);
-            $table->string('district', 100);
+            $table->string('kode_pos', 10);
+            $table->string('daerah', 100);
             $table->string('notes')->nullable();
             $table->timestamps();
         });
@@ -23,6 +23,6 @@ return new class extends Migration
 
     public function down(): void
     {
-        Schema::dropIfExists('shipping_addresses');
+        Schema::dropIfExists('alamat_pengiriman');
     }
 };

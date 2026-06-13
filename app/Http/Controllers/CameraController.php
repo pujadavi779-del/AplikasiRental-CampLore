@@ -156,7 +156,7 @@ class CameraController extends Controller
         ->latest()
         ->get();
 
-    $avgRating = $reviews->count() ? round($reviews->avg('rating'), 1) : 0;
+    $avgRating = $reviews->count() ? round($reviews->avg('bintang'), 1) : 0;
 
     // Cek apakah user yang login boleh review
     $canReview = false;
