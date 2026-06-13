@@ -8,14 +8,14 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::table('orders', function (Blueprint $table) {
+        Schema::table('pesanan', function (Blueprint $table) {
             $table->string('note_admin')->nullable()->after('snap_token');
         });
     }
 
     public function down(): void
     {
-        Schema::table('orders', function (Blueprint $table) {
+        Schema::table('pesanan', function (Blueprint $table) {
             $table->dropColumn('note_admin');
         });
     }

@@ -60,7 +60,7 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
                 <label id="delivery-pickup-label" class="flex items-center justify-between p-4 border-2 border-[#FF6B95] bg-pink-50 rounded-xl cursor-pointer transition active:scale-98">
                     <div class="flex items-center gap-3">
-                        <input type="radio" name="shipping_method" value="0" checked onchange="updateShipping(0)" class="accent-[#FF6B95] h-4 w-4">
+                        <input type="radio" name="metode_pengiriman" value="0" checked onchange="updateShipping(0)" class="accent-[#FF6B95] h-4 w-4">
                         <div>
                             <p class="text-sm font-bold text-gray-900">Ambil di Tempat</p>
                             <p class="text-xs text-gray-400 mt-0.5">Ambil langsung ke lokasi toko kami</p>
@@ -71,7 +71,7 @@
 
                 <label id="delivery-cod-label" class="flex items-center justify-between p-4 border border-gray-200 rounded-xl cursor-pointer transition hover:border-[#FF6B95]/50 active:scale-98">
                     <div class="flex items-center gap-3">
-                        <input type="radio" name="shipping_method" value="10000" onchange="updateShipping(10000)" class="accent-[#FF6B95] h-4 w-4">
+                        <input type="radio" name="metode_pengiriman" value="10000" onchange="updateShipping(10000)" class="accent-[#FF6B95] h-4 w-4">
                         <div>
                             <p class="text-sm font-bold text-gray-900">Diantar Ke Tujuan</p>
                             <p class="text-xs text-gray-400 mt-0.5">Antar langsung ke lokasi pilihan Anda</p>
@@ -391,7 +391,7 @@ function handleCheckout() {
         return { ...item, note: noteElement ? noteElement.value.trim() : '' };
     });
 
-    fetch("{{ route('order.store') }}", {
+    fetch("{{ route('pesanan.store') }}", {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
@@ -401,12 +401,12 @@ function handleCheckout() {
         body: JSON.stringify({
             total_payment: totalAmount,
             subtotal: totalSubtotal,
-            shipping_cost: currentShipping,
-            service_fee: biayaLayanan,
-            shipping_method: currentShipping > 0 ? 'delivery' : 'pickup',
-            customer_name: nameText,
-            customer_phone: phoneText,
-            customer_address: addressText,
+            biaya_pengiriman: currentShipping,
+            biaya_layanan: biayaLayanan,
+            metode_pengiriman: currentShipping > 0 ? 'delivery' : 'pickup',
+            nama_pelanggan: nameText,
+            pelanggan_telepon: phoneText,
+            alamat_pelanggan: addressText,
             items: finalItems
         })
     })

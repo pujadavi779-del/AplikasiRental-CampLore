@@ -13,7 +13,7 @@ class Kernel extends ConsoleKernel
 
     protected function schedule(Schedule $schedule)
     {
-        $schedule->command('orders:update-return-status')
+        $schedule->command('pesanan:update-return-status')
                  ->dailyAt('00:00')
                  ->withoutOverlapping()
                  ->runInBackground();

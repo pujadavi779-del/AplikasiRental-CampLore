@@ -61,9 +61,9 @@
                 </svg>
                 Kelola Produk
             </a>
-            <a href="{{ route('admin.orders.index') }}"
+            <a href="{{ route('admin.pesanan.index') }}"
                 class="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold transition-all duration-200 border-l-4
-                          {{ request()->routeIs('admin.orders*') ? 'bg-emerald-50 text-emerald-700 border-emerald-500 shadow-sm' : 'text-gray-500 border-transparent hover:bg-emerald-50 hover:text-emerald-700 hover:border-emerald-400' }}">
+                          {{ request()->routeIs('admin.pesanan*') ? 'bg-emerald-50 text-emerald-700 border-emerald-500 shadow-sm' : 'text-gray-500 border-transparent hover:bg-emerald-50 hover:text-emerald-700 hover:border-emerald-400' }}">
                 <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
                 </svg>

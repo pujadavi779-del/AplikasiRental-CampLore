@@ -4,8 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Order extends Model
+class Pesanan extends Model
 {
+
+    protected $table = 'pesanan';
+    
     protected $fillable = [
         'order_id',
         'user_id',
@@ -16,13 +19,13 @@ class Order extends Model
         'quantity',
         'note',
         'harga_per_hari',
-        'total_price',
-        'shipping_cost',
-        'service_fee',
-        'shipping_method',
-        'customer_name',
-        'customer_phone',
-        'customer_address',
+        'total_harga',
+        'biaya_pengiriman',
+        'biaya_layanan',
+        'metode_pengiriman',
+        'nama_pelanggan',
+        'pelanggan_telepon',
+        'alamat_pelanggan',
         'snap_token',
         'status',
         'bukti_pembayaran',

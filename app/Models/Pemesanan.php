@@ -10,7 +10,7 @@ class Pemesanan extends Model
 {
     use HasFactory;
 
-    protected $table = 'orders';
+    protected $table = 'pesanan';
 
     protected $fillable = [
         'user_id', 
@@ -19,7 +19,7 @@ class Pemesanan extends Model
         'end_date', 
         'days', 
         'harga_per_hari', 
-        'total_price', 
+        'total_harga', 
         'status'
     ];
 

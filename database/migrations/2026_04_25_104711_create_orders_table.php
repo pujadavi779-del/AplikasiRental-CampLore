@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('orders', function (Blueprint $table) {
+        Schema::create('pesanan', function (Blueprint $table) {
             $table->id(); // Ini akan jadi angka 1, 2, 3...
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
             $table->foreignId('product_id')->constrained('products')->onDelete('cascade');
@@ -19,7 +19,7 @@ return new class extends Migration
             $table->date('end_date');
             $table->integer('days');
             $table->decimal('harga_per_hari', 12, 2);
-            $table->decimal('total_price', 12, 2);
+            $table->decimal('total_harga', 12, 2);
             $table->string('status')->default('Menunggu');
             $table->timestamps();
         });
@@ -30,6 +30,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('orders');
+        Schema::dropIfExists('pesanan');
     }
 };

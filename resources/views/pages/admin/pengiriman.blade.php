@@ -110,7 +110,7 @@
                         $status        = $item['status'] ?? 'proses';
                         $idPesanan     = $item['id_pesanan'] ?? '-';
                         $alamat        = $item['alamat'] ?? '-';
-                        $metode        = $item['shipping_method'] ?? 'delivery';
+                        $metode        = $item['metode_pengiriman'] ?? 'delivery';
                         $isPickup      = $metode === 'pickup';
                     @endphp
 

@@ -1,6 +1,6 @@
 @extends('layouts.admin')
 
-@section('title', 'Edit Pemesanan - ' . $order->id)
+@section('title', 'Edit Pemesanan - ' . $pesanan->id)
 
 @section('content')
 
@@ -32,10 +32,10 @@
                 </div>
                 <div>
                     <h2 class="text-2xl font-bold text-[#22543D] font-serif leading-tight">Edit Detail Pesanan</h2>
-                    <p class="text-[11px] text-[#7c8b84] mt-0.5 uppercase tracking-widest font-semibold">Order ID: {{ $order->id }}</p>
+                    <p class="text-[11px] text-[#7c8b84] mt-0.5 uppercase tracking-widest font-semibold">Order ID: {{ $pesanan->id }}</p>
                 </div>
             </div>
-            <a href="{{ route('admin.orders.index') }}" class="text-xs font-bold text-gray-400 hover:text-[#22543D] transition-colors flex items-center gap-1">
+            <a href="{{ route('admin.pesanan.index') }}" class="text-xs font-bold text-gray-400 hover:text-[#22543D] transition-colors flex items-center gap-1">
                 <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M15 19l-7-7 7-7" />
                 </svg>
@@ -44,7 +44,7 @@
         </div>
 
         {{-- Main Form deskripsi: Padding p-10 agar tidak mepet ke garis luar --}}
-        <form action="{{ route('admin.orders.update', $order->id) }}" method="POST" class="p-10">
+        <form action="{{ route('admin.pesanan.update', $pesanan->id) }}" method="POST" class="p-10">
             @csrf
             @method('PUT')
 
@@ -56,7 +56,7 @@
                         <label class="block text-[10px] font-bold text-[#22543D] uppercase tracking-widest mb-3 px-1">Informasi Pelanggan</label>
                         <select name="user_id" class="w-full px-5 py-4 rounded-2xl border border-gray-100 bg-gray-50 text-sm focus:ring-4 focus:ring-[#22543D]/5 focus:border-[#22543D] outline-none transition-all">
                             @foreach($users as $user)
-                            <option value="{{ $user->id }}" {{ $order->user_id == $user->id ? 'selected' : '' }}>
+                            <option value="{{ $user->id }}" {{ $pesanan->user_id == $user->id ? 'selected' : '' }}>
                                 {{ $user->name }} — {{ $user->email }}
                             </option>
                             @endforeach
@@ -70,7 +70,7 @@
                                 @foreach($products as $product)
                                 <option value="{{ $product->id }}"
                                     data-price="{{ $product->price }}"
-                                    {{ $order->product_id == $product->id ? 'selected' : '' }}>
+                                    {{ $pesanan->product_id == $product->id ? 'selected' : '' }}>
                                     {{ $product->name }} (Rp {{ number_format($product->price, 0, ',', '.') }}/hari)
                                 </option>
                                 @endforeach
@@ -81,11 +81,11 @@
                     <div class="grid grid-cols-2 gap-6">
                         <div>
                             <label class="block text-[10px] font-bold text-[#22543D] uppercase tracking-widest mb-3 px-1">Mulai Sewa</label>
-                            <input type="date" name="start_date" id="start_date" value="{{ $order->start_date }}" class="w-full px-5 py-4 rounded-2xl border border-gray-100 bg-gray-50 text-sm focus:ring-4 focus:ring-[#22543D]/5 outline-none transition-all">
+                            <input type="date" name="start_date" id="start_date" value="{{ $pesanan->start_date }}" class="w-full px-5 py-4 rounded-2xl border border-gray-100 bg-gray-50 text-sm focus:ring-4 focus:ring-[#22543D]/5 outline-none transition-all">
                         </div>
                         <div>
                             <label class="block text-[10px] font-bold text-[#22543D] uppercase tracking-widest mb-3 px-1">Berakhir</label>
-                            <input type="date" name="end_date" id="end_date" value="{{ $order->end_date }}" class="w-full px-5 py-4 rounded-2xl border border-gray-100 bg-gray-50 text-sm focus:ring-4 focus:ring-[#22543D]/5 outline-none transition-all">
+                            <input type="date" name="end_date" id="end_date" value="{{ $pesanan->end_date }}" class="w-full px-5 py-4 rounded-2xl border border-gray-100 bg-gray-50 text-sm focus:ring-4 focus:ring-[#22543D]/5 outline-none transition-all">
                         </div>
                     </div>
                 </div>
@@ -95,10 +95,10 @@
                     <div>
                         <label class="block text-[10px] font-bold text-[#22543D] uppercase tracking-widest mb-3 px-1">Status Transaksi</label>
                         <select name="status" class="w-full px-5 py-4 rounded-2xl border-2 border-[#22543D]/10 bg-[#f1f8f4] text-sm font-bold text-[#22543D] focus:border-[#22543D] outline-none transition-all shadow-sm">
-                            <option value="Menunggu" {{ $order->status == 'Menunggu' ? 'selected' : '' }}>Menunggu Pembayaran</option>
-                            <option value="Aktif" {{ $order->status == 'Aktif' ? 'selected' : '' }}>Aktif (Sedang Sewa)</option>
-                            <option value="Selesai" {{ $order->status == 'Selesai' ? 'selected' : '' }}>Selesai / Kembali</option>
-                            <option value="Dibatalkan" {{ $order->status == 'Dibatalkan' ? 'selected' : '' }}>Dibatalkan</option>
+                            <option value="Menunggu" {{ $pesanan->status == 'Menunggu' ? 'selected' : '' }}>Menunggu Pembayaran</option>
+                            <option value="Aktif" {{ $pesanan->status == 'Aktif' ? 'selected' : '' }}>Aktif (Sedang Sewa)</option>
+                            <option value="Selesai" {{ $pesanan->status == 'Selesai' ? 'selected' : '' }}>Selesai / Kembali</option>
+                            <option value="Dibatalkan" {{ $pesanan->status == 'Dibatalkan' ? 'selected' : '' }}>Dibatalkan</option>
                         </select>
                     </div>
 
@@ -112,19 +112,19 @@
                         <div class="space-y-5">
                             <div class="flex justify-between text-xs">
                                 <span class="opacity-70">Harga Sewa / Hari</span>
-                                <span id="display-price" class="font-semibold text-sm">Rp {{ number_format($order->harga_per_hari, 0, ',', '.') }}</span>
+                                <span id="display-price" class="font-semibold text-sm">Rp {{ number_format($pesanan->harga_per_hari, 0, ',', '.') }}</span>
                             </div>
                             <div class="flex justify-between text-xs">
                                 <span class="opacity-70">Durasi Sewa</span>
-                                <span id="display-days" class="font-semibold text-sm">{{ $order->days }} Hari</span>
+                                <span id="display-days" class="font-semibold text-sm">{{ $pesanan->days }} Hari</span>
                             </div>
                             <div class="pt-6 border-t border-white/10 flex justify-between items-center">
                                 <span class="text-xs font-bold uppercase tracking-widest opacity-80">Total Tagihan</span>
-                                <span id="display-total" class="text-3xl font-serif font-bold tracking-tight">Rp {{ number_format($order->total_price, 0, ',', '.') }}</span>
+                                <span id="display-total" class="text-3xl font-serif font-bold tracking-tight">Rp {{ number_format($pesanan->total_harga, 0, ',', '.') }}</span>
                             </div>
                         </div>
 
-                        <input type="hidden" name="total_price" id="input-total" value="{{ $order->total_price }}">
+                        <input type="hidden" name="total_harga" id="input-total" value="{{ $pesanan->total_harga }}">
                     </div>
                 </div>
 
@@ -132,7 +132,7 @@
 
             {{-- Footer Buttons --}}
             <div class="mt-14 pt-8 border-t border-[#eef4f0] flex items-center justify-between">
-                <p class="text-[10px] text-gray-300 italic">Terakhir diupdate: {{ $order->updated_at->format('d M Y, H:i') }}</p>
+                <p class="text-[10px] text-gray-300 italic">Terakhir diupdate: {{ $pesanan->updated_at->format('d M Y, H:i') }}</p>
                 <div class="flex gap-4">
                     <button type="submit" class="bg-[#22543D] hover:bg-[#1B4332] text-white text-xs font-bold px-12 py-4 rounded-2xl transition-all shadow-lg active:scale-95">
                         Simpan Perubahan

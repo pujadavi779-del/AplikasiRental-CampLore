@@ -14,11 +14,11 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class PembayaranExport
 {
-    protected Collection $orders;
+    protected Collection $pesanan;
 
-    public function __construct(Collection $orders)
+    public function __construct(Collection $pesanan)
     {
-        $this->orders = $orders;
+        $this->pesanan = $pesanan;
     }
 
     public function download(): StreamedResponse
@@ -124,19 +124,20 @@ class PembayaranExport
 
         // ── Data rows ─────────────────────────────────────────
         $row = 7;
-        foreach ($this->orders as $i => $order) {
+        foreach ($this->pesanan as $i => $pesanan) {
             $ws->getRowDimension($row)->setRowHeight(22);
             $zebra = ($i % 2 === 0) ? $G_LIGHT : $WHITE;
 
-            $allItems  = \App\Models\Order::where('order_id', $order->order_id)->get();
-            $total     = $allItems->sum('total_price')
-                       + $allItems->first()->shipping_cost
-                       + $allItems->first()->service_fee;
+            $allItems  = \App\Models\Pesanan::where('order_id', $pesanan->order_id)->get();
+            $total     = $allItems->sum('total_harga')
+                       + $allItems->first()->biaya_pengiriman
 
-            $st = $STATUS_STYLE[$order->status] ?? ['label' => ucfirst($order->status), 'bg' => 'F3F4F6', 'fg' => '374151'];
+                       + $allItems->first()->biaya_layanan;
+
+            $st = $STATUS_STYLE[$pesanan->status] ?? ['label' => ucfirst($pesanan->status), 'bg' => 'F3F4F6', 'fg' => '374151'];
 
             // A: ID Pesanan
-            $ws->setCellValue("A{$row}", $order->order_id);
+            $ws->setCellValue("A{$row}", $pesanan->order_id);
             $ws->getStyle("A{$row}")->applyFromArray(array_merge(
                 $solidFill($zebra),
                 ['font' => ['name' => 'Courier New', 'bold' => true, 'size' => 9, 'color' => ['rgb' => $G_MED]]],
@@ -145,13 +146,13 @@ class PembayaranExport
             ));
 
             // B: Pelanggan
-            $ws->setCellValue("B{$row}", $order->user->name ?? '-');
+            $ws->setCellValue("B{$row}", $pesanan->user->name ?? '-');
             $ws->getStyle("B{$row}")->applyFromArray(array_merge(
                 $solidFill($zebra), $fontStyle('111827', false, 10), $middle(), $thinBorder()
             ));
 
             // C: Email
-            $ws->setCellValue("C{$row}", $order->user->email ?? '-');
+            $ws->setCellValue("C{$row}", $pesanan->user->email ?? '-');
             $ws->getStyle("C{$row}")->applyFromArray(array_merge(
                 $solidFill($zebra), $fontStyle('6B7280', false, 9), $middle(), $thinBorder()
             ));
@@ -176,7 +177,7 @@ class PembayaranExport
             $ws->getStyle("E{$row}")->getNumberFormat()->setFormatCode('#,##0');
 
             // F: Tanggal
-            $ws->setCellValue("F{$row}", $order->created_at->format('d M Y  H:i'));
+            $ws->setCellValue("F{$row}", $pesanan->created_at->format('d M Y  H:i'));
             $ws->getStyle("F{$row}")->applyFromArray(array_merge(
                 $solidFill($zebra), $fontStyle('6B7280', false, 9), $center(), $thinBorder()
             ));

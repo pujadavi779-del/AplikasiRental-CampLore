@@ -8,7 +8,7 @@ Artisan::command('inspire', function () {
     $this->comment(Inspiring::quote());
 })->purpose('Display an inspiring quote');
 
-Schedule::command('orders:update-return-status')
+Schedule::command('pesanan:update-return-status')
     ->dailyAt('00:00')
     ->withoutOverlapping()
     ->runInBackground();

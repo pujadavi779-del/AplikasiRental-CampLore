@@ -3,12 +3,12 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
-use App\Models\Order;
+use App\Models\Pesanan;
 use Carbon\Carbon;
 
 class UpdateOrderStatusToReturn extends Command
 {
-    protected $signature = 'orders:update-return-status';
+    protected $signature = 'pesanan:update-return-status';
     protected $description = 'Otomatis ubah status order ke pengembalian ketika end_date sudah lewat';
 
     const DENDA_PER_HARI = 10000;
@@ -18,22 +18,22 @@ class UpdateOrderStatusToReturn extends Command
         $today = Carbon::today();
 
         // Ubah jalan → pengembalian jika end_date sudah lewat
-        $orders = Order::whereIn('status', ['jalan'])
+        $pesanan = Pesanan::whereIn('status', ['jalan'])
             ->whereRaw('DATE(end_date) < ?', [$today->toDateString()])
             ->with('user')
             ->get()
             ->groupBy('order_id');
 
-        foreach ($orders as $orderId => $items) {
+        foreach ($pesanan as $orderId => $items) {
             $firstItem   = $items->first();
             $endDate     = Carbon::parse($firstItem->end_date)->startOfDay();
             $overdueDays = (int) $endDate->diffInDays($today);
             $lateFee     = max(0, $overdueDays) * self::DENDA_PER_HARI;
 
-            Order::where('order_id', $orderId)->update([
+            Pesanan::where('order_id', $orderId)->update([
                 'status'       => 'pengembalian',
-                'overdue_days' => max(0, $overdueDays),
-                'late_fee'     => $lateFee,
+                'hari_terlambat' => max(0, $overdueDays),
+                'keterlambatan_biaya'     => $lateFee,
             ]);
 
             // Kirim WA notif pengembalian
@@ -46,11 +46,11 @@ class UpdateOrderStatusToReturn extends Command
                 sendWhatsapp($phone, "Halo! Masa sewa perlengkapan Camplore Anda telah berakhir. Mohon segera kembalikan barang sesuai perjanjian. Keterlambatan akan dikenakan denda Rp 10.000/hari. Terima kasih! 🏕️");
             }
 
-            $this->info("Order {$orderId} → pengembalian | telat {$overdueDays} hari | denda Rp " . number_format($lateFee, 0, ',', '.'));
+            $this->info("Pesanan {$orderId} → pengembalian | telat {$overdueDays} hari | denda Rp " . number_format($lateFee, 0, ',', '.'));
         }
 
         // Update denda harian untuk yang sudah pengembalian
-        $returning = Order::where('status', 'pengembalian')
+        $returning = Pesanan::where('status', 'pengembalian')
             ->whereRaw('DATE(end_date) < ?', [$today->toDateString()])
             ->get()
             ->groupBy('order_id');
@@ -61,12 +61,12 @@ class UpdateOrderStatusToReturn extends Command
             $overdueDays = (int) $endDate->diffInDays($today);
             $lateFee     = max(0, $overdueDays) * self::DENDA_PER_HARI;
 
-            Order::where('order_id', $orderId)->update([
-                'overdue_days' => max(0, $overdueDays),
-                'late_fee'     => $lateFee,
+            Pesanan::where('order_id', $orderId)->update([
+                'hari_terlambat' => max(0, $overdueDays),
+                'keterlambatan_biaya'     => $lateFee,
             ]);
 
-            $this->info("Denda diperbarui: Order {$orderId} | telat {$overdueDays} hari | denda Rp " . number_format($lateFee, 0, ',', '.'));
+            $this->info("Denda diperbarui: Pesanan {$orderId} | telat {$overdueDays} hari | denda Rp " . number_format($lateFee, 0, ',', '.'));
         }
 
         $this->info('Selesai.');

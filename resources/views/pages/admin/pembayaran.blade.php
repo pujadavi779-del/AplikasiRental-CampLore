@@ -128,21 +128,21 @@
                 </thead>
                 <tbody class="divide-y divide-[#f0f7f3]">
 
-                    @forelse($payments as $order)
+                    @forelse($payments as $pesanan)
                     @php
                         $statusMap = [
                             'dikemas'    => ['label' => 'Proses',     'badge' => 'badge-proses',  'color' => 'orange'],
                             'selesai'    => ['label' => 'Lunas',      'badge' => 'badge-lunas',   'color' => 'emerald'],
                             'dibatalkan' => ['label' => 'Dibatalkan', 'badge' => 'badge-batal',   'color' => 'red'],
                         ];
-                        $st = $statusMap[$order->status] ?? ['label' => ucfirst($order->status), 'badge' => 'badge-default', 'color' => 'gray'];
+                        $st = $statusMap[$pesanan->status] ?? ['label' => ucfirst($pesanan->status), 'badge' => 'badge-default', 'color' => 'gray'];
 
-                        $allOrderItems = \App\Models\Order::where('order_id', $order->order_id)->get();
-                        $totalBayar    = $allOrderItems->sum('total_price')
-                                       + $allOrderItems->first()->shipping_cost
-                                       + $allOrderItems->first()->service_fee;
+                        $allOrderItems = \App\Models\Pesanan::where('order_id', $pesanan->order_id)->get();
+                        $totalBayar    = $allOrderItems->sum('total_harga')
+                                       + $allOrderItems->first()->biaya_pengiriman
+                                       + $allOrderItems->first()->biaya_layanan;
 
-                        $namaUser = $order->user->name ?? 'Pelanggan';
+                        $namaUser = $pesanan->user->name ?? 'Pelanggan';
                         $parts    = explode(' ', $namaUser);
                         $inisial  = strtoupper(substr($parts[0],0,1).(isset($parts[1])?substr($parts[1],0,1):''));
 
@@ -156,7 +156,7 @@
                         {{-- ID --}}
                         <td class="px-5 py-3.5">
                             <span class="text-xs font-bold text-[var(--green)] font-mono tracking-tight">
-                                {{ $order->order_id }}
+                                {{ $pesanan->order_id }}
                             </span>
                         </td>
 
@@ -186,8 +186,8 @@
                         {{-- Tanggal --}}
                         <td class="px-5 py-3.5">
                             <div class="text-[11px] text-gray-500">
-                                {{ $order->created_at->format('d M Y') }}
-                                <span class="text-gray-400 ml-1">{{ $order->created_at->format('H:i') }}</span>
+                                {{ $pesanan->created_at->format('d M Y') }}
+                                <span class="text-gray-400 ml-1">{{ $pesanan->created_at->format('H:i') }}</span>
                             </div>
                         </td>
 
@@ -195,18 +195,18 @@
                         <td class="px-5 py-3.5 text-center">
                             <button
                                 @click="selectedData = {
-                                    id:          '{{ $order->order_id }}',
+                                    id:          '{{ $pesanan->order_id }}',
                                     nama:        '{{ addslashes($namaUser) }}',
-                                    email:       '{{ $order->user->email ?? '' }}',
+                                    email:       '{{ $pesanan->user->email ?? '' }}',
                                     inisial:     '{{ $inisial }}',
                                     status:      '{{ $st['label'] }}',
                                     statusColor: '{{ $st['color'] }}',
                                     metode:      'QRIS / Transfer',
                                     total:       'Rp {{ number_format($totalBayar, 0, ',', '.') }}',
-                                    mulai:       '{{ $order->start_date ? \Carbon\Carbon::parse($order->start_date)->format('d M Y') : '-' }}',
-                                    selesai:     '{{ $order->end_date   ? \Carbon\Carbon::parse($order->end_date)->format('d M Y')   : '-' }}',
-                                    noHp:        '{{ $order->customer_phone   ?? '-' }}',
-                                    alamat:      '{{ addslashes($order->customer_address ?? '-') }}',
+                                    mulai:       '{{ $pesanan->start_date ? \Carbon\Carbon::parse($pesanan->start_date)->format('d M Y') : '-' }}',
+                                    selesai:     '{{ $pesanan->end_date   ? \Carbon\Carbon::parse($pesanan->end_date)->format('d M Y')   : '-' }}',
+                                    noHp:        '{{ $pesanan->pelanggan_telepon   ?? '-' }}',
+                                    alamat:      '{{ addslashes($pesanan->alamat_pelanggan ?? '-') }}',
                                     items:       {{ json_encode($orderItems->values()) }}
                                 }; openDetail = true"
                                 class="px-3.5 py-1.5 bg-[var(--green)] hover:bg-[var(--green2)] text-white

@@ -40,8 +40,8 @@ class Barang extends Model
         return $this->belongsTo(Kategori_data::class, 'id_merek_kategori');
     }
 
-    public function orders()
+    public function pesanan()
     {
-        return $this->hasMany(\App\Models\Order::class);
+        return $this->hasMany(\App\Models\Pesanan::class);
     }
 }

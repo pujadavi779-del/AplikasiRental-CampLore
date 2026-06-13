@@ -3,13 +3,13 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Order;
+use App\Models\Pesanan;
 
 class OrderController extends Controller
 {
     public function index()
     {
-        $orders = Order::with(['products', 'user'])->get()->map(fn($o) => [
+        $pesanan = Pesanan::with(['products', 'user'])->get()->map(fn($o) => [
             'id'       => '#ORD-' . str_pad($o->id, 3, '0', STR_PAD_LEFT),
             'name'     => $o->user->name,
             'email'    => $o->user->email,
@@ -21,13 +21,13 @@ class OrderController extends Controller
                 'name' => $p->name,
                 'type' => $p->type
             ]),
-            'price'    => $o->total_price,
+            'price'    => $o->total_harga,
             'days'     => $o->duration_days,
             'status'   => $o->status,
             'date'     => $o->created_at->format('Y-m-d'),
         ]);
 
-        return view('admin.orders.index', compact('orders'));
+        return view('admin.pesanan.index', compact('pesanan'));
     }
 
     public function cancel(Request $request)
@@ -35,7 +35,7 @@ class OrderController extends Controller
         try {
             $orderId = $request->input('order_id');
 
-            $updated = Order::where('order_id', $orderId)
+            $updated = Pesanan::where('order_id', $orderId)
                 ->where('user_id', auth()->id())
                 ->where('status', 'belum_bayar')
                 ->update(['status' => 'dibatalkan']);
@@ -70,7 +70,7 @@ class OrderController extends Controller
                     [$startDate, $endDate] = [$endDate, $startDate]; // swap
                 }
 
-                Order::create([
+                Pesanan::create([
                     'order_id'         => $orderId,
                     'user_id'          => auth()->id(),
                     'product_id'       => $item['product_id'],
@@ -80,13 +80,13 @@ class OrderController extends Controller
                     'quantity'         => $item['quantity'],
                     'note'             => $item['note'] ?? '',
                     'harga_per_hari'    => $cart->product->harga_per_hari ?? 0,
-                    'total_price'      => ($cart->product->harga_per_hari ?? 0) * $item['quantity'] * $item['days'],
-                    'shipping_cost'    => $request->input('shipping_cost', 0),
-                    'service_fee'      => $request->input('service_fee', 2000),
-                    'shipping_method'  => $request->input('shipping_method', 'pickup'),
-                    'customer_name'    => $request->input('customer_name'),
-                    'customer_phone'   => $request->input('customer_phone'),
-                    'customer_address' => $request->input('customer_address'),
+                    'total_harga'      => ($cart->product->harga_per_hari ?? 0) * $item['quantity'] * $item['days'],
+                    'biaya_pengiriman' => $request->input('biaya_pengiriman', 0),
+                    'biaya_layanan'      => $request->input('biaya_layanan', 2000),
+                    'metode_pengiriman'  => $request->input('metode_pengiriman', 'pickup'),
+                    'nama_pelanggan'    => $request->input('nama_pelanggan'),
+                    'pelanggan_telepon'   => $request->input('pelanggan_telepon'),
+                    'alamat_pelanggan' => $request->input('alamat_pelanggan'),
                     'status'           => 'belum_bayar',
                 ]);
 
@@ -116,8 +116,8 @@ class OrderController extends Controller
 
     public function destroy($id)
     {
-        $order = Order::findOrFail($id);
-        $order->delete();
+        $pesanan = Pesanan::findOrFail($id);
+        $pesanan->delete();
         return response()->json(['message' => 'Berhasil dihapus']);
     }
 }

@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Barang;
-use App\Models\Order;
+use App\Models\Pesanan;
 
 class RiwayatProdukController extends Controller
 {
@@ -14,7 +14,7 @@ class RiwayatProdukController extends Controller
 
         $dataAlat = $products->map(function ($product) {
 
-            $orders = Order::with('user')
+            $pesanan = Pesanan::with('user')
                 ->where('product_id', $product->id)
                 ->get();
 
@@ -26,17 +26,17 @@ class RiwayatProdukController extends Controller
                     ? asset($product->gambar_barang)
                     : asset('img_foto/no-image.png'),
 
-                'totalSewa' => $orders->count(),
+                'totalSewa' => $pesanan->count(),
 
-                'riwayat' => $orders->map(function ($order) {
+                'riwayat' => $pesanan->map(function ($pesanan) {
                     return [
-                        'nama' => $order->user->name ?? 'User',
+                        'nama' => $pesanan->user->name ?? 'User',
                         'periode' =>
-                        \Carbon\Carbon::parse($order->start_date)->format('d M Y')
+                        \Carbon\Carbon::parse($pesanan->start_date)->format('d M Y')
                             . ' - ' .
-                            \Carbon\Carbon::parse($order->end_date)->format('d M Y'),
+                            \Carbon\Carbon::parse($pesanan->end_date)->format('d M Y'),
 
-                        'durasi' => $order->days . ' Hari',
+                        'durasi' => $pesanan->days . ' Hari',
                     ];
                 })->values(),
             ];

@@ -17,8 +17,8 @@ class PemesananController extends Controller
      */
     public function index()
     {
-        $orders = Pemesanan::with(['user', 'product'])->orderBy('id', 'asc')->get();
-        return view('pages.admin.pemesanan', compact('orders'));
+        $pesanan = Pemesanan::with(['user', 'product'])->orderBy('id', 'asc')->get();
+        return view('pages.admin.pemesanan', compact('pesanan'));
     }
     /**
      * Halaman Pengiriman (Hanya yang statusnya 'dikirim')
@@ -40,17 +40,17 @@ class PemesananController extends Controller
      */
     public function tandaiSudahTiba($id)
     {
-        $order = Pemesanan::with('user')->findOrFail($id);
+        $pesanan = Pemesanan::with('user')->findOrFail($id);
 
         // 1. Update status agar masuk ke halaman Pengembalian
-        $order->update([
+        $pesanan->update([
             'status' => 'disewa'
         ]);
 
         // 2. Kirim Email Notifikasi ke Pelanggan
         try {
-            if ($order->user && $order->user->email) {
-                Mail::to($order->user->email)->send(new BarangTibaMail($order));
+            if ($pesanan->user && $pesanan->user->email) {
+                Mail::to($pesanan->user->email)->send(new BarangTibaMail($pesanan));
             }
         } catch (\Exception $e) {
             // Tetap lanjut meskipun email gagal (opsional: log errornya)
@@ -61,25 +61,25 @@ class PemesananController extends Controller
 
     public function edit($id)
     {
-        $order = Pemesanan::findOrFail($id);
+        $pesanan = Pemesanan::findOrFail($id);
         $users = User::all();
         $products = Barang::all();
-        return view('admin.orders.edit', compact('order', 'users', 'products'));
+        return view('admin.pesanan.edit', compact('pesanan', 'users', 'products'));
     }
 
     public function update(Request $request, $id)
     {
-        $order = Pemesanan::findOrFail($id);
-        $order->update($request->all());
+        $pesanan = Pemesanan::findOrFail($id);
+        $pesanan->update($request->all());
 
         // Redirect kembali ke index pemesanan
-        return redirect()->route('admin.orders.index')->with('success', 'Berhasil update!');
+        return redirect()->route('admin.pesanan.index')->with('success', 'Berhasil update!');
     }
 
     public function destroy($id)
     {
-        $order = Pemesanan::findOrFail($id);
-        $order->delete();
+        $pesanan = Pemesanan::findOrFail($id);
+        $pesanan->delete();
 
         return redirect()->back()->with('success', 'Pesanan berhasil dihapus!');
     }

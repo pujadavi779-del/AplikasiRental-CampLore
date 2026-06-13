@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
-use App\Models\Order;
+use App\Models\Pesanan;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 
@@ -11,18 +11,18 @@ class PengembalianController extends Controller
 {
     public function index()
     {
-        $orders = Order::with(['user', 'product'])
+        $pesanan = Pesanan::with(['user', 'product'])
             ->where('status', 'pengembalian')
             ->get()
             ->groupBy('order_id');
 
         $today = Carbon::now()->startOfDay();
 
-        $data_pengembalian = $orders->map(function ($items, $orderId) use ($today) {
+        $data_pengembalian = $pesanan->map(function ($items, $orderId) use ($today) {
             $first       = $items->first();
             $endDate     = $first->end_date ? Carbon::parse($first->end_date)->startOfDay() : null;
-            $overdueDays = $first->overdue_days ?? 0;
-            $lateFee     = $first->late_fee ?? 0;
+            $overdueDays = $first->hari_terlambat ?? 0;
+            $lateFee     = $first->keterlambatan_biaya ?? 0;
 
             return (object) [
                 'id'                 => $orderId,
@@ -30,9 +30,9 @@ class PengembalianController extends Controller
                 'tanggal_kembali'    => $first->end_date,
                 'minta_perpanjangan' => false,
                 'user' => (object) [
-                    'name'  => $first->customer_name ?? ($first->user->name ?? '-'),
+                    'name'  => $first->nama_pelanggan ?? ($first->user->name ?? '-'),
                     'email' => $first->user->email ?? '-',
-                    'no_hp' => $first->customer_phone ?? '-',
+                    'no_hp' => $first->pelanggan_telepon ?? '-',
                 ],
                 'products' => $items->map(fn($i) => (object) [
                     'name'     => $i->product->name ?? 'Produk Dihapus',
@@ -41,8 +41,8 @@ class PengembalianController extends Controller
                     'merek'    => '-',
                     'quantity' => $i->quantity ?? 1,
                 ])->values()->all(),
-                'overdue_days' => $overdueDays,
-                'late_fee'     => $lateFee,
+                'hari_terlambat' => $overdueDays,
+                'keterlambatan_biaya'     => $lateFee,
             ];
         })->values()->all();
 
@@ -51,15 +51,15 @@ class PengembalianController extends Controller
 
     public function konfirmasi(Request $request, $orderId)
     {
-        $orders = Order::where('order_id', $orderId)->with('user')->get();
+        $pesanan = Pesanan::where('order_id', $orderId)->with('user')->get();
 
-        if ($orders->isEmpty()) {
-            return response()->json(['success' => false, 'message' => 'Order tidak ditemukan'], 404);
+        if ($pesanan->isEmpty()) {
+            return response()->json(['success' => false, 'message' => 'Pesanan tidak ditemukan'], 404);
         }
 
-        Order::where('order_id', $orderId)->update(['status' => 'selesai']);
+        Pesanan::where('order_id', $orderId)->update(['status' => 'selesai']);
 
-        $firstOrder = $orders->first();
+        $firstOrder = $pesanan->first();
         if ($firstOrder->user && $firstOrder->user->no_tlp) {
             $phone = $firstOrder->user->no_tlp;
             if (str_starts_with($phone, '0')) {

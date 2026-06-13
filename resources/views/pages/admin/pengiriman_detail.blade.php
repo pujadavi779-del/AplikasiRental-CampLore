@@ -11,7 +11,7 @@
     $alamat    = $pengiriman['alamat'] ?? '-';
     $tglMulai  = $pengiriman['tanggal_mulai'] ?? '-';
     $tglSelesai= $pengiriman['tanggal_selesai'] ?? '-';
-    $isPickup  = ($pengiriman['shipping_method'] ?? 'delivery') === 'pickup';
+    $isPickup  = ($pengiriman['metode_pengiriman'] ?? 'delivery') === 'pickup';
     $fotoBukti = $pengiriman['foto_terima'] ?? null;
     $selesai   = in_array($status, ['pengembalian', 'selesai']);
 

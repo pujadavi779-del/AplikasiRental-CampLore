@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Order;
+use App\Models\Pesanan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\BarangTibaMail;
@@ -11,7 +11,7 @@ class DeliveryController extends Controller
 {
     public function pengiriman()
     {
-        $orders = Order::with(['user', 'product'])
+        $pesanan = Pesanan::with(['user', 'product'])
             ->whereIn('status', ['dikemas', 'jalan', 'pengembalian'])
             ->get()
             ->groupBy('order_id');
@@ -19,10 +19,10 @@ class DeliveryController extends Controller
         $pengiriman = [];
         $stats = ['total' => 0, 'diantar' => 0, 'pickup' => 0, 'selesai' => 0];
 
-        foreach ($orders as $orderId => $items) {
+        foreach ($pesanan as $orderId => $items) {
             $firstItem = $items->first();
 
-            $shippingMethod = $firstItem->shipping_method ?? 'delivery';
+            $shippingMethod = $firstItem->metode_pengiriman ?? 'delivery';
 
             if ($firstItem->status === 'dikemas') {
                 $statusPengiriman = 'proses';
@@ -42,10 +42,10 @@ class DeliveryController extends Controller
 
             $pengiriman[] = [
                 'id_pesanan'      => $orderId,
-                'pemesan'         => $firstItem->customer_name ?? ($firstItem->user->name ?? '-'),
-                'alamat'          => $firstItem->customer_address ?? '-',
-                'no_hp'           => $firstItem->customer_phone ?? '-',
-                'shipping_method' => $shippingMethod,
+                'pemesan'         => $firstItem->nama_pelanggan ?? ($firstItem->user->name ?? '-'),
+                'alamat'          => $firstItem->alamat_pelanggan ?? '-',
+                'no_hp'           => $firstItem->pelanggan_telepon ?? '-',
+                'metode_pengiriman' => $shippingMethod,
                 'tanggal_mulai'   => $firstItem->start_date
                     ? \Carbon\Carbon::parse($firstItem->start_date)->format('d M Y')
                     : '-',
@@ -62,7 +62,7 @@ class DeliveryController extends Controller
 
     public function detail($id)
     {
-        $items = Order::with(['user', 'product'])
+        $items = Pesanan::with(['user', 'product'])
             ->where('order_id', $id)
             ->get();
 
@@ -86,10 +86,10 @@ class DeliveryController extends Controller
 
         $pengiriman = [
             'id_pesanan'      => $firstItem->order_id,
-            'pemesan'         => $firstItem->customer_name ?? ($firstItem->user->name ?? '-'),
-            'alamat'          => $firstItem->customer_address ?? '-',
-            'no_hp'           => $firstItem->customer_phone ?? '-',
-            'shipping_method' => $firstItem->shipping_method ?? 'delivery',
+            'pemesan'         => $firstItem->nama_pelanggan ?? ($firstItem->user->name ?? '-'),
+            'alamat'          => $firstItem->alamat_pelanggan ?? '-',
+            'no_hp'           => $firstItem->pelanggan_telepon ?? '-',
+            'metode_pengiriman' => $firstItem->metode_pengiriman ?? 'delivery',
             'tanggal_mulai'   => $firstItem->start_date
                 ? \Carbon\Carbon::parse($firstItem->start_date)->format('d M Y')
                 : '-',
@@ -114,9 +114,9 @@ class DeliveryController extends Controller
     {
         $statusBaru = $request->input('status');
 
-        $orders = Order::where('order_id', $id)->get();
+        $pesanan = Pesanan::where('order_id', $id)->get();
 
-        if ($orders->isEmpty()) {
+        if ($pesanan->isEmpty()) {
             if ($request->expectsJson()) {
                 return response()->json(['success' => false, 'message' => 'Pesanan tidak ditemukan'], 404);
             }
@@ -126,7 +126,7 @@ class DeliveryController extends Controller
         $updateData = ['status' => $statusBaru];
 
         // Kirim WA sesuai status
-        $firstOrder = $orders->first()->load('user');
+        $firstOrder = $pesanan->first()->load('user');
         if ($firstOrder && $firstOrder->user) {
             $phone = $firstOrder->user->no_tlp;
             if (str_starts_with($phone, '0')) {
@@ -155,11 +155,11 @@ class DeliveryController extends Controller
             $updateData['bukti_pengiriman'] = $path;
         }
 
-        Order::where('order_id', $id)->update($updateData);
+        Pesanan::where('order_id', $id)->update($updateData);
 
         if (($updateData['status'] ?? '') === 'tiba') {
             try {
-                $firstOrder = $orders->first();
+                $firstOrder = $pesanan->first();
                 Mail::to($firstOrder->user->email)->send(new BarangTibaMail($firstOrder));
             } catch (\Exception $e) {
                 // Abaikan error email
@@ -176,7 +176,7 @@ class DeliveryController extends Controller
 
     public function tandaiSudahTiba($id)
     {
-        Order::where('order_id', $id)->update(['status' => 'tiba']);
+        Pesanan::where('order_id', $id)->update(['status' => 'tiba']);
 
         return redirect()->route('admin.pengiriman.detail', $id)
             ->with('success', 'Pesanan ditandai sudah tiba.');

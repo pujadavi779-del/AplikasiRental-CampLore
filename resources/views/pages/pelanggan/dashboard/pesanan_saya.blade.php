@@ -117,8 +117,8 @@
             'selesai' => 5,
             'dibatalkan' => 6,
             ];
-            usort($orders, fn($a,$b) => ($statusOrder[$a->status]??99) - ($statusOrder[$b->status]??99));
-            $rentals = $orders;
+            usort($pesanan, fn($a,$b) => ($statusOrder[$a->status]??99) - ($statusOrder[$b->status]??99));
+            $rentals = $pesanan;
             @endphp
 
             {{-- RENTAL LIST --}}
@@ -328,14 +328,14 @@
                     <div class="bg-[#fef2f2] border border-[#fecaca] rounded-xl px-3.5 py-3">
                         <div class="text-[11px] font-semibold text-[#dc2626] mb-1">Keterlambatan</div>
                         <div class="text-[15px] font-extrabold text-[#dc2626]">
-                            {{ $rental->overdue_days ?? 0 }} hari
+                            {{ $rental->hari_terlambat ?? 0 }} hari
                         </div>
                     </div>
                 </div>
                 <div class="flex items-center justify-between mt-2.5 px-3.5 py-3 bg-[#f5f6f4] rounded-xl border border-[#e5e7eb]">
                     <div>
                         <div class="text-xs text-[#6b7280] font-medium mb-0.5">Total denda</div>
-                        <div class="text-base font-black text-[#dc2626]">Rp {{ number_format($rental->late_fee ?? 0, 0, ',', '.') }}</div>
+                        <div class="text-base font-black text-[#dc2626]">Rp {{ number_format($rental->keterlambatan_biaya ?? 0, 0, ',', '.') }}</div>
                     </div>
                     <div class="flex gap-2 items-center">
                         <a href="#" class="px-[18px] py-[9px] rounded-[10px] text-xs font-bold bg-[#1a5c3a] text-white
@@ -401,7 +401,7 @@
                 <div>
                     <div class="text-xs text-[#6b7280] font-medium">Total sewa:</div>
                     <div class="text-[17px] font-black text-[#1a1a1a] mt-px">
-                        Rp {{ number_format($rental->total_price ?? 0, 0, ',', '.') }}
+                        Rp {{ number_format($rental->total_harga ?? 0, 0, ',', '.') }}
                     </div>
                     <div class="text-[11px] text-[#9ca3af] mt-0.5">{{ $itemCount }} produk &bull; {{ $totalQty }} item</div>
                 </div>
@@ -449,7 +449,7 @@
                     $productId = $items[0]->product_id ?? null;
                     $productCategory = null;
                     if ($productId) {
-                    $prod = \App\Models\Product::find($productId);
+                    $prod = \App\Models\Barang::find($productId);
                     $productCategory = $prod ? strtolower($prod->Kategori_data) : null;
                     }
                     $reviewRoute = $productCategory === 'kamera'
@@ -623,7 +623,7 @@
 
         window.batalkanPesanan = function(orderId) {
             if (!confirm('Yakin ingin membatalkan pesanan ini?')) return;
-            fetch('{{ url("/order/cancel") }}', {
+            fetch('{{ url("/pesanan/cancel") }}', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',

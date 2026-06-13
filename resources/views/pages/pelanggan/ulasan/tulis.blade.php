@@ -34,9 +34,9 @@
                 <div class="text-[11px] font-semibold text-[#6b7280] uppercase tracking-wide mb-0.5">Produk yang kamu sewa</div>
                 <div class="text-base font-extrabold text-[#1a1a1a]">{{ $product->name }}</div>
                 <div class="text-xs text-[#6b7280] mt-0.5">
-                    Sewa {{ $order->days }} hari •
-                    {{ \Carbon\Carbon::parse($order->start_date)->format('d M') }} –
-                    {{ \Carbon\Carbon::parse($order->end_date)->format('d M Y') }}
+                    Sewa {{ $pesanan->days }} hari •
+                    {{ \Carbon\Carbon::parse($pesanan->start_date)->format('d M') }} –
+                    {{ \Carbon\Carbon::parse($pesanan->end_date)->format('d M Y') }}
                 </div>
             </div>
         </div>
@@ -53,7 +53,7 @@
         @endif
 
         {{-- Review Form --}}
-        <form action="{{ route('pelanggan.ulasan.store', $order->id) }}" method="POST">
+        <form action="{{ route('pelanggan.ulasan.store', $pesanan->id) }}" method="POST">
             @csrf
 
             <div class="bg-white rounded-2xl border border-[#e5e7eb] p-6">

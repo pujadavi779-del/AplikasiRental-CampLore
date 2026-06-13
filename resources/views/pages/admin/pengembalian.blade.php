@@ -16,7 +16,7 @@
     $col          = collect($data_pengembalian);
     $totalAktif   = $col->count();
     $perluKembali = $col->filter(fn($i) => !empty($i->tanggal_kembali) && \Carbon\Carbon::parse($i->tanggal_kembali)->isToday())->count();
-    $terlambat    = $col->filter(fn($i) => ($i->overdue_days ?? 0) > 0)->count();
+    $terlambat    = $col->filter(fn($i) => ($i->hari_terlambat ?? 0) > 0)->count();
     $tepatWaktu   = $totalAktif - $terlambat;
     @endphp
 
@@ -76,9 +76,9 @@
                     @forelse($data_pengembalian as $item)
                     @php
                         $tglKembali    = !empty($item->tanggal_kembali) ? \Carbon\Carbon::parse($item->tanggal_kembali) : null;
-                        $isOverdue     = ($item->overdue_days ?? 0) > 0;
-                        $hariTerlambat = $item->overdue_days ?? 0;
-                        $totalDenda    = $item->late_fee ?? 0;
+                        $isOverdue     = ($item->hari_terlambat ?? 0) > 0;
+                        $hariTerlambat = $item->hari_terlambat ?? 0;
+                        $totalDenda    = $item->keterlambatan_biaya ?? 0;
                         $tglFormatted  = $tglKembali ? $tglKembali->format('d M Y') : '-';
                         $products      = collect($item->products ?? []);
                         $initial       = strtoupper(substr($item->user->name ?? 'U', 0, 1));

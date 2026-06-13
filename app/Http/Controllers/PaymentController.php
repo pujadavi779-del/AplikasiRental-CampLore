@@ -19,13 +19,13 @@ class PaymentController extends Controller
         try {
             $totalPayment  = (int) $request->input('total_payment');
             $subtotal      = (int) $request->input('subtotal');
-            $shippingCost  = (int) $request->input('shipping_cost');
-            $serviceFee    = (int) $request->input('service_fee');
+            $shippingCost  = (int) $request->input('biaya_pengiriman');
+            $serviceFee    = (int) $request->input('biaya_layanan');
 
-            $customerName  = $request->input('customer_name', 'Pelanggan');
-            $customerPhone = $request->input('customer_phone', '');
+            $customerName  = $request->input('nama_pelanggan', 'Pelanggan');
+            $customerPhone = $request->input('pelanggan_telepon', '');
 
-            $customerAddress = $request->input('customer_address');
+            $customerAddress = $request->input('alamat_pelanggan');
             if (empty(trim($customerAddress))) {
                 $customerAddress = 'Alamat tidak diisi';
             }
@@ -114,26 +114,26 @@ class PaymentController extends Controller
 
         try {
             $orderId = $request->input('order_id');
-            $orders = \App\Models\Order::where('order_id', $orderId)
+            $pesanan = \App\Models\Pesanan::where('order_id', $orderId)
                 ->where('user_id', auth()->id())
                 ->with('product')
                 ->get();
 
-            if ($orders->isEmpty()) {
-                return response()->json(['status' => 'error', 'message' => 'Order tidak ditemukan'], 404);
+            if ($pesanan->isEmpty()) {
+                return response()->json(['status' => 'error', 'message' => 'Pesanan tidak ditemukan'], 404);
             }
 
-            $first = $orders->first();
+            $first = $pesanan->first();
 
             // Kalau snap_token sudah ada, langsung pakai
             if ($first->snap_token) {
                 return response()->json(['snapToken' => $first->snap_token]);
             }
 
-            $subtotal = $orders->sum('total_price');
-            $total    = $subtotal + $first->shipping_cost + $first->service_fee;
+            $subtotal = $pesanan->sum('total_harga');
+            $total    = $subtotal + $first->biaya_pengiriman + $first->biaya_layanan;
 
-            $itemDetails = $orders->map(fn($o) => [
+            $itemDetails = $pesanan->map(fn($o) => [
                 'id'       => 'prod-' . $o->product_id,
                 'price'    => (int) ($o->harga_per_hari * $o->quantity * $o->days),
                 'quantity' => 1,
@@ -142,13 +142,13 @@ class PaymentController extends Controller
 
             $total = collect($itemDetails)->sum('price');
 
-            if ($first->service_fee > 0) {
-                $itemDetails[] = ['id' => 'service', 'price' => (int)$first->service_fee, 'quantity' => 1, 'name' => 'Biaya Layanan'];
-                $total += (int)$first->service_fee;
+            if ($first->biaya_layanan > 0) {
+                $itemDetails[] = ['id' => 'service', 'price' => (int)$first->biaya_layanan, 'quantity' => 1, 'name' => 'Biaya Layanan'];
+                $total += (int)$first->biaya_layanan;
             }
-            if ($first->shipping_cost > 0) {
-                $itemDetails[] = ['id' => 'shipping', 'price' => (int)$first->shipping_cost, 'quantity' => 1, 'name' => 'Biaya Pengantaran'];
-                $total += (int)$first->shipping_cost;
+            if ($first->biaya_pengiriman > 0) {
+                $itemDetails[] = ['id' => 'shipping', 'price' => (int)$first->biaya_pengiriman, 'quantity' => 1, 'name' => 'Biaya Pengantaran'];
+                $total += (int)$first->biaya_pengiriman;
             }
 
             $params = [
@@ -158,16 +158,16 @@ class PaymentController extends Controller
                 ],
                 'item_details'     => $itemDetails,
                 'customer_details' => [
-                    'first_name' => $first->customer_name,
+                    'first_name' => $first->nama_pelanggan,
                     'email'      => auth()->user()->email,
-                    'phone'      => $first->customer_phone,
+                    'phone'      => $first->pelanggan_telepon,
                 ],
             ];
 
             $snapToken = \Midtrans\Snap::getSnapToken($params);
 
             // Simpan snap_token
-            \App\Models\Order::where('order_id', $orderId)->update(['snap_token' => $snapToken]);
+            \App\Models\Pesanan::where('order_id', $orderId)->update(['snap_token' => $snapToken]);
 
             return response()->json(['snapToken' => $snapToken]);
         } catch (\Exception $e) {
@@ -185,7 +185,7 @@ class PaymentController extends Controller
         if ($transactionStatus == 'settlement' || $transactionStatus == 'capture') {
 
             // SISTEM OTOMATIS MENGUBAH STATUS MENJADI SELESAI BEGITU LUAS SUDAH DIBAYAR
-            \App\Models\Order::where('order_id', $orderId)->update([
+            \App\Models\Pesanan::where('order_id', $orderId)->update([
                 'status' => 'selesai'
             ]);
 
@@ -200,18 +200,18 @@ class PaymentController extends Controller
     {
         $orderId = $request->input('order_id');
 
-        $order = \App\Models\Order::where('order_id', $orderId)
+        $pesanan = \App\Models\Pesanan::where('order_id', $orderId)
             ->where('user_id', auth()->id())
             ->with('user')
             ->first();
 
-        if (!$order) {
-            return response()->json(['status' => 'error', 'message' => 'Order tidak ditemukan'], 404);
+        if (!$pesanan) {
+            return response()->json(['status' => 'error', 'message' => 'Pesanan tidak ditemukan'], 404);
         }
 
-        $order->update(['status' => 'dikemas']);
+        $pesanan->update(['status' => 'dikemas']);
 
-        $phone = $order->user->no_tlp;
+        $phone = $pesanan->user->no_tlp;
 
         if (str_starts_with($phone, '0')) {
             $phone = '62' . substr($phone, 1);
@@ -224,12 +224,12 @@ class PaymentController extends Controller
     }
     public function adminIndex(Request $request)
     {
-        $query = \App\Models\Order::with(['user', 'product'])
+        $query = \App\Models\Pesanan::with(['user', 'product'])
             ->orderBy('created_at', 'desc')
             ->whereIn('status', ['dikemas', 'selesai', 'dibatalkan']) // ← hanya yang sudah bayar
             ->whereIn('id', function ($sub) {
                 $sub->selectRaw('MIN(id)')
-                    ->from('orders')
+                    ->from('pesanan')
                     ->groupBy('order_id');
             });
 
@@ -248,11 +248,11 @@ class PaymentController extends Controller
     public function kirimPesanan($id)
     {
         try {
-            // Cari pesanan berdasarkan ID atau Order ID
+            // Cari pesanan berdasarkan ID atau Pesanan ID
             // Karena satu transaksi bisa berisi banyak barang dengan order_id yang sama
-            $orders = \App\Models\Order::where('order_id', $id)->get();
+            $pesanan = \App\Models\Pesanan::where('order_id', $id)->get();
 
-            if ($orders->isEmpty()) {
+            if ($pesanan->isEmpty()) {
                 return response()->json([
                     'success' => false,
                     'message' => 'Data transaksi tidak ditemukan.'
@@ -261,13 +261,13 @@ class PaymentController extends Controller
 
             // Jalankan update status untuk semua item di dalam transaksi tersebut
             // Diubah menjadi 'selesai' agar otomatis lolos filter masuk ke menu Pengiriman
-            \App\Models\Order::where('order_id', $id)->update([
+            \App\Models\Pesanan::where('order_id', $id)->update([
                 'status' => 'dikirim'
             ]);
 
-            $order = \App\Models\Order::where('order_id', $id)->with('user')->first();
-            if ($order && $order->user) {
-                $phone = $order->user->no_tlp;
+            $pesanan = \App\Models\Pesanan::where('order_id', $id)->with('user')->first();
+            if ($pesanan && $pesanan->user) {
+                $phone = $pesanan->user->no_tlp;
                 if (str_starts_with($phone, '0')) {
                     $phone = '62' . substr($phone, 1);
                 }
@@ -288,14 +288,14 @@ class PaymentController extends Controller
 
     public function exportExcel()
     {
-        $orders = \App\Models\Order::with(['user', 'product'])
+        $pesanan = \App\Models\Pesanan::with(['user', 'product'])
             ->whereIn('status', ['dikemas', 'selesai', 'dibatalkan'])
             ->whereIn('id', function ($sub) {
-                $sub->selectRaw('MIN(id)')->from('orders')->groupBy('order_id');
+                $sub->selectRaw('MIN(id)')->from('pesanan')->groupBy('order_id');
             })
             ->orderBy('created_at', 'desc')
             ->get();
 
-        return (new \App\Exports\PembayaranExport($orders))->download();
+        return (new \App\Exports\PembayaranExport($pesanan))->download();
     }
 }

@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Order;
+use App\Models\Pesanan;
 use Illuminate\Support\Facades\Auth;
 
 class SewaController extends Controller
@@ -12,7 +12,7 @@ class SewaController extends Controller
     {
         $activeStatus = $request->query('status', 'semua');
 
-        $query = Order::with('product')
+        $query = Pesanan::with('product')
             ->where('user_id', Auth::id())
             ->orderBy('created_at', 'desc');
 
@@ -26,7 +26,7 @@ class SewaController extends Controller
             }
         }
 
-        $orders = $query->get()->groupBy('order_id')->map(function ($items) {
+        $pesanan = $query->get()->groupBy('order_id')->map(function ($items) {
             $first = $items->first();
             return (object)[
                 'id'               => $first->id,
@@ -34,14 +34,14 @@ class SewaController extends Controller
                 'order_db_id'      => $first->id,
                 'order_number'     => $first->order_id,
                 'status'           => $first->status,
-                'total_price'      => $items->sum('total_price') + $first->shipping_cost + $first->service_fee,
+                'total_harga'      => $items->sum('total_harga') + $first->biaya_pengiriman + $first->biaya_layanan,
                 'payment_deadline' => $first->created_at->addHours(24),
-                'overdue_days' => $first->overdue_days ?? 0,
-                'late_fee'     => $first->late_fee ?? 0,
+                'hari_terlambat' => $first->hari_terlambat ?? 0,
+                'keterlambatan_biaya'     => $first->keterlambatan_biaya ?? 0,
                 'snap_token'       => $first->snap_token,
                 'items'            => $items->map(fn($o) => (object)[
                     'name'       => $o->product->name ?? '-',
-                    'image'      => $o->product ? asset($o->product->image) : null,
+                    'gambar_barang'      => $o->product ? asset($o->product->gambar_barang) : null,
                     'duration'   => $o->days,
                     'start_date' => $o->start_date,
                     'end_date'   => $o->end_date,
@@ -53,6 +53,6 @@ class SewaController extends Controller
             ];
         })->values()->all();
 
-        return view('pages.pelanggan.dashboard.pesanan_saya', compact('activeStatus', 'orders'));
+        return view('pages.pelanggan.dashboard.pesanan_saya', compact('activeStatus', 'pesanan'));
     }
 }

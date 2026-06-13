@@ -164,9 +164,9 @@ Route::prefix('admin')->middleware('admin.auth')->name('admin.')->group(function
     Route::get('/dashboard_admin', fn() => view('pages.admin.dashboard_admin'))->name('dashboard');
 
     // Pemesanan
-    Route::get('/pemesanan',           [PemesananController::class, 'index'])->name('orders.index');
-    Route::get('/pemesanan/{id}/edit', [PemesananController::class, 'edit'])->name('orders.edit');
-    Route::put('/pemesanan/{id}',      [PemesananController::class, 'update'])->name('orders.update');
+    Route::get('/pemesanan',           [PemesananController::class, 'index'])->name('pesanan.index');
+    Route::get('/pemesanan/{id}/edit', [PemesananController::class, 'edit'])->name('pesanan.edit');
+    Route::put('/pemesanan/{id}',      [PemesananController::class, 'update'])->name('pesanan.update');
 
     // Pembayaran - BARU
     Route::get('/pembayaran', [PaymentController::class, 'adminIndex'])->name('pembayaran');
@@ -213,7 +213,7 @@ Route::prefix('admin')->middleware('admin.auth')->name('admin.')->group(function
     Route::delete('/products/{id}',   [ProductController::class, 'destroy'])->name('products.destroy');
 
     // Orders
-    Route::delete('/orders/{id}', [OrderController::class, 'destroy'])->name('orders.destroy');
+    Route::delete('/pesanan/{id}', [OrderController::class, 'destroy'])->name('pesanan.destroy');
 
     // Riwayat
     Route::get(
@@ -229,8 +229,8 @@ Route::prefix('admin')->middleware('admin.auth')->name('admin.')->group(function
 Route::middleware(['auth'])->group(function () {
     Route::post('/payment/token', [PaymentController::class, 'getToken'])->name('payment.token');
     Route::post('/payment/snap-token', [PaymentController::class, 'getSnapToken'])->name('payment.snap-token');
-    Route::post('/order/cancel', [OrderController::class, 'cancel'])->name('order.cancel');  // ← tambah ini
-    Route::post('/order/store', [OrderController::class, 'store'])->name('order.store');
+    Route::post('/pesanan/cancel', [OrderController::class, 'cancel'])->name('pesanan.cancel');  // ← tambah ini
+    Route::post('/pesanan/store', [OrderController::class, 'store'])->name('pesanan.store');
     Route::post('/payment/update-status', [PaymentController::class, 'updateStatusAfterPay'])
         ->name('payment.update-status');
 });
