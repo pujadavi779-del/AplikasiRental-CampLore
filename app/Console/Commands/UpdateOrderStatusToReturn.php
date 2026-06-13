@@ -20,7 +20,7 @@ class UpdateOrderStatusToReturn extends Command
         // Ubah jalan → pengembalian jika end_date sudah lewat
         $pesanan = Pesanan::whereIn('status', ['jalan'])
             ->whereRaw('DATE(end_date) < ?', [$today->toDateString()])
-            ->with('user')
+            ->with('pelanggan')
             ->get()
             ->groupBy('order_id');
 
@@ -37,9 +37,9 @@ class UpdateOrderStatusToReturn extends Command
             ]);
 
             // Kirim WA notif pengembalian
-            $user = $firstItem->user;
-            if ($user && $user->no_tlp) {
-                $phone = $user->no_tlp;
+            $pelanggan = $firstItem->pelanggan;
+            if ($pelanggan && $pelanggan->no_tlp) {
+                $phone = $pelanggan->no_tlp;
                 if (str_starts_with($phone, '0')) {
                     $phone = '62' . substr($phone, 1);
                 }

@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Mail\OtpMail;
 use App\Models\OtpCode;
-use App\Models\User;
+use App\Models\Pelanggan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
@@ -139,7 +139,7 @@ class ForgotPasswordController extends Controller
     // -------------------------------------------------------------------------
     public function showResetForm()
     {
-        // Pastikan user sudah verifikasi OTP
+        // Pastikan pelanggan sudah verifikasi OTP
         if (! session('forgot_otp_verified_email')) {
             return redirect()->route('password.request')
                 ->withErrors(['email' => 'Silakan verifikasi OTP terlebih dahulu.']);
@@ -168,15 +168,15 @@ class ForgotPasswordController extends Controller
                 ->withErrors(['email' => 'Sesi telah berakhir. Silakan ulangi proses.']);
         }
 
-        $user = User::where('email', $email)->first();
+        $pelanggan = Pelanggan::where('email', $email)->first();
 
-        if (! $user) {
+        if (! $pelanggan) {
             return redirect()->route('password.request')
                 ->withErrors(['email' => 'Akun tidak ditemukan.']);
         }
 
         // Update password
-        $user->update([
+        $pelanggan->update([
             'password' => Hash::make($request->password),
         ]);
 

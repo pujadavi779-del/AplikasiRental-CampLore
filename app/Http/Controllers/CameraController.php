@@ -150,15 +150,15 @@ class CameraController extends Controller
         ->take(5)
         ->get();
 
-    // Ambil reviews dengan user
-    $reviews = \App\Models\Review::with('user')
+    // Ambil reviews dengan pelanggan
+    $reviews = \App\Models\Review::with('pelanggan')
         ->where('product_id', $id)
         ->latest()
         ->get();
 
     $avgRating = $reviews->count() ? round($reviews->avg('bintang'), 1) : 0;
 
-    // Cek apakah user yang login boleh review
+    // Cek apakah pelanggan yang login boleh review
     $canReview = false;
     $reviewOrder = null;
     if (auth()->check()) {

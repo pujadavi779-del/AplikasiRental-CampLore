@@ -11,7 +11,7 @@ class CustomerReviewController extends Controller
 {
     /**
      * Tampilkan form tulis ulasan.
-     * Hanya boleh diakses jika pesanan milik user & status selesai
+     * Hanya boleh diakses jika pesanan milik pelanggan & status selesai
      * & belum pernah review produk ini.
      */
     public function create($orderId)
@@ -78,7 +78,7 @@ class CustomerReviewController extends Controller
     }
     public function show($reviewId)
     {
-        $review = Review::with(['product', 'user'])
+        $review = Review::with(['product', 'pelanggan'])
             ->where('id', $reviewId)
             ->where('user_id', Auth::id())
             ->firstOrFail();

@@ -15,7 +15,7 @@ class CampingController extends Controller
         return view('admin.camping.camping_LP', compact('items'));
     }
 
-    // 🔹 HALAMAN USER (LANDING)
+   
     public function landing(Request $request)
     {
         $query = Barang::where('kategori', 'Camping');
@@ -100,7 +100,7 @@ class CampingController extends Controller
         ->take(5)
         ->get();
 
-    $reviews = \App\Models\Review::with('user')
+    $reviews = \App\Models\Review::with('pelanggan')
         ->where('product_id', $id)
         ->latest()
         ->get();

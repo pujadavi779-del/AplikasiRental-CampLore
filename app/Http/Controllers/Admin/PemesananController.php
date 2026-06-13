@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Pemesanan;
-use App\Models\User;
+use App\Models\Pelanggan;
 use App\Models\Barang;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
@@ -17,7 +17,7 @@ class PemesananController extends Controller
      */
     public function index()
     {
-        $pesanan = Pemesanan::with(['user', 'product'])->orderBy('id', 'asc')->get();
+        $pesanan = Pemesanan::with(['pelanggan', 'product'])->orderBy('id', 'asc')->get();
         return view('pages.admin.pemesanan', compact('pesanan'));
     }
     /**
@@ -26,7 +26,7 @@ class PemesananController extends Controller
     public function pengiriman()
     {
         // Filter hanya yang statusnya 'dikirim'
-        $data_pengiriman = Pemesanan::with(['user', 'product'])
+        $data_pengiriman = Pemesanan::with(['pelanggan', 'product'])
             ->where('status', 'dikirim')
             ->orderBy('id', 'asc')
             ->get();
@@ -40,7 +40,7 @@ class PemesananController extends Controller
      */
     public function tandaiSudahTiba($id)
     {
-        $pesanan = Pemesanan::with('user')->findOrFail($id);
+        $pesanan = Pemesanan::with('pelanggan')->findOrFail($id);
 
         // 1. Update status agar masuk ke halaman Pengembalian
         $pesanan->update([
@@ -49,8 +49,8 @@ class PemesananController extends Controller
 
         // 2. Kirim Email Notifikasi ke Pelanggan
         try {
-            if ($pesanan->user && $pesanan->user->email) {
-                Mail::to($pesanan->user->email)->send(new BarangTibaMail($pesanan));
+            if ($pesanan->pelanggan && $pesanan->pelanggan->email) {
+                Mail::to($pesanan->pelanggan->email)->send(new BarangTibaMail($pesanan));
             }
         } catch (\Exception $e) {
             // Tetap lanjut meskipun email gagal (opsional: log errornya)
@@ -62,9 +62,9 @@ class PemesananController extends Controller
     public function edit($id)
     {
         $pesanan = Pemesanan::findOrFail($id);
-        $users = User::all();
+        $pelanggan = Pelanggan::all();
         $products = Barang::all();
-        return view('admin.pesanan.edit', compact('pesanan', 'users', 'products'));
+        return view('admin.pesanan.edit', compact('pesanan', 'pelanggan', 'products'));
     }
 
     public function update(Request $request, $id)

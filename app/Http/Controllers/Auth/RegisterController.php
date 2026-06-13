@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Mail\OtpMail;
 use App\Models\OtpCode;
-use App\Models\User;
+use App\Models\Pelanggan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
@@ -154,7 +154,7 @@ class RegisterController extends Controller
             return back()->withErrors(['email' => 'Email belum diverifikasi via OTP.']);
         }
 
-        $user = User::create([
+        $pelanggan = Pelanggan::create([
             'name'     => $request->username, 
             'username' => $request->username,
             'nik'      => $request->nik,
@@ -169,7 +169,7 @@ class RegisterController extends Controller
         OtpCode::where('email', $request->email)->delete();
 
         // Auto-login setelah daftar
-        auth()->login($user);
+        auth()->login($pelanggan);
 
        return redirect()->route('login')->with('success', 'Registrasi berhasil! Silakan login.');
     }

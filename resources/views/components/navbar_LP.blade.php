@@ -196,7 +196,7 @@ $cartCount = auth()->check()
             @if(Auth::guard('admin')->check())
             <div class="mt-4 border-t border-gray-100 pt-4">
                 <div class="px-3 mb-4">
-                    <p class="text-sm font-extrabold text-gray-800 normal-case">{{ Auth::guard('admin')->user()->name }}</p>
+                    <p class="text-sm font-extrabold text-gray-800 normal-case">{{ Auth::guard('admin')->pelanggan()->name }}</p>
                     <p class="text-[10px] text-emerald-600 italic normal-case font-semibold">Admin</p>
                 </div>
                 <a href="{{ route('admin.dashboard') }}" class="flex items-center gap-3 px-3 py-3 rounded-xl text-xs normal-case text-emerald-700 hover:bg-emerald-50">

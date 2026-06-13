@@ -43,7 +43,7 @@
                         <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-4.35-4.35M17 11A6 6 0 1 1 5 11a6 6 0 0 1 12 0z" />
                     </svg>
                 </div>
-                <input type="text" id="searchInput" placeholder="Search users..."
+                <input type="text" id="searchInput" placeholder="Search Pelanggan..."
                     class="w-full pl-9 pr-4 py-2 text-sm border border-gray-200 rounded-xl bg-gray-50 text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#22543D]/20 focus:border-[#22543D]">
             </div>
             <span class="text-[11px] font-bold text-[#22543D] uppercase tracking-widest flex items-center">

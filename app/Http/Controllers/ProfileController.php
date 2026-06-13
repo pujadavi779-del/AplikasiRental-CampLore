@@ -16,35 +16,35 @@ class ProfileController extends Controller
 
     public function update_profile(Request $request)
     {
-        $user = Auth::user();
+        $pelanggan = Auth::user();
 
         $request->validate([
             'name'            => 'required|string|max:255',
-            'email'           => 'required|email|unique:users,email,' . $user->id,
+            'email'           => 'required|email|unique:users,email,' . $pelanggan->id,
             'no_tlp'          => 'nullable|string|max:20',
             'nik'             => 'nullable|string|max:16',
             'profile_picture' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
             'ktp'             => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
         ]);
 
-        $user->name  = $request->name;
-        $user->email = $request->email;
-        $user->no_tlp = $request->no_tlp;
-        $user->nik   = $request->nik;
+        $pelanggan->name  = $request->name;
+        $pelanggan->email = $request->email;
+        $pelanggan->no_tlp = $request->no_tlp;
+        $pelanggan->nik   = $request->nik;
 
         if ($request->hasFile('profile_picture')) {
-            if ($user->foto_profile) Storage::disk('public')->delete($user->foto_profile);
-            $user->foto_profile = $request->file('profile_picture')->store('profiles', 'public');
+            if ($pelanggan->foto_profile) Storage::disk('public')->delete($pelanggan->foto_profile);
+            $pelanggan->foto_profile = $request->file('profile_picture')->store('profiles', 'public');
         }
 
         if ($request->hasFile('ktp')) {
-            if ($user->foto_ktp) Storage::disk('public')->delete($user->foto_ktp);
-            $user->foto_ktp = $request->file('ktp')->store('ktp', 'public');
-            $user->ktp_updated_at = now();
-            $user->ktp_status = 'pending'; // reset ke pending kalau upload ulang
+            if ($pelanggan->foto_ktp) Storage::disk('public')->delete($pelanggan->foto_ktp);
+            $pelanggan->foto_ktp = $request->file('ktp')->store('ktp', 'public');
+            $pelanggan->ktp_updated_at = now();
+            $pelanggan->ktp_status = 'pending'; // reset ke pending kalau upload ulang
         }
 
-        $user->save();
+        $pelanggan->save();
 
         return redirect()->back()->with('success', 'Profil berhasil diperbarui');
     }

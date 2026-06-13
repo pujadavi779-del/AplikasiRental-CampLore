@@ -24,11 +24,11 @@ class ShippingAddressController extends Controller
             'kode_pos'  => 'required|string',
         ]);
 
-        $user = Auth::user();
+        $pelanggan = Auth::user();
 
         // 1. Simpan/update ke tabel alamat_pengiriman
         ShippingAddress::updateOrCreate(
-            ['user_id' => $user->id],
+            ['user_id' => $pelanggan->id],
             [
                 'alamat_lengkap' => $request->alamat_lengkap,
                 'kota'         => $request->kota,
@@ -46,7 +46,7 @@ class ShippingAddressController extends Controller
         ]));
 
         // 3. Update ke tabel customers
-        Customer::where('phone', $user->phone)
+        Customer::where('phone', $pelanggan->phone)
                 ->update(['address' => $alamatGabung]);
 
         return back()->with('success', 'Alamat pengiriman berhasil diperbarui!');

@@ -43,8 +43,8 @@ class Pesanan extends Model
         return $this->belongsTo(Barang::class);
     }
 
-    public function user()
+    public function pelanggan()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(Pelanggan::class, 'user_id');
     }
 }

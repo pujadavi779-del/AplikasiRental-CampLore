@@ -81,7 +81,7 @@
                         $totalDenda    = $item->keterlambatan_biaya ?? 0;
                         $tglFormatted  = $tglKembali ? $tglKembali->format('d M Y') : '-';
                         $products      = collect($item->products ?? []);
-                        $initial       = strtoupper(substr($item->user->name ?? 'U', 0, 1));
+                        $initial       = strtoupper(substr($item->pelanggan->name ?? 'U', 0, 1));
                         $avatarBgs     = ['bg-blue-100 text-blue-700','bg-pink-100 text-pink-700','bg-emerald-100 text-emerald-700','bg-violet-100 text-violet-700','bg-amber-100 text-amber-700'];
                         $avatarClass   = $avatarBgs[$loop->index % count($avatarBgs)];
                     @endphp
@@ -94,8 +94,8 @@
                                     {{ $initial }}
                                 </div>
                                 <div>
-                                    <div class="font-semibold text-gray-900 text-sm">{{ $item->user->name ?? '-' }}</div>
-                                    <div class="text-xs text-gray-400">{{ $item->user->email ?? $item->user->no_hp ?? '-' }}</div>
+                                    <div class="font-semibold text-gray-900 text-sm">{{ $item->pelanggan->name ?? '-' }}</div>
+                                    <div class="text-xs text-gray-400">{{ $item->pelanggan->email ?? $item->pelanggan->no_hp ?? '-' }}</div>
                                 </div>
                             </div>
                         </td>
@@ -144,8 +144,8 @@
                         <td class="px-6 py-4">
                             <button type="button"
                                 onclick='bukaModalKonfirmasi(
-                                    @json($item->user->name ?? "-"),
-                                    @json($item->user->email ?? $item->user->no_hp ?? "-"),
+                                    @json($item->pelanggan->name ?? "-"),
+                                    @json($item->pelanggan->email ?? $item->pelanggan->no_hp ?? "-"),
                                     @json($item->id_pesanan),
                                     @json($products->values()->all()),
                                     @json($tglFormatted),

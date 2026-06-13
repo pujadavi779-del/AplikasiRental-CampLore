@@ -15,7 +15,7 @@ class ReviewController extends Controller
      */
     public function index(Request $request)
     {
-        $query = Review::with(['user', 'product'])
+        $query = Review::with(['pelanggan', 'product'])
             ->latest();
 
         // Filter: all | unreplied | replied

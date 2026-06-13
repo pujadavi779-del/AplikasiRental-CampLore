@@ -8,8 +8,9 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
-class User extends Authenticatable
+class Pelanggan extends Authenticatable
 {
+     protected $table = 'pelanggan';
     protected $fillable = [
         'name',
         'email',

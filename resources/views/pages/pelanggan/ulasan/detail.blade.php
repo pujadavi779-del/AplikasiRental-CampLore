@@ -22,8 +22,8 @@
         {{-- Product Info --}}
         <div class="bg-white rounded-2xl border border-[#e5e7eb] p-5 mb-4 flex items-center gap-4">
             <div class="w-16 h-16 rounded-xl overflow-hidden border border-[#e5e7eb] flex-shrink-0 bg-[#eef5f0]">
-                @if($review->product->image)
-                    <img src="{{ asset($review->product->image) }}"
+                @if($review->product->gambar_barang)
+                    <img src="{{ asset($review->product->gambar_barang) }}"
                          alt="{{ $review->product->name }}"
                          class="w-full h-full object-cover">
                 @else
@@ -51,11 +51,11 @@
                     <div class="flex items-center gap-3">
                         <div class="w-10 h-10 rounded-full flex items-center justify-center text-white text-sm font-bold"
                             style="background: linear-gradient(135deg,#22543D,#38a169)">
-                            {{ strtoupper(substr($review->user->name ?? 'U', 0, 2)) }}
+                            {{ strtoupper(substr($review->pelanggan->name ?? 'U', 0, 2)) }}
                         </div>
                         <div>
                             <div class="flex items-center gap-2">
-                                <span class="text-sm font-bold text-[#1a1a1a]">{{ $review->user->name }}</span>
+                                <span class="text-sm font-bold text-[#1a1a1a]">{{ $review->pelanggan->name }}</span>
                                 <span class="text-[10px] font-bold text-[#22543D] bg-[#d1fae5] px-2 py-0.5 rounded-full">
                                     ✓ Terverifikasi
                                 </span>

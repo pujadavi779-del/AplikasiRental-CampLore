@@ -18,7 +18,7 @@ class CheckoutController extends Controller
                 ->where('user_id', auth()->id())
                 ->get();
         } else {
-            // Kalau dari halaman cart biasa — ambil semua cart user
+            // Kalau dari halaman cart biasa — ambil semua cart pelanggan
             $carts = Cart::with('product')
                 ->where('user_id', auth()->id())
                 ->get();

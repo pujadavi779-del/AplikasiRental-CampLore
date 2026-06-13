@@ -1,6 +1,3 @@
-bash
-
-cat > /mnt/user-data/outputs/forgot-password.blade.php << 'BLADE'
 <!DOCTYPE html>
 <html lang="id">
 <head>

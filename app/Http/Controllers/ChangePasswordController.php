@@ -25,13 +25,13 @@ class ChangePasswordController extends Controller
             'new_password.min' => 'Password baru minimal 8 karakter.',
             'new_password.confirmed' => 'Konfirmasi password tidak cocok.',
         ]);
-        //authtentikasi user
+        //authtentikasi pelanggan
         //:: panggil
-        $user = Auth::user();
+        $pelanggan = Auth::user();
 
         // Cek password lama
         //() tanpa memerlukan data tambahan
-        if (!Hash::check($request->current_password, $user->password)) {
+        if (!Hash::check($request->current_password, $pelanggan->password)) {
             return back()->withErrors([
                 'current_password' => 'Password lama salah.'
             ]);
@@ -39,15 +39,15 @@ class ChangePasswordController extends Controller
 //!hash itu mencocokan pengguna dengan password sebelumnya 
 //has itu untuk mengubah password baru 
         // Cek password baru tidak boleh sama
-        if (Hash::check($request->new_password, $user->password)) {
+        if (Hash::check($request->new_password, $pelanggan->password)) {
             return back()->withErrors([
                 'new_password' => 'Password baru tidak boleh sama dengan password lama.'
             ]);
         }
 
         // Update password
-        $user->password = Hash::make($request->new_password);
-        $user->save();
+        $pelanggan->password = Hash::make($request->new_password);
+        $pelanggan->save();
 
         return back()->with('success', 'Password berhasil diperbarui.');
     }

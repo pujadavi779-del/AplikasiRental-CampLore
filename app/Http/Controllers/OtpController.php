@@ -9,23 +9,23 @@ use App\Models\OtpCode;
 
 class OtpController extends Controller
 {
-    public function sendPhone(Request $request)
+    public function sendPhone(Auth::user(Request $request)
     {
-        $user = Auth::user();
+        $pelanggan = );
 
         // Ambil dari request, bukan dari DB
-        $noTlp = $request->no_tlp ?? $user->no_tlp;
+        $noTlp = $request->no_tlp ?? $pelanggan->no_tlp;
 
         if (!$noTlp) {
             return response()->json(['message' => 'Isi nomor telepon terlebih dahulu.'], 422);
         }
 
-        OtpCode::where('email', $user->email)->where('type', 'phone')->delete();
+        OtpCode::where('email', $pelanggan->email)->where('type', 'phone')->delete();
 
         $code = str_pad(rand(0, 999999), 6, '0', STR_PAD_LEFT);
 
         OtpCode::create([
-            'email'       => $user->email,
+            'email'       => $pelanggan->email,
             'type'        => 'phone',
             'code'        => $code,
             'is_verified' => 0,
@@ -49,9 +49,9 @@ class OtpController extends Controller
 
     public function verifyPhone(Request $request)
     {
-        $user = Auth::user();
+        $pelanggan = Auth::user();
 
-        $otp = OtpCode::where('email', $user->email)
+        $otp = OtpCode::where('email', $pelanggan->email)
             ->where('type', 'phone')
             ->where('code', $request->code)
             ->where('is_verified', 0)
@@ -70,9 +70,9 @@ class OtpController extends Controller
     // OTP Email (untuk registrasi, tetap ada)
     public function verify(Request $request)
     {
-        $user = Auth::user();
+        $pelanggan = Auth::user();
 
-        $otp = OtpCode::where('email', $user->email)
+        $otp = OtpCode::where('email', $pelanggan->email)
             ->where('type', 'email')
             ->where('code', $request->code)
             ->where('is_verified', 0)

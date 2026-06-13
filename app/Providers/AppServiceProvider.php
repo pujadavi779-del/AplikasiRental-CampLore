@@ -31,7 +31,7 @@ class AppServiceProvider extends ServiceProvider
 
             // Data khusus admin
             if (auth()->check() && auth()->user()->is_admin) {
-                $data['recentReviews'] = Review::with(['user', 'product'])
+                $data['recentReviews'] = Review::with(['pelanggan', 'product'])
                     ->latest()
                     ->take(5)
                     ->get();

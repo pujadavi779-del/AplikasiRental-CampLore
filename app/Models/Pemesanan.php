@@ -23,10 +23,10 @@ class Pemesanan extends Model
         'status'
     ];
 
-    // Relasi ke User
-    public function user()
+    // Relasi ke Pelanggan
+    public function pelanggan()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(Pelanggan::class);
     }
 
     // Relasi ke Barang

@@ -70,11 +70,11 @@
                         <div class="flex items-start gap-3">
                             <div class="w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-bold shrink-0"
                                 style="background-color: {{ ['#22543D','#ED64A6','#6366f1','#f59e0b'][$loop->index % 4] }}">
-                                {{ strtoupper(substr($review->user->name ?? 'U', 0, 2)) }}
+                                {{ strtoupper(substr($review->pelanggan->name ?? 'U', 0, 2)) }}
                             </div>
                             <div class="flex-1 min-w-0">
                                 <div class="flex items-center justify-between gap-1">
-                                    <span class="text-xs font-semibold text-gray-800 truncate">{{ $review->user->name ?? 'Pengguna' }}</span>
+                                    <span class="text-xs font-semibold text-gray-800 truncate">{{ $review->pelanggan->name ?? 'Pengguna' }}</span>
                                     @if(!$review->is_replied)
                                         <span class="shrink-0 text-[9px] font-bold text-[#ED64A6] bg-[#fce7f3] px-1.5 py-0.5 rounded-full">Baru</span>
                                     @endif

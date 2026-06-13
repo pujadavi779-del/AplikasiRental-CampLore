@@ -79,7 +79,7 @@ class PaymentController extends Controller
 
             $customer_details = [
                 'first_name'       => $customerName,
-                'email'            => auth()->user()->email ?? 'customer@camplore.com',
+                'email'            => auth()->pelanggan()->email ?? 'customer@camplore.com',
                 'phone'            => $customerPhone,
                 'billing_address'  => $address_details,
                 'shipping_address' => $address_details,
@@ -159,7 +159,7 @@ class PaymentController extends Controller
                 'item_details'     => $itemDetails,
                 'customer_details' => [
                     'first_name' => $first->nama_pelanggan,
-                    'email'      => auth()->user()->email,
+                    'email'      => auth()->pelanggan()->email,
                     'phone'      => $first->pelanggan_telepon,
                 ],
             ];
@@ -202,7 +202,7 @@ class PaymentController extends Controller
 
         $pesanan = \App\Models\Pesanan::where('order_id', $orderId)
             ->where('user_id', auth()->id())
-            ->with('user')
+            ->with('pelanggan')
             ->first();
 
         if (!$pesanan) {
@@ -211,7 +211,7 @@ class PaymentController extends Controller
 
         $pesanan->update(['status' => 'dikemas']);
 
-        $phone = $pesanan->user->no_tlp;
+        $phone = $pesanan->pelanggan->no_tlp;
 
         if (str_starts_with($phone, '0')) {
             $phone = '62' . substr($phone, 1);
@@ -224,7 +224,7 @@ class PaymentController extends Controller
     }
     public function adminIndex(Request $request)
     {
-        $query = \App\Models\Pesanan::with(['user', 'product'])
+        $query = \App\Models\Pesanan::with(['pelanggan', 'product'])
             ->orderBy('created_at', 'desc')
             ->whereIn('status', ['dikemas', 'selesai', 'dibatalkan']) // ← hanya yang sudah bayar
             ->whereIn('id', function ($sub) {
@@ -265,9 +265,9 @@ class PaymentController extends Controller
                 'status' => 'dikirim'
             ]);
 
-            $pesanan = \App\Models\Pesanan::where('order_id', $id)->with('user')->first();
-            if ($pesanan && $pesanan->user) {
-                $phone = $pesanan->user->no_tlp;
+            $pesanan = \App\Models\Pesanan::where('order_id', $id)->with('pelanggan')->first();
+            if ($pesanan && $pesanan->pelanggan) {
+                $phone = $pesanan->pelanggan->no_tlp;
                 if (str_starts_with($phone, '0')) {
                     $phone = '62' . substr($phone, 1);
                 }
@@ -288,7 +288,7 @@ class PaymentController extends Controller
 
     public function exportExcel()
     {
-        $pesanan = \App\Models\Pesanan::with(['user', 'product'])
+        $pesanan = \App\Models\Pesanan::with(['pelanggan', 'product'])
             ->whereIn('status', ['dikemas', 'selesai', 'dibatalkan'])
             ->whereIn('id', function ($sub) {
                 $sub->selectRaw('MIN(id)')->from('pesanan')->groupBy('order_id');

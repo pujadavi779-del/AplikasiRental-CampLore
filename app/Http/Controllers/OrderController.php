@@ -9,13 +9,13 @@ class OrderController extends Controller
 {
     public function index()
     {
-        $pesanan = Pesanan::with(['products', 'user'])->get()->map(fn($o) => [
+        $pesanan = Pesanan::with(['products', 'pelanggan'])->get()->map(fn($o) => [
             'id'       => '#ORD-' . str_pad($o->id, 3, '0', STR_PAD_LEFT),
-            'name'     => $o->user->name,
-            'email'    => $o->user->email,
+            'name'     => $o->pelanggan->name,
+            'email'    => $o->pelanggan->email,
             'av'       => strtoupper(
-                substr($o->user->name, 0, 1) .
-                    substr($o->user->name, strpos($o->user->name, ' ') + 1, 1)
+                substr($o->pelanggan->name, 0, 1) .
+                    substr($o->pelanggan->name, strpos($o->pelanggan->name, ' ') + 1, 1)
             ),
             'products' => $o->products->map(fn($p) => [
                 'name' => $p->name,

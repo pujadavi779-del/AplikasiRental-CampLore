@@ -629,11 +629,11 @@ function rentNow(itemId) {
                 <div class="flex items-center gap-3">
                     <div class="w-10 h-10 rounded-full flex items-center justify-center text-white text-sm font-bold flex-shrink-0"
                         style="background: linear-gradient(135deg,#22543D,#38a169)">
-                        {{ strtoupper(substr($review->user->name ?? 'U', 0, 2)) }}
+                        {{ strtoupper(substr($review->pelanggan->name ?? 'U', 0, 2)) }}
                     </div>
                     <div>
                         <div class="flex items-center gap-2">
-                            <span class="text-sm font-bold text-gray-900">{{ $review->user->name ?? 'Pengguna' }}</span>
+                            <span class="text-sm font-bold text-gray-900">{{ $review->pelanggan->name ?? 'Pengguna' }}</span>
                             <span class="text-[10px] font-bold text-[#22543D] bg-[#d1fae5] px-2 py-0.5 rounded-full">✓ Terverifikasi</span>
                         </div>
                         <div class="flex items-center gap-0.5 mt-0.5">
@@ -672,11 +672,11 @@ function rentNow(itemId) {
                 <div class="flex items-center gap-3">
                     <div class="w-10 h-10 rounded-full flex items-center justify-center text-white text-sm font-bold flex-shrink-0"
                         style="background: linear-gradient(135deg,#ED64A6,#f43f8e)">
-                        {{ strtoupper(substr($review->user->name ?? 'U', 0, 2)) }}
+                        {{ strtoupper(substr($review->pelanggan->name ?? 'U', 0, 2)) }}
                     </div>
                     <div>
                         <div class="flex items-center gap-2">
-                            <span class="text-sm font-bold text-gray-900">{{ $review->user->name ?? 'Pengguna' }}</span>
+                            <span class="text-sm font-bold text-gray-900">{{ $review->pelanggan->name ?? 'Pengguna' }}</span>
                             <span class="text-[10px] font-bold text-[#22543D] bg-[#d1fae5] px-2 py-0.5 rounded-full">✓ Terverifikasi</span>
                         </div>
                         <div class="flex items-center gap-0.5 mt-0.5">

@@ -142,7 +142,7 @@
                                        + $allOrderItems->first()->biaya_pengiriman
                                        + $allOrderItems->first()->biaya_layanan;
 
-                        $namaUser = $pesanan->user->name ?? 'Pelanggan';
+                        $namaUser = $pesanan->pelanggan->name ?? 'Pelanggan';
                         $parts    = explode(' ', $namaUser);
                         $inisial  = strtoupper(substr($parts[0],0,1).(isset($parts[1])?substr($parts[1],0,1):''));
 
@@ -197,7 +197,7 @@
                                 @click="selectedData = {
                                     id:          '{{ $pesanan->order_id }}',
                                     nama:        '{{ addslashes($namaUser) }}',
-                                    email:       '{{ $pesanan->user->email ?? '' }}',
+                                    email:       '{{ $pesanan->pelanggan->email ?? '' }}',
                                     inisial:     '{{ $inisial }}',
                                     status:      '{{ $st['label'] }}',
                                     statusColor: '{{ $st['color'] }}',

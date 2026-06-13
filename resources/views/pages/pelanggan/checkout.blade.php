@@ -29,16 +29,16 @@
             <div class="flex justify-between items-start">
                 <div>
                     <p class="font-bold text-gray-900">
-                        <span id="display-name">{{ auth()->user()->name ?? '-' }}</span>
+                        <span id="display-name">{{ auth()->pelanggan()->name ?? '-' }}</span>
                         <span class="text-gray-400 font-normal mx-1">·</span>
 
                         <span id="display-phone" class="text-gray-500 font-semibold text-sm">
-                            {{ auth()->user()->no_tlp ?? '— Belum ada no. HP' }}
+                            {{ auth()->pelanggan()->no_tlp ?? '— Belum ada no. HP' }}
                         </span>
                     </p>
 
                     <p id="display-address" class="text-sm text-gray-500 mt-0.5">
-                        {{ optional(auth()->user()->shippingAddress)->alamat_lengkap ?? 'Masukkan alamat pengiriman kamu' }}
+                        {{ optional(auth()->pelanggan()->shippingAddress)->alamat_lengkap ?? 'Masukkan alamat pengiriman kamu' }}
                     </p>
                 </div>
                 <button onclick="openAddressModal()" type="button"
@@ -132,7 +132,7 @@
                         </div>
                         <div class="min-w-0">
                             <p class="text-sm font-bold text-gray-900 truncate">{{ $cart->product->name ?? '-' }}</p>
-                            <p class="text-[11px] font-semibold text-[#FF6B95] mt-0.5">Kategori: {{ $cart->product->Kategori_data ?? '-' }}</p>
+                            <p class="text-[11px] font-semibold text-[#FF6B95] mt-0.5">Kategori: {{ $cart->product->kategori ?? '-' }}</p>
                         </div>
                     </div>
                     <div class="text-center">
@@ -159,7 +159,7 @@
                     </div>
                     <div class="flex-1 min-w-0">
                         <p class="text-sm font-bold text-gray-900 truncate">{{ $cart->product->name ?? '-' }}</p>
-                        <p class="text-[11px] font-semibold text-[#FF6B95] mt-0.5">{{ $cart->product->Kategori_data ?? '-' }}</p>
+                        <p class="text-[11px] font-semibold text-[#FF6B95] mt-0.5">{{ $cart->product->kategori ?? '-' }}</p>
                         <div class="flex items-center justify-between mt-1.5">
                             <span class="text-sm font-bold text-gray-700">
                                 Rp{{ number_format($cart->product->harga_per_hari ?? 0, 0, ',', '.') }}
@@ -300,7 +300,7 @@
 <script>
 const totalSubtotal = {{ $totalSubtotal }};
 const biayaLayanan = 2000;
-const ktpSudahAda = "{{ auth()->user()->foto_ktp ? '1' : '0' }}";
+const ktpSudahAda = "{{ auth()->pelanggan()->foto_ktp ? '1' : '0' }}";
 const cartItems = [
     @foreach($carts as $cart)
     {

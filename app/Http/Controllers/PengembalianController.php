@@ -11,7 +11,7 @@ class PengembalianController extends Controller
 {
     public function index()
     {
-        $pesanan = Pesanan::with(['user', 'product'])
+        $pesanan = Pesanan::with(['pelanggan', 'product'])
             ->where('status', 'pengembalian')
             ->get()
             ->groupBy('order_id');
@@ -29,9 +29,9 @@ class PengembalianController extends Controller
                 'id_pesanan'         => $orderId,
                 'tanggal_kembali'    => $first->end_date,
                 'minta_perpanjangan' => false,
-                'user' => (object) [
-                    'name'  => $first->nama_pelanggan ?? ($first->user->name ?? '-'),
-                    'email' => $first->user->email ?? '-',
+                'pelanggan' => (object) [
+                    'name'  => $first->nama_pelanggan ?? ($first->pelanggan->name ?? '-'),
+                    'email' => $first->pelanggan->email ?? '-',
                     'no_hp' => $first->pelanggan_telepon ?? '-',
                 ],
                 'products' => $items->map(fn($i) => (object) [
@@ -51,7 +51,7 @@ class PengembalianController extends Controller
 
     public function konfirmasi(Request $request, $orderId)
     {
-        $pesanan = Pesanan::where('order_id', $orderId)->with('user')->get();
+        $pesanan = Pesanan::where('order_id', $orderId)->with('pelanggan')->get();
 
         if ($pesanan->isEmpty()) {
             return response()->json(['success' => false, 'message' => 'Pesanan tidak ditemukan'], 404);
@@ -60,8 +60,8 @@ class PengembalianController extends Controller
         Pesanan::where('order_id', $orderId)->update(['status' => 'selesai']);
 
         $firstOrder = $pesanan->first();
-        if ($firstOrder->user && $firstOrder->user->no_tlp) {
-            $phone = $firstOrder->user->no_tlp;
+        if ($firstOrder->pelanggan && $firstOrder->pelanggan->no_tlp) {
+            $phone = $firstOrder->pelanggan->no_tlp;
             if (str_starts_with($phone, '0')) {
                 $phone = '62' . substr($phone, 1);
             }

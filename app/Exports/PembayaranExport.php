@@ -146,13 +146,13 @@ class PembayaranExport
             ));
 
             // B: Pelanggan
-            $ws->setCellValue("B{$row}", $pesanan->user->name ?? '-');
+            $ws->setCellValue("B{$row}", $pesanan->pelanggan->name ?? '-');
             $ws->getStyle("B{$row}")->applyFromArray(array_merge(
                 $solidFill($zebra), $fontStyle('111827', false, 10), $middle(), $thinBorder()
             ));
 
             // C: Email
-            $ws->setCellValue("C{$row}", $pesanan->user->email ?? '-');
+            $ws->setCellValue("C{$row}", $pesanan->pelanggan->email ?? '-');
             $ws->getStyle("C{$row}")->applyFromArray(array_merge(
                 $solidFill($zebra), $fontStyle('6B7280', false, 9), $middle(), $thinBorder()
             ));

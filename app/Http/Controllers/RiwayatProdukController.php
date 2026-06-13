@@ -14,7 +14,7 @@ class RiwayatProdukController extends Controller
 
         $dataAlat = $products->map(function ($product) {
 
-            $pesanan = Pesanan::with('user')
+            $pesanan = Pesanan::with('pelanggan')
                 ->where('product_id', $product->id)
                 ->get();
 
@@ -30,7 +30,7 @@ class RiwayatProdukController extends Controller
 
                 'riwayat' => $pesanan->map(function ($pesanan) {
                     return [
-                        'nama' => $pesanan->user->name ?? 'User',
+                        'nama' => $pesanan->pelanggan->name ?? 'Pelanggan',
                         'periode' =>
                         \Carbon\Carbon::parse($pesanan->start_date)->format('d M Y')
                             . ' - ' .

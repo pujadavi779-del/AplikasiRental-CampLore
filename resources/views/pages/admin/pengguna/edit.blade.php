@@ -55,9 +55,9 @@
                     <div>
                         <label class="block text-[10px] font-bold text-[#22543D] uppercase tracking-widest mb-3 px-1">Informasi Pelanggan</label>
                         <select name="user_id" class="w-full px-5 py-4 rounded-2xl border border-gray-100 bg-gray-50 text-sm focus:ring-4 focus:ring-[#22543D]/5 focus:border-[#22543D] outline-none transition-all">
-                            @foreach($users as $user)
-                            <option value="{{ $user->id }}" {{ $pesanan->user_id == $user->id ? 'selected' : '' }}>
-                                {{ $user->name }} — {{ $user->email }}
+                            @foreach($pelanggan as $pelanggan)
+                            <option value="{{ $pelanggan->id }}" {{ $pesanan->user_id == $pelanggan->id ? 'selected' : '' }}>
+                                {{ $pelanggan->name }} — {{ $pelanggan->email }}
                             </option>
                             @endforeach
                         </select>

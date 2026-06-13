@@ -17,8 +17,8 @@ class ShippingAddress extends Model
         'notes',
     ];
 
-    public function user()
+    public function pelanggan()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(Pelanggan::class);
     }
 }

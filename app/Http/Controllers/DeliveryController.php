@@ -11,7 +11,7 @@ class DeliveryController extends Controller
 {
     public function pengiriman()
     {
-        $pesanan = Pesanan::with(['user', 'product'])
+        $pesanan = Pesanan::with(['pelanggan', 'product'])
             ->whereIn('status', ['dikemas', 'jalan', 'pengembalian'])
             ->get()
             ->groupBy('order_id');
@@ -42,7 +42,7 @@ class DeliveryController extends Controller
 
             $pengiriman[] = [
                 'id_pesanan'      => $orderId,
-                'pemesan'         => $firstItem->nama_pelanggan ?? ($firstItem->user->name ?? '-'),
+                'pemesan'         => $firstItem->nama_pelanggan ?? ($firstItem->pelanggan->name ?? '-'),
                 'alamat'          => $firstItem->alamat_pelanggan ?? '-',
                 'no_hp'           => $firstItem->pelanggan_telepon ?? '-',
                 'metode_pengiriman' => $shippingMethod,
@@ -62,7 +62,7 @@ class DeliveryController extends Controller
 
     public function detail($id)
     {
-        $items = Pesanan::with(['user', 'product'])
+        $items = Pesanan::with(['pelanggan', 'product'])
             ->where('order_id', $id)
             ->get();
 
@@ -86,7 +86,7 @@ class DeliveryController extends Controller
 
         $pengiriman = [
             'id_pesanan'      => $firstItem->order_id,
-            'pemesan'         => $firstItem->nama_pelanggan ?? ($firstItem->user->name ?? '-'),
+            'pemesan'         => $firstItem->nama_pelanggan ?? ($firstItem->pelanggan->name ?? '-'),
             'alamat'          => $firstItem->alamat_pelanggan ?? '-',
             'no_hp'           => $firstItem->pelanggan_telepon ?? '-',
             'metode_pengiriman' => $firstItem->metode_pengiriman ?? 'delivery',
@@ -126,9 +126,9 @@ class DeliveryController extends Controller
         $updateData = ['status' => $statusBaru];
 
         // Kirim WA sesuai status
-        $firstOrder = $pesanan->first()->load('user');
-        if ($firstOrder && $firstOrder->user) {
-            $phone = $firstOrder->user->no_tlp;
+        $firstOrder = $pesanan->first()->load('pelanggan');
+        if ($firstOrder && $firstOrder->pelanggan) {
+            $phone = $firstOrder->pelanggan->no_tlp;
             if (str_starts_with($phone, '0')) {
                 $phone = '62' . substr($phone, 1);
             }
@@ -160,7 +160,7 @@ class DeliveryController extends Controller
         if (($updateData['status'] ?? '') === 'tiba') {
             try {
                 $firstOrder = $pesanan->first();
-                Mail::to($firstOrder->user->email)->send(new BarangTibaMail($firstOrder));
+                Mail::to($firstOrder->pelanggan->email)->send(new BarangTibaMail($firstOrder));
             } catch (\Exception $e) {
                 // Abaikan error email
             }
