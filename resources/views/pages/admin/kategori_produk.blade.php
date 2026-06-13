@@ -3,8 +3,8 @@
 @section('title', 'Kategori Produk - Camplore Admin')
 
 @php
-    $NavParent = 'Manajemen Operasional';
-    $section = 'Pengguna';
+$NavParent = 'Manajemen Operasional';
+$section = 'Pengguna';
 @endphp
 @section('content')
 
@@ -52,20 +52,27 @@
 </div>
 
 <div class="max-w-full space-y-6" x-data="{
- activeTab: '{{ session("last_tab", "kamera") }}',
-
-    kameraPage: {{ (session("last_tab") === "kamera" && session("jump_to_last")) ? (int)ceil(count($tipeKamera) / 5) : 1 }},
-    campingPage: {{ (session("last_tab") === "camping" && session("jump_to_last")) ? (int)ceil(count($tipeCamping) / 5) : 1 }},
+    activeTab: '{{ session("last_tab", "kamera") }}',
     perPage: 5,
 
-    kameraSearch: '',
-    campingSearch: '',
+    page: {
+        kamera: {{ (session("last_tab") === "kamera" && session("jump_to_last")) ? (int)ceil(count($tipeKamera) / 5) : 1 }},
+        camping: {{ (session("last_tab") === "camping" && session("jump_to_last")) ? (int)ceil(count($tipeCamping) / 5) : 1 }},
+    },
 
-    tipeKameraTotal: {{ count($tipeKamera) }},
-    tipeCampingTotal: {{ count($tipeCamping) }},
+    search: {
+        kamera: '',
+        camping: '',
+    },
 
-    get totalKameraPages() { return Math.ceil(this.tipeKameraTotal / this.perPage) },
-    get totalCampingPages() { return Math.ceil(this.tipeCampingTotal / this.perPage) },
+    total: {
+        kamera: {{ count($tipeKamera) }},
+        camping: {{ count($tipeCamping) }},
+    },
+
+    totalPages(cat) {
+        return Math.ceil(this.total[cat] / this.perPage);
+    },
 
     openDetailMerek(merekId, namaMerek) {
     const modalElement = document.getElementById('detail-merek-modal');
@@ -78,7 +85,6 @@
     const tbody = document.getElementById('modal-product-tbody');
     tbody.innerHTML = `<tr><td colspan='4' class='text-center py-6 text-gray-400 font-medium animate-pulse'>Mengambil data produk...</td></tr>`;
 
-    // ✅ Pakai getInstance dulu, kalau belum ada baru buat baru
     let modal = FlowbiteInstances.getInstance('Modal', 'detail-merek-modal');
     if (!modal) {
         modal = new Modal(modalElement, {}, { id: 'detail-merek-modal', override: true });
@@ -114,7 +120,7 @@
             console.error('Error:', error);
             tbody.innerHTML = `<tr><td colspan='4' class='text-center py-6 text-red-500 font-bold'>Gagal memuat data produk.</td></tr>`;
         });
-}
+    }
 }">
 
     <div class="bg-white rounded-[24px] border border-gray-100 p-8 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.03)]">
@@ -144,13 +150,33 @@
             </div>
         </div>
 
-        {{-- TAB KAMERA --}}
-        <div x-show="activeTab === 'kamera'" class="grid grid-cols-1 lg:grid-cols-12 gap-12">
+        @php
+            $categories = [
+                'kamera' => [
+                    'tipeList'   => $tipeKamera,
+                    'tipeLabel'  => 'Tipe Kamera',
+                    'merekList'  => $merekKamera,
+                    'merekLabel' => 'Merek Kamera',
+                ],
+                'camping' => [
+                    'tipeList'   => $tipeCamping,
+                    'tipeLabel'  => 'Tipe Peralatan',
+                    'merekList'  => $merekCamping,
+                    'merekLabel' => 'Merek Camping',
+                ],
+            ];
+        @endphp
+
+        @foreach($categories as $prefix => $cat)
+        @php
+            $namesJson = $cat['tipeList']->map(fn($t) => "'".addslashes($t->nama_kategori)."'")->join(',');
+        @endphp
+        <div x-show="activeTab === '{{ $prefix }}'" class="grid grid-cols-1 lg:grid-cols-12 gap-12" @if($prefix !== 'kamera') style="display: none;" @endif>
             <div class="lg:col-span-7 flex flex-col justify-between">
                 <div>
                     <div class="flex justify-between items-center mb-4">
-                        <span class="text-[11px] font-bold text-[#2d6b50] uppercase tracking-wider">Tipe Kamera</span>
-                        <span class="px-2 py-0.5 bg-gray-100 text-gray-500 rounded text-[10px] font-bold uppercase tracking-wider">{{ count($tipeKamera) }} Item</span>
+                        <span class="text-[11px] font-bold text-[#2d6b50] uppercase tracking-wider">{{ $cat['tipeLabel'] }}</span>
+                        <span class="px-2 py-0.5 bg-gray-100 text-gray-500 rounded text-[10px] font-bold uppercase tracking-wider">{{ count($cat['tipeList']) }} Item</span>
                     </div>
 
                     <div class="relative mb-4">
@@ -159,7 +185,7 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-4.35-4.35M17 11A6 6 0 1 1 5 11a6 6 0 0 1 12 0z" />
                             </svg>
                         </div>
-                        <input type="text" x-model="kameraSearch" @input="kameraPage = 1" placeholder="Cari tipe kamera..."
+                        <input type="text" x-model="search.{{ $prefix }}" @input="page.{{ $prefix }} = 1" placeholder="Cari {{ strtolower($cat['tipeLabel']) }}..."
                             class="w-full pl-9 pr-3 py-2 text-sm bg-gray-50 border border-gray-100 rounded-xl text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-200 font-medium">
                     </div>
 
@@ -169,17 +195,17 @@
                     </div>
 
                     <div class="divide-y divide-gray-100 border-t border-gray-100">
-                        @foreach($tipeKamera as $index => $tipe)
+                        @foreach($cat['tipeList'] as $tipe)
                         <div x-show="
-                                '{{ addslashes($tipe->name) }}'.toLowerCase().includes(kameraSearch.toLowerCase()) &&
+                                '{{ addslashes($tipe->nama_kategori) }}'.toLowerCase().includes(search.{{ $prefix }}.toLowerCase()) &&
                                 (() => {
-                                    let filtered = [{{ $tipeKamera->map(fn($t) => "'".addslashes($t->name)."'")->join(',') }}]
-                                        .filter(n => n.toLowerCase().includes(kameraSearch.toLowerCase()));
-                                    let pos = filtered.indexOf('{{ addslashes($tipe->name) }}');
-                                    return pos >= (kameraPage - 1) * perPage && pos < kameraPage * perPage;
+                                    let filtered = [{{ $namesJson }}]
+                                        .filter(n => n.toLowerCase().includes(search.{{ $prefix }}.toLowerCase()));
+                                    let pos = filtered.indexOf('{{ addslashes($tipe->nama_kategori) }}');
+                                    return pos >= (page.{{ $prefix }} - 1) * perPage && pos < page.{{ $prefix }} * perPage;
                                 })()"
                             class="flex justify-between items-center py-3.5 px-1 hover:bg-gray-50/30 transition-colors">
-                            <span class="font-bold text-gray-800 text-sm">{{ $tipe->name }}</span>
+                            <span class="font-bold text-gray-800 text-sm">{{ $tipe->nama_kategori }}</span>
                             <div class="flex gap-3 text-xs font-bold">
                                 <button class="text-gray-400 hover:text-gray-600 transition-colors">Edit</button>
                                 <form action="{{ route('admin.category.destroyType', $tipe->id) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus tipe ini?');" class="inline">
@@ -193,26 +219,26 @@
                     </div>
                 </div>
 
-                {{-- Pagination Tipe Kamera --}}
-                <div x-show="totalKameraPages > 1" class="flex items-center justify-between border-t border-gray-100 pt-4 mt-6">
+                {{-- Pagination --}}
+                <div x-show="totalPages('{{ $prefix }}') > 1" class="flex items-center justify-between border-t border-gray-100 pt-4 mt-6">
                     <span class="text-xs font-semibold text-gray-400 selection:bg-transparent">
-                        Halaman <span class="text-gray-900" x-text="kameraPage"></span> dari <span class="text-gray-900" x-text="totalKameraPages"></span>
+                        Halaman <span class="text-gray-900" x-text="page.{{ $prefix }}"></span> dari <span class="text-gray-900" x-text="totalPages('{{ $prefix }}')"></span>
                     </span>
                     <div class="inline-flex gap-1">
-                        <button @click="if(kameraPage > 1) kameraPage--" :disabled="kameraPage === 1"
-                            :class="kameraPage === 1 ? 'opacity-40 cursor-not-allowed' : 'hover:bg-gray-50 text-gray-700'"
+                        <button @click="if(page.{{ $prefix }} > 1) page.{{ $prefix }}--" :disabled="page.{{ $prefix }} === 1"
+                            :class="page.{{ $prefix }} === 1 ? 'opacity-40 cursor-not-allowed' : 'hover:bg-gray-50 text-gray-700'"
                             class="px-2.5 py-1.5 border border-gray-200 rounded-lg text-xs font-bold transition-colors shadow-sm">
                             &lt;
                         </button>
-                        <template x-for="p in totalKameraPages" :key="p">
-                            <button @click="kameraPage = p"
-                                :class="kameraPage === p ? 'bg-black text-white border-black shadow-sm' : 'border-gray-200 text-gray-600 hover:bg-gray-50'"
+                        <template x-for="p in totalPages('{{ $prefix }}')" :key="p">
+                            <button @click="page.{{ $prefix }} = p"
+                                :class="page.{{ $prefix }} === p ? 'bg-black text-white border-black shadow-sm' : 'border-gray-200 text-gray-600 hover:bg-gray-50'"
                                 class="px-3 py-1.5 border rounded-lg text-xs font-bold transition-all"
                                 x-text="p">
                             </button>
                         </template>
-                        <button @click="if(kameraPage < totalKameraPages) kameraPage++" :disabled="kameraPage === totalKameraPages"
-                            :class="kameraPage === totalKameraPages ? 'opacity-40 cursor-not-allowed' : 'hover:bg-gray-50 text-gray-700'"
+                        <button @click="if(page.{{ $prefix }} < totalPages('{{ $prefix }}')) page.{{ $prefix }}++" :disabled="page.{{ $prefix }} === totalPages('{{ $prefix }}')"
+                            :class="page.{{ $prefix }} === totalPages('{{ $prefix }}') ? 'opacity-40 cursor-not-allowed' : 'hover:bg-gray-50 text-gray-700'"
                             class="px-2.5 py-1.5 border border-gray-200 rounded-lg text-xs font-bold transition-colors shadow-sm">
                             &gt;
                         </button>
@@ -222,127 +248,28 @@
 
             <div class="lg:col-span-5">
                 <div class="flex justify-between items-center mb-5">
-                    <span class="text-[11px] font-bold text-[#2d6b50] uppercase tracking-wider">Merek Kamera</span>
-                    <span class="px-2 py-0.5 bg-gray-100 text-gray-500 rounded text-[10px] font-bold uppercase tracking-wider">{{ count($merekKamera) }} Item</span>
+                    <span class="text-[11px] font-bold text-[#2d6b50] uppercase tracking-wider">{{ $cat['merekLabel'] }}</span>
+                    <span class="px-2 py-0.5 bg-gray-100 text-gray-500 rounded text-[10px] font-bold uppercase tracking-wider">{{ count($cat['merekList']) }} Item</span>
                 </div>
                 <div class="grid grid-cols-4 sm:grid-cols-5 gap-4">
-                    @foreach($merekKamera as $merek)
-                    <div @click="openDetailMerek('{{ $merek->id }}', '{{ $merek->name }}')" class="flex flex-col items-center group cursor-pointer">
+                    @foreach($cat['merekList'] as $merek)
+                    <div @click="openDetailMerek('{{ $merek->id }}', '{{ $merek->nama_kategori }}')" class="flex flex-col items-center group cursor-pointer">
                         <div class="w-14 h-14 bg-gray-100 border border-transparent rounded-xl flex items-center justify-center text-gray-400 font-bold text-sm tracking-wide group-hover:border-gray-200 group-hover:bg-white group-hover:shadow-sm transition-all duration-200">
-                            @if($merek->logo)
-                            <img src="{{ asset('storage/' . $merek->logo) }}" alt="{{ $merek->name }}" class="w-10 h-10 object-contain">
+                            @if($merek->foto_logo)
+                            <img src="{{ asset('storage/' . $merek->foto_logo) }}" alt="{{ $merek->nama_kategori }}" class="w-10 h-10 object-contain">
                             @else
-                            {{ Str::limit($merek->name, 3, '') }}
+                            {{ Str::limit($merek->nama_kategori, 3, '') }}
                             @endif
                         </div>
                         <span class="mt-2 text-[10px] font-bold text-gray-400 uppercase tracking-wider text-center group-hover:text-gray-700 transition-colors truncate w-full">
-                            {{ $merek->name }}
+                            {{ $merek->nama_kategori }}
                         </span>
                     </div>
                     @endforeach
                 </div>
             </div>
         </div>
-
-        {{-- TAB CAMPING --}}
-        <div x-show="activeTab === 'camping'" class="grid grid-cols-1 lg:grid-cols-12 gap-12" style="display: none;">
-            <div class="lg:col-span-7 flex flex-col justify-between">
-                <div>
-                    <div class="flex justify-between items-center mb-4">
-                        <span class="text-[11px] font-bold text-[#2d6b50] uppercase tracking-wider">Tipe Peralatan</span>
-                        <span class="px-2 py-0.5 bg-gray-100 text-gray-500 rounded text-[10px] font-bold uppercase tracking-wider">{{ count($tipeCamping) }} Item</span>
-                    </div>
-
-                    <div class="relative mb-4">
-                        <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
-                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-4.35-4.35M17 11A6 6 0 1 1 5 11a6 6 0 0 1 12 0z" />
-                            </svg>
-                        </div>
-                        <input type="text" x-model="campingSearch" @input="campingPage = 1" placeholder="Cari tipe camping..."
-                            class="w-full pl-9 pr-3 py-2 text-sm bg-gray-50 border border-gray-100 rounded-xl text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-200 font-medium">
-                    </div>
-
-                    <div class="w-full text-left text-[11px] mb-3 flex justify-between font-bold text-gray-400 uppercase tracking-wider px-1">
-                        <div>Nama Tipe</div>
-                        <div>Aksi</div>
-                    </div>
-
-                    <div class="divide-y divide-gray-100 border-t border-gray-100">
-                        @foreach($tipeCamping as $index => $tipe)
-                        <div x-show="
-                                '{{ addslashes($tipe->name) }}'.toLowerCase().includes(campingSearch.toLowerCase()) &&
-                                (() => {
-                                    let filtered = [{{ $tipeCamping->map(fn($t) => "'".addslashes($t->name)."'")->join(',') }}]
-                                        .filter(n => n.toLowerCase().includes(campingSearch.toLowerCase()));
-                                    let pos = filtered.indexOf('{{ addslashes($tipe->name) }}');
-                                    return pos >= (campingPage - 1) * perPage && pos < campingPage * perPage;
-                                })()"
-                            class="flex justify-between items-center py-3.5 px-1 hover:bg-gray-50/30 transition-colors">
-                            <span class="font-bold text-gray-800 text-sm">{{ $tipe->name }}</span>
-                            <div class="flex gap-3 text-xs font-bold">
-                                <button class="text-gray-400 hover:text-gray-600 transition-colors">Edit</button>
-                                <form action="{{ route('admin.category.destroyType', $tipe->id) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus tipe ini?');" class="inline">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="text-red-500 hover:text-red-600 transition-colors">Hapus</button>
-                                </form>
-                            </div>
-                        </div>
-                        @endforeach
-                    </div>
-                </div>
-
-                {{-- Pagination Tipe Camping --}}
-                <div x-show="totalCampingPages > 1" class="flex items-center justify-between border-t border-gray-100 pt-4 mt-6">
-                    <span class="text-xs font-semibold text-gray-400 selection:bg-transparent">
-                        Halaman <span class="text-gray-900" x-text="campingPage"></span> dari <span class="text-gray-900" x-text="totalCampingPages"></span>
-                    </span>
-                    <div class="inline-flex gap-1">
-                        <button @click="if(campingPage > 1) campingPage--" :disabled="campingPage === 1"
-                            :class="campingPage === 1 ? 'opacity-40 cursor-not-allowed' : 'hover:bg-gray-50 text-gray-700'"
-                            class="px-2.5 py-1.5 border border-gray-200 rounded-lg text-xs font-bold transition-colors shadow-sm">
-                            &lt;
-                        </button>
-                        <template x-for="p in totalCampingPages" :key="p">
-                            <button @click="campingPage = p"
-                                :class="campingPage === p ? 'bg-black text-white border-black shadow-sm' : 'border-gray-200 text-gray-600 hover:bg-gray-50'"
-                                class="px-3 py-1.5 border rounded-lg text-xs font-bold transition-all"
-                                x-text="p">
-                            </button>
-                        </template>
-                        <button @click="if(campingPage < totalCampingPages) campingPage++" :disabled="campingPage === totalCampingPages"
-                            :class="campingPage === totalCampingPages ? 'opacity-40 cursor-not-allowed' : 'hover:bg-gray-50 text-gray-700'"
-                            class="px-2.5 py-1.5 border border-gray-200 rounded-lg text-xs font-bold transition-colors shadow-sm">
-                            &gt;
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            <div class="lg:col-span-5">
-                <div class="flex justify-between items-center mb-5">
-                    <span class="text-[11px] font-bold text-[#2d6b50] uppercase tracking-wider">Merek Camping</span>
-                    <span class="px-2 py-0.5 bg-gray-100 text-gray-500 rounded text-[10px] font-bold uppercase tracking-wider">{{ count($merekCamping) }} Item</span>
-                </div>
-                <div class="grid grid-cols-4 sm:grid-cols-5 gap-4">
-                    @foreach($merekCamping as $merek)
-                    <div @click="openDetailMerek('{{ $merek->id }}', '{{ $merek->name }}')" class="flex flex-col items-center group cursor-pointer">
-                        <div class="w-14 h-14 bg-gray-100 border border-transparent rounded-xl flex items-center justify-center text-gray-400 font-bold text-sm tracking-wide group-hover:border-gray-200 group-hover:bg-white group-hover:shadow-sm transition-all duration-200">
-                            @if($merek->logo)
-                            <img src="{{ asset('storage/' . $merek->logo) }}" alt="{{ $merek->name }}" class="w-10 h-10 object-contain">
-                            @else
-                            {{ Str::limit($merek->name, 3, '') }}
-                            @endif
-                        </div>
-                        <span class="mt-2 text-[10px] font-bold text-gray-400 uppercase tracking-wider text-center group-hover:text-gray-700 transition-colors truncate w-full">
-                            {{ $merek->name }}
-                        </span>
-                    </div>
-                    @endforeach
-                </div>
-            </div>
-        </div>
+        @endforeach
 
     </div>
 </div>
@@ -364,13 +291,13 @@
                 <div class="p-6 space-y-5">
                     <div>
                         <label for="name" class="block mb-2 text-[11px] font-bold text-gray-900 uppercase tracking-wider">Nama Tipe</label>
-                        <input type="text" name="name" id="name" class="bg-gray-50 border border-none text-gray-900 text-sm rounded-xl focus:ring-2 focus:ring-gray-200 block w-full p-3.5 placeholder-gray-400 placeholder:font-medium" placeholder="Contoh: Mirrorless, Dome Tent..." required>
+                        <input type="text" name="nama_kategori" id="name" class="bg-gray-50 border border-none text-gray-900 text-sm rounded-xl focus:ring-2 focus:ring-gray-200 block w-full p-3.5 placeholder-gray-400 placeholder:font-medium" placeholder="Contoh: Mirrorless, Dome Tent..." required>
                         <p class="mt-1.5 text-xs text-gray-400 font-medium">Pastikan nama tipe belum pernah didaftarkan sebelumnya.</p>
                     </div>
                     <div>
                         <label for="main_category" class="block mb-2 text-[11px] font-bold text-gray-900 uppercase tracking-wider">Kategori Terkait</label>
                         <div class="relative">
-                            <select id="main_category" name="main_category" class="bg-gray-50 border border-none text-gray-900 text-sm rounded-xl focus:ring-2 focus:ring-gray-200 block w-full p-3.5 appearance-none font-semibold pr-10 cursor-pointer">
+                            <select id="main_category" name="kategori_utama" class="bg-gray-50 border border-none text-gray-900 text-sm rounded-xl focus:ring-2 focus:ring-gray-200 block w-full p-3.5 appearance-none font-semibold pr-10 cursor-pointer">
                                 <option value="Kamera">Kamera</option>
                                 <option value="Camping">Camping</option>
                             </select>
@@ -413,7 +340,7 @@
                     <div>
                         <label for="main_category_brand" class="block mb-2 text-[11px] font-bold text-gray-900 uppercase tracking-wider">Kategori Terkait</label>
                         <div class="relative">
-                            <select id="main_category_brand" name="main_category" class="bg-gray-50 border border-none text-gray-900 text-sm rounded-xl focus:ring-2 focus:ring-gray-200 block w-full p-3.5 appearance-none font-semibold pr-10 cursor-pointer">
+                            <select id="main_category_brand" name="kategori_utama" class="bg-gray-50 border border-none text-gray-900 text-sm rounded-xl focus:ring-2 focus:ring-gray-200 block w-full p-3.5 appearance-none font-semibold pr-10 cursor-pointer">
                                 <option value="Kamera">Kamera</option>
                                 <option value="Camping">Camping</option>
                             </select>
@@ -437,12 +364,12 @@
                                     <p class="text-sm font-bold text-gray-900">Klik untuk mengunggah logo</p>
                                     <p class="text-[11px] font-medium text-gray-400 mt-1">SVG, PNG, atau JPG (Maks. 2MB)</p>
                                 </div>
-                                <input id="logo_merek" name="logo" type="file" class="hidden" accept="image/*" />
+                                <input id="logo_merek" name="foto_logo" type="file" class="hidden" accept="image/*" />
                             </label>
                         </div>
                     </div>
                     <div class="flex items-center">
-                        <input id="is_active" name="is_active" type="checkbox" checked class="w-4 h-4 text-black bg-gray-50 border-gray-300 rounded-md focus:ring-0 focus:ring-offset-0 checked:bg-black accent-black cursor-pointer">
+                        <input id="is_active" name="aktif" type="checkbox" checked class="w-4 h-4 text-black bg-gray-50 border-gray-300 rounded-md focus:ring-0 focus:ring-offset-0 checked:bg-black accent-black cursor-pointer">
                         <label for="is_active" class="ms-2 text-sm font-bold text-gray-800 cursor-pointer selection:bg-transparent">Aktifkan Merek untuk produk baru</label>
                     </div>
                 </div>
@@ -517,7 +444,6 @@
 <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 <script>
     document.addEventListener('DOMContentLoaded', () => {
-        // Hilang otomatis dalam 4 detik jika alert ada
         const successToast = document.getElementById('toast-success');
         const dangerToast = document.getElementById('toast-danger');
 

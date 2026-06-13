@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('products', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('category'); // Kamera atau Camping
+            $table->string('Kategori_data'); // Kamera atau Camping
             $table->decimal('harga_per_hari', 15, 2);
             $table->string('image')->nullable();
             $table->integer('stok')->default(0);

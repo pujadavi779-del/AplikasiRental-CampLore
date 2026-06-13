@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Barang;
-use App\Models\Category;
+use App\Models\Kategori_data;
 
 class CampingController extends Controller
 {
@@ -22,24 +22,24 @@ class CampingController extends Controller
 
         // FILTER TIPE
         if ($request->type) {
-            $query->where('tipe_kategori_id', $request->type);
+            $query->where('id_tipe_kategori', $request->type);
         }
 
         // FILTER MEREK
         if ($request->brand) {
-            $query->where('merek_kategori_id', $request->brand);
+            $query->where('id_merek_kategori', $request->brand);
         }
 
         $items = $query->get();
 
-        $filterTipes = Category::where('main_category', 'Camping')
-            ->where('attribute_type', 'Tipe')
-            ->where('is_active', 1)
+        $filterTipes = Kategori_data::where('kategori_utama', 'Camping')
+            ->where('jenis_atribut', 'Tipe')
+            ->where('aktif', 1)
             ->get();
 
-        $filterMereks = Category::where('main_category', 'Camping')
-            ->where('attribute_type', 'Merek')
-            ->where('is_active', 1)
+        $filterMereks = Kategori_data::where('kategori_utama', 'Camping')
+            ->where('jenis_atribut', 'Merek')
+            ->where('aktif', 1)
             ->get();
 
         return view('pages.landing.kategori.kategori_LP', [
@@ -57,14 +57,14 @@ class CampingController extends Controller
     {
         $product = Barang::findOrFail($id);
 
-        $types = Category::where('main_category', 'Camping')
-            ->where('attribute_type', 'Tipe')
-            ->where('is_active', 1)
+        $types = Kategori_data::where('kategori_utama', 'Camping')
+            ->where('jenis_atribut', 'Tipe')
+            ->where('aktif', 1)
             ->get();
 
-        $brands = Category::where('main_category', 'Camping')
-            ->where('attribute_type', 'Merek')
-            ->where('is_active', 1)
+        $brands = Kategori_data::where('kategori_utama', 'Camping')
+            ->where('jenis_atribut', 'Merek')
+            ->where('aktif', 1)
             ->get();
 
         return view('pages.admin.products.edit', compact(
@@ -139,14 +139,14 @@ class CampingController extends Controller
 
     public function create()
     {
-        $types = Category::where('main_category', 'Camping')
-            ->where('attribute_type', 'Tipe')
-            ->where('is_active', 1)
+        $types = Kategori_data::where('kategori_utama', 'Camping')
+            ->where('jenis_atribut', 'Tipe')
+            ->where('aktif', 1)
             ->get();
 
-        $brands = Category::where('main_category', 'Camping')
-            ->where('attribute_type', 'Merek')
-            ->where('is_active', 1)
+        $brands = Kategori_data::where('kategori_utama', 'Camping')
+            ->where('jenis_atribut', 'Merek')
+            ->where('aktif', 1)
             ->get();
 
         return view('pages.admin.products.create', compact(
@@ -161,14 +161,14 @@ class CampingController extends Controller
         $request->validate([
             'name' => 'required',
             'kategori' => 'required',
-            'tipe_kategori_id' => 'required',
-            'merek_kategori_id' => 'required',
+            'id_tipe_kategori' => 'required',
+            'id_merek_kategori' => 'required',
             'harga_per_hari' => 'required',
             'stok' => 'required',
             'deskripsi' => 'required',
             'sorotan' => 'required',
             'isi_paket' => 'required',
-            'gambar_barang' => 'required|gambar_barang',
+            'gambar_barang' => 'required|image',
         ]);
 
         $imagePath = null;
@@ -184,8 +184,8 @@ class CampingController extends Controller
         Barang::create([
             'name' => $request->name,
             'kategori' => $request->kategori,
-            'tipe_kategori_id' => $request->tipe_kategori_id,
-            'merek_kategori_id' => $request->merek_kategori_id,
+            'id_tipe_kategori' => $request->id_tipe_kategori,
+            'id_merek_kategori' => $request->id_merek_kategori,
             'harga_per_hari' => $request->harga_per_hari,
             'stok' => $request->stok,
             'deskripsi' => $request->deskripsi,
@@ -206,21 +206,21 @@ class CampingController extends Controller
         $request->validate([
             'name' => 'required',
             'kategori' => 'required',
-            'tipe_kategori_id' => 'required',
-            'merek_kategori_id' => 'required',
+            'id_tipe_kategori' => 'required',
+            'id_merek_kategori' => 'required',
             'harga_per_hari' => 'required',
             'stok' => 'required',
             'deskripsi' => 'required',
             'sorotan' => 'required',
             'isi_paket' => 'required',
-            'gambar_barang' => 'nullable|gambar_barang',
+            'gambar_barang' => 'nullable|image',
         ]);
 
         $data = [
             'name' => $request->name,
             'kategori' => $request->kategori,
-            'tipe_kategori_id' => $request->tipe_kategori_id,
-            'merek_kategori_id' => $request->merek_kategori_id,
+            'id_tipe_kategori' => $request->id_tipe_kategori,
+            'id_merek_kategori' => $request->id_merek_kategori,
             'harga_per_hari' => $request->harga_per_hari,
             'stok' => $request->stok,
             'deskripsi' => $request->deskripsi,

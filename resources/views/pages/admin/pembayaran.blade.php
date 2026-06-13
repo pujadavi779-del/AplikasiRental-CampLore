@@ -148,7 +148,7 @@
 
                         $orderItems = $allOrderItems->map(fn($o) => [
                             'nama'     => $o->product->name     ?? 'Produk',
-                            'kategori' => $o->product->category ?? 'Lainnya',
+                            'kategori' => $o->product->Kategori_data ?? 'Lainnya',
                         ]);
                     @endphp
 

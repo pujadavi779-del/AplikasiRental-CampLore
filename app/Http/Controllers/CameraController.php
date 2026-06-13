@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Barang;
-use App\Models\Category;
+use App\Models\Kategori_data;
 use Illuminate\Support\Facades\Storage; // Tambahkan jika pakai upload file resmi
 
 class CameraController extends Controller
@@ -15,24 +15,24 @@ class CameraController extends Controller
 
         // FILTER TIPE
         if ($request->type) {
-            $query->where('tipe_kategori_id', $request->type);
+            $query->where('id_tipe_kategori', $request->type);
         }
 
         // FILTER MEREK
         if ($request->brand) {
-            $query->where('merek_kategori_id', $request->brand);
+            $query->where('id_merek_kategori', $request->brand);
         }
 
         $items = $query->get();
 
-        $filterTipes = Category::where('main_category', 'Kamera')
-            ->where('attribute_type', 'Tipe')
-            ->where('is_active', 1)
+        $filterTipes = Kategori_data::where('kategori_utama', 'Kamera')
+            ->where('jenis_atribut', 'Tipe')
+            ->where('aktif', 1)
             ->get();
 
-        $filterMereks = Category::where('main_category', 'Kamera')
-            ->where('attribute_type', 'Merek')
-            ->where('is_active', 1)
+        $filterMereks = Kategori_data::where('kategori_utama', 'Kamera')
+            ->where('jenis_atribut', 'Merek')
+            ->where('aktif', 1)
             ->get();
 
         return view('pages.landing.kategori.kategori_LP', [
@@ -54,8 +54,8 @@ class CameraController extends Controller
     public function create()
     {
         // Ambil data kategori untuk dropdown di form tambah kamera
-        $types = Category::where('main_category', 'Kamera')->where('attribute_type', 'Tipe')->get();
-        $brands = Category::where('main_category', 'Kamera')->where('attribute_type', 'Merek')->get();
+        $types = Kategori_data::where('kategori_utama', 'Kamera')->where('jenis_atribut', 'Tipe')->get();
+        $brands = Kategori_data::where('kategori_utama', 'Kamera')->where('jenis_atribut', 'Merek')->get();
         
         return view('camera.create_camera', compact('types', 'brands'));
     }
@@ -74,8 +74,8 @@ class CameraController extends Controller
 
         Barang::create([
             'name'              => $request->name,
-            'tipe_kategori_id'  => $request->tipe_kategori_id,  // Hubungkan foreign key tipe
-            'merek_kategori_id' => $request->merek_kategori_id, // Hubungkan foreign key merek
+            'id_tipe_kategori'  => $request->id_tipe_kategori,  // Hubungkan foreign key tipe
+            'id_merek_kategori' => $request->id_merek_kategori, // Hubungkan foreign key merek
             'stok'             => $request->stok,
             'harga_per_hari'     => $request->price,
             'kategori'          => 'Kamera',
@@ -91,8 +91,8 @@ class CameraController extends Controller
     public function edit($id)
     {
         $item = Barang::findOrFail($id);
-        $types = Category::where('main_category', 'Kamera')->where('attribute_type', 'Tipe')->get();
-        $brands = Category::where('main_category', 'Kamera')->where('attribute_type', 'Merek')->get();
+        $types = Kategori_data::where('kategori_utama', 'Kamera')->where('jenis_atribut', 'Tipe')->get();
+        $brands = Kategori_data::where('kategori_utama', 'Kamera')->where('jenis_atribut', 'Merek')->get();
         
         return view('camera.edit_camera', compact('item', 'types', 'brands'));
     }
@@ -115,8 +115,8 @@ class CameraController extends Controller
 
         $item->update([
             'name'              => $request->name,
-            'tipe_kategori_id'  => $request->tipe_kategori_id,  // Update foreign key tipe
-            'merek_kategori_id' => $request->merek_kategori_id, // Update foreign key merek
+            'id_tipe_kategori'  => $request->id_tipe_kategori,  // Update foreign key tipe
+            'id_merek_kategori' => $request->id_merek_kategori, // Update foreign key merek
             'stok'             => $request->stok,
             'harga_per_hari'     => $request->price,
             'gambar_barang'             => $imagePath,

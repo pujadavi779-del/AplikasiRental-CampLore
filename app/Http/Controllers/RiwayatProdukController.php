@@ -22,8 +22,8 @@ class RiwayatProdukController extends Controller
                 'id' => $product->id,
                 'nama' => $product->name,
                 'kategori' => $product->kategori,
-                'img' => $product->image
-                    ? asset($product->image)
+                'img' => $product->gambar_barang
+                    ? asset($product->gambar_barang)
                     : asset('img_foto/no-image.png'),
 
                 'totalSewa' => $orders->count(),

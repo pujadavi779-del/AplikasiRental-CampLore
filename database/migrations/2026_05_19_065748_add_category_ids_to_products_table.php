@@ -12,8 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('products', function (Blueprint $table) {
-            $table->foreignId('tipe_kategori_id')->nullable()->after('id')->constrained('categories')->onDelete('set null');
-            $table->foreignId('merek_kategori_id')->nullable()->after('tipe_kategori_id')->constrained('categories')->onDelete('set null');
+            $table->foreignId('id_tipe_kategori')->nullable()->after('id')->constrained('Kategori_data')->onDelete('set null');
+            $table->foreignId('merek_kategori_id')->nullable()->after('id_tipe_kategori')->constrained('Kategori_data')->onDelete('set null');
         });
     }
 

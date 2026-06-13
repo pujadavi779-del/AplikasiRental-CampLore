@@ -11,12 +11,12 @@ class Barang extends Model
     use HasFactory;
     protected $table = 'barang';
     protected $fillable = [
-        'tipe_kategori_id',
-        'merek_kategori_id',
+        'id_tipe_kategori',
+        'id_merek_kategori',
         'name',
         'kategori',
         'harga_per_hari',
-        'image',
+        'gambar_barang',
         'deskripsi',
         'sorotan',
         'isi_paket',
@@ -29,7 +29,7 @@ class Barang extends Model
      */
     public function typeCategory(): BelongsTo
     {
-        return $this->belongsTo(Category::class, 'tipe_kategori_id');
+        return $this->belongsTo(Kategori_data::class, 'id_tipe_kategori');
     }
 
     /**
@@ -37,7 +37,7 @@ class Barang extends Model
      */
     public function brandCategory(): BelongsTo
     {
-        return $this->belongsTo(Category::class, 'merek_kategori_id');
+        return $this->belongsTo(Kategori_data::class, 'id_merek_kategori');
     }
 
     public function orders()

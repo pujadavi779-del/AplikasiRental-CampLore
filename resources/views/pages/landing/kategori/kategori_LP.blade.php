@@ -5,14 +5,14 @@
 {{--
     VARIABEL YANG DIBUTUHKAN DARI CONTROLLER:
     - $items       : koleksi produk
-    - $category    : string, misal 'camera' atau 'camping'
+    - $Kategori_data    : string, misal 'camera' atau 'camping'
     - $title       : string, misal 'Kamera' atau 'Camping'
     - $emptyIcon   : string emoji, misal '📷' atau '🏕️'
 
     CONTOH CONTROLLER:
     return view('catalog_LP', [
         'items'      => $items,
-        'category'   => 'camera',
+        'Kategori_data'   => 'camera',
         'title'      => 'Kamera',
         'emptyIcon'  => '📷',
     ]);
@@ -35,7 +35,7 @@
 
     <div class="flex flex-col lg:flex-row gap-8 px-4 lg:px-10 pb-16 max-w-[1400px] mx-auto">
 
-        {{-- SIDEBAR — dipilih berdasarkan $category --}}
+        {{-- SIDEBAR — dipilih berdasarkan $Kategori_data --}}
         @include('components.catalog.sidebar_filter')
 
         {{-- PRODUCT GRID --}}

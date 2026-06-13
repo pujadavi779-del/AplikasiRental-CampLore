@@ -9,12 +9,12 @@ class ProductSeeder extends Seeder
 {
     public function run()
     {
-        $categories = ['Kamera', 'Camping'];
+        $Kategori_data = ['Kamera', 'Camping'];
 
         for ($i = 1; $i <= 30; $i++) {
             Product::create([
                 'name' => 'Product ' . $i,
-                'category' => $categories[array_rand($categories)],
+                'Kategori_data' => $Kategori_data[array_rand($Kategori_data)],
                 'harga_per_hari' => rand(50000, 200000),
                 'image' => 'https://picsum.photos/200?random=' . $i
             ]);

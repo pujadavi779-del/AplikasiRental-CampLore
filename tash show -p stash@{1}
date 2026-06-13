@@ -102,7 +102,7 @@
      return view('pages.landing.about');[m
  })->name('about');[m
  [m
-[32m+[m[32mRoute::get('/book/{category}', [GearController::class, 'index'])->name('book.gear');[m
+[32m+[m[32mRoute::get('/book/{Kategori_data}', [GearController::class, 'index'])->name('book.gear');[m
  [m
  [m
  // Camera Landing Page[m

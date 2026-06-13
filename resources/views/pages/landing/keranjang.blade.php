@@ -58,7 +58,7 @@
                     </div>
                     <div class="min-w-0">
                         <p class="text-sm font-bold text-gray-900 truncate">{{ $cart->product->name ?? '-' }}</p>
-                        <p class="text-[11px] font-semibold text-[#FF6B95] uppercase tracking-wide mt-0.5">Kategori: {{ $cart->product->category ?? '-' }}</p>
+                        <p class="text-[11px] font-semibold text-[#FF6B95] uppercase tracking-wide mt-0.5">Kategori: {{ $cart->product->Kategori_data ?? '-' }}</p>
                         <p class="text-[10px] font-medium text-gray-500 uppercase tracking-wide">Merek: {{ $cart->product->deskripsi ?? '-' }}</p>
                     </div>
                 </div>
@@ -106,7 +106,7 @@
             </div>
             <div class="flex-1 min-w-0">
                 <p class="text-sm font-bold text-gray-900 truncate">{{ $cart->product->name ?? '-' }}</p>
-                <p class="text-[11px] font-semibold text-[#FF6B95] uppercase tracking-wide mt-0.5">{{ $cart->product->category ?? '-' }}</p>
+                <p class="text-[11px] font-semibold text-[#FF6B95] uppercase tracking-wide mt-0.5">{{ $cart->product->Kategori_data ?? '-' }}</p>
                 <p class="text-sm font-bold text-gray-800 mt-1">Rp{{ number_format($cart->product->harga_per_hari ?? 0, 0, ',', '.') }}<span class="text-xs font-normal text-gray-400">/hari</span></p>
             </div>
             <button onclick="removeItem(this)" class="p-1.5 text-gray-300 hover:text-red-500 transition flex-shrink-0">

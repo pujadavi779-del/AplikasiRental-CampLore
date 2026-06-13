@@ -230,7 +230,7 @@ DROP TABLE IF EXISTS `items`;
 CREATE TABLE `items` (
   `id` bigint unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `category` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `Kategori_data` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `stock` int NOT NULL,
   `price` int NOT NULL,
   `deskripsi` text COLLATE utf8mb4_unicode_ci NOT NULL,
@@ -434,7 +434,7 @@ DROP TABLE IF EXISTS `products`;
 CREATE TABLE `products` (
   `id` bigint unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `category` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `Kategori_data` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `price_per_day` decimal(15,2) NOT NULL,
   `image` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `deskripsi` text COLLATE utf8mb4_unicode_ci,

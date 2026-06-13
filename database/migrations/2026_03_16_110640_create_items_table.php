@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('items', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('category'); // Ini kolom yang dicari-cari tadi
+            $table->string('Kategori_data'); // Ini kolom yang dicari-cari tadi
             $table->integer('stok');
             $table->integer('price');
             $table->text('deskripsi');

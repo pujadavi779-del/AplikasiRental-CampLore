@@ -450,7 +450,7 @@
                     $productCategory = null;
                     if ($productId) {
                     $prod = \App\Models\Product::find($productId);
-                    $productCategory = $prod ? strtolower($prod->category) : null;
+                    $productCategory = $prod ? strtolower($prod->Kategori_data) : null;
                     }
                     $reviewRoute = $productCategory === 'kamera'
                     ? route('camera.show', $productId)

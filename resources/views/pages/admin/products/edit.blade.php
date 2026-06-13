@@ -1,3 +1,8 @@
+@php
+    $NavParent = 'Manajemen Rental';
+    $section = 'Mengubah Produk';
+@endphp
+
 @extends('layouts.admin')
 
 @section('title', 'Edit Produk - CampLore')
@@ -16,13 +21,7 @@
     }
 </style>
 
-{{-- Navbar Header --}}
-<div class="mb-6">
-    @include('components.navbar_judul_LP', [
-    'NavParent' => 'Manajemen Rental',
-    'section' => 'Mengubah Produk'
-    ])
-</div>
+
 
 <div class="max-w-full">
 
@@ -100,20 +99,20 @@
                         <label class="block text-[11px] font-black text-gray-400 uppercase tracking-widest mb-2">
                             Kategori
                         </label>
-                        <select name="category" required
+                        <select name="kategori" required
                             class="w-full px-4 py-3 bg-gray-50 border border-[#eef4f0] rounded-xl text-sm
                                        focus:ring-2 focus:ring-[#22543D]/20 focus:border-[#22543D] outline-none
                                        transition-all appearance-none
-                                       @error('category') border-red-400 @enderror">
+                                       @error('Kategori_data') border-red-400 @enderror">
                             <option value="" disabled>Pilih Kategori</option>
                             @foreach(['Kamera','Camping','Lensa','Aksesoris'] as $cat)
                             <option value="{{ $cat }}"
-                                {{ old('category', $product->category) === $cat ? 'selected' : '' }}>
+                                {{ old('kategori', $product->kategori) === $cat ? 'selected' : '' }}>
                                 {{ $cat }}
                             </option>
                             @endforeach
                         </select>
-                        @error('category')
+                        @error('Kategori_data')
                         <p class="mt-1 text-[10px] text-red-500 font-bold">{{ $message }}</p>
                         @enderror
                     </div>
@@ -124,15 +123,15 @@
                             Tipe
                         </label>
 
-                        <select name="tipe_kategori_id" required
+                        <select name="id_tipe_kategori" required
                             class="w-full px-4 py-3 bg-gray-50 border border-[#eef4f0] rounded-xl text-sm">
 
                             <option value="">Pilih Tipe</option>
 
                             @foreach($types as $type)
                             <option value="{{ $type->id }}"
-                                {{ old('tipe_kategori_id', $product->tipe_kategori_id) == $type->id ? 'selected' : '' }}>
-                                {{ $type->name }}
+                                {{ old('id_tipe_kategori', $product->id_tipe_kategori) == $type->id ? 'selected' : '' }}>
+                                {{ $type->nama_kategori }}
                             </option>
                             @endforeach
                         </select>
@@ -144,15 +143,15 @@
                             Merek
                         </label>
 
-                        <select name="merek_kategori_id" required
+                        <select name="id_merek_kategori" required
                             class="w-full px-4 py-3 bg-gray-50 border border-[#eef4f0] rounded-xl text-sm">
 
                             <option value="">Pilih Merek</option>
 
                             @foreach($brands as $brand)
                             <option value="{{ $brand->id }}"
-                                {{ old('merek_kategori_id', $product->merek_kategori_id) == $brand->id ? 'selected' : '' }}>
-                                {{ $brand->name }}
+                                {{ old('id_merek_kategori', $product->id_merek_kategori) == $brand->id ? 'selected' : '' }}>
+                                {{ $brand->nama_kategori }}
                             </option>
                             @endforeach
                         </select>

@@ -54,21 +54,21 @@
                 {{-- ALL --}}
                 <a href="{{ route('admin.products') }}"
                     class="px-4 py-2 text-xs rounded-lg font-bold transition-colors
-                    {{ !request('category') ? 'bg-[#22543D] text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200' }}">
+                    {{ !request('Kategori') ? 'bg-[#22543D] text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200' }}">
                     Semua
                 </a>
 
                 {{-- KAMERA --}}
-                <a href="{{ route('admin.products', ['category' => 'Kamera']) }}"
+                <a href="{{ route('admin.products', ['Kategori' => 'Kamera']) }}"
                     class="px-4 py-2 text-xs rounded-lg font-bold transition-colors
-                    {{ request('category') == 'Kamera' ? 'bg-[#22543D] text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200' }}">
+                    {{ request('Kategori') == 'Kamera' ? 'bg-[#22543D] text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200' }}">
                     Kamera
                 </a>
 
                 {{-- CAMPING --}}
-                <a href="{{ route('admin.products', ['category' => 'Camping']) }}"
+                <a href="{{ route('admin.products', ['Kategori' => 'Camping']) }}"
                     class="px-4 py-2 text-xs rounded-lg font-bold transition-colors
-                    {{ request('category') == 'Camping' ? 'bg-[#22543D] text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200' }}">
+                    {{ request('Kategori') == 'Camping' ? 'bg-[#22543D] text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200' }}">
                     Camping
                 </a>
             </div>
@@ -118,7 +118,7 @@
                         {{-- KATEGORI --}}
                         <td class="px-6 py-4 text-center vertical-align-middle">
                             <span class="px-3 py-1 bg-[#f1f8f4] text-[#22543D] text-[10px] font-bold rounded-lg border border-[#d7e6de] inline-block min-w-[70px]">
-                                {{ $product->category }}
+                                {{ $product->kategori }}
                             </span>
                         </td>
 

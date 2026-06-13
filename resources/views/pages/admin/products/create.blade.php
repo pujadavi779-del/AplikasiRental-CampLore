@@ -1,3 +1,8 @@
+@php
+    $NavParent = 'Product Management';
+    $section = 'Tambah Produk';
+@endphp
+
 @extends('layouts.admin')
 
 @section('title', 'Tambah Produk Baru - CampLore')
@@ -15,14 +20,6 @@
         font-family: 'Playfair Display', serif !important;
     }
 </style>
-
-{{-- Navbar Header --}}
-<div class="mb-6">
-    @include('components.navbar_judul_LP', [
-    'NavParent' => 'Product Management',
-    'section' => 'Tambah Produk'
-    ])
-</div>
 
 <div class="max-w-full">
     <div class="bg-white rounded-[28px] border border-[#d7e6de] shadow-sm overflow-hidden">
@@ -79,7 +76,7 @@
 
                     <div>
                         <label class="block text-[11px] font-black text-gray-400 uppercase tracking-widest mb-2">Kategori</label>
-                        <select name="category" required
+                        <select name="Kategori_data" required
                             class="w-full px-4 py-3 bg-gray-50 border border-[#eef4f0] rounded-xl text-sm focus:ring-2 focus:ring-[#22543D]/20 focus:border-[#22543D] outline-none transition-all appearance-none">
                             <option value="" disabled selected>Pilih Kategori</option>
                             <option value="Kamera">Kamera</option>
@@ -95,7 +92,7 @@
                             Tipe
                         </label>
 
-                        <select name="tipe_kategori_id" required
+                        <select name="id_tipe_kategori" required
                             class="w-full px-4 py-3 bg-gray-50 border border-[#eef4f0] rounded-xl text-sm">
 
                             <option value="">Pilih Tipe</option>

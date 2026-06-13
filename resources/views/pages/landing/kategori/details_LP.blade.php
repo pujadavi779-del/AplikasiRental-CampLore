@@ -5,14 +5,14 @@
 {{--
     VARIABEL YANG DIBUTUHKAN DARI CONTROLLER:
     - $item          : object produk
-    - $category      : string, misal 'camera' atau 'camping'
+    - $Kategori_data      : string, misal 'camera' atau 'camping'
     - $categoryLabel : string label untuk breadcrumb, misal 'Kamera' atau 'Camping'
     - $accordions    : array accordion (opsional, kalau tidak dikirim akan pakai default di bawah)
 
     CONTOH CONTROLLER (camera):
     return view('catalog_details', [
         'item'          => $item,
-        'category'      => 'camera',
+        'Kategori_data'      => 'camera',
         'categoryLabel' => 'Kamera',
         'accordions'    => [
             ['title' => 'Tentang Kamera ini',  'deskripsi' => $item->deskripsi ?? 'Deskripsi tidak tersedia.', 'open' => true],
@@ -24,7 +24,7 @@
     CONTOH CONTROLLER (camping):
     return view('catalog_details', [
         'item'          => $item,
-        'category'      => 'camping',
+        'Kategori_data'      => 'camping',
         'categoryLabel' => 'Camping',
         'accordions'    => [
             ['title' => 'Tentang Alat ini', 'deskripsi' => $item->description ?? 'Deskripsi belum tersedia.', 'open' => true],
@@ -169,7 +169,7 @@ $accordions = [
                 <button onclick="scrollThumbs(-1)" class="...">▲</button>
                 <div id="thumbList" class="flex flex-col gap-2 overflow-hidden" style="max-height:400px;">
                     @foreach($relatedItems as $related)
-                    <a href="{{ route($category . '.show', $related->id) }}" class="block rounded-lg overflow-hidden border-2 border-gray-200 hover:border-gray-900 transition-all" style="width:72px;height:72px;">
+                    <a href="{{ route($Kategori_data . '.show', $related->id) }}" class="block rounded-lg overflow-hidden border-2 border-gray-200 hover:border-gray-900 transition-all" style="width:72px;height:72px;">
                 <img src="{{ str_starts_with($related->gambar_barang, 'http') ? $related->gambar_barang : asset('storage/'.$related->gambar_barang) }}" class="w-full h-full object-cover">
                 </a>
                 @endforeach

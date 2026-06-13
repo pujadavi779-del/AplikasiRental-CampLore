@@ -190,16 +190,16 @@ Route::prefix('admin')->middleware('admin.auth')->name('admin.')->group(function
     Route::get('/kategori_produk',                  [KategoriController::class, 'index'])->name('kategori_produk');
     Route::post('/kategori/tipe',                   [KategoriController::class, 'storeType'])->name('category.storeType');
     Route::post('/kategori/merek',                  [KategoriController::class, 'storeBrand'])->name('category.storeBrand');
-    Route::put('/kategori/tipe/{category}',         [KategoriController::class, 'updateType'])->name('category.updateType');
-    Route::put('/kategori/merek/{category}',        [KategoriController::class, 'updateBrand'])->name('category.updateBrand');
-    Route::delete('/kategori/tipe/{category}',      [KategoriController::class, 'destroyType'])->name('category.destroyType');
-    Route::delete('/kategori/merek/{category}',     [KategoriController::class, 'destroyBrand'])->name('category.destroyBrand');
-    Route::get('/kategori/merek/{category}/detail', [KategoriController::class, 'brandDetail'])->name('category.brandDetail');
+    Route::put('/kategori/tipe/{kategori}',         [KategoriController::class, 'updateType'])->name('category.updateType');
+    Route::put('/kategori/merek/{kategori}',        [KategoriController::class, 'updateBrand'])->name('category.updateBrand');
+    Route::delete('/kategori/tipe/{kategori}',      [KategoriController::class, 'destroyType'])->name('category.destroyType');
+    Route::delete('/kategori/merek/{kategori}',     [KategoriController::class, 'destroyBrand'])->name('category.destroyBrand');
+    Route::get('/kategori/merek/{kategori}/detail', [KategoriController::class, 'brandDetail'])->name('category.brandDetail');
 
     // Products
     Route::get('/products', function (Request $request) {
         $query = Barang::query();
-        if ($request->category) $query->where('category', $request->category);
+        if ($request->kategori) $query->where('kategori', $request->kategori);
         if ($request->search)   $query->where('name', 'like', '%' . $request->search . '%');
         $products = $query->paginate(10)->withQueryString();
         return view('pages.admin.products', compact('products'));

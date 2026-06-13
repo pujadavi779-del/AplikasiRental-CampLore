@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Barang;
-use App\Models\Category;
+use App\Models\Kategori_data;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -17,12 +17,12 @@ class ProductController extends Controller
     */
     public function create()
     {
-        $types = Category::where('attribute_type', 'Tipe')
-            ->where('is_active', 1)
+        $types = Kategori_data::where('jenis_atribut', 'Tipe')
+            ->where('aktif', 1)
             ->get();
 
-        $brands = Category::where('attribute_type', 'Merek')
-            ->where('is_active', 1)
+        $brands = Kategori_data::where('jenis_atribut', 'Merek')
+            ->where('aktif', 1)
             ->get();
 
         return view('pages.admin.products.create', compact('types', 'brands'));
@@ -43,9 +43,9 @@ class ProductController extends Controller
             'deskripsi' => 'required|string',
             'sorotan' => 'required|string',
             'isi_paket' => 'required|string',
-            'tipe_kategori_id' => 'nullable|exists:categories,id',
-            'merek_kategori_id' => 'nullable|exists:categories,id',
-            'gambar_barang' => 'nullable|gambar_barang|mimes:jpeg,png,jpg|max:2048',
+            'id_tipe_kategori' => 'nullable|exists:Kategori_data,id',
+            'merek_kategori_id' => 'nullable|exists:Kategori_data,id',
+            'gambar_barang' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
         ]);
 
         $imagePath = null;
@@ -85,7 +85,7 @@ class ProductController extends Controller
             'deskripsi' => $request->deskripsi,
             'sorotan' => $request->sorotan,
             'isi_paket' => $request->isi_paket,
-            'tipe_kategori_id' => $request->tipe_kategori_id,
+            'id_tipe_kategori' => $request->id_tipe_kategori,
             'merek_kategori_id' => $request->merek_kategori_id,
             'gambar_barang' => $imagePath,
         ]);
@@ -104,12 +104,12 @@ class ProductController extends Controller
     {
         $product = Barang::findOrFail($id);
 
-        $types = Category::where('attribute_type', 'Tipe')
-            ->where('is_active', 1)
+        $types = Kategori_data::where('jenis_atribut', 'Tipe')
+            ->where('aktif', 1)
             ->get();
 
-        $brands = Category::where('attribute_type', 'Merek')
-            ->where('is_active', 1)
+        $brands = Kategori_data::where('jenis_atribut', 'Merek')
+            ->where('aktif', 1)
             ->get();
 
         return view('pages.admin.products.edit', compact(
@@ -138,10 +138,10 @@ class ProductController extends Controller
             'sorotan'         => 'nullable|string',
             'isi_paket'          => 'nullable|string',
 
-            'tipe_kategori_id'   => 'nullable|exists:categories,id',
-            'merek_kategori_id'  => 'nullable|exists:categories,id',
+            'id_tipe_kategori'   => 'nullable|exists:Kategori_data,id',
+            'merek_kategori_id'  => 'nullable|exists:Kategori_data,id',
 
-            'gambar_barang'              => 'nullable|gambar_barang|mimes:jpeg,png,jpg|max:2048',
+            'gambar_barang'              => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
         ]);
 
         $data = [
@@ -154,7 +154,7 @@ class ProductController extends Controller
             'sorotan'         => $request->sorotan,
             'isi_paket'          => $request->isi_paket,
 
-            'tipe_kategori_id'   => $request->tipe_kategori_id,
+            'id_tipe_kategori'   => $request->id_tipe_kategori,
             'merek_kategori_id'  => $request->merek_kategori_id,
         ];
 

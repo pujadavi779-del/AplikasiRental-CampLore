@@ -132,7 +132,7 @@
                         </div>
                         <div class="min-w-0">
                             <p class="text-sm font-bold text-gray-900 truncate">{{ $cart->product->name ?? '-' }}</p>
-                            <p class="text-[11px] font-semibold text-[#FF6B95] mt-0.5">Kategori: {{ $cart->product->category ?? '-' }}</p>
+                            <p class="text-[11px] font-semibold text-[#FF6B95] mt-0.5">Kategori: {{ $cart->product->Kategori_data ?? '-' }}</p>
                         </div>
                     </div>
                     <div class="text-center">
@@ -159,7 +159,7 @@
                     </div>
                     <div class="flex-1 min-w-0">
                         <p class="text-sm font-bold text-gray-900 truncate">{{ $cart->product->name ?? '-' }}</p>
-                        <p class="text-[11px] font-semibold text-[#FF6B95] mt-0.5">{{ $cart->product->category ?? '-' }}</p>
+                        <p class="text-[11px] font-semibold text-[#FF6B95] mt-0.5">{{ $cart->product->Kategori_data ?? '-' }}</p>
                         <div class="flex items-center justify-between mt-1.5">
                             <span class="text-sm font-bold text-gray-700">
                                 Rp{{ number_format($cart->product->harga_per_hari ?? 0, 0, ',', '.') }}

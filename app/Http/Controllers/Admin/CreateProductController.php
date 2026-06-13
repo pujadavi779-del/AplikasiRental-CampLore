@@ -20,8 +20,8 @@ class CreateProductController extends Controller
             'deskripsi'     => 'nullable|string',
             'sorotan'    => 'nullable|string',
             'isi_paket'     => 'nullable|string',
-            'tipe_kategori_id'  => 'nullable|exists:categories,id',
-            'merek_kategori_id' => 'nullable|exists:categories,id',
+            'id_tipe_kategori'  => 'nullable|exists:Kategori_data,id',
+            'merek_kategori_id' => 'nullable|exists:Kategori_data,id',
             'image'         => 'required|image|mimes:jpeg,png,jpg|max:2048',
         ]);
 
@@ -39,7 +39,7 @@ class CreateProductController extends Controller
             'deskripsi'         => $request->deskripsi,
             'sorotan'        => $request->sorotan,
             'isi_paket'         => $request->isi_paket,
-            'tipe_kategori_id'  => $request->tipe_kategori_id,
+            'id_tipe_kategori'  => $request->id_tipe_kategori,
             'merek_kategori_id' => $request->merek_kategori_id,
             'image'             => $imagePath,
         ]);

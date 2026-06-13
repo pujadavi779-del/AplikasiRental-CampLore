@@ -196,7 +196,7 @@
     </section>
 
     {{-- ============================================================ --}}
-    {{-- ✅ FIX: SHOP BY CATEGORY — Kontras lebih kuat, dark green bg --}}
+    {{-- ✅ FIX: SHOP BY Kategori_data — Kontras lebih kuat, dark green bg --}}
     {{-- ============================================================ --}}
     <section class="bg-[#22543D] py-20 px-5 md:px-10">
         <div class="max-w-[1240px] mx-auto">
