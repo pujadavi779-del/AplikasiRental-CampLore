@@ -50,7 +50,7 @@ class ProfileController extends Controller
         }
 
         $pelanggan->save();
-
+        
         return redirect()->back()->with('success', 'Profil berhasil diperbarui');
     }
 }

@@ -78,7 +78,9 @@ class CustomerReviewController extends Controller
     }
     public function show($reviewId)
     {
-        $review = Review::with(['product', 'pelanggan'])
+        $review = Review::with(['product' => function ($q) {
+            $q->withTrashed();
+        }, 'pelanggan'])
             ->where('id', $reviewId)
             ->where('user_id', Auth::id())
             ->firstOrFail();

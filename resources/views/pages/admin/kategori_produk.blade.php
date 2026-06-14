@@ -110,7 +110,10 @@ $section = 'Pengguna';
                                 ${product.stok} Unit Siap Sewa
                             </span>
                         </td>
-                        <td class='py-4 text-gray-600 italic font-medium'>${hargaFormatted} / hari</td>
+                        <td class='py-4 text-gray-600 italic font-medium'>
+    ${hargaFormatted} / hari
+    <span class='block text-[10px] text-emerald-600 font-bold mt-0.5'>${product.laju_sewa}</span>
+</td>
                     </tr>
                 `;
                 tbody.insertAdjacentHTML('beforeend', row);
@@ -151,27 +154,27 @@ $section = 'Pengguna';
         </div>
 
         @php
-            $categories = [
-                'kamera' => [
-                    'tipeList'   => $tipeKamera,
-                    'tipeLabel'  => 'Tipe Kamera',
-                    'merekList'  => $merekKamera,
-                    'merekLabel' => 'Merek Kamera',
-                ],
-                'camping' => [
-                    'tipeList'   => $tipeCamping,
-                    'tipeLabel'  => 'Tipe Peralatan',
-                    'merekList'  => $merekCamping,
-                    'merekLabel' => 'Merek Camping',
-                ],
-            ];
+        $categories = [
+        'kamera' => [
+        'tipeList' => $tipeKamera,
+        'tipeLabel' => 'Tipe Kamera',
+        'merekList' => $merekKamera,
+        'merekLabel' => 'Merek Kamera',
+        ],
+        'camping' => [
+        'tipeList' => $tipeCamping,
+        'tipeLabel' => 'Tipe Peralatan',
+        'merekList' => $merekCamping,
+        'merekLabel' => 'Merek Camping',
+        ],
+        ];
         @endphp
 
         @foreach($categories as $prefix => $cat)
         @php
-            $namesJson = $cat['tipeList']->map(fn($t) => "'".addslashes($t->nama_kategori)."'")->join(',');
+        $namesJson = $cat['tipeList']->map(fn($t) => "'".addslashes($t->nama_kategori)."'")->join(',');
         @endphp
-        <div x-show="activeTab === '{{ $prefix }}'" class="grid grid-cols-1 lg:grid-cols-12 gap-12" @if($prefix !== 'kamera') style="display: none;" @endif>
+        <div x-show="activeTab === '{{ $prefix }}'" class="grid grid-cols-1 lg:grid-cols-12 gap-12" @if($prefix !=='kamera' ) style="display: none;" @endif>
             <div class="lg:col-span-7 flex flex-col justify-between">
                 <div>
                     <div class="flex justify-between items-center mb-4">
@@ -253,17 +256,27 @@ $section = 'Pengguna';
                 </div>
                 <div class="grid grid-cols-4 sm:grid-cols-5 gap-4">
                     @foreach($cat['merekList'] as $merek)
-                    <div @click="openDetailMerek('{{ $merek->id }}', '{{ $merek->nama_kategori }}')" class="flex flex-col items-center group cursor-pointer">
-                        <div class="w-14 h-14 bg-gray-100 border border-transparent rounded-xl flex items-center justify-center text-gray-400 font-bold text-sm tracking-wide group-hover:border-gray-200 group-hover:bg-white group-hover:shadow-sm transition-all duration-200">
+                    <div class="flex flex-col items-center group">
+                        {{-- Klik logo untuk buka modal detail --}}
+                        <div @click="openDetailMerek('{{ $merek->id }}', '{{ $merek->nama_kategori }}')"
+                            class="w-14 h-14 cursor-pointer {{ $merek->aktif ? 'bg-gray-100' : 'bg-gray-200 opacity-50' }} border border-transparent rounded-xl flex items-center justify-center text-gray-400 font-bold text-sm tracking-wide group-hover:border-gray-200 group-hover:bg-white group-hover:shadow-sm transition-all duration-200">
                             @if($merek->foto_logo)
                             <img src="{{ asset($merek->foto_logo) }}" alt="{{ $merek->nama_kategori }}" class="w-10 h-10 object-contain">
                             @else
                             {{ Str::limit($merek->nama_kategori, 3, '') }}
                             @endif
                         </div>
-                        <span class="mt-2 text-[10px] font-bold text-gray-400 uppercase tracking-wider text-center group-hover:text-gray-700 transition-colors truncate w-full">
+                        <span class="mt-1 text-[10px] font-bold {{ $merek->aktif ? 'text-gray-400' : 'text-gray-300' }} uppercase tracking-wider text-center truncate w-full">
                             {{ $merek->nama_kategori }}
                         </span>
+                        {{-- Tombol toggle aktif --}}
+                        <form action="{{ route('admin.category.toggleBrand', $merek->id) }}" method="POST">
+                            @csrf
+                            @method('PATCH')
+                            <button type="submit" class="mt-1 text-[9px] font-bold {{ $merek->aktif ? 'text-emerald-500 hover:text-red-400' : 'text-gray-300 hover:text-emerald-500' }} transition-colors uppercase tracking-wider">
+                                {{ $merek->aktif ? 'Nonaktifkan' : 'Aktifkan' }}
+                            </button>
+                        </form>
                     </div>
                     @endforeach
                 </div>

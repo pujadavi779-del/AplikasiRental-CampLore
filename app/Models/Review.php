@@ -11,6 +11,12 @@ class Review extends Model
     //$fillable = yang boleh diisi
     protected $fillable = ['user_id', 'product_id', 'bintang', 'komentar', 'balas_pesan', 'is_replied', 'replied_at'];
 
-public function pelanggan() { return $this->belongsTo(Pelanggan::class); }
-public function product() { return $this->belongsTo(Barang::class); }
+    public function pelanggan()
+    {
+        return $this->belongsTo(Pelanggan::class, 'user_id', 'id'); 
+    }
+    public function product()
+    {
+        return $this->belongsTo(Barang::class)->withTrashed();
+    }
 }
