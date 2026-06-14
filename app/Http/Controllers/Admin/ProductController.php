@@ -10,11 +10,6 @@ use Illuminate\Support\Facades\Storage;
 
 class ProductController extends Controller
 {
-    /*
-    |--------------------------------------------------------------------------
-    | CREATE PAGE
-    |--------------------------------------------------------------------------
-    */
     public function create()
     {
         $types = Kategori_data::where('jenis_atribut', 'Tipe')
@@ -28,11 +23,6 @@ class ProductController extends Controller
         return view('pages.admin.products.create', compact('types', 'brands'));
     }
 
-    /*
-    |--------------------------------------------------------------------------
-    | STORE PRODUCT
-    |--------------------------------------------------------------------------
-    */
     public function store(Request $request)
     {
         $request->validate([
@@ -43,8 +33,8 @@ class ProductController extends Controller
             'deskripsi' => 'required|string',
             'sorotan' => 'required|string',
             'isi_paket' => 'required|string',
-            'id_tipe_kategori' => 'nullable|exists:Kategori_data,id',
-            'merek_kategori_id' => 'nullable|exists:Kategori_data,id',
+            'id_tipe_kategori' => 'nullable|exists:data_kategori,id',
+            'id_merek_kategori ' => 'nullable|exists:data_kategori,id',
             'gambar_barang' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
         ]);
 
@@ -86,7 +76,7 @@ class ProductController extends Controller
             'sorotan' => $request->sorotan,
             'isi_paket' => $request->isi_paket,
             'id_tipe_kategori' => $request->id_tipe_kategori,
-            'merek_kategori_id' => $request->merek_kategori_id,
+            'id_merek_kategori' => $request->id_merek_kategori,
             'gambar_barang' => $imagePath,
         ]);
 
@@ -95,11 +85,6 @@ class ProductController extends Controller
             ->with('success', 'Produk berhasil ditambahkan!');
     }
 
-    /*
-    |--------------------------------------------------------------------------
-    | EDIT PAGE
-    |--------------------------------------------------------------------------
-    */
     public function edit($id)
     {
         $product = Barang::findOrFail($id);
@@ -119,11 +104,6 @@ class ProductController extends Controller
         ));
     }
 
-    /*
-    |--------------------------------------------------------------------------
-    | UPDATE PRODUCT
-    |--------------------------------------------------------------------------
-    */
     public function update(Request $request, $id)
     {
         $product = Barang::findOrFail($id);
@@ -138,8 +118,8 @@ class ProductController extends Controller
             'sorotan'         => 'nullable|string',
             'isi_paket'          => 'nullable|string',
 
-            'id_tipe_kategori'   => 'nullable|exists:Kategori_data,id',
-            'merek_kategori_id'  => 'nullable|exists:Kategori_data,id',
+            'id_tipe_kategori'   => 'nullable|exists:data_kategori,id',
+            'id_merek_kategori '  => 'nullable|exists:data_kategori,id',
 
             'gambar_barang'              => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
         ]);
@@ -155,7 +135,7 @@ class ProductController extends Controller
             'isi_paket'          => $request->isi_paket,
 
             'id_tipe_kategori'   => $request->id_tipe_kategori,
-            'merek_kategori_id'  => $request->merek_kategori_id,
+            'id_merek_kategori'  => $request->id_merek_kategori,
         ];
 
         if ($request->hasFile('gambar_barang')) {
@@ -197,23 +177,21 @@ class ProductController extends Controller
             ->with('success', 'Produk berhasil diperbarui!');
     }
 
-    /*
-    |--------------------------------------------------------------------------
-    | DELETE PRODUCT
-    |--------------------------------------------------------------------------
-    */
     public function destroy($id)
     {
         $product = Barang::findOrFail($id);
 
-        if ($product->gambar_barang && file_exists(public_path($product->gambar_barang))) {
-            unlink(public_path($product->gambar_barang));
+        $activeOrderCount = \DB::table('pesanan')
+            ->where('product_id', $id)
+            ->whereNotIn('status', ['selesai', 'dibatalkan'])
+            ->count();
+
+        if ($activeOrderCount > 0) {
+            return back()->with('error', 'Tidak bisa menghapus produk "' . $product->name . '" karena masih ada ' . $activeOrderCount . ' pesanan aktif.');
         }
 
         $product->delete();
 
-        return redirect()
-            ->route('admin.products')
-            ->with('success', 'Produk berhasil dihapus!');
+        return back()->with('success', 'Produk "' . $product->name . '" berhasil dihapus.');
     }
 }

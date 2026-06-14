@@ -17,7 +17,7 @@ class CustomerController extends Controller
     // Ini fungsi show milik Admin untuk melihat detail Pengguna/Customer
     public function show($id)
     {
-        $customer = Pelanggan::with('shippingAddress')->findOrFail($id);
+        $customer = Pelanggan::with('alamat_pengiriman')->findOrFail($id);
         return view('pages.admin.pengguna.pengguna_detail', compact('customer'));
     }
 

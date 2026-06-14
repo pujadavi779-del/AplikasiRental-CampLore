@@ -25,8 +25,8 @@ class Pelanggan extends Authenticatable
         'ktp_updated_at',
     ];
 
-    public function shippingAddress()
+    public function alamat_pengiriman()
     {
-        return $this->hasOne(\App\Models\ShippingAddress::class);
+        return $this->hasOne(\App\Models\AlamatPengiriman::class, 'user_id');
     }
 }

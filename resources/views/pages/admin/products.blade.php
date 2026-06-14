@@ -3,19 +3,50 @@
 @section('title', 'Manajemen Produk - CampLore')
 
 @php
-    $NavParent = 'Manajemen Operasional';
-    $section = 'Pengguna';
+$NavParent = 'Manajemen Rental';
+$section = 'Produk';
 @endphp
 @section('content')
 
 
-
 <div class="max-w-full">
+    {{-- Toast Success --}}
     @if(session('success'))
-    <div class="mb-4 p-4 bg-emerald-100 border border-emerald-200 text-[#22543D] rounded-xl text-xs font-bold">
-        {{ session('success') }}
+    <div id="toast-success" class="fixed top-6 right-6 z-50 flex items-center w-full max-w-sm p-4 text-gray-700 bg-white rounded-xl shadow-lg border border-emerald-200" role="alert">
+        <div class="inline-flex items-center justify-center shrink-0 w-8 h-8 text-emerald-600 bg-emerald-100 rounded-lg">
+            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 11.917 9.724 16.5 19 7.5" />
+            </svg>
+        </div>
+        <div class="ms-3 text-sm font-semibold">{{ session('success') }}</div>
+        <button type="button" onclick="this.closest('#toast-success').remove()"
+            class="ms-auto flex items-center justify-center w-8 h-8 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition">
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+        </button>
     </div>
     @endif
+
+    {{-- Toast Error --}}
+    @if(session('error'))
+    <div id="toast-error" class="fixed top-6 right-6 z-50 flex items-center w-full max-w-sm p-4 text-gray-700 bg-white rounded-xl shadow-lg border border-red-200" role="alert">
+        <div class="inline-flex items-center justify-center shrink-0 w-8 h-8 text-red-500 bg-red-100 rounded-lg">
+            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+        </div>
+        <div class="ms-3 text-sm font-semibold">{{ session('error') }}</div>
+        <button type="button" onclick="this.closest('#toast-error').remove()"
+            class="ms-auto flex items-center justify-center w-8 h-8 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition">
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+        </button>
+    </div>
+    @endif
+
+
 
     <div class="bg-white rounded-[28px] border border-[#d7e6de] shadow-sm overflow-hidden">
 
@@ -26,7 +57,7 @@
                 <div class="flex items-center gap-2 mt-1">
                     <span class="text-[11px] text-[#7c8b84]">Kelola inventaris kamera dan alat camping</span>
                     <span class="bg-emerald-100 text-[#22543D] text-[10px] font-bold px-2 py-0.5 rounded-full border border-emerald-200">
-                        Tersedia (60)
+                        Tersedia ({{ \App\Models\Barang::where('stok', '>', 0)->count() }})
                     </span>
                 </div>
             </div>
@@ -139,13 +170,17 @@
                                     Ubah
                                 </a>
 
-                                <button type="button"
-                                    class="text-red-400 hover:bg-red-50/50 px-2 py-1 rounded-lg transition-colors font-bold text-[11px] flex items-center gap-1">
-                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
-                                        <path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
-                                    </svg>
-                                    Hapus
-                                </button>
+                                <form action="{{ route('admin.products.destroy', $product->id) }}" method="POST"
+                                    onsubmit="return confirm('Yakin ingin menghapus produk ini?')">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="text-red-400 hover:bg-red-50/50 px-2 py-1 rounded-lg transition-colors font-bold text-[11px] flex items-center gap-1">
+                                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                                            <path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+                                        </svg>
+                                        Hapus
+                                    </button>
+                                </form>
                             </div>
                         </td>
                     </tr>
@@ -233,5 +268,13 @@
         vertical-align: middle !important;
     }
 </style>
+
+    {{-- Auto hide toast setelah 3 detik --}}
+    <script>
+        setTimeout(() => {
+            document.getElementById('toast-success')?.remove();
+            document.getElementById('toast-error')?.remove();
+        }, 3000);
+    </script>
 
 @endsection

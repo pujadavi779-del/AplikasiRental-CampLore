@@ -117,7 +117,7 @@
         <nav class="flex flex-col gap-1.5">
             <a href="{{ route('dashboard_pelanggan') }}"
                 class="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold transition-all duration-200 border-l-4
-                          {{ request()->routeIs('dashboard_pelanggan') ? 'bg-pink-50 text-pink-600 border-pink-500 shadow-sm' : 'text-gray-500 border-transparent hover:bg-gray-50 hover:text-green-600 hover:border-green-400' }}">
+                          {{ request()->routeIs('dashboard_pelanggan', 'pelanggan.sewa') ? 'bg-pink-50 text-pink-600 border-pink-500 shadow-sm' : 'text-gray-500 border-transparent hover:bg-gray-50 hover:text-green-600 hover:border-green-400' }}">
                 <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>

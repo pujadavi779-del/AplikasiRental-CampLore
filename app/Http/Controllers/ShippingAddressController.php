@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\ShippingAddress;
+use App\Models\AlamatPengiriman;
 use App\Models\Customer;
 use Illuminate\Support\Facades\Auth;
 
@@ -11,7 +11,7 @@ class ShippingAddressController extends Controller
 {
     public function index()
     {
-        $address = ShippingAddress::where('user_id', Auth::id())->first();
+        $address = AlamatPengiriman::where('user_id', Auth::id())->first();
         return view('pages.pelanggan.dashboard.alamat_pengiriman', compact('address'));
     }
 
@@ -27,7 +27,7 @@ class ShippingAddressController extends Controller
         $pelanggan = Auth::user();
 
         // 1. Simpan/update ke tabel alamat_pengiriman
-        ShippingAddress::updateOrCreate(
+        AlamatPengiriman::updateOrCreate(
             ['user_id' => $pelanggan->id],
             [
                 'alamat_lengkap' => $request->alamat_lengkap,

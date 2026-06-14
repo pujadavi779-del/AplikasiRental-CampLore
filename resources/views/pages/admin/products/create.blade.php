@@ -99,7 +99,7 @@
 
                             @foreach($types as $type)
                             <option value="{{ $type->id }}">
-                                {{ $type->name }}
+                                {{ $type->nama_kategori  }}
                             </option>
                             @endforeach
                         </select>
@@ -108,22 +108,13 @@
 
                     <div>
                         <label class="block text-[11px] font-black text-gray-400 uppercase tracking-widest mb-2">Merek</label>
-                        <select name="merek_kategori_id" required
+                        <select name="id_merek_kategori" required
                             class="w-full px-4 py-3 bg-gray-50 border border-[#eef4f0] rounded-xl text-sm focus:ring-2 focus:ring-[#22543D]/20 focus:border-[#22543D] outline-none transition-all appearance-none">
-                            <!-- <option value="" disabled selected>Pilih Merek</option>
-                            <option value="Canon">Canon</option>
-                            <option value="Sony">Sony</option>
-                            <option value="Nikon">Nikon</option>
-                            <option value="Fujifilm">Fujifilm</option>
-                            <option value="GoPro">GoPro</option>
-                            <option value="Sigma">Sigma</option>
-                            <option value="Leica">Leica</option>
-                            <option value="DJI">DJI</option> -->
                             <option value="">Pilih Merek</option>
 
                             @foreach($brands as $brand)
                             <option value="{{ $brand->id }}">
-                                {{ $brand->name }}
+                                {{ $brand->nama_kategori  }}
                             </option>
                             @endforeach
                         </select>

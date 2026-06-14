@@ -29,16 +29,16 @@
             <div class="flex justify-between items-start">
                 <div>
                     <p class="font-bold text-gray-900">
-                        <span id="display-name">{{ auth()->pelanggan()->name ?? '-' }}</span>
+                        <span id="display-name">{{ auth()->user()->name ?? '-' }}</span>
                         <span class="text-gray-400 font-normal mx-1">·</span>
 
                         <span id="display-phone" class="text-gray-500 font-semibold text-sm">
-                            {{ auth()->pelanggan()->no_tlp ?? '— Belum ada no. HP' }}
+                            {{ auth()->user()->no_tlp ?? '— Belum ada no. HP' }}
                         </span>
                     </p>
 
                     <p id="display-address" class="text-sm text-gray-500 mt-0.5">
-                        {{ optional(auth()->pelanggan()->shippingAddress)->alamat_lengkap ?? 'Masukkan alamat pengiriman kamu' }}
+                        {{ optional(auth()->user()->alamat_pengiriman)->alamat_lengkap ?? 'Masukkan alamat pengiriman kamu' }}
                     </p>
                 </div>
                 <button onclick="openAddressModal()" type="button"
@@ -300,7 +300,7 @@
 <script>
 const totalSubtotal = {{ $totalSubtotal }};
 const biayaLayanan = 2000;
-const ktpSudahAda = "{{ auth()->pelanggan()->foto_ktp ? '1' : '0' }}";
+const ktpSudahAda = "{{ auth()->user()->foto_ktp ? '1' : '0' }}";
 const cartItems = [
     @foreach($carts as $cart)
     {

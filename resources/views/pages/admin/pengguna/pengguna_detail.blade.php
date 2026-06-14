@@ -1,15 +1,13 @@
+@php
+    $NavParent = 'Manajemen Operasional';
+    $section = 'Detail Pengguna';
+@endphp
 @extends('layouts.admin')
 
 @section('title', 'Detail Verifikasi Pengguna')
 
 @section('content')
 
-<div class="mb-6">
-    @include('components.navbar_judul_LP', [
-        'NavParent' => 'Users',
-        'section'   => 'Verification Details'
-    ])
-</div>
 
 <div class="flex gap-6 max-w-full">
 
@@ -114,7 +112,7 @@
                         </svg>
                         <span class="text-sm font-semibold text-gray-800 leading-relaxed">
                             @php
-                                $sa = $customer->shippingAddress;
+                                $sa = $customer->alamat_pengiriman;
                                 echo $sa
                                     ? implode(', ', array_filter([$sa->alamat_lengkap, $sa->kota, $sa->daerah, $sa->kode_pos]))
                                     : '-';
@@ -241,15 +239,6 @@
             </p>
             @endif
         </div>
-
-        {{-- Tombol Kembali --}}
-        <a href="{{ route('admin.customers.index') }}"
-            class="flex items-center gap-2 text-sm text-gray-500 hover:text-[#22543D] font-semibold transition">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
-            </svg>
-            Kembali ke Daftar
-        </a>
 
     </div>
 </div>

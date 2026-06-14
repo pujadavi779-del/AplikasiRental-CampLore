@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class ShippingAddress extends Model
+class AlamatPengiriman extends Model
 {
     protected $table = 'alamat_pengiriman';
     protected $fillable = [

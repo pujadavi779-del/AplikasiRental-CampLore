@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::table('products', function (Blueprint $table) {
             $table->foreignId('id_tipe_kategori')->nullable()->after('id')->constrained('Kategori_data')->onDelete('set null');
-            $table->foreignId('merek_kategori_id')->nullable()->after('id_tipe_kategori')->constrained('Kategori_data')->onDelete('set null');
+            $table->foreignId('id_merek_kategori ')->nullable()->after('id_tipe_kategori')->constrained('Kategori_data')->onDelete('set null');
         });
     }
 

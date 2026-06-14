@@ -184,7 +184,7 @@ class KategoriController extends Controller
      */
     public function destroyBrand(kategori_data $kategori)
     {
-        $productCount = Barang::where('merek_kategori_id', $kategori->id)->count();
+        $productCount = Barang::where('id_merek_kategori ', $kategori->id)->count();
 
         if ($productCount > 0) {
             return back()->with('error', 'Tidak bisa menghapus merek ini karena masih digunakan oleh ' . $productCount . ' produk.');
@@ -206,7 +206,7 @@ class KategoriController extends Controller
     public function brandDetail(kategori_data $kategori)
     {
         $products = Barang::with(['typeCategory'])
-            ->where('merek_kategori_id', $kategori->id)
+            ->where('id_merek_kategori', $kategori->id)
             ->select('id', 'name', 'id_tipe_kategori', 'stok', 'harga_per_hari', 'kategori')
             ->get()
             ->map(function ($product) {
@@ -231,7 +231,7 @@ class KategoriController extends Controller
     {
         $products = Barang::with(['brandCategory'])
             ->where('id_tipe_kategori', $kategori->id)
-            ->select('id', 'name', 'merek_kategori_id', 'stok', 'harga_per_hari', 'kategori')
+            ->select('id', 'name', 'id_merek_kategori', 'stok', 'harga_per_hari', 'kategori')
             ->get()
             ->map(function ($product) {
                 return [
