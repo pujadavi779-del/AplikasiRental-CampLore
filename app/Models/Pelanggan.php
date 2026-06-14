@@ -2,21 +2,21 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
-use Database\Factories\UserFactory;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
 class Pelanggan extends Authenticatable
 {
-     protected $table = 'pelanggan';
+    use Notifiable;
+
+    protected $table = 'pelanggan';
+
     protected $fillable = [
         'name',
-        'email',
-        'password',
         'username',
         'nik',
+        'email',
+        'password',
         'no_tlp',
         'foto_profile',
         'foto_ktp',
@@ -25,8 +25,14 @@ class Pelanggan extends Authenticatable
         'ktp_updated_at',
     ];
 
-    public function alamat_pengiriman()
+    protected $hidden = ['password'];
+
+    protected $casts = [
+        'ktp_updated_at' => 'datetime',
+    ];
+
+    public function alamatPengiriman()
     {
-        return $this->hasOne(\App\Models\AlamatPengiriman::class, 'user_id');
+        return $this->hasOne(AlamatPengiriman::class, 'user_id');
     }
 }

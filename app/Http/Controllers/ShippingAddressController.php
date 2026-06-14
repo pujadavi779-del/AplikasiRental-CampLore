@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\AlamatPengiriman;
-use App\Models\Customer;
 use Illuminate\Support\Facades\Auth;
 
 class ShippingAddressController extends Controller
@@ -19,35 +18,20 @@ class ShippingAddressController extends Controller
     {
         $request->validate([
             'alamat_lengkap' => 'required|string',
-            'kota'         => 'required|string',
-            'daerah'     => 'required|string',
-            'kode_pos'  => 'required|string',
+            'kota'           => 'required|string',
+            'daerah'         => 'required|string',
+            'kode_pos'       => 'required|string',
         ]);
 
-        $pelanggan = Auth::user();
-
-        // 1. Simpan/update ke tabel alamat_pengiriman
         AlamatPengiriman::updateOrCreate(
-            ['user_id' => $pelanggan->id],
+            ['user_id' => Auth::id()],
             [
                 'alamat_lengkap' => $request->alamat_lengkap,
-                'kota'         => $request->kota,
-                'daerah'     => $request->daerah,
-                'kode_pos'  => $request->kode_pos,
+                'kota'           => $request->kota,
+                'daerah'         => $request->daerah,
+                'kode_pos'       => $request->kode_pos,
             ]
         );
-
-        // 2. Gabungkan jadi satu string, simpan ke customers.address
-        $alamatGabung = implode(', ', array_filter([
-            $request->alamat_lengkap,
-            $request->kota,
-            $request->daerah,
-            $request->kode_pos,
-        ]));
-
-        // 3. Update ke tabel customers
-        Customer::where('phone', $pelanggan->phone)
-                ->update(['address' => $alamatGabung]);
 
         return back()->with('success', 'Alamat pengiriman berhasil diperbarui!');
     }

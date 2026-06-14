@@ -20,28 +20,33 @@ class ProfileController extends Controller
 
         $request->validate([
             'name'            => 'required|string|max:255',
-            'email'           => 'required|email|unique:users,email,' . $pelanggan->id,
+            'email'           => 'required|email|unique:pelanggan,email,' . $pelanggan->id,
             'no_tlp'          => 'nullable|string|max:20',
-            'nik'             => 'nullable|string|max:16',
+            'nik'             => 'nullable|string|max:20',
             'profile_picture' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
             'ktp'             => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
         ]);
 
-        $pelanggan->name  = $request->name;
-        $pelanggan->email = $request->email;
+        $pelanggan->name   = $request->name;
+        $pelanggan->email  = $request->email;
         $pelanggan->no_tlp = $request->no_tlp;
-        $pelanggan->nik   = $request->nik;
+        $pelanggan->nik    = $request->nik;
 
         if ($request->hasFile('profile_picture')) {
-            if ($pelanggan->foto_profile) Storage::disk('public')->delete($pelanggan->foto_profile);
-            $pelanggan->foto_profile = $request->file('profile_picture')->store('profiles', 'public');
+            if ($pelanggan->foto_profile) {
+                Storage::disk('public')->delete($pelanggan->foto_profile);
+            }
+            $pelanggan->foto_profile = $request->file('profile_picture')
+                ->store('profiles', 'public');
         }
 
         if ($request->hasFile('ktp')) {
-            if ($pelanggan->foto_ktp) Storage::disk('public')->delete($pelanggan->foto_ktp);
-            $pelanggan->foto_ktp = $request->file('ktp')->store('ktp', 'public');
+            if ($pelanggan->foto_ktp) {
+                Storage::disk('public')->delete($pelanggan->foto_ktp);
+            }
+            $pelanggan->foto_ktp       = $request->file('ktp')->store('ktp', 'public');
             $pelanggan->ktp_updated_at = now();
-            $pelanggan->ktp_status = 'pending'; // reset ke pending kalau upload ulang
+            $pelanggan->ktp_status     = 'pending';
         }
 
         $pelanggan->save();
