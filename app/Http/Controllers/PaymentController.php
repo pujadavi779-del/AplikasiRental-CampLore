@@ -177,14 +177,11 @@ class PaymentController extends Controller
 
     public function webhook(Request $request)
     {
-        // ... kode verifikasi signature Midtrans kamu yang sudah ada ...
-
         $transactionStatus = $request->input('transaction_status');
         $orderId = $request->input('order_id'); // Ini order_id dari pelanggan
 
         if ($transactionStatus == 'settlement' || $transactionStatus == 'capture') {
 
-            // SISTEM OTOMATIS MENGUBAH STATUS MENJADI SELESAI BEGITU LUAS SUDAH DIBAYAR
             \App\Models\Pesanan::where('order_id', $orderId)->update([
                 'status' => 'selesai'
             ]);
@@ -226,7 +223,7 @@ class PaymentController extends Controller
     {
         $query = \App\Models\Pesanan::with(['pelanggan', 'product'])
             ->orderBy('created_at', 'desc')
-            ->whereIn('status', ['dikemas', 'selesai', 'dibatalkan']) // ← hanya yang sudah bayar
+            ->whereIn('status', ['belum_bayar', 'dikemas', 'dikirim', 'selesai', 'dibatalkan'])
             ->whereIn('id', function ($sub) {
                 $sub->selectRaw('MIN(id)')
                     ->from('pesanan')
