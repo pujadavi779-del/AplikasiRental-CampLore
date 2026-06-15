@@ -28,6 +28,16 @@ class SewaController extends Controller
 
         $pesanan = $query->get()->groupBy('order_id')->map(function ($items) {
             $first = $items->first();
+
+            $deadline = $first->created_at->addHours(24);
+
+            if ($first->status === 'belum_bayar' && now()->gt($deadline)) {
+                Pesanan::where('order_id', $first->order_id)
+                    ->where('status', 'belum_bayar')
+                    ->update(['status' => 'dibatalkan']);
+                $first->status = 'dibatalkan'; // update di memory juga
+            }
+
             return (object)[
                 'id'               => $first->id,
                 'order_id'         => $first->order_id,

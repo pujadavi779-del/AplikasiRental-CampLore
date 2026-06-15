@@ -12,3 +12,5 @@ Schedule::command('pesanan:update-return-status')
     ->dailyAt('00:00')
     ->withoutOverlapping()
     ->runInBackground();
+
+Schedule::command('pesanan:auto-batal')->everyMinute();
