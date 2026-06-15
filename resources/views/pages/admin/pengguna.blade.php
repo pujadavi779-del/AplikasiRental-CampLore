@@ -22,12 +22,6 @@
             <div class="flex gap-2">
                 <button class="flex items-center gap-2 px-4 py-2 rounded-xl border border-gray-200 text-sm font-semibold text-gray-600 hover:bg-gray-50 transition">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2a1 1 0 01-.293.707L13 13.414V19a1 1 0 01-.553.894l-4 2A1 1 0 017 21v-7.586L3.293 6.707A1 1 0 013 6V4z" />
-                    </svg>
-                    Filter
-                </button>
-                <button class="flex items-center gap-2 px-4 py-2 rounded-xl border border-gray-200 text-sm font-semibold text-gray-600 hover:bg-gray-50 transition">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
                     </svg>
                     Export
@@ -43,7 +37,7 @@
                         <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-4.35-4.35M17 11A6 6 0 1 1 5 11a6 6 0 0 1 12 0z" />
                     </svg>
                 </div>
-                <input type="text" id="searchInput" placeholder="Search Pelanggan..."
+                <input type="text" id="searchInput" placeholder="Cari Pelanggan..."
                     class="w-full pl-9 pr-4 py-2 text-sm border border-gray-200 rounded-xl bg-gray-50 text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#22543D]/20 focus:border-[#22543D]">
             </div>
             <span class="text-[11px] font-bold text-[#22543D] uppercase tracking-widest flex items-center">
@@ -89,10 +83,6 @@
                         {{-- Nama --}}
                         <td class="px-6 py-4">
                             <div class="flex items-center gap-3">
-                                <div class="w-9 h-9 rounded-full flex items-center justify-center text-white text-xs font-bold flex-shrink-0"
-                                    style="background: hsl({{ abs(crc32($customer->name)) % 360 }}, 55%, 45%)">
-                                    {{ strtoupper(substr($customer->name, 0, 2)) }}
-                                </div>
                                 <div>
                                     <p class="font-semibold text-gray-800">{{ $customer->name }}</p>
                                     <p class="text-[11px] text-gray-400">{{ $customer->email }}</p>

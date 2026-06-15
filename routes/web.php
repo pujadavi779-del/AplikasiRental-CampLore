@@ -195,7 +195,8 @@
         Route::delete('/kategori/tipe/{kategori}',      [KategoriController::class, 'destroyType'])->name('category.destroyType');
         Route::delete('/kategori/merek/{kategori}',     [KategoriController::class, 'destroyBrand'])->name('category.destroyBrand');
         Route::get('/kategori/merek/{kategori}/detail', [KategoriController::class, 'brandDetail'])->name('category.brandDetail');
-
+        Route::patch('/kategori/merek/{kategori}/toggle', [KategoriController::class, 'toggleBrand'])->name('category.toggleBrand');
+        
         // Products
         Route::get('/products', function (Request $request) {
             $query = Barang::query();

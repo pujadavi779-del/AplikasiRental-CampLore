@@ -9,9 +9,9 @@ use App\Models\OtpCode;
 
 class OtpController extends Controller
 {
-    public function sendPhone(Auth::user(Request $request)
+    public function sendPhone(Request $request)
     {
-        $pelanggan = );
+        $pelanggan = Auth::user();
 
         // Ambil dari request, bukan dari DB
         $noTlp = $request->no_tlp ?? $pelanggan->no_tlp;
