@@ -1,45 +1,70 @@
 <?php
 
-namespace App\Providers;
+namespace App\Http\Controllers\Admin;
 
-use Illuminate\Support\ServiceProvider;
-use Illuminate\Support\Facades\View;
-use App\Models\Review;
-use App\Models\Cart;
+use App\Http\Controllers\Controller;
+use App\Models\Pelanggan;
+use Illuminate\Http\Request;
 
-class AppServiceProvider extends ServiceProvider
+class CustomerController extends Controller
 {
-    public function register(): void
+    public function index()
     {
-        //
+        $customers = Pelanggan::all();
+        return view('pages.admin.pengguna', compact('customers'));
     }
 
+    public function show($id)
+    {
+        $customer = Pelanggan::with('alamatPengiriman')->findOrFail($id);
+        return view('pages.admin.pengguna.pengguna_detail', compact('customer'));
+    }
+
+    public function update(Request $request, $id)
+    {
+        $customer = Pelanggan::findOrFail($id);
+        $customer->ktp_status = $request->ktp_status;
+        $customer->ktp_note   = $request->ktp_note;
+        $customer->save();
+
+        return redirect()->back()->with('success', 'Status verifikasi berhasil diperbarui.');
+    }
+
+    public function create()
+    {
+        return view('pages.admin.pengguna.edit');
+    }
+
+    public function store(Request $request)
+    {
+        return redirect()->route('admin.customers.index')
+            ->with('success', 'Customer berhasil ditambahkan!');
+    }
+
+    public function edit($id)
+    {
+        $customer = Pelanggan::findOrFail($id);
+        return view('pages.pelanggan.pengguna.edit', compact('customer'));
+    }
+
+    public function destroy($id)
+    {
+        Pelanggan::findOrFail($id)->delete();
+        return redirect()->route('admin.customers.index')
+            ->with('success', 'Customer berhasil dihapus!');
+    }
     public function boot(): void
     {
-        require_once app_path('Helpers/WaHelper.php');
-
-        View::composer('*', function ($view) {
-
-            // Badge keranjang untuk pelanggan
-            $cartCount = auth()->check()
-                ? Cart::where('user_id', auth()->id())->sum('quantity')
-                : 0;
-
-            $data = [
-                'cartCount' => $cartCount,
-            ];
-
-            // Data khusus admin
-            if (auth()->check() && auth()->user()->is_admin) {
-                $data['recentReviews'] = Review::with(['pelanggan', 'product'])
+        // Share data ulasan ke semua view admin
+        View::composer('components.navbar_admin', function ($view) {
+            $view->with([
+                'recentReviews'  => Review::with(['pelanggan', 'product'])
+                    ->where('is_replied', false)
                     ->latest()
                     ->take(5)
-                    ->get();
-
-                $data['unrepliedCount'] = Review::where('is_replied', false)->count();
-            }
-
-            $view->with($data);
+                    ->get(),
+                'unrepliedCount' => Review::where('is_replied', false)->count(),
+            ]);
         });
-    }
+    }   
 }
