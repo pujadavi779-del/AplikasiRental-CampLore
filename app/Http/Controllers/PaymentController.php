@@ -79,7 +79,7 @@ class PaymentController extends Controller
 
             $customer_details = [
                 'first_name'       => $customerName,
-                'email'            => auth()->pelanggan()->email ?? 'customer@camplore.com',
+                'email'            => auth()->user()->email ?? 'customer@camplore.com',
                 'phone'            => $customerPhone,
                 'billing_address'  => $address_details,
                 'shipping_address' => $address_details,
@@ -159,7 +159,7 @@ class PaymentController extends Controller
                 'item_details'     => $itemDetails,
                 'customer_details' => [
                     'first_name' => $first->nama_pelanggan,
-                    'email'      => auth()->pelanggan()->email,
+                    'email'      => auth()->user()->email,
                     'phone'      => $first->pelanggan_telepon,
                 ],
             ];

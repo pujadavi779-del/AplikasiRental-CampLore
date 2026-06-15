@@ -19,13 +19,13 @@
     <div class="flex items-center gap-4 mb-8 px-2">
         <div class="relative flex-shrink-0">
             <div class="w-14 h-14 rounded-full bg-gradient-to-tr from-emerald-700 to-emerald-500 flex items-center justify-center text-white text-lg font-bold shadow-md border-2 border-white ring-2 ring-emerald-50">
-                {{ strtoupper(substr(Auth::guard('admin')->pelanggan()->name ?? 'A', 0, 2)) }}
+                {{ strtoupper(substr(Auth::guard('admin')->user()->name ?? 'A', 0, 2)) }}
             </div>
             <span class="absolute bottom-0 right-0 w-3.5 h-3.5 bg-emerald-500 border-2 border-white rounded-full"></span>
         </div>
         <div class="flex flex-col min-w-0">
             <h2 class="text-[15px] font-extrabold text-gray-900 truncate tracking-tight leading-none mb-1">
-                {{ Auth::guard('admin')->pelanggan()->name ?? 'Admin' }}
+                {{ Auth::guard('admin')->user()->name ?? 'Admin' }}
             </h2>
             <p class="text-[11px] text-emerald-600 font-semibold truncate">
                 Admin
