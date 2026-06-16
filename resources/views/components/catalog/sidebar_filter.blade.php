@@ -105,7 +105,7 @@
             {{ request('brand') == $merek->id ? 'border-black' : 'border-gray-200' }}">
 
                 <img
-                    src="{{ $merek->foto_logo  ? asset('storage/'.$merek->foto_logo) : 'https://placehold.co/60x60/e8e7e3/aaa?text='.urlencode(Str::limit($merek->nama_kategori,3,'')) }}"
+                    src="{{ $merek->foto_logo  ? asset($merek->foto_logo) : 'https://placehold.co/60x60/e8e7e3/aaa?text='.urlencode(Str::limit($merek->nama_kategori,3,'')) }}"
                     alt="{{ $merek->nama_kategori }}"
                     class="w-4/5 h-4/5 object-contain">
             </div>
@@ -208,7 +208,7 @@
             @foreach($filterMereks as $merek)
             <label class="cursor-pointer text-center" onclick="toggleMerek(this)">
                 <div class="aspect-square rounded-xl border-2 border-gray-200 bg-white flex items-center justify-center overflow-hidden transition merek-box">
-                    <img src="{{ $merek->foto_logo ? asset('storage/'.$merek->foto_logo) : 'https://placehold.co/60x60/e8e7e3/aaa?text='.urlencode(Str::limit($merek->nama_kategori,3,'')) }}"
+                    <img src="{{ $merek->foto_logo ? asset($merek->foto_logo) : 'https://placehold.co/60x60/e8e7e3/aaa?text='.urlencode(Str::limit($merek->nama_kategori,3,'')) }}"
                         alt="{{ $merek->nama_kategori }}" class="w-4/5 h-4/5 object-contain">
                 </div>
                 <p class="mt-1 text-[10px] text-gray-400 font-semibold uppercase tracking-wide merek-label">{{ $merek->nama_kategori }}</p>
