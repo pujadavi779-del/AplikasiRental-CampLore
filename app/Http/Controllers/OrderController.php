@@ -55,17 +55,27 @@ class OrderController extends Controller
         try {
             $items = $request->input('items', []);
             $orderId = 'CPL-' . date('Ymd') . '-' . strtoupper(substr(uniqid(), -5));
+            
+            $idPelanggan = auth()->user()->id_pelanggan ?? auth()->user()->id ?? auth()->id();
 
             foreach ($items as $item) {
                 $cart = \App\Models\Cart::with('product')
-                    ->where('id', $item['id'])
-                    ->where('user_id', auth()->id())
+                    ->where('id_keranjang', $item['id'])
+                    ->where('user_id', $idPelanggan)
                     ->first();
 
-                if (!$cart) continue;
+                if (!$cart) {
+                    return response()->json([
+                        'status' => 'error', 
+                        'message' => 'Data keranjang tidak ditemukan.'
+                    ], 400);
+                }
 
-                $startDate = $cart->start_date;
-                $endDate   = $cart->end_date;
+                // AMANKAN TANGGAL: Jika di database kosong, gunakan tanggal hari ini sebagai fallback
+                // atau Anda bisa melempar pesan error jika tanggal wajib diisi.
+                $startDate = $cart->start_date ?? now()->format('Y-m-d');
+                $endDate   = $cart->end_date ?? now()->addDays($item['days'] ?? 1)->format('Y-m-d');
+                
                 if ($startDate > $endDate) {
                     [$startDate, $endDate] = [$endDate, $startDate]; // swap
                 }
@@ -74,13 +84,13 @@ class OrderController extends Controller
                     'order_id'         => $orderId,
                     'user_id'          => auth()->id(),
                     'product_id'       => $item['product_id'],
-                    'start_date'       => $startDate,
-                    'end_date'         => $endDate,
-                    'days'             => $item['days'],
+                    'start_date'       => $startDate, // Sekarang dijamin tidak akan NULL
+                    'end_date'         => $endDate,   // Sekarang dijamin tidak akan NULL
+                    'days'             => $item['days'] ?? 1,
                     'quantity'         => $item['quantity'],
                     'note'             => $item['note'] ?? '',
                     'harga_per_hari'    => $cart->product->harga_per_hari ?? 0,
-                    'total_harga'      => ($cart->product->harga_per_hari ?? 0) * $item['quantity'] * $item['days'],
+                    'total_harga'      => ($cart->product->harga_per_hari ?? 0) * $item['quantity'] * ($item['days'] ?? 1),
                     'biaya_pengiriman' => $request->input('biaya_pengiriman', 0),
                     'biaya_layanan'      => $request->input('biaya_layanan', 2000),
                     'metode_pengiriman'  => $request->input('metode_pengiriman', 'pickup'),
@@ -98,7 +108,6 @@ class OrderController extends Controller
             return response()->json(['status' => 'error', 'message' => $e->getMessage()], 500);
         }
     }
-
     public function show(string $id)
     {
         //
