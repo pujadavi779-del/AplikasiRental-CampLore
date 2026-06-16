@@ -483,18 +483,15 @@ $accordions = [
     }
 
 function rentNow(idBarang) {
-    // 1. Ambil data tanggal dan quantity dari input field
     const startDate = document.getElementById('start_date')?.value || document.querySelector('input[name="start_date"]')?.value;
     const endDate = document.getElementById('end_date')?.value || document.querySelector('input[name="end_date"]')?.value;
     const quantity = document.getElementById('quantity')?.value || document.querySelector('input[name="quantity"]')?.value || 1;
 
-    // 2. Validasi pastikan ID barang tidak kosong
     if (!idBarang) {
         alert('Eror: ID Produk tidak terbaca!');
         return;
     }
 
-    // 3. Kirim data ke backend
     fetch('/cart/add', {
         method: 'POST',
         headers: {

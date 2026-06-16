@@ -455,7 +455,6 @@
     }
 
     function goToCheckout() {
-    // 1. Ambil card-item unik yang checkbox-nya sedang dicentang
     const checkedCards = [...new Set(
         Array.from(document.querySelectorAll('.item-checkbox:checked'))
         .map(cb => cb.closest('.card-item'))
@@ -471,16 +470,13 @@
         return;
     }
 
-    // 2. Susun query string parameter ids[] menggunakan URLSearchParams agar standar & rapi
     const params = new URLSearchParams();
     checkedCards.forEach(card => {
         if (card.dataset.id) {
             params.append('ids[]', card.dataset.id); // mengambil id_keranjang
         }
     });
-
-    // 3. Alihkan ke halaman checkout
-    // Hasil URL: /checkout?ids[]=12&ids[]=15
+    
     window.location.href = `/checkout?${params.toString()}`;
 }
 
