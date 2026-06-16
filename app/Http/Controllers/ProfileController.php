@@ -18,9 +18,13 @@ class ProfileController extends Controller
     {
         $pelanggan = Auth::user();
 
+        // Ambil primary key yang benar (id_pelanggan)
+        $idPelanggan = $pelanggan->id_pelanggan;
+
         $request->validate([
             'name'            => 'required|string|max:255',
-            'email'           => 'required|email|unique:pelanggan,email,' . $pelanggan->id,
+            // FORMAT: unique:nama_tabel,nama_kolom,id_yang_dikecualikan,nama_kolom_primary_key
+            'email'           => 'required|email|unique:pelanggan,email,' . $idPelanggan . ',id_pelanggan',
             'no_tlp'          => 'nullable|string|max:20',
             'nik'             => 'nullable|string|max:20',
             'profile_picture' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',

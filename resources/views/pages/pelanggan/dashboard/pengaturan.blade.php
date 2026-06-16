@@ -220,29 +220,38 @@ $fotoProfil = $pelanggan->foto_profile
                 </div>
 
                 {{-- KTP --}}
-                <div class="space-y-2">
-                    <label class="text-[11px] font-bold text-gray-400 uppercase tracking-widest">Dokumen (KTP)</label>
+<div class="space-y-2">
+    <label class="text-[11px] font-bold text-gray-400 uppercase tracking-widest">Dokumen (KTP)</label>
 
-                    {{-- Tampil foto KTP dari DB kalau ada --}}
-                    @if($pelanggan->foto_ktp)
-                    <div class="relative">
-                        <img src="{{ asset('storage/' . $pelanggan->foto_ktp) }}"
-                            class="h-32 w-full object-cover rounded-xl border border-gray-200">
-                        <span class="absolute top-2 left-2 bg-emerald-500 text-white text-[9px] font-bold px-2 py-1 rounded-full uppercase tracking-wide">
-                            ✓ KTP Tersimpan
-                        </span>
-                    </div>
-                    <p class="text-[10px] text-gray-400">Unggah ulang jika ingin mengganti.</p>
-                    @endif
+    {{-- Hilangkan p-3 (padding) dan kunci tinggi kotak nya --}}
+    <div class="relative w-full bg-gray-50 border border-gray-200 rounded-xl min-h-[160px] h-44 overflow-hidden flex items-center justify-center">
+        @if($pelanggan->foto_ktp)
+            {{-- KUNCI UTAMA: w-full h-full object-cover agar gambar memenuhi penuh seluruh isi card --}}
+            <img src="{{ asset('storage/' . $pelanggan->foto_ktp) }}"
+                class="w-full h-full object-cover"
+                alt="KTP Tersimpan"
+                style="width: 100%; height: 100%; object-fit: cover !important;">
+            
+            {{-- Badge dipindah agak masuk sedikit agar tidak terlalu mepet ke ujung atas-kiri --}}
+            <span class="absolute top-3 left-3 bg-emerald-500 text-white text-[9px] font-bold px-2 py-1 rounded-full uppercase tracking-wide shadow-md z-10">
+                ✓ KTP Tersimpan
+            </span>
+        @else
+            <div class="text-center text-gray-400 text-xs py-4">
+                Belum ada file KTP
+            </div>
+        @endif
+    </div>
+    <p class="text-[10px] text-gray-400 mt-1">Unggah ulang jika ingin mengganti.</p>
 
-                    <label for="ktp"
-                        class="flex items-center justify-center w-full px-4 py-3 border-2 border-dashed border-gray-200 rounded-xl cursor-pointer hover:bg-gray-50">
-                        <span class="text-xs text-gray-400 font-bold uppercase">
-                            {{ $pelanggan->foto_ktp ? 'Ganti File KTP' : 'Pilih File KTP' }}
-                        </span>
-                    </label>
-                    <input type="file" id="ktp" name="ktp" class="hidden" @change="updatePreview($event, 'ktp')">
-                </div>
+    <label for="ktp"
+        class="flex items-center justify-center w-full px-4 py-3 border-2 border-dashed border-gray-200 rounded-xl cursor-pointer hover:bg-gray-50 transition">
+        <span class="text-xs text-gray-400 font-bold uppercase">
+            {{ $pelanggan->foto_ktp ? 'Ganti File KTP' : 'Pilih File KTP' }}
+        </span>
+    </label>
+    <input type="file" id="ktp" name="ktp" class="hidden" @change="updatePreview($event, 'ktp')">
+</div>
 
             </div>
 
