@@ -10,7 +10,7 @@ return new class extends Migration
     {
         if (!Schema::hasTable('admins')) {
             Schema::create('admins', function (Blueprint $table) {
-                $table->id();
+                $table->bigIncrements('id_admin'); 
                 $table->string('name');
                 $table->string('username')->unique();
                 $table->string('password');

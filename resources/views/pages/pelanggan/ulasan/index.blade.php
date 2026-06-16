@@ -168,7 +168,7 @@
                                 style="display:none; padding-left: 60px;"
                                 class="mt-4">
 
-                                <form action="{{ route('admin.reviews.balas_pesan', $review->id) }}" method="POST">
+                                <form action="{{ route('admin.reviews.balas_pesan', $review->id_review) }}" method="POST">
                                     @csrf
                                     @method('PUT')
 

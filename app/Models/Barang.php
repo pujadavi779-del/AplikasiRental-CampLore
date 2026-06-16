@@ -11,7 +11,10 @@ class Barang extends Model
 {
     use HasFactory;
     use SoftDeletes;
+
     protected $table = 'barang';
+    protected $primaryKey = 'id_barang';
+
     protected $fillable = [
         'id_tipe_kategori',
         'id_merek_kategori',
@@ -25,18 +28,11 @@ class Barang extends Model
         'stok',
     ];
 
-
-    /**
-     * Tipe produk (misal: Mirrorless, DSLR, Sleeping Bag, dst.)
-     */
     public function typeCategory(): BelongsTo
     {
         return $this->belongsTo(Kategori_data::class, 'id_tipe_kategori');
     }
 
-    /**
-     * Merek produk (misal: Canon, Sony, Eiger, dst.)
-     */
     public function brandCategory(): BelongsTo
     {
         return $this->belongsTo(Kategori_data::class, 'id_merek_kategori');
@@ -44,6 +40,6 @@ class Barang extends Model
 
     public function pesanan()
     {
-        return $this->hasMany(\App\Models\Pesanan::class);
+        return $this->hasMany(\App\Models\Pesanan::class, 'product_id', 'id_barang');
     }
 }

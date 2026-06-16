@@ -7,14 +7,13 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use App\Models\Barang;
 
-
-
 class Kategori_data extends Model
 {
-
     use SoftDeletes;
 
     protected $table = 'data_kategori';
+    protected $primaryKey = 'id_kategori';
+
     protected $fillable = [
         'nama_kategori',
         'kategori_utama',
@@ -27,23 +26,15 @@ class Kategori_data extends Model
         'aktif' => 'boolean',
     ];
 
-    /**
-     * Produk yang menggunakan Kategori_data ini sebagai Tipe.
-     */
     public function barangSebagaiTipe(): HasMany
     {
-        return $this->hasMany(Barang::class, 'id_tipe_kategori');
+        return $this->hasMany(Barang::class, 'id_tipe_kategori', 'id_kategori');
     }
 
-    /**
-     * Produk yang menggunakan Kategori_data ini sebagai Merek.
-     */
     public function barangSebagaiMerek(): HasMany
     {
-        return $this->hasMany(Barang::class, 'id_merek_kategori');
+        return $this->hasMany(Barang::class, 'id_merek_kategori', 'id_kategori');
     }
-
-    // ── Scope helpers ──────────────────────────────────────────────────
 
     public function scopeTipeKamera($query)
     {

@@ -146,7 +146,7 @@ class CameraController extends Controller
     $item = Barang::findOrFail($id);
 
     $relatedItems = Barang::where('kategori', 'Kamera')
-        ->where('id', '!=', $item->id)
+        ->where('id_barang', '!=', $item->id_barang)
         ->take(5)
         ->get();
 

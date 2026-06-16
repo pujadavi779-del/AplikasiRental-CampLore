@@ -26,68 +26,51 @@ class ProductController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'name' => 'required|string|max:255',
-            'stok' => 'required|integer|min:0',
-            'kategori' => 'required|string',
-            'harga_per_hari' => 'required|numeric|min:0',
-            'deskripsi' => 'required|string',
-            'sorotan' => 'required|string',
-            'isi_paket' => 'required|string',
-            'id_tipe_kategori' => 'nullable|exists:data_kategori,id',
-            'id_merek_kategori ' => 'nullable|exists:data_kategori,id',
-            'gambar_barang' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'name'              => 'required|string|max:255',
+            'stok'              => 'required|integer|min:0',
+            'kategori'          => 'required|string',
+            'harga_per_hari'    => 'required|numeric|min:0',
+            'deskripsi'         => 'required|string',
+            'sorotan'           => 'required|string',
+            'isi_paket'         => 'required|string',
+            'id_tipe_kategori'  => 'nullable|exists:data_kategori,id_kategori', // ← UPDATE
+            'id_merek_kategori' => 'nullable|exists:data_kategori,id_kategori', // ← UPDATE
+            'gambar_barang'     => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
         ]);
 
         $imagePath = null;
 
         if ($request->hasFile('gambar_barang')) {
-
             $imageName = time() . '.' . $request->gambar_barang->extension();
 
-            // FOTO KAMERA
             if ($request->kategori == 'Kamera') {
-
-                $request->gambar_barang->move(
-                    public_path('img_foto/camera'),
-                    $imageName
-                );
-
+                $request->gambar_barang->move(public_path('img_foto/camera'), $imageName);
                 $imagePath = 'img_foto/camera/' . $imageName;
-            }
-
-            // FOTO CAMPING
-            elseif ($request->kategori == 'Camping') {
-
-                $request->gambar_barang->move(
-                    public_path('img_foto/camping'),
-                    $imageName
-                );
-
+            } elseif ($request->kategori == 'Camping') {
+                $request->gambar_barang->move(public_path('img_foto/camping'), $imageName);
                 $imagePath = 'img_foto/camping/' . $imageName;
             }
         }
 
         Barang::create([
-            'name' => $request->name,
-            'stok' => $request->stok,
-            'kategori' => $request->kategori,
-            'harga_per_hari' => $request->harga_per_hari,
-            'deskripsi' => $request->deskripsi,
-            'sorotan' => $request->sorotan,
-            'isi_paket' => $request->isi_paket,
-            'id_tipe_kategori' => $request->id_tipe_kategori,
+            'name'              => $request->name,
+            'stok'              => $request->stok,
+            'kategori'          => $request->kategori,
+            'harga_per_hari'    => $request->harga_per_hari,
+            'deskripsi'         => $request->deskripsi,
+            'sorotan'           => $request->sorotan,
+            'isi_paket'         => $request->isi_paket,
+            'id_tipe_kategori'  => $request->id_tipe_kategori,
             'id_merek_kategori' => $request->id_merek_kategori,
-            'gambar_barang' => $imagePath,
+            'gambar_barang'     => $imagePath,
         ]);
 
-        return redirect()
-            ->route('admin.products')
-            ->with('success', 'Produk berhasil ditambahkan!');
+        return redirect()->route('admin.products')->with('success', 'Produk berhasil ditambahkan!');
     }
 
-    public function edit($id)
+    public function edit($id_barang) // ← UPDATE parameter name
     {
-        $product = Barang::findOrFail($id);
+        $product = Barang::findOrFail($id_barang);
 
         $types = Kategori_data::where('jenis_atribut', 'Tipe')
             ->where('aktif', 1)
@@ -97,92 +80,65 @@ class ProductController extends Controller
             ->where('aktif', 1)
             ->get();
 
-        return view('pages.admin.products.edit', compact(
-            'product',
-            'types',
-            'brands'
-        ));
+        return view('pages.admin.products.edit', compact('product', 'types', 'brands'));
     }
 
-    public function update(Request $request, $id)
+    public function update(Request $request, $id_barang) // ← UPDATE parameter name
     {
-        $product = Barang::findOrFail($id);
+        $product = Barang::findOrFail($id_barang);
 
         $request->validate([
-            'name'               => 'required|string|max:255',
+            'name'              => 'required|string|max:255',
             'stok'              => 'required|numeric|min:0',
-            'kategori'           => 'required|string',
-            'harga_per_hari'      => 'required|numeric|min:0',
-
-            'deskripsi'          => 'required|string',
-            'sorotan'         => 'nullable|string',
-            'isi_paket'          => 'nullable|string',
-
-            'id_tipe_kategori'   => 'nullable|exists:data_kategori,id',
-            'id_merek_kategori '  => 'nullable|exists:data_kategori,id',
-
-            'gambar_barang'              => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'kategori'          => 'required|string',
+            'harga_per_hari'    => 'required|numeric|min:0',
+            'deskripsi'         => 'required|string',
+            'sorotan'           => 'nullable|string',
+            'isi_paket'         => 'nullable|string',
+            'id_tipe_kategori'  => 'nullable|exists:data_kategori,id_kategori', // ← UPDATE
+            'id_merek_kategori' => 'nullable|exists:data_kategori,id_kategori', // ← UPDATE
+            'gambar_barang'     => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
         ]);
 
         $data = [
-            'name'               => $request->name,
+            'name'              => $request->name,
             'stok'              => $request->stok,
-            'kategori'           => $request->kategori,
-            'harga_per_hari'      => $request->harga_per_hari,
-
-            'deskripsi'          => $request->deskripsi,
-            'sorotan'         => $request->sorotan,
-            'isi_paket'          => $request->isi_paket,
-
-            'id_tipe_kategori'   => $request->id_tipe_kategori,
-            'id_merek_kategori'  => $request->id_merek_kategori,
+            'kategori'          => $request->kategori,
+            'harga_per_hari'    => $request->harga_per_hari,
+            'deskripsi'         => $request->deskripsi,
+            'sorotan'           => $request->sorotan,
+            'isi_paket'         => $request->isi_paket,
+            'id_tipe_kategori'  => $request->id_tipe_kategori,
+            'id_merek_kategori' => $request->id_merek_kategori,
         ];
 
         if ($request->hasFile('gambar_barang')) {
-
-            // HAPUS FOTO LAMA
             if ($product->gambar_barang && file_exists(public_path($product->gambar_barang))) {
                 unlink(public_path($product->gambar_barang));
             }
 
             $imageName = time() . '.' . $request->gambar_barang->extension();
 
-            // FOTO KAMERA
             if ($request->kategori == 'Kamera') {
-
-                $request->gambar_barang->move(
-                    public_path('img_foto/camera'),
-                    $imageName
-                );
-
+                $request->gambar_barang->move(public_path('img_foto/camera'), $imageName);
                 $data['gambar_barang'] = 'img_foto/camera/' . $imageName;
-            }
-
-            // FOTO CAMPING
-            elseif ($request->kategori == 'Camping') {
-
-                $request->gambar_barang->move(
-                    public_path('img_foto/camping'),
-                    $imageName
-                );
-
+            } elseif ($request->kategori == 'Camping') {
+                $request->gambar_barang->move(public_path('img_foto/camping'), $imageName);
                 $data['gambar_barang'] = 'img_foto/camping/' . $imageName;
             }
         }
 
         $product->update($data);
 
-        return redirect()
-            ->route('admin.products')
-            ->with('success', 'Produk berhasil diperbarui!');
+        return redirect()->route('admin.products')->with('success', 'Produk berhasil diperbarui!');
     }
 
-    public function destroy($id)
+    public function destroy($id_barang) // ← UPDATE parameter name
     {
-        $product = Barang::findOrFail($id);
+        $product = Barang::findOrFail($id_barang);
 
         $activeOrderCount = \DB::table('pesanan')
-            ->where('product_id', $id)
+            ->where('product_id', $id_barang)
             ->whereNotIn('status', ['selesai', 'dibatalkan'])
             ->count();
 

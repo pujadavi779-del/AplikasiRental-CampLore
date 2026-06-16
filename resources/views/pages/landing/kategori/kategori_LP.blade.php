@@ -52,7 +52,7 @@
             <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 lg:gap-5">
 
                 @foreach($items as $item)
-                <a href="{{ route($kategori . '.show', $item->id) }}"
+                <a href="{{ route($kategori . '.show', $item->id_barang) }}"
                     class="group bg-[#ededea] rounded-2xl overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-xl">
 
                     {{-- IMAGE --}}

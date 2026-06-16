@@ -6,9 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Pesanan extends Model
 {
-
     protected $table = 'pesanan';
-    
+    protected $primaryKey = 'id_pesanan';
     protected $fillable = [
         'order_id',
         'user_id',
@@ -40,11 +39,11 @@ class Pesanan extends Model
 
     public function product()
     {
-        return $this->belongsTo(Barang::class);
+        return $this->belongsTo(Barang::class, 'product_id', 'id_barang');
     }
 
     public function pelanggan()
     {
-        return $this->belongsTo(Pelanggan::class, 'user_id');
+        return $this->belongsTo(Pelanggan::class, 'user_id', 'id_pelanggan');
     }
 }

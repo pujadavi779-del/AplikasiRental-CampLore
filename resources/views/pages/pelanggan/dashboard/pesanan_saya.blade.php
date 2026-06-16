@@ -473,7 +473,7 @@
                     ->first();
                     @endphp
                     @if($myReview)
-                    <a href="{{ route('pelanggan.ulasan.show', $myReview->id) }}"
+                    <a href="{{ route('pelanggan.ulasan.show', $myReview->id_review) }}"
                         class="px-[18px] py-[9px] rounded-[10px] text-xs font-bold no-underline inline-flex items-center gap-1.5
                                 bg-white border-[1.5px] border-[#6b7280] text-[#6b7280]
                                 hover:border-[#1a5c3a] hover:text-[#1a5c3a] transition-colors duration-200">

@@ -224,8 +224,8 @@ class PaymentController extends Controller
         $query = \App\Models\Pesanan::with(['pelanggan', 'product'])
             ->orderBy('created_at', 'desc')
             ->whereIn('status', ['belum_bayar', 'dikemas', 'dikirim', 'selesai', 'dibatalkan'])
-            ->whereIn('id', function ($sub) {
-                $sub->selectRaw('MIN(id)')
+            ->whereIn('id_pesanan', function ($sub) {
+                $sub->selectRaw('MIN(id_pesanan)')
                     ->from('pesanan')
                     ->groupBy('order_id');
             });
@@ -287,8 +287,8 @@ class PaymentController extends Controller
     {
         $pesanan = \App\Models\Pesanan::with(['pelanggan', 'product'])
             ->whereIn('status', ['dikemas', 'selesai', 'dibatalkan'])
-            ->whereIn('id', function ($sub) {
-                $sub->selectRaw('MIN(id)')->from('pesanan')->groupBy('order_id');
+            ->whereIn('id_pesanan', function ($sub) {
+                $sub->selectRaw('MIN(id_pesanan)')->from('pesanan')->groupBy('order_id');
             })
             ->orderBy('created_at', 'desc')
             ->get();

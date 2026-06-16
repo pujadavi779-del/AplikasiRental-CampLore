@@ -16,7 +16,7 @@ class CustomerReviewController extends Controller
      */
     public function create($orderId)
     {
-        $pesanan = Pesanan::where('id', $orderId)
+        $pesanan = Pesanan::where('id_pesanan', $orderId)
             ->where('user_id', Auth::id())
             ->where('status', 'selesai')
             ->firstOrFail();
@@ -41,7 +41,7 @@ class CustomerReviewController extends Controller
      */
     public function store(Request $request, $orderId)
     {
-        $pesanan = Pesanan::where('id', $orderId)
+        $pesanan = Pesanan::where('id_pesanan', $orderId)
             ->where('user_id', Auth::id())
             ->where('status', 'selesai')
             ->firstOrFail();
@@ -81,7 +81,7 @@ class CustomerReviewController extends Controller
         $review = Review::with(['product' => function ($q) {
             $q->withTrashed();
         }, 'pelanggan'])
-            ->where('id', $reviewId)
+            ->where('id_review', $reviewId)
             ->where('user_id', Auth::id())
             ->firstOrFail();
 

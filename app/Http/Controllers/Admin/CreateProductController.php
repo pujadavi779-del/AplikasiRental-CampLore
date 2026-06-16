@@ -19,8 +19,8 @@ class CreateProductController extends Controller
             'deskripsi'         => 'nullable|string',
             'sorotan'           => 'nullable|string',
             'isi_paket'         => 'nullable|string',
-            'id_tipe_kategori'  => 'nullable|exists:data_kategori,id',
-            'id_merek_kategori' => 'nullable|exists:data_kategori,id',
+            'id_tipe_kategori'  => 'nullable|exists:data_kategori,id_kategori', // ← UPDATE
+            'id_merek_kategori' => 'nullable|exists:data_kategori,id_kategori', // ← UPDATE
             'image'             => 'required|image|mimes:jpeg,png,jpg|max:2048',
         ]);
 
@@ -31,7 +31,7 @@ class CreateProductController extends Controller
 
         Barang::create([
             'name'              => $request->name,
-            'kategori'          => $request->Kategori_data,  // sesuai nama input di blade
+            'kategori'          => $request->Kategori_data,
             'harga_per_hari'    => $request->harga_per_hari,
             'stok'              => $request->stok,
             'deskripsi'         => $request->deskripsi,

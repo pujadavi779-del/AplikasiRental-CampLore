@@ -143,7 +143,7 @@
 
                         {{-- Aksi — selalu link ke halaman detail --}}
                         <td class="px-6 py-4 text-center">
-                            <a href="{{ route('admin.customers.show', $customer->id) }}"
+                            <a href="{{ route('admin.customers.show', $customer->id_pelanggan) }}"
                                 class="inline-block px-4 py-2 rounded-xl text-xs font-bold text-white transition
                                     {{ $status === 'verified' ? 'bg-gray-400 hover:bg-gray-500' : 'bg-[#22543D] hover:bg-[#1a3d2e]' }}">
                                 Detail

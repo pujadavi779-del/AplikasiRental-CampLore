@@ -10,6 +10,12 @@ class Pelanggan extends Authenticatable
     use Notifiable;
 
     protected $table = 'pelanggan';
+    protected $primaryKey = 'id_pelanggan';
+
+    public function getRouteKeyName()
+    {
+        return 'id_pelanggan';
+    }
 
     protected $fillable = [
         'name',
@@ -33,6 +39,6 @@ class Pelanggan extends Authenticatable
 
     public function alamat_pengiriman()
     {
-        return $this->belongsTo(Pelanggan::class, 'user_id');
+        return $this->belongsTo(Pelanggan::class, 'user_id', 'id_pelanggan');
     }
 }

@@ -8,79 +8,62 @@ use App\Models\Pelanggan;
 use App\Models\Barang;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
-use App\Mail\BarangTibaMail; // Pastikan Anda sudah membuat mailable ini
+use App\Mail\BarangTibaMail;
 
 class PemesananController extends Controller
 {
-    /**
-     * Halaman Manajemen Pesanan (Semua Data)
-     */
     public function index()
     {
-        $pesanan = Pemesanan::with(['pelanggan', 'product'])->orderBy('id', 'asc')->get();
+        $pesanan = Pemesanan::with(['pelanggan', 'barang'])->orderBy('id_pesanan', 'asc')->get(); // ← UPDATE
         return view('pages.admin.pemesanan', compact('pesanan'));
     }
-    /**
-     * Halaman Pengiriman (Hanya yang statusnya 'dikirim')
-     */
+
     public function pengiriman()
     {
-        // Filter hanya yang statusnya 'dikirim'
-        $data_pengiriman = Pemesanan::with(['pelanggan', 'product'])
+        $data_pengiriman = Pemesanan::with(['pelanggan', 'barang'])
             ->where('status', 'dikirim')
-            ->orderBy('id', 'asc')
+            ->orderBy('id_pesanan', 'asc') // ← UPDATE
             ->get();
 
         return view('pages.admin.pengiriman', compact('data_pengiriman'));
     }
 
-    /**
-     * Logika untuk tombol "Tandai Sudah Tiba"
-     * Mengubah status dari 'dikirim' ke 'disewa'
-     */
-    public function tandaiSudahTiba($id)
+    public function tandaiSudahTiba($id_pesanan) // ← UPDATE parameter name
     {
-        $pesanan = Pemesanan::with('pelanggan')->findOrFail($id);
+        $pesanan = Pemesanan::with('pelanggan')->findOrFail($id_pesanan);
 
-        // 1. Update status agar masuk ke halaman Pengembalian
-        $pesanan->update([
-            'status' => 'disewa'
-        ]);
+        $pesanan->update(['status' => 'disewa']);
 
-        // 2. Kirim Email Notifikasi ke Pelanggan
         try {
             if ($pesanan->pelanggan && $pesanan->pelanggan->email) {
                 Mail::to($pesanan->pelanggan->email)->send(new BarangTibaMail($pesanan));
             }
         } catch (\Exception $e) {
-            // Tetap lanjut meskipun email gagal (opsional: log errornya)
+            // log jika perlu
         }
 
         return redirect()->back()->with('success', 'Barang telah tiba dan status diperbarui ke Sedang Disewa.');
     }
 
-    public function edit($id)
+    public function edit($id_pesanan) // ← UPDATE parameter name
     {
-        $pesanan = Pemesanan::findOrFail($id);
+        $pesanan  = Pemesanan::findOrFail($id_pesanan);
         $pelanggan = Pelanggan::all();
-        $products = Barang::all();
+        $products  = Barang::all();
         return view('admin.pesanan.edit', compact('pesanan', 'pelanggan', 'products'));
     }
 
-    public function update(Request $request, $id)
+    public function update(Request $request, $id_pesanan) // ← UPDATE parameter name
     {
-        $pesanan = Pemesanan::findOrFail($id);
+        $pesanan = Pemesanan::findOrFail($id_pesanan);
         $pesanan->update($request->all());
 
-        // Redirect kembali ke index pemesanan
         return redirect()->route('admin.pesanan.index')->with('success', 'Berhasil update!');
     }
 
-    public function destroy($id)
+    public function destroy($id_pesanan) // ← UPDATE parameter name
     {
-        $pesanan = Pemesanan::findOrFail($id);
-        $pesanan->delete();
-
+        Pemesanan::findOrFail($id_pesanan)->delete();
         return redirect()->back()->with('success', 'Pesanan berhasil dihapus!');
     }
 }

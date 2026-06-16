@@ -7,13 +7,15 @@ use App\Models\Barang;
 
 class Cart extends Model
 {
-protected $table = 'keranjang';    
-protected $fillable = [
+    protected $table = 'keranjang';
+    protected $primaryKey = 'id_keranjang';
+
+    protected $fillable = [
         'user_id',
         'product_id',
         'quantity',
         'start_date',
-        'end_date'
+        'end_date',
     ];
 
     protected $casts = [
@@ -23,7 +25,7 @@ protected $fillable = [
 
     public function product()
     {
-        return $this->belongsTo(Barang::class);
+        return $this->belongsTo(Barang::class, 'product_id', 'id_barang');
     }
 
     public function getDaysAttribute(): int

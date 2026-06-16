@@ -6,6 +6,14 @@ use Illuminate\Database\Eloquent\Model;
 
 class Review extends Model
 {
+    protected $primaryKey = 'id_review';
+
+        public function getRouteKeyName()
+    {
+        return 'id_review';
+    }
+
+    
     protected $fillable = [
         'user_id',
         'product_id',
@@ -22,11 +30,11 @@ class Review extends Model
 
     public function pelanggan()
     {
-        return $this->belongsTo(Pelanggan::class, 'user_id');
+        return $this->belongsTo(Pelanggan::class, 'user_id', 'id_pelanggan');
     }
 
     public function product()
     {
-        return $this->belongsTo(Barang::class, 'product_id');
+        return $this->belongsTo(Barang::class, 'product_id', 'id_barang');
     }
 }

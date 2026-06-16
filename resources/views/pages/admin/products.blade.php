@@ -161,7 +161,7 @@ $section = 'Produk';
                         {{-- TINDAKAN --}}
                         <td class="px-6 py-4 text-right vertical-align-middle">
                             <div class="flex justify-end gap-3">
-                                <a href="{{ route('admin.products.edit', $product->id) }}"
+                                <a href="{{ route('admin.products.edit', $product->id_barang) }}"
                                     class="text-[#ED64A6] hover:bg-[#ED64A6]/5 px-2 py-1 rounded-lg transition-colors font-bold text-[11px] flex items-center gap-1">
                                     <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
                                         <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
@@ -170,7 +170,7 @@ $section = 'Produk';
                                     Ubah
                                 </a>
 
-                                <form action="{{ route('admin.products.destroy', $product->id) }}" method="POST"
+                                <form action="{{ route('admin.products.destroy', $product->id_barang) }}" method="POST"
                                     onsubmit="return confirm('Yakin ingin menghapus produk ini?')">
                                     @csrf
                                     @method('DELETE')

@@ -211,7 +211,7 @@ $section = 'Pengguna';
                             <span class="font-bold text-gray-800 text-sm">{{ $tipe->nama_kategori }}</span>
                             <div class="flex gap-3 text-xs font-bold">
                                 <button class="text-gray-400 hover:text-gray-600 transition-colors">Edit</button>
-                                <form action="{{ route('admin.category.destroyType', $tipe->id) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus tipe ini?');" class="inline">
+                                <form action="{{ route('admin.category.destroyType', $tipe->id_kategori) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus tipe ini?');" class="inline">
                                     @csrf
                                     @method('DELETE')
                                     <button type="submit" class="text-red-500 hover:text-red-600 transition-colors">Hapus</button>
@@ -258,7 +258,7 @@ $section = 'Pengguna';
                     @foreach($cat['merekList'] as $merek)
                     <div class="flex flex-col items-center group">
                         {{-- Klik logo untuk buka modal detail --}}
-                        <div @click="openDetailMerek('{{ $merek->id }}', '{{ $merek->nama_kategori }}')"
+                        <div @click="openDetailMerek('{{ $merek->id_kategori }}', '{{ $merek->nama_kategori }}')"
                             class="w-14 h-14 cursor-pointer {{ $merek->aktif ? 'bg-gray-100' : 'bg-gray-200 opacity-50' }} border border-transparent rounded-xl flex items-center justify-center text-gray-400 font-bold text-sm tracking-wide group-hover:border-gray-200 group-hover:bg-white group-hover:shadow-sm transition-all duration-200">
                             @if($merek->foto_logo)
                             <img src="{{ asset($merek->foto_logo) }}" alt="{{ $merek->nama_kategori }}" class="w-10 h-10 object-contain">
@@ -270,7 +270,7 @@ $section = 'Pengguna';
                             {{ $merek->nama_kategori }}
                         </span>
                         {{-- Tombol toggle aktif --}}
-                        <form action="{{ route('admin.category.toggleBrand', $merek->id) }}" method="POST">
+                        <form action="{{ route('admin.category.toggleBrand', $merek->id_kategori) }}" method="POST">
                             @csrf
                             @method('PATCH')
                             <button type="submit" class="mt-1 text-[9px] font-bold {{ $merek->aktif ? 'text-emerald-500 hover:text-red-400' : 'text-gray-300 hover:text-emerald-500' }} transition-colors uppercase tracking-wider">

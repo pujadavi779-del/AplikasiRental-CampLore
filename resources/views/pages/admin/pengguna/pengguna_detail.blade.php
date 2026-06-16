@@ -196,7 +196,7 @@
         <div class="bg-white rounded-[22px] border border-[#d7e6de] shadow-sm p-5">
             <h3 class="text-sm font-bold text-gray-800 mb-4">Kelola Status Verifikasi</h3>
 
-            <form action="{{ route('admin.customers.update', $customer->id) }}" method="POST">
+            <form action="{{ route('admin.customers.update', $customer->id_pelanggan) }}" method="POST">
                 @csrf
                 @method('PUT')
 

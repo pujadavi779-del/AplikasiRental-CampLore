@@ -55,7 +55,7 @@
 
         {{-- ===== FORM UTAMA ===== --}}
         <form id="form-edit"
-            action="{{ route('admin.products.update', $product->id) }}"
+            action="{{ route('admin.products.update', $product->id_barang) }}"
             method="POST"
             enctype="multipart/form-data"
             class="p-8">
@@ -129,8 +129,8 @@
                             <option value="">Pilih Tipe</option>
 
                             @foreach($types as $type)
-                            <option value="{{ $type->id }}"
-                                {{ old('id_tipe_kategori', $product->id_tipe_kategori) == $type->id ? 'selected' : '' }}>
+                            <option value="{{ $type->id_kategori }}"
+                                {{ old('id_tipe_kategori', $product->id_tipe_kategori) == $type->id_kategori ? 'selected' : '' }}>
                                 {{ $type->nama_kategori }}
                             </option>
                             @endforeach
@@ -149,8 +149,8 @@
                             <option value="">Pilih Merek</option>
 
                             @foreach($brands as $brand)
-                            <option value="{{ $brand->id }}"
-                                {{ old('id_merek_kategori', $product->id_merek_kategori) == $brand->id ? 'selected' : '' }}>
+                            <option value="{{ $brand->id_kategori }}"
+                                {{ old('id_merek_kategori', $product->id_merek_kategori) == $brand->id_kategori ? 'selected' : '' }}>
                                 {{ $brand->nama_kategori }}
                             </option>
                             @endforeach
@@ -294,7 +294,7 @@
         <div class="px-8 pb-8 pt-6 border-t border-[#f1f8f4] flex items-center justify-between">
 
             {{-- Form Hapus --}}
-            <form action="{{ route('admin.products.destroy', $product->id) }}"
+            <form action="{{ route('admin.products.destroy', $product->id_barang) }}"
                 method="POST"
                 onsubmit="return confirm('Yakin ingin menghapus produk ini?')">
                 @csrf
