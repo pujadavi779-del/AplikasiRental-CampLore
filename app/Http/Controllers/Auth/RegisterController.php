@@ -28,7 +28,7 @@ class RegisterController extends Controller
     public function sendOtp(Request $request)
     {
         $request->validate([
-            'email' => ['required', 'email', 'unique:users,email'],
+            'email' => ['required', 'email', 'unique:pelanggan,email'],
         ], [
             'email.unique' => 'Email ini sudah terdaftar.',
         ]);
