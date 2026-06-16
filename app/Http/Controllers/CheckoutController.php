@@ -10,19 +10,28 @@ class CheckoutController extends Controller
     public function index(Request $request)
     {
         $ids = $request->query('ids', []);
+        
+        // Coba ambil ID dengan beberapa alternatif agar pasti mendapatkan angka primary key user (misal: 4)
+        $idPelanggan = auth()->user()->id_pelanggan ?? auth()->user()->id ?? auth()->id();
+
+        // Bersihkan array $ids dari nilai kosong/null
+        $ids = array_filter($ids);
 
         if (!empty($ids)) {
-            // Kalau dari "Sewa Sekarang" — ambil cart berdasarkan ID yang dikirim
+            // Jalur dari "Sewa Sekarang" atau Checklist Keranjang (Membawa array ID)
             $carts = Cart::with('product')
-                ->whereIn('id', $ids)
-                ->where('user_id', auth()->id())
+                ->whereIn('id_keranjang', $ids)
+                ->where('user_id', $idPelanggan)
                 ->get();
         } else {
-            // Kalau dari halaman cart biasa — ambil semua cart pelanggan
+            // Jalur dari halaman Keranjang langsung (Ambil semua yang ada di keranjang milik user ini)
             $carts = Cart::with('product')
-                ->where('user_id', auth()->id())
+                ->where('user_id', $idPelanggan)
                 ->get();
         }
+
+        // Hapus atau komentari dd() jika sebelumnya masih terpasang:
+        // dd($carts); 
 
         return view('pages.pelanggan.checkout', compact('carts'));
     }

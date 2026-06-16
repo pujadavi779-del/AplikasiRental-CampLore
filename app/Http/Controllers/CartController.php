@@ -10,34 +10,39 @@ class CartController extends Controller
 {
     public function index()
     {
+        // Ganti Auth::id() menjadi Auth::user()->nik
         $carts = Cart::with('product')
-            ->where('user_id', Auth::id())
+            ->where('user_id', Auth::user()->nik)
             ->get();
 
         return view('pages.landing.keranjang', compact('carts'));
     }
 
     public function add(Request $request)
-    {
-        $cart = Cart::updateOrCreate(
-            [
-                'user_id'    => auth()->id(),
-                'product_id' => $request->product_id,  // 'item_id' → 'product_id'
-            ],
-            [
-                'quantity'   => $request->quantity,
-                'start_date' => $request->start_date,
-                'end_date'   => $request->end_date,
-            ]
-        );
+{
+    $request->validate([
+        'product_id' => 'required',
+        'quantity'   => 'required|integer|min:1',
+    ]);
 
-        return response()->json([
-            'success' => true,
-            'cart_id' => $cart->id,
-            'total'   => Cart::where('user_id', auth()->id())->count(),
-        ]);
-    }
+    $cart = Cart::updateOrCreate(
+        [
+            'user_id'    => auth()->user()->id_pelanggan, 
+            'product_id' => $request->product_id,
+        ],
+        [
+            'quantity'   => $request->quantity,
+            'start_date' => $request->start_date,
+            'end_date'   => $request->end_date,
+        ]
+    );
 
+    return response()->json([
+        'success' => true,
+        'cart_id' => $cart->id_keranjang ?? $cart->id,
+        'total'   => Cart::where('user_id', auth()->user()->id_pelanggan)->count(),
+    ]);
+}
     public function update(Request $request, $cartId)
     {
         $cart = Cart::where('id', $cartId)

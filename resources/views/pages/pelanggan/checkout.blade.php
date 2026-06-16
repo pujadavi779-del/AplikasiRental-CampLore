@@ -192,7 +192,7 @@
                 {{-- Catatan --}}
                 <div class="mx-4 md:mx-5 mb-4">
                     <p class="text-[10px] text-gray-400 font-semibold mb-1">Catatan (opsional)</p>
-                    <textarea id="note-{{ $cart->id }}" rows="2" placeholder="Contoh: tolong bawa baterai cadangan, kondisi harus mulus, dll."
+                    <textarea id="note-{{ $cart->id_keranjang }}" rows="2" placeholder="Contoh: tolong bawa baterai cadangan, kondisi harus mulus, dll."
                         class="w-full text-sm p-3 border border-gray-200 rounded-xl outline-none focus:border-[#FF6B95] transition resize-none text-gray-700 placeholder-gray-300"></textarea>
                 </div>
             </div>
@@ -304,7 +304,7 @@ const ktpSudahAda = "{{ auth()->user()->foto_ktp ? '1' : '0' }}";
 const cartItems = [
     @foreach($carts as $cart)
     {
-        id: {{ $cart->id }},
+        id: {{ $cart->id_keranjang }},
         product_id: {{ $cart->product_id ?? 0 }},
         quantity: {{ $cart->quantity }},
         days: {{ ($cart->start_date && $cart->end_date) ? max(1, \Carbon\Carbon::parse($cart->start_date)->diffInDays($cart->end_date)) : 1 }}

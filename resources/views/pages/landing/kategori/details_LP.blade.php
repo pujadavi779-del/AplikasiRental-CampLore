@@ -146,11 +146,11 @@ $accordions = [
 
         {{-- CTA Fixed Bottom --}}
         <div class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-100 px-4 py-3 flex gap-3 z-50 lg:hidden">
-            <button onclick="addToCart({{ $item->id }})" id="addToCartBtn"
+            <button onclick="addToCart({{ $barang->id_barang ?? $item->id_barang }})"
                 class="flex-1 py-3.5 rounded-xl bg-gray-900 text-white text-xs font-black tracking-widest uppercase hover:bg-gray-700 active:scale-95 transition-all">
                 + Keranjang
             </button>
-            <button onclick="rentNow({{ $item->id }})"
+            <button onclick="rentNow({{ $barang->id_barang ?? $item->id_barang }})"
                 class="flex-1 py-3.5 rounded-xl bg-[#ED64A6] text-white text-xs font-black tracking-widest uppercase hover:bg-[#d45592] active:scale-95 transition-all">
                 Sewa Sekarang
             </button>
@@ -233,11 +233,11 @@ $accordions = [
 
             {{-- CTA --}}
             <div class="flex gap-3 mb-6">
-                <button onclick="addToCart({{ $item->id }})" id="addToCartBtnD"
+                <button onclick="addToCart({{ $item->id_barang }})" id="addToCartBtnD"
                     class="flex-1 py-4 rounded-xl bg-gray-900 text-white text-xs font-black tracking-widest uppercase hover:bg-gray-700 active:scale-95 transition-all duration-200">
                     Tambahkan ke Keranjang
                 </button>
-                <button onclick="rentNow({{ $item->id }})"
+                <button onclick="rentNow({{ $item->id_barang }})"
                     class="flex-1 py-4 rounded-xl bg-[#ED64A6] text-white text-xs font-black tracking-widest uppercase hover:bg-[#d45592] active:scale-95 transition-all duration-200">
                     Sewa Sekarang
                 </button>
@@ -482,42 +482,47 @@ $accordions = [
             }));
     }
 
-function rentNow(itemId) {
-    if (!isLoggedIn) {
-        window.location.href = "{{ route('login') }}";
-        return;
-    }
-    const { startDate, endDate } = getFormData();
-    if (!startDate || !endDate) {
-        showToast('Pilih tanggal penyewaan terlebih dahulu', 'error');
+function rentNow(idBarang) {
+    // 1. Ambil data tanggal dan quantity dari input field
+    const startDate = document.getElementById('start_date')?.value || document.querySelector('input[name="start_date"]')?.value;
+    const endDate = document.getElementById('end_date')?.value || document.querySelector('input[name="end_date"]')?.value;
+    const quantity = document.getElementById('quantity')?.value || document.querySelector('input[name="quantity"]')?.value || 1;
+
+    // 2. Validasi pastikan ID barang tidak kosong
+    if (!idBarang) {
+        alert('Eror: ID Produk tidak terbaca!');
         return;
     }
 
+    // 3. Kirim data ke backend
     fetch('/cart/add', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Accept': 'application/json',
-                'X-CSRF-TOKEN': '{{ csrf_token() }}'
-            },
-            body: JSON.stringify({
-                product_id: itemId,
-                quantity: qty,
-                start_date: startDate,
-                end_date: endDate
-            })
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+            'Accept': 'application/json'
+        },
+        body: JSON.stringify({
+            product_id: idBarang,
+            quantity: quantity,
+            start_date: startDate,
+            end_date: endDate
         })
-        .then(r => r.status === 401 ? window.location.href = "{{ route('login') }}" : r.json())
-        .then(data => {
-            if (data?.success && data?.cart_id) {
-                window.location.href = '/checkout?ids[]=' + data.cart_id;
-            } else {
-                showToast(data?.message ?? 'Gagal', 'error');
-            }
-        })
-        .catch(() => showToast('Terjadi kesalahan, coba lagi', 'error'));
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success && data.cart_id) {
+            // BERHASIL: URL sekarang akan berisi angka ID keranjang yang valid!
+            window.location.href = '/checkout?ids[]=' + data.cart_id;
+        } else {
+            alert('Gagal: ' + (data.message || 'Terjadi kesalahan'));
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Terjadi kesalahan koneksi ke server.');
+    });
 }
-
     function shareProduct() {
         if (navigator.share) navigator.share({
             title: document.title,

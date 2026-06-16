@@ -34,7 +34,7 @@
         @endphp
 
         <div class="card-item border-b border-gray-100 last:border-0"
-            data-id="{{ $cart->id }}"
+            data-id="{{ $cart->id_keranjang }}"
             data-price="{{ $cart->product->harga_per_hari ?? 0 }}"
             data-days="{{ $days }}">
 
@@ -455,27 +455,34 @@
     }
 
     function goToCheckout() {
+    // 1. Ambil card-item unik yang checkbox-nya sedang dicentang
+    const checkedCards = [...new Set(
+        Array.from(document.querySelectorAll('.item-checkbox:checked'))
+        .map(cb => cb.closest('.card-item'))
+    )];
 
-        const checkedCards = [...new Set(
-            Array.from(document.querySelectorAll('.item-checkbox:checked'))
-            .map(cb => cb.closest('.card-item'))
-        )];
-
-        if (!checkedCards.length) {
-            alert('Pilih barang dulu!');
-            return;
-        }
-
-        if (checkedCards.length > 5) {
-            alert('Maksimal checkout hanya 5 barang dalam satu transaksi.');
-            return;
-        }
-
-        const ids = checkedCards.map(c => c.dataset.id);
-
-        window.location.href =
-            `/checkout?${ids.map(id => `ids[]=${id}`).join('&')}`;
+    if (!checkedCards.length) {
+        alert('Silakan pilih minimal satu produk untuk dicheckout!');
+        return;
     }
+
+    if (checkedCards.length > 5) {
+        alert('Maksimal checkout hanya 5 barang dalam satu transaksi.');
+        return;
+    }
+
+    // 2. Susun query string parameter ids[] menggunakan URLSearchParams agar standar & rapi
+    const params = new URLSearchParams();
+    checkedCards.forEach(card => {
+        if (card.dataset.id) {
+            params.append('ids[]', card.dataset.id); // mengambil id_keranjang
+        }
+    });
+
+    // 3. Alihkan ke halaman checkout
+    // Hasil URL: /checkout?ids[]=12&ids[]=15
+    window.location.href = `/checkout?${params.toString()}`;
+}
 
     function showToast(msg) {
         const t = document.createElement('div');
