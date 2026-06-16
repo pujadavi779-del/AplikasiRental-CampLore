@@ -16,9 +16,8 @@ class Review extends Model
         'replied_at',
     ];
 
-    protected $casts = [
-        'is_replied' => 'boolean',
-        'replied_at' => 'datetime',
+    protected $attributes = [
+        'is_replied' => false,
     ];
 
     public function pelanggan()

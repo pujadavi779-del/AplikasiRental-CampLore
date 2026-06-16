@@ -2,22 +2,13 @@
     @push('styles')
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@700;800&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght=400;500;600;700;800&family=Playfair+Display:wght=700;800&display=swap" rel="stylesheet">
         <style>
             .topbar-nav, .topbar-nav * { font-family: 'Inter', sans-serif; }
             [x-cloak] { display: none !important; }
         </style>
     @endpush
-@endonce
-
-@php
-    $recentReviews  = \App\Models\Review::with(['pelanggan', 'product'])
-        ->where('is_replied', false)
-        ->latest()
-        ->take(5)
-        ->get();
-    $unrepliedCount = \App\Models\Review::where('is_replied', false)->count();
-@endphp
+@once
 
 <nav class="topbar-nav flex items-center justify-between px-6 py-3 bg-white border border-[#d7e6de] rounded-2xl shadow-sm">
 
@@ -97,21 +88,51 @@
                     @foreach($recentReviews as $review)
                     <a href="{{ route('admin.reviews.index') }}"
                         class="flex items-start gap-3 px-4 py-3 hover:bg-[#f9fdfb] transition no-underline">
-                        {{-- Avatar --}}
-                        <div class="w-8 h-8 rounded-full bg-[#22543D] flex items-center justify-center text-white text-xs font-bold flex-shrink-0">
-                            {{ strtoupper(substr($review->pelanggan->name ?? 'U', 0, 2)) }}
+                        
+                        {{-- Avatar Profil yang Diperbaiki agar Sinkron --}}
+                        <div class="w-8 h-8 rounded-full overflow-hidden flex-shrink-0 border border-gray-100 flex items-center justify-center">
+                            @if($review->pelanggan && $review->pelanggan->foto_profile)
+                                <img src="{{ asset('storage/' . $review->pelanggan->foto_profile) }}"
+                                    alt="{{ $review->pelanggan->name }}"
+                                    class="w-full h-full object-cover">
+                            @else
+                                @php
+                                    $avatarColors  = ['#22543D','#ED64A6','#6366f1','#f59e0b','#ef4444'];
+                                    $aColor        = $avatarColors[$loop->index % 5];
+                                @endphp
+                                <div class="w-full h-full flex items-center justify-center text-white text-xs font-bold"
+                                    style="background: {{ $aColor }}">
+                                    {{ strtoupper(substr($review->pelanggan->name ?? 'U', 0, 2)) }}
+                                </div>
+                            @endif
                         </div>
+
+                        {{-- Teks Informasi Ulasan (Kembali ke versi awalmu yang rapi) --}}
                         <div class="flex-1 min-w-0">
-                            <p class="text-xs font-semibold text-gray-800 truncate">
+                            <p class="text-xs font-semibold text-gray-800 truncate m-0">
                                 {{ $review->pelanggan->name ?? 'Pengguna' }}
                             </p>
-                            <p class="text-[11px] text-gray-400 truncate">
+                            <p class="text-[11px] text-gray-400 truncate m-0">
                                 {{ $review->product->name ?? 'Produk' }}
                             </p>
-                            <p class="text-[11px] text-gray-500 mt-0.5 truncate">
+                            
+                            {{-- Tampilan Rating Bintang di dalam Notifikasi --}}
+                            <div class="flex items-center gap-0.5 my-0.5">
+                                @for($i = 1; $i <= 5; $i++)
+                                <svg class="w-2.5 h-2.5" viewBox="0 0 24 24"
+                                    fill="{{ $i <= $review->bintang ? '#EF9F27' : '#e5e7eb' }}"
+                                    stroke="{{ $i <= $review->bintang ? '#EF9F27' : '#d1d5db' }}"
+                                    stroke-width="1.5">
+                                    <polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/>
+                                </svg>
+                                @endfor
+                            </div>
+
+                            <p class="text-[11px] text-gray-500 mt-0.5 truncate m-0">
                                 "{{ $review->komentar }}"
                             </p>
                         </div>
+
                         <span class="text-[10px] text-gray-400 flex-shrink-0 mt-0.5">
                             {{ $review->created_at->diffForHumans() }}
                         </span>

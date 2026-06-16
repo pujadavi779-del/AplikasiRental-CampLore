@@ -627,9 +627,20 @@ function rentNow(itemId) {
         <div class="bg-white border border-gray-100 rounded-2xl p-5 shadow-sm">
             <div class="flex items-start justify-between gap-3">
                 <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 rounded-full flex items-center justify-center text-white text-sm font-bold flex-shrink-0"
-                        style="background: linear-gradient(135deg,#22543D,#38a169)">
-                        {{ strtoupper(substr($review->pelanggan->name ?? 'U', 0, 2)) }}
+                    @php
+                    $fotoPelanggan = $review->pelanggan->foto_profile ?? null;
+                    @endphp
+                    <div class="w-10 h-10 rounded-full overflow-hidden flex-shrink-0 border border-gray-100">
+                        @if($fotoPelanggan)
+                            <img src="{{ Str::startsWith($fotoPelanggan, 'http') ? $fotoPelanggan : asset('storage/'.$fotoPelanggan) }}"
+                                alt="{{ $review->pelanggan->name }}"
+                                class="w-full h-full object-cover">
+                        @else
+                            <div class="w-full h-full flex items-center justify-center text-white text-sm font-bold"
+                                style="background: linear-gradient(135deg,#22543D,#38a169)">
+                                {{ strtoupper(substr($review->pelanggan->name ?? 'U', 0, 2)) }}
+                            </div>
+                        @endif
                     </div>
                     <div>
                         <div class="flex items-center gap-2">
@@ -670,9 +681,20 @@ function rentNow(itemId) {
         <div class="bg-white border border-gray-100 rounded-2xl p-5 shadow-sm">
             <div class="flex items-start justify-between gap-3">
                 <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 rounded-full flex items-center justify-center text-white text-sm font-bold flex-shrink-0"
-                        style="background: linear-gradient(135deg,#ED64A6,#f43f8e)">
-                        {{ strtoupper(substr($review->pelanggan->name ?? 'U', 0, 2)) }}
+                    @php
+                    $fotoPelangganHidden = $review->pelanggan->foto_profile ?? null;
+                    @endphp
+                    <div class="w-10 h-10 rounded-full overflow-hidden flex-shrink-0 border border-gray-100">
+                        @if($fotoPelangganHidden)
+                            <img src="{{ Str::startsWith($fotoPelangganHidden, 'http') ? $fotoPelangganHidden : asset('storage/'.$fotoPelangganHidden) }}"
+                                alt="{{ $review->pelanggan->name }}"
+                                class="w-full h-full object-cover">
+                        @else
+                            <div class="w-full h-full flex items-center justify-center text-white text-sm font-bold"
+                                style="background: linear-gradient(135deg,#ED64A6,#f43f8e)">
+                                {{ strtoupper(substr($review->pelanggan->name ?? 'U', 0, 2)) }}
+                            </div>
+                        @endif
                     </div>
                     <div>
                         <div class="flex items-center gap-2">

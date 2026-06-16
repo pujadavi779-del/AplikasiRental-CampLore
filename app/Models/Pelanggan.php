@@ -33,6 +33,6 @@ class Pelanggan extends Authenticatable
 
     public function alamat_pengiriman()
     {
-        return $this->hasOne(\App\Models\AlamatPengiriman::class, 'user_id');
+        return $this->belongsTo(Pelanggan::class, 'user_id');
     }
 }
