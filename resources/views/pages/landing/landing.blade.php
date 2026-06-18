@@ -1,4 +1,4 @@
-{{-- resources/views/pages/landing.blade.php --}}
+{{-- resources/views/pages/landing/landing.blade.php --}}
 
 @extends('layouts.landingpage')
 
@@ -133,43 +133,33 @@
 
         <div class="overflow-x-auto no-scrollbar pb-3">
             <div class="flex gap-5" style="min-width: max-content;">
-                @php
-                $products = [
-                    ['badge'=>'Best Seller','pink'=>false,'name'=>'Canon EOS R6','cat'=>'Kamera','price'=>'Rp250k','old'=>'','img'=>'https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&w=400&q=80'],
-                    ['badge'=>'Top Pick','pink'=>true,'name'=>'Sony A7 III','cat'=>'Kamera','price'=>'Rp300k','old'=>'','img'=>'https://images.unsplash.com/photo-1502920917128-1aa500764cbd?auto=format&fit=crop&w=400&q=80'],
-                    ['badge'=>'Best Seller','pink'=>false,'name'=>'Ultralight Tent 2P','cat'=>'Camping','price'=>'Rp100k','old'=>'','img'=>'https://images.unsplash.com/photo-1504280390367-361c6d9f38f4?auto=format&fit=crop&w=400&q=80'],
-                    ['badge'=>'New','pink'=>true,'name'=>'DJI Ronin SC','cat'=>'Aksesori','price'=>'Rp180k','old'=>'','img'=>'https://images.unsplash.com/photo-1547592180-85f173990554?auto=format&fit=crop&w=400&q=80'],
-                    ['badge'=>'Best Seller','pink'=>false,'name'=>'Portable Cooking Set','cat'=>'Camping','price'=>'Rp60k','old'=>'','img'=>'https://images.unsplash.com/photo-1603126857599-f6e157fa2fe6?auto=format&fit=crop&w=400&q=80'],
-                    ['badge'=>'Promo','pink'=>true,'name'=>'Sleeping Bag -10°C','cat'=>'Camping','price'=>'Rp75k','old'=>'Rp90k','img'=>'https://images.unsplash.com/photo-1571863533956-01c88e79957e?auto=format&fit=crop&w=400&q=80'],
-                    ['badge'=>'Top Pick','pink'=>false,'name'=>'Fujifilm X-T4','cat'=>'Kamera','price'=>'Rp280k','old'=>'','img'=>'https://images.unsplash.com/photo-1606983340126-99ab4feaa64a?auto=format&fit=crop&w=400&q=80'],
-                    ['badge'=>'Promo','pink'=>true,'name'=>'Trekking Pole Set','cat'=>'Outdoor','price'=>'Rp40k','old'=>'Rp55k','img'=>'https://images.unsplash.com/photo-1553361371-9b22f78e8b1d?auto=format&fit=crop&w=400&q=80'],
-                ];
-                @endphp
-
-                @foreach($products as $p)
-                <div class="w-52 flex-shrink-0 bg-white border border-gray-100 group hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 cursor-pointer relative">
-                    <span class="absolute top-2.5 left-2.5 z-10 text-white text-[10px] font-bold tracking-widest uppercase px-3 py-1 {{ $p['pink'] ? 'bg-[#ED64A6]' : 'bg-[#22543D]' }}">
-                        {{ $p['badge'] }}
-                    </span>
-                    <div class="overflow-hidden aspect-square">
-                        <img src="{{ $p['img'] }}" alt="{{ $p['name'] }}"
-                             class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
-                    </div>
-                    <div class="p-4">
-                        <p class="text-[10px] text-gray-400 uppercase tracking-widest mb-1">{{ $p['cat'] }}</p>
-                        <p class="font-semibold text-[14px] text-gray-800 leading-snug mb-1">{{ $p['name'] }}</p>
-                        <p class="font-extrabold text-[#ED64A6] text-base">
-                            @if($p['old'])
-                                <span class="text-xs text-gray-400 line-through font-normal mr-1">{{ $p['old'] }}</span>
-                            @endif
-                            {{ $p['price'] }}<span class="text-[11px] text-gray-400 font-normal">/Hari</span>
-                        </p>
-                        <button class="mt-3 w-full bg-[#22543D] hover:bg-[#ED64A6] text-white text-xs font-bold tracking-widest uppercase py-2.5 transition-colors duration-200">
+                @if($products->isEmpty())
+                    <p class="text-center text-gray-400 py-10">Belum ada produk tersedia.</p>
+                @else
+                    @foreach($products as $p)
+                    <div class="w-52 flex-shrink-0 bg-white border border-gray-100 group hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 relative">
+                        <span class="absolute top-2.5 left-2.5 z-10 text-white text-[10px] font-bold tracking-widest uppercase px-3 py-1 {{ $p['pink'] ? 'bg-[#ED64A6]' : 'bg-[#22543D]' }}">
+                            {{ $p['badge'] }}
+                        </span>
+                        <a href="{{ $p['link'] }}" class="block">
+                            <div class="overflow-hidden aspect-square">
+                                <img src="{{ $p['img'] }}" alt="{{ $p['name'] }}"
+                                     class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                            </div>
+                            <div class="p-4 pb-0">
+                                <p class="text-[10px] text-gray-400 uppercase tracking-widest mb-1">{{ $p['cat'] }}</p>
+                                <p class="font-semibold text-[14px] text-gray-800 leading-snug mb-1">{{ $p['name'] }}</p>
+                                <p class="font-extrabold text-[#ED64A6] text-base">
+                                    {{ $p['price'] }}<span class="text-[11px] text-gray-400 font-normal">/Hari</span>
+                                </p>
+                            </div>
+                        </a>
+                        <a href="{{ $p['link'] }}" class="block mt-3 mx-4 mb-4 text-center bg-[#22543D] hover:bg-[#ED64A6] text-white text-xs font-bold tracking-widest uppercase py-2.5 transition-colors duration-200">
                             Sewa Sekarang
-                        </button>
+                        </a>
                     </div>
-                </div>
-                @endforeach
+                    @endforeach
+                @endif
             </div>
         </div>
 
