@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Cart;
+use App\Models\AlamatPengiriman;
 
 class CheckoutController extends Controller
 {
@@ -26,6 +27,8 @@ class CheckoutController extends Controller
                 ->get();
         }
 
-        return view('pages.pelanggan.checkout', compact('carts'));
+        $list_alamat = \App\Models\AlamatPengiriman::where('user_id', $idPelanggan)->get();
+
+        return view('pages.pelanggan.checkout', compact('carts', 'list_alamat'));
     }
 }

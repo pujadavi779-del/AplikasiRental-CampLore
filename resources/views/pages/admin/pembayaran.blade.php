@@ -280,8 +280,8 @@ $section = 'Pengguna';
                                     total:       'Rp {{ number_format($totalBayar, 0, ',', '.') }}',
                                     mulai:       '{{ $pesanan->start_date ? \Carbon\Carbon::parse($pesanan->start_date)->format('d M Y') : '-' }}',
                                     selesai:     '{{ $pesanan->end_date   ? \Carbon\Carbon::parse($pesanan->end_date)->format('d M Y')   : '-' }}',
-                                    noHp:        '{{ $pesanan->pelanggan_telepon   ?? '-' }}',
-                                    alamat:      '{{ addslashes($pesanan->alamat_pelanggan ?? '-') }}',
+                                    noHp:        '{{ $pesanan->alamatPengiriman && $pesanan->alamatPengiriman->no_tlp ? $pesanan->alamatPengiriman->no_tlp : ($pesanan->pelanggan && $pesanan->pelanggan->no_tlp ? $pesanan->pelanggan->no_tlp : '-') }}',
+                                    alamat:      '{{ $pesanan->alamatPengiriman ? addslashes($pesanan->alamatPengiriman->alamat_lengkap) : '-' }}',
                                     items:       {{ json_encode($orderItems->values()) }}
                                 }; openDetail = true"
                                 class="px-3.5 py-1.5 bg-[var(--green)] hover:bg-[var(--green2)] text-white

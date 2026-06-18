@@ -28,14 +28,13 @@ class SewaController extends Controller
 
         $pesanan = $query->get()->groupBy('order_id')->map(function ($items) {
             $first = $items->first();
-
             $deadline = $first->created_at->addHours(24);
 
             if ($first->status === 'belum_bayar' && now()->gt($deadline)) {
                 Pesanan::where('order_id', $first->order_id)
                     ->where('status', 'belum_bayar')
                     ->update(['status' => 'dibatalkan']);
-                $first->status = 'dibatalkan'; // update di memory juga
+                $first->status = 'dibatalkan'; 
             }
 
             return (object)[
@@ -46,20 +45,36 @@ class SewaController extends Controller
                 'status'           => $first->status,
                 'total_harga'      => $items->sum('total_harga') + $first->biaya_pengiriman + $first->biaya_layanan,
                 'payment_deadline' => $first->created_at->addHours(24),
-                'hari_terlambat' => $first->hari_terlambat ?? 0,
-                'keterlambatan_biaya'     => $first->keterlambatan_biaya ?? 0,
+                'hari_terlambat'   => $first->hari_terlambat ?? 0,
+                'keterlambatan_biaya' => $first->keterlambatan_biaya ?? 0,
                 'snap_token'       => $first->snap_token,
-                'items'            => $items->map(fn($o) => (object)[
-                    'name'       => $o->product->name ?? '-',
-                    'gambar_barang'      => $o->product ? asset($o->product->gambar_barang) : null,
-                    'duration'   => $o->days,
-                    'start_date' => $o->start_date,
-                    'end_date'   => $o->end_date,
-                    'price'      => $o->harga_per_hari,
-                    'quantity'   => $o->quantity,
-                    'overdue'    => false,
-                    'product_id' => $o->product_id,  // ← tambah ini
-                ])->values()->all(),
+                'items'            => $items->map(function($o) {
+                    // Pengecekan nama kolom: gunakan nama_barang jika tersedia, jika tidak pakai name
+                    $namaProduk = $o->product->nama_barang ?? $o->product->name ?? '-';
+                    
+                    // Pengecekan gambar: deteksi nama kolom gambar_barang, gambar, atau foto
+                    $kolomGambar = $o->product->gambar_barang ?? $o->product->gambar ?? $o->product->foto ?? null;
+                    
+                    // Buat URL Gambar otomatis mengarah ke folder storage jika pathnya relatif
+                    $urlGambar = null;
+                    if ($kolomGambar) {
+                        $urlGambar = str_contains($kolomGambar, 'http') 
+                            ? $kolomGambar 
+                            : asset('storage/' . ltrim($kolomGambar, '/'));
+                    }
+
+                    return (object)[
+                        'name'          => $namaProduk,
+                        'gambar_barang' => $urlGambar,
+                        'duration'      => $o->days,
+                        'start_date'    => $o->start_date,
+                        'end_date'      => $o->end_date,
+                        'price'         => $o->harga_per_hari,
+                        'quantity'      => $o->quantity,
+                        'overdue'       => false,
+                        'product_id'    => $o->product_id,
+                    ];
+                })->values()->all(),
             ];
         })->values()->all();
 

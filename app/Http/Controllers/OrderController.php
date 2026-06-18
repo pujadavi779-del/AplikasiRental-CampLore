@@ -96,7 +96,7 @@ class OrderController extends Controller
                     'metode_pengiriman'  => $request->input('metode_pengiriman', 'pickup'),
                     'nama_pelanggan'    => $request->input('nama_pelanggan'),
                     'pelanggan_telepon'   => $request->input('pelanggan_telepon'),
-                    'alamat_pelanggan' => $request->input('alamat_pelanggan'),
+                    'alamat_pengiriman_id' => $request->input('alamat_pengiriman_id'),
                     'status'           => 'belum_bayar',
                 ]);
 
@@ -108,6 +108,54 @@ class OrderController extends Controller
             return response()->json(['status' => 'error', 'message' => $e->getMessage()], 500);
         }
     }
+
+    // public function store(Request $request)
+    // {
+    //     try {
+    //         $items = $request->input('items', []);
+    //         $orderId = 'CPL-' . date('Ymd') . '-' . strtoupper(substr(uniqid(), -5));
+
+    //         foreach ($items as $item) {
+    //             $cart = \App\Models\Cart::with('product')
+    //                 ->where('id', $item['id'])
+    //                 ->where('user_id', auth()->id())
+    //                 ->first();
+
+    //             if (!$cart) continue;
+
+    //             $startDate = $cart->start_date;
+    //             $endDate   = $cart->end_date;
+    //             if ($startDate > $endDate) {
+    //                 [$startDate, $endDate] = [$endDate, $startDate];
+    //             }
+
+    //             Pesanan::create([
+    //                 'order_id'         => $orderId,
+    //                 'user_id'          => auth()->id(),
+    //                 'alamat_pengiriman_id' => $request->input('alamat_pengiriman_id'), // Menyimpan ID Alamat
+    //                 'product_id'       => $item['product_id'],
+    //                 'start_date'       => $startDate,
+    //                 'end_date'         => $endDate,
+    //                 'days'             => $item['days'],
+    //                 'quantity'         => $item['quantity'],
+    //                 'note'             => $item['note'] ?? '',
+    //                 'harga_per_hari'    => $cart->product->harga_per_hari ?? 0,
+    //                 'total_harga'      => ($cart->product->harga_per_hari ?? 0) * $item['quantity'] * $item['days'],
+    //                 'biaya_pengiriman' => $request->input('biaya_pengiriman', 0),
+    //                 'biaya_layanan'      => $request->input('biaya_layanan', 2000),
+    //                 'metode_pengiriman'  => $request->input('metode_pengiriman', 'pickup'),
+    //                 'status'           => 'belum_bayar',
+    //                 // Tiga kolom string alamat lama sudah dihapus dari sini
+    //             ]);
+
+    //             $cart->delete();
+    //         }
+
+    //         return response()->json(['status' => 'success']);
+    //     } catch (\Exception $e) {
+    //         return response()->json(['status' => 'error', 'message' => $e->getMessage()], 500);
+    //     }
+    // }
     public function show(string $id)
     {
         //

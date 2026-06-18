@@ -157,7 +157,7 @@
 
                         {{-- No HP --}}
                         <td class="px-6 py-4">
-                            <span class="text-sm text-gray-500">{{ $item['no_hp'] ?? '-' }}</span>
+                            <span class="text-sm text-gray-500">{{ $item['no_tlp'] ?? '-' }}</span>
                         </td>
 
                         {{-- Status --}}

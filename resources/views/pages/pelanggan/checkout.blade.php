@@ -26,25 +26,45 @@
                 </svg>
                 <span class="text-xs font-bold uppercase tracking-widest">Alamat Pengiriman</span>
             </div>
+
+            {{-- SOLUSI PERBAIKAN: Ambil langsung dari DB untuk menjamin ID Alamat terbaca --}}
+            @php
+                $alamatFix = DB::table('alamat_pengiriman')->where('user_id', auth()->id())->first();
+                $alamatId = $alamatFix->id ?? $alamatFix->id_alamat ?? $alamatFix->id_alamat_pengiriman ?? '';
+            @endphp
+            <input type="hidden" id="selected-alamat-id" value="{{ $alamatId }}">
+
             <div class="flex justify-between items-start">
-                <div>
-                    <p class="font-bold text-gray-900">
-                        <span id="display-name">{{ auth()->user()->name ?? '-' }}</span>
-                        <span class="text-gray-400 font-normal mx-1">·</span>
+                <div class="space-y-1">
+                    @if($alamatFix)
+                        {{-- Baris 1: Nama Pelanggan & Nomor Telepon --}}
+                        <div class="text-sm font-bold text-gray-900 flex items-center gap-2">
+                            <span id="display-name">{{ auth()->user()->name }}</span>
+                            <span class="text-gray-300">|</span>
+                            <span id="display-phone" class="text-gray-600 font-normal">
+                                {{ auth()->user()->no_tlp ?? auth()->user()->no_telepon ?? auth()->user()->phone ?? auth()->user()->whatsapp ?? '-' }}
+                            </span>
+                        </div>
 
-                        <span id="display-phone" class="text-gray-500 font-semibold text-sm">
-                            {{ auth()->user()->no_tlp ?? '— Belum ada no. HP' }}
-                        </span>
-                    </p>
-
-                    <p id="display-address" class="text-sm text-gray-500 mt-0.5">
-                        {{ optional(auth()->user()->alamat_pengiriman)->alamat_lengkap ?? 'Masukkan alamat pengiriman kamu' }}
-                    </p>
+                        {{-- Baris 2: Alamat Lengkap, Daerah, Kota --}}
+                        <p class="text-sm text-gray-700 mt-1">
+                            <span id="display-address">{{ $alamatFix->alamat_lengkap ?? $alamatFix->alamat }}</span>,
+                            <span id="display-daerah">{{ $alamatFix->daerah ?? '' }}</span>,
+                            <span id="display-city">{{ $alamatFix->kota ?? '' }}</span>
+                        </p>
+                    @else
+                        <p id="display-address" class="text-sm text-red-500 italic">
+                            Kamu belum memiliki data alamat pengiriman. Silakan tambah data alamat terlebih dahulu di profil Anda.
+                        </p>
+                    @endif
                 </div>
+
+                @if(isset($list_alamat) && $list_alamat->count() > 1)
                 <button onclick="openAddressModal()" type="button"
                     class="text-xs font-bold text-blue-500 hover:underline flex-shrink-0 ml-4 relative z-10 cursor-pointer">
-                    Ubah
+                    Pilih Alamat Lain
                 </button>
+                @endif
             </div>
         </div>
 
@@ -84,13 +104,12 @@
 
         {{-- Produk --}}
         <div class="border border-gray-200 rounded-2xl overflow-hidden mb-4">
-            {{-- Header --}}
             <div class="px-5 py-3 bg-gray-50 border-b border-gray-100 flex items-center justify-between">
                 <div class="flex items-center gap-4">
                     <p class="text-sm font-bold text-gray-900">Produk Dipesan</p>
                     @php
-                    $itemNames = $carts->map(fn($c) => $c->product->name ?? '')->filter()->join(', ');
-                    $waText = urlencode('Halo Admin Camplore, saya ingin tanya pesanan: ' . $itemNames);
+                        $itemNames = $carts->map(fn($c) => $c->product->name ?? '')->filter()->join(', ');
+                        $waText = urlencode('Halo Admin Camplore, saya ingin tanya pesanan: ' . $itemNames);
                     @endphp
                     <a href="https://wa.me/6281276903211?text={{ $waText }}" target="_blank"
                         class="flex items-center gap-1.5 text-xs font-bold text-green-600 hover:text-green-700 transition">
@@ -107,19 +126,17 @@
                 </div>
             </div>
 
-            {{-- Items --}}
             @php $totalSubtotal = 0; @endphp
             @forelse($carts as $cart)
             @php
-            $days = ($cart->start_date && $cart->end_date)
-            ? max(1, \Carbon\Carbon::parse($cart->start_date)->diffInDays($cart->end_date))
-            : 1;
-            $subtotal = ($cart->product->harga_per_hari ?? 0) * $cart->quantity * $days;
-            $totalSubtotal += $subtotal;
+                $days = ($cart->start_date && $cart->end_date)
+                ? max(1, \Carbon\Carbon::parse($cart->start_date)->diffInDays($cart->end_date))
+                : 1;
+                $subtotal = ($cart->product->harga_per_hari ?? 0) * $cart->quantity * $days;
+                $totalSubtotal += $subtotal;
             @endphp
 
             <div class="border-b border-gray-100 last:border-0">
-                {{-- DESKTOP --}}
                 <div class="hidden md:grid grid-cols-[1fr_120px_60px_100px] gap-4 items-center px-5 py-4">
                     <div class="flex items-center gap-3 min-w-0">
                         <div class="w-12 h-12 rounded-xl bg-gray-100 flex items-center justify-center flex-shrink-0 overflow-hidden text-xl">
@@ -147,7 +164,6 @@
                     </div>
                 </div>
 
-                {{-- MOBILE --}}
                 <div class="md:hidden flex items-center gap-3 px-4 pt-4 pb-2">
                     <div class="w-14 h-14 rounded-xl bg-gray-100 flex-shrink-0 overflow-hidden">
                         @if($cart->product && $cart->product->gambar_barang)
@@ -170,7 +186,6 @@
                     </div>
                 </div>
 
-                {{-- Tanggal sewa --}}
                 <div class="mx-4 md:mx-5 mb-3 px-4 py-2.5 bg-gray-50 rounded-xl flex items-center gap-3 flex-wrap">
                     <svg class="w-4 h-4 text-gray-300 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <rect x="3" y="4" width="18" height="18" rx="2" stroke-width="2" />
@@ -189,7 +204,6 @@
                     @endif
                 </div>
 
-                {{-- Catatan --}}
                 <div class="mx-4 md:mx-5 mb-4">
                     <p class="text-[10px] text-gray-400 font-semibold mb-1">Catatan (opsional)</p>
                     <textarea id="note-{{ $cart->id_keranjang }}" rows="2" placeholder="Contoh: tolong bawa baterai cadangan, kondisi harus mulus, dll."
@@ -205,8 +219,8 @@
         <div class="border border-gray-200 rounded-2xl p-5 mb-4">
             @foreach($carts as $cart)
             @php
-            $d = ($cart->start_date && $cart->end_date) ? max(1, \Carbon\Carbon::parse($cart->start_date)->diffInDays($cart->end_date)) : 1;
-            $sub = ($cart->product->harga_per_hari ?? 0) * $cart->quantity * $d;
+                $d = ($cart->start_date && $cart->end_date) ? max(1, \Carbon\Carbon::parse($cart->start_date)->diffInDays($cart->end_date)) : 1;
+                $sub = ($cart->product->harga_per_hari ?? 0) * $cart->quantity * $d;
             @endphp
             <div class="flex justify-between text-sm text-gray-500 mb-2">
                 <span class="truncate pr-4">{{ $cart->product->name ?? '-' }} ({{ $d }} hari)</span>
@@ -215,9 +229,9 @@
             @endforeach
 
             @php
-            $biayaLayanan = 2000;
-            $ongkirAwal = 0;
-            $totalBayarAwal = $totalSubtotal + $biayaLayanan + $ongkirAwal;
+                $biayaLayanan = 2000;
+                $ongkirAwal = 0;
+                $totalBayarAwal = $totalSubtotal + $biayaLayanan + $ongkirAwal;
             @endphp
 
             <div class="border-t border-gray-100 mt-3 pt-4 space-y-2">
@@ -297,141 +311,154 @@
         </div>
     </div>
 
-<script>
-const totalSubtotal = {{ $totalSubtotal }};
-const biayaLayanan = 2000;
-const ktpSudahAda = "{{ auth()->user()->foto_ktp ? '1' : '0' }}";
-const cartItems = [
-    @foreach($carts as $cart)
-    {
-        id: {{ $cart->id_keranjang }},
-        product_id: {{ $cart->product_id ?? 0 }},
-        quantity: {{ $cart->quantity }},
-        days: {{ ($cart->start_date && $cart->end_date) ? max(1, \Carbon\Carbon::parse($cart->start_date)->diffInDays($cart->end_date)) : 1 }}
-    },
-    @endforeach
-];
+    <script>
+        const totalSubtotal = {{ $totalSubtotal }};
+        const biayaLayanan = 2000;
+        const ktpSudahAda = "{{ auth()->user()->foto_ktp ? '1' : '0' }}";
+        const cartItems = [
+            @foreach($carts as $cart) {
+                id: {{ $cart->id_keranjang }},
+                product_id: {{ $cart->product_id ?? 0 }},
+                quantity: {{ $cart->quantity }},
+                days: {{ ($cart->start_date && $cart->end_date) ? max(1, \Carbon\Carbon::parse($cart->start_date)->diffInDays($cart->end_date)) : 1 }}
+            },
+            @endforeach
+        ];
 
-let currentShipping = 0;
-let isProcessing = false;
+        let currentShipping = 0;
+        let isProcessing = false;
 
-function formatRupiah(number) {
-    return 'Rp' + number.toLocaleString('id-ID');
-}
+        function formatRupiah(number) {
+            return 'Rp' + number.toLocaleString('id-ID');
+        }
 
-function updateShipping(amount) {
-    currentShipping = amount;
-    const displayOngkir = document.getElementById('display-ongkir');
-    const totalPembayaran = document.getElementById('total-pembayaran');
-    const totalBottom = document.getElementById('total-bottom');
-    const labelPickup = document.getElementById('delivery-pickup-label');
-    const labelCod = document.getElementById('delivery-cod-label');
-    const newTotal = totalSubtotal + biayaLayanan + amount;
-    if (amount === 0) {
-        displayOngkir.innerText = 'Gratis';
-        displayOngkir.className = 'font-bold text-green-600';
-        labelPickup.className = 'flex items-center justify-between p-4 border-2 border-[#FF6B95] bg-pink-50 rounded-xl cursor-pointer transition active:scale-98';
-        labelCod.className = 'flex items-center justify-between p-4 border border-gray-200 rounded-xl cursor-pointer transition hover:border-[#FF6B95]/50 active:scale-98';
-    } else {
-        displayOngkir.innerText = formatRupiah(amount);
-        displayOngkir.className = 'font-bold text-gray-700';
-        labelPickup.className = 'flex items-center justify-between p-4 border border-gray-200 rounded-xl cursor-pointer transition hover:border-[#FF6B95]/50 active:scale-98';
-        labelCod.className = 'flex items-center justify-between p-4 border-2 border-[#FF6B95] bg-pink-50 rounded-xl cursor-pointer transition active:scale-98';
-    }
-    totalPembayaran.innerText = formatRupiah(newTotal);
-    totalBottom.innerText = formatRupiah(newTotal);
-}
+        function updateShipping(amount) {
+            currentShipping = amount;
+            const displayOngkir = document.getElementById('display-ongkir');
+            const totalPembayaran = document.getElementById('total-pembayaran');
+            const totalBottom = document.getElementById('total-bottom');
+            const labelPickup = document.getElementById('delivery-pickup-label');
+            const labelCod = document.getElementById('delivery-cod-label');
+            const newTotal = totalSubtotal + biayaLayanan + amount;
+            if (amount === 0) {
+                displayOngkir.innerText = 'Gratis';
+                displayOngkir.className = 'font-bold text-green-600';
+                labelPickup.className = 'flex items-center justify-between p-4 border-2 border-[#FF6B95] bg-pink-50 rounded-xl cursor-pointer transition active:scale-98';
+                labelCod.className = 'flex items-center justify-between p-4 border border-gray-200 rounded-xl cursor-pointer transition hover:border-[#FF6B95]/50 active:scale-98';
+            } else {
+                displayOngkir.innerText = formatRupiah(amount);
+                displayOngkir.className = 'font-bold text-gray-700';
+                labelPickup.className = 'flex items-center justify-between p-4 border border-gray-200 rounded-xl cursor-pointer transition hover:border-[#FF6B95]/50 active:scale-98';
+                labelCod.className = 'flex items-center justify-between p-4 border-2 border-[#FF6B95] bg-pink-50 rounded-xl cursor-pointer transition active:scale-98';
+            }
+            totalPembayaran.innerText = formatRupiah(newTotal);
+            totalBottom.innerText = formatRupiah(newTotal);
+        }
 
-function openAddressModal() {
-    const phone = document.getElementById('display-phone').innerText.trim();
-    const address = document.getElementById('display-address').innerText.trim();
-    document.getElementById('input-name').value = document.getElementById('display-name').innerText.trim();
-    document.getElementById('input-phone').value = phone === '— Belum ada no. HP' ? '' : phone;
-    document.getElementById('input-address').value = address === 'Masukkan alamat pengiriman kamu' ? '' : address;
-    document.getElementById('addressModal').classList.remove('hidden');
-    document.getElementById('addressModal').classList.add('flex');
-}
+        function openAddressModal() {
+            const phone = document.getElementById('display-phone').innerText.trim();
+            const address = document.getElementById('display-address').innerText.trim();
+            document.getElementById('input-name').value = document.getElementById('display-name').innerText.trim();
+            document.getElementById('input-phone').value = phone === '— Belum ada no. HP' ? '' : phone;
+            document.getElementById('input-address').value = address === 'Masukkan alamat pengiriman kamu' ? '' : address;
+            document.getElementById('addressModal').classList.remove('hidden');
+            document.getElementById('addressModal').classList.add('flex');
+        }
 
-function closeAddressModal() {
-    document.getElementById('addressModal').classList.add('hidden');
-    document.getElementById('addressModal').classList.remove('flex');
-}
+        function closeAddressModal() {
+            document.getElementById('addressModal').classList.add('hidden');
+            document.getElementById('addressModal').classList.remove('flex');
+        }
 
-function saveAddress() {
-    const name = document.getElementById('input-name').value.trim();
-    const phone = document.getElementById('input-phone').value.trim();
-    const address = document.getElementById('input-address').value.trim();
-    if (name) document.getElementById('display-name').innerText = name;
-    if (phone) document.getElementById('display-phone').innerText = phone;
-    if (address) document.getElementById('display-address').innerText = address;
-    closeAddressModal();
-}
+        function saveAddress() {
+            const name = document.getElementById('input-name').value.trim();
+            const phone = document.getElementById('input-phone').value.trim();
+            const address = document.getElementById('input-address').value.trim();
+            if (name) document.getElementById('display-name').innerText = name;
+            if (phone) document.getElementById('display-phone').innerText = phone;
+            if (address) document.getElementById('display-address').innerText = address;
+            closeAddressModal();
+        }
 
-function handleCheckout() {
-    if (isProcessing) { alert("Mohon tunggu, pesanan sedang diproses."); return; }
-    const phoneText = document.getElementById('display-phone').innerText.trim();
-    const addressText = document.getElementById('display-address').innerText.trim();
-    const nameText = document.getElementById('display-name').innerText.trim();
-    if (ktpSudahAda !== "1") {
-        alert("Anda belum mengunggah foto KTP. Silakan lengkapi di halaman Profil.");
-        return;
-    }
-    if (phoneText === "— Belum ada no. HP" || !phoneText) { alert("Nomor HP belum diisi!"); return; }
-    if (addressText === "Masukkan alamat pengiriman kamu" || !addressText) { alert("Alamat pengiriman belum diisi!"); return; }
+        function handleCheckout() {
+            if (isProcessing) {
+                alert("Mohon tunggu, pesanan sedang diproses.");
+                return;
+            }
 
-    isProcessing = true;
-    const checkoutBtn = document.getElementById('btn-checkout');
-    if (checkoutBtn) { checkoutBtn.disabled = true; checkoutBtn.textContent = 'Memproses...'; }
+            const alamatId = document.getElementById('selected-alamat-id').value;
+            const metodePengiriman = currentShipping > 0 ? 'delivery' : 'pickup';
 
-    const totalText = document.getElementById('total-pembayaran').innerText;
-    const totalAmount = parseInt(totalText.replace(/[^0-9]/g, ''));
-    const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-    const finalItems = cartItems.map(item => {
-        const noteElement = document.getElementById('note-' + item.id);
-        return { ...item, note: noteElement ? noteElement.value.trim() : '' };
-    });
+            if (ktpSudahAda !== "1") {
+                alert("Anda belum mengunggah foto KTP. Silakan lengkapi di halaman Profil.");
+                return;
+            }
 
-    fetch("{{ route('pesanan.store') }}", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-            "X-CSRF-TOKEN": csrfToken,
-            "Accept": "application/json"
-        },
-        body: JSON.stringify({
-            total_payment: totalAmount,
-            subtotal: totalSubtotal,
-            biaya_pengiriman: currentShipping,
-            biaya_layanan: biayaLayanan,
-            metode_pengiriman: currentShipping > 0 ? 'delivery' : 'pickup',
-            nama_pelanggan: nameText,
-            pelanggan_telepon: phoneText,
-            alamat_pelanggan: addressText,
-            items: finalItems
-        })
-    })
-.then(r => {
-    console.log('HTTP Status:', r.status);
-    return r.text();
-})
-.then(text => {
-    console.log('Raw response:', text);
-    const data = JSON.parse(text);
-    if (data.status === 'success') {
-        window.location.href = "{{ route('pelanggan.sewa') }}?status=belum_bayar";
-    } else {
-        alert('Gagal: ' + (data.message || ''));
-        resetButtonState();
-    }
-})
-}
+            if (metodePengiriman === 'delivery' && !alamatId) {
+                alert("Alamat pengiriman belum dipilih atau data alamat kosong!");
+                return;
+            }
 
-function resetButtonState() {
-    isProcessing = false;
-    const checkoutBtn = document.getElementById('btn-checkout');
-    if (checkoutBtn) { checkoutBtn.disabled = false; checkoutBtn.textContent = 'Buat Pesanan'; }
-}
-</script>
+            isProcessing = true;
+            const checkoutBtn = document.getElementById('btn-checkout');
+            if (checkoutBtn) {
+                checkoutBtn.disabled = true;
+                checkoutBtn.textContent = 'Memproses...';
+            }
+
+            const totalText = document.getElementById('total-pembayaran').innerText;
+            const totalAmount = parseInt(totalText.replace(/[^0-9]/g, ''));
+            const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+
+            const finalItems = cartItems.map(item => {
+                const noteElement = document.getElementById('note-' + item.id);
+                return {
+                    ...item,
+                    note: noteElement ? noteElement.value.trim() : ''
+                };
+            });
+
+            fetch("{{ route('pesanan.store') }}", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-CSRF-TOKEN": csrfToken,
+                        "Accept": "application/json"
+                    },
+                    body: JSON.stringify({
+                        total_payment: totalAmount,
+                        subtotal: totalSubtotal,
+                        biaya_pengiriman: currentShipping,
+                        biaya_layanan: biayaLayanan,
+                        metode_pengiriman: metodePengiriman,
+                        alamat_pengiriman_id: alamatId ? parseInt(alamatId) : null,
+                        items: finalItems
+                    })
+                })
+                .then(r => r.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        window.location.href = "{{ route('pelanggan.sewa') }}?status=belum_bayar";
+                    } else {
+                        alert('Gagal: ' + (data.message || ''));
+                        resetButtonState();
+                    }
+                })
+                .catch(err => {
+                    console.error(err);
+                    resetButtonState();
+                });
+        }
+
+        function resetButtonState() {
+            isProcessing = false;
+            const checkoutBtn = document.getElementById('btn-checkout');
+            if (checkoutBtn) {
+                checkoutBtn.disabled = false;
+                checkoutBtn.textContent = 'Buat Pesanan';
+            }
+        }
+    </script>
 </body>
 
 </html>

@@ -37,8 +37,8 @@ class Pelanggan extends Authenticatable
         'ktp_updated_at' => 'datetime',
     ];
 
-    public function alamat_pengiriman()
+    public function alamatPengiriman()
     {
-        return $this->belongsTo(Pelanggan::class, 'user_id', 'id_pelanggan');
+        return $this->hasOne(AlamatPengiriman::class, 'user_id', 'id_pelanggan');
     }
 }

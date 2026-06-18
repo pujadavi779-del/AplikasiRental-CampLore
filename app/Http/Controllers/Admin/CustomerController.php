@@ -14,15 +14,15 @@ class CustomerController extends Controller
         return view('pages.admin.pengguna', compact('customers'));
     }
 
-    public function show($id_pelanggan) // ← UPDATE parameter name
+    public function show($id)
     {
-        $customer = Pelanggan::with('alamat_pengiriman')->findOrFail($id_pelanggan);
+        $customer = Pelanggan::with('alamatPengiriman')->findOrFail($id);
         return view('pages.admin.pengguna.pengguna_detail', compact('customer'));
     }
 
-    public function update(Request $request, $id_pelanggan) // ← UPDATE parameter name
+    public function update(Request $request, $id) // ← UPDATE parameter name
     {
-        $customer = Pelanggan::findOrFail($id_pelanggan);
+        $customer = Pelanggan::findOrFail($id);
         $customer->ktp_status = $request->ktp_status;
         $customer->ktp_note   = $request->ktp_note;
         $customer->save();
@@ -41,15 +41,15 @@ class CustomerController extends Controller
             ->with('success', 'Customer berhasil ditambahkan!');
     }
 
-    public function edit($id_pelanggan) // ← UPDATE parameter name
+    public function edit($id) // ← UPDATE parameter name
     {
-        $customer = Pelanggan::findOrFail($id_pelanggan);
+        $customer = Pelanggan::findOrFail($id);
         return view('pages.pelanggan.pengguna.edit', compact('customer'));
     }
 
-    public function destroy($id_pelanggan) // ← UPDATE parameter name
+    public function destroy($id) // ← UPDATE parameter name
     {
-        Pelanggan::findOrFail($id_pelanggan)->delete();
+        Pelanggan::findOrFail($id)->delete();
         return redirect()->route('admin.customers.index')
             ->with('success', 'Customer berhasil dihapus!');
     }
