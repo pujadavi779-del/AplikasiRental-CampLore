@@ -49,13 +49,10 @@ class SewaController extends Controller
                 'keterlambatan_biaya' => $first->keterlambatan_biaya ?? 0,
                 'snap_token'       => $first->snap_token,
                 'items'            => $items->map(function($o) {
-                    // Pengecekan nama kolom: gunakan nama_barang jika tersedia, jika tidak pakai name
                     $namaProduk = $o->product->nama_barang ?? $o->product->name ?? '-';
                     
-                    // Pengecekan gambar: deteksi nama kolom gambar_barang, gambar, atau foto
                     $kolomGambar = $o->product->gambar_barang ?? $o->product->gambar ?? $o->product->foto ?? null;
                     
-                    // Buat URL Gambar otomatis mengarah ke folder storage jika pathnya relatif
                     $urlGambar = null;
                     if ($kolomGambar) {
                         $urlGambar = str_contains($kolomGambar, 'http') 

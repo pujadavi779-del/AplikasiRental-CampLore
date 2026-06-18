@@ -14,7 +14,6 @@ class PemesananController extends Controller
 {
     public function index(Request $request)
     {
-        // AMBIL DATA BERDASARKAN PARAMETER SEARCH JIKA ADA
         $search = $request->input('search');
 
         $query = Pesanan::with(['pelanggan', 'product', 'alamatPengiriman'])
@@ -25,7 +24,6 @@ class PemesananController extends Controller
                   ->orWhere('created_at', 'LIKE', '%' . $search . '%');
         }
 
-        // Variabel harus bernama $payments karena di-render oleh file blade sebagai $payments
         $payments = $query->paginate(10);
 
         return view('pages.admin.pemesanan', compact('payments'));

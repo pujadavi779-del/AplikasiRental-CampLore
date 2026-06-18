@@ -111,7 +111,6 @@
                         </svg>
                         <span class="text-sm font-semibold text-gray-800 leading-relaxed">
                             @php
-                                // Mengubah dari 'alamat_pengiriman' menjadi 'alamatUtama / alamatPengiriman' sesuai nama relasi camelCase di Laravel
                                 $sa = $customer->alamatPengiriman;
                                 echo $sa
                                     ? implode(', ', array_filter([$sa->alamat_lengkap, $sa->kota, $sa->daerah, $sa->kode_pos]))

@@ -23,7 +23,7 @@ class Pemesanan extends Model
         'harga_per_hari',
         'total_harga',
         'status',
-        'order_id', // ditambahkan jika kolom ini ada di database Anda
+        'order_id',
     ];
 
     public function pelanggan()
@@ -35,11 +35,8 @@ class Pemesanan extends Model
     {
         return $this->belongsTo(Barang::class, 'product_id', 'id_barang');
     }
-
-    // RELASI UNTUK MENGAMBIL ALAMAT DI HALAMAN ADMIN
     public function alamatPengiriman()
     {
-        // Menghubungkan id_pesanan di tabel pesanan dengan id_pesanan di tabel alamat pengiriman
         return $this->hasOne(AlamatPengiriman::class, 'id_pesanan', 'id_pesanan');
     }
 }

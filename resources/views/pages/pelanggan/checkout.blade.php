@@ -27,7 +27,6 @@
                 <span class="text-xs font-bold uppercase tracking-widest">Alamat Pengiriman</span>
             </div>
 
-            {{-- SOLUSI PERBAIKAN: Ambil langsung dari DB untuk menjamin ID Alamat terbaca --}}
             @php
                 $alamatFix = DB::table('alamat_pengiriman')->where('user_id', auth()->id())->first();
                 $alamatId = $alamatFix->id ?? $alamatFix->id_alamat ?? $alamatFix->id_alamat_pengiriman ?? '';
@@ -37,7 +36,6 @@
             <div class="flex justify-between items-start">
                 <div class="space-y-1">
                     @if($alamatFix)
-                        {{-- Baris 1: Nama Pelanggan & Nomor Telepon --}}
                         <div class="text-sm font-bold text-gray-900 flex items-center gap-2">
                             <span id="display-name">{{ auth()->user()->name }}</span>
                             <span class="text-gray-300">|</span>
@@ -46,7 +44,6 @@
                             </span>
                         </div>
 
-                        {{-- Baris 2: Alamat Lengkap, Daerah, Kota --}}
                         <p class="text-sm text-gray-700 mt-1">
                             <span id="display-address">{{ $alamatFix->alamat_lengkap ?? $alamatFix->alamat }}</span>,
                             <span id="display-daerah">{{ $alamatFix->daerah ?? '' }}</span>,

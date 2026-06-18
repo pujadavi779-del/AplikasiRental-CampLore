@@ -41,13 +41,13 @@ class CustomerController extends Controller
             ->with('success', 'Customer berhasil ditambahkan!');
     }
 
-    public function edit($id) // ← UPDATE parameter name
+    public function edit($id)
     {
         $customer = Pelanggan::findOrFail($id);
         return view('pages.pelanggan.pengguna.edit', compact('customer'));
     }
 
-    public function destroy($id) // ← UPDATE parameter name
+    public function destroy($id)
     {
         Pelanggan::findOrFail($id)->delete();
         return redirect()->route('admin.customers.index')

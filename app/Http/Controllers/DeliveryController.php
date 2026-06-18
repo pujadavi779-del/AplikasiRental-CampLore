@@ -11,7 +11,6 @@ class DeliveryController extends Controller
 {
     public function pengiriman()
     {
-        // Mengambil data pemesanan beserta relasi pelanggan dan alamat pengirimannya
         $pesanan = Pemesanan::with(['pelanggan.alamatPengiriman', 'barang'])
             ->whereIn('status', ['dikemas', 'jalan', 'pengembalian'])
             ->get()
@@ -35,13 +34,11 @@ class DeliveryController extends Controller
                 $statusPengiriman = 'proses';
             }
 
-            // Hitung statistik
             $stats['total']++;
             if ($statusPengiriman === 'jalan') $stats['diantar']++;
             if ($shippingMethod === 'pickup') $stats['pickup']++;
             if ($statusPengiriman === 'pengembalian') $stats['selesai']++;
 
-            // Set Alamat berdasarkan Metode Pengiriman
             if ($shippingMethod === 'pickup') {
                 $alamat = 'Ambil di toko';
             } else {
@@ -53,7 +50,7 @@ class DeliveryController extends Controller
                 'id_pesanan'        => $orderId,
                 'pemesan'           => $firstItem->pelanggan->name ?? '-',
                 'alamat'            => $alamat,
-                'no_tlp'            => $firstItem->pelanggan->no_tlp ?? '-', // Menggunakan kolom asli no_tlp
+                'no_tlp'            => $firstItem->pelanggan->no_tlp ?? '-',
                 'metode_pengiriman' => $shippingMethod,
                 'tanggal_mulai'     => $firstItem->start_date
                     ? \Carbon\Carbon::parse($firstItem->start_date)->format('d M Y')
@@ -105,7 +102,7 @@ class DeliveryController extends Controller
             'id_pesanan'        => $firstItem->order_id,
             'pemesan'           => $firstItem->pelanggan->name ?? '-',
             'alamat'            => $alamat,
-            'no_hp'             => $firstItem->pelanggan->no_tlp ?? '-', // Menggunakan kolom asli no_tlp
+            'no_hp'             => $firstItem->pelanggan->no_tlp ?? '-',
             'metode_pengiriman' => $shippingMethod,
             'tanggal_mulai'     => $firstItem->start_date
                 ? \Carbon\Carbon::parse($firstItem->start_date)->format('d M Y')
@@ -143,7 +140,7 @@ class DeliveryController extends Controller
 
         $firstOrder = $pesanan->first()->load('pelanggan');
         if ($firstOrder && $firstOrder->pelanggan) {
-            $phone = $firstOrder->pelanggan->no_tlp; // Menggunakan kolom asli no_tlp
+            $phone = $firstOrder->pelanggan->no_tlp;
             if ($phone && str_starts_with($phone, '0')) {
                 $phone = '62' . substr($phone, 1);
             }
@@ -179,7 +176,6 @@ class DeliveryController extends Controller
                 $firstOrder = $pesanan->first();
                 Mail::to($firstOrder->pelanggan->email)->send(new BarangTibaMail($firstOrder));
             } catch (\Exception $e) {
-                // Abaikan error email
             }
         }
 
