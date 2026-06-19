@@ -135,32 +135,35 @@ class RegisterController extends Controller
     // Step 4 – Submit registrasi lengkap
     // -------------------------------------------------------------------------
     public function register(Request $request)
-    {
-        $request->validate([
-            'username' => ['required', 'string', 'min:3', 'max:30', 'unique:pelanggan,username'],
-            'nik'      => ['required', 'digits:16', 'unique:pelanggan,nik'],
-            'email'    => ['required', 'email', 'unique:pelanggan,email'],
-            'password' => ['required', 'confirmed', Password::min(8)
-                ->letters()
-                ->numbers()],
-        ], [
-            'username.unique' => 'Username ini sudah dipakai.',
-            'nik.unique'      => 'NIK ini sudah terdaftar.',
-            'email.unique'    => 'Email ini sudah terdaftar.',
-        ]);
+{
+    $request->validate([
+        // TAMBAHAN: validasi name
+        'name'     => ['required', 'string', 'max:255', 'regex:/^[A-Za-z\s.]+$/'],
+        'username' => ['required', 'string', 'min:3', 'max:30', 'unique:pelanggan,username'],
+        'nik'      => ['required', 'digits:16', 'unique:pelanggan,nik'],
+        'email'    => ['required', 'email', 'unique:pelanggan,email'],
+        'password' => ['required', 'confirmed', Password::min(8)
+            ->letters()
+            ->numbers()],
+    ], [
+        'name.regex'      => 'Nama hanya boleh berisi huruf, spasi, dan titik.',
+        'username.unique' => 'Username ini sudah dipakai.',
+        'nik.unique'      => 'NIK ini sudah terdaftar.',
+        'email.unique'    => 'Email ini sudah terdaftar.',
+    ]);
 
-        // Pastikan email sudah diverifikasi OTP di sesi ini
-        if (session('otp_verified_email') !== $request->email) {
-            return back()->withErrors(['email' => 'Email belum diverifikasi via OTP.']);
-        }
+    // Pastikan email sudah diverifikasi OTP di sesi ini
+    if (session('otp_verified_email') !== $request->email) {
+        return back()->withErrors(['email' => 'Email belum diverifikasi via OTP.']);
+    }
 
-        $pelanggan = Pelanggan::create([
-            'name'     => $request->username, 
-            'username' => $request->username,
-            'nik'      => $request->nik,
-            'email'    => $request->email,
-            'password' => Hash::make($request->password),
-        ]);
+    $pelanggan = Pelanggan::create([
+        'name'     => $request->name,       
+        'username' => $request->username,
+        'nik'      => $request->nik,
+        'email'    => $request->email,
+        'password' => Hash::make($request->password),
+    ]);
 
         // Hapus sesi OTP
         session()->forget('otp_verified_email');

@@ -22,14 +22,17 @@ class ProfileController extends Controller
         $idPelanggan = $pelanggan->id_pelanggan;
 
         $request->validate([
-            'name'            => 'required|string|max:255',
-            // FORMAT: unique:nama_tabel,nama_kolom,id_yang_dikecualikan,nama_kolom_primary_key
-            'email'           => 'required|email|unique:pelanggan,email,' . $idPelanggan . ',id_pelanggan',
-            'no_tlp'          => 'nullable|string|max:20',
-            'nik'             => 'nullable|string|max:20',
-            'profile_picture' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
-            'ktp'             => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
-        ]);
+    // DIUBAH: tambah aturan regex biar gak bisa diisi simbol
+    'name'            => ['required', 'string', 'max:255', 'regex:/^[A-Za-z\s.]+$/'],
+    'email'           => 'required|email|unique:pelanggan,email,' . $idPelanggan . ',id_pelanggan',
+    'no_tlp'          => 'nullable|string|max:20',
+    'nik'             => 'nullable|string|max:20',
+    'profile_picture' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+    'ktp'             => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+    ], [
+    // TAMBAHAN: pesan error custom
+    'name.regex' => 'Nama hanya boleh berisi huruf, spasi, dan titik.',
+    ]);
 
         $pelanggan->name   = $request->name;
         $pelanggan->email  = $request->email;
