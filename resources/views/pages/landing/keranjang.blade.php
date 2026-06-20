@@ -31,12 +31,14 @@
         $imgSrc = $cleanImage
         ? (str_starts_with($cleanImage, 'http') ? $cleanImage : asset($cleanImage))
         : null;
+        $stok = $cart->product->stok ?? 0;
         @endphp
 
         <div class="card-item border-b border-gray-100 last:border-0"
             data-id="{{ $cart->id_keranjang }}"
             data-price="{{ $cart->product->harga_per_hari ?? 0 }}"
-            data-days="{{ $days }}">
+            data-days="{{ $days }}"
+            data-stok="{{ $stok }}">
 
             {{-- ══════ DESKTOP ROW ══════ --}}
             <div class="hidden md:grid grid-cols-[auto_1fr_160px_120px_140px_48px] gap-4 items-center px-4 py-5">
@@ -67,12 +69,13 @@
                     <p class="text-sm font-bold text-gray-700">Rp{{ number_format($cart->product->harga_per_hari ?? 0, 0, ',', '.') }}</p>
                 </div>
 
-                <div class="flex items-center justify-center">
+                <div class="flex flex-col items-center justify-center gap-1">
                     <div class="flex items-center border border-gray-200 rounded-xl h-8 overflow-hidden">
                         <button onclick="changeQty(this, -1)" class="w-7 h-8 flex items-center justify-center text-gray-600 font-bold text-sm hover:bg-gray-100 transition">−</button>
                         <span class="qty-val px-2 text-sm font-bold text-gray-800 min-w-[24px] text-center">{{ $cart->quantity }}</span>
                         <button onclick="changeQty(this, 1)" class="w-7 h-8 flex items-center justify-center text-gray-600 font-bold text-sm hover:bg-gray-100 transition">+</button>
                     </div>
+                    <span class="stok-warning hidden text-[10px] font-bold text-red-500">Stok maks. {{ $stok }}</span>
                 </div>
 
                 <div class="text-right">
@@ -118,10 +121,13 @@
 
         {{-- Qty + Subtotal (mobile only) --}}
         <div class="md:hidden flex items-center justify-between px-4 pb-3">
-            <div class="flex items-center border border-gray-200 rounded-xl h-9 overflow-hidden">
-                <button onclick="changeQty(this, -1)" class="w-9 h-9 flex items-center justify-center text-gray-600 text-base hover:bg-gray-100 transition">−</button>
-                <span class="qty-val px-3 text-sm font-bold text-gray-800 min-w-[28px] text-center">{{ $cart->quantity }}</span>
-                <button onclick="changeQty(this, 1)" class="w-9 h-9 flex items-center justify-center text-gray-600 text-base hover:bg-gray-100 transition">+</button>
+            <div class="flex flex-col gap-1">
+                <div class="flex items-center border border-gray-200 rounded-xl h-9 overflow-hidden">
+                    <button onclick="changeQty(this, -1)" class="w-9 h-9 flex items-center justify-center text-gray-600 text-base hover:bg-gray-100 transition">−</button>
+                    <span class="qty-val px-3 text-sm font-bold text-gray-800 min-w-[28px] text-center">{{ $cart->quantity }}</span>
+                    <button onclick="changeQty(this, 1)" class="w-9 h-9 flex items-center justify-center text-gray-600 text-base hover:bg-gray-100 transition">+</button>
+                </div>
+                <span class="stok-warning hidden text-[10px] font-bold text-red-500">Stok maks. {{ $stok }}</span>
             </div>
             <div class="text-right">
                 <p class="text-[10px] text-gray-400 font-semibold">Subtotal</p>
@@ -274,6 +280,29 @@
         );
     }
 
+    // Aktifkan/nonaktifkan tombol "+" sesuai batas stok, dan tampilkan
+    // peringatan kalau qty sudah mentok di batas stok.
+    function refreshQtyButtonsState(card) {
+        const stok = parseInt(card.dataset.stok);
+        const qty = parseInt(card.querySelector('.qty-val').textContent) || 1;
+        const plusButtons = card.querySelectorAll('button[onclick*="changeQty(this, 1)"]');
+        const warnings = card.querySelectorAll('.stok-warning');
+
+        // Kalau data stok tidak ada/tidak valid, jangan batasi (fail-open di UI,
+        // server tetap akan menolak lewat validasi di CartController).
+        if (isNaN(stok)) return;
+
+        const atLimit = qty >= stok;
+
+        plusButtons.forEach(btn => {
+            btn.disabled = atLimit;
+            btn.classList.toggle('opacity-40', atLimit);
+            btn.classList.toggle('pointer-events-none', atLimit);
+        });
+
+        warnings.forEach(w => w.classList.toggle('hidden', !atLimit));
+    }
+
     function updateSummary() {
         let total = 0,
             count = 0,
@@ -391,11 +420,26 @@
     function changeQty(btn, delta) {
         const card = btn.closest('.card-item');
         const span = card.querySelector('.qty-val');
+        const stok = parseInt(card.dataset.stok);
         let val = parseInt(span.textContent) + delta;
+
         if (val < 1) val = 1;
+
+        // Jangan biarkan qty di UI melebihi stok yang tersedia
+        if (!isNaN(stok) && val > stok) {
+            val = stok;
+            showToast(`Stok tersisa hanya ${stok} unit`);
+        }
+
+        const previousVal = parseInt(span.textContent);
         span.textContent = val;
         recalcCard(card);
+        refreshQtyButtonsState(card);
         updateSummary();
+
+        // Kalau nilainya sama dengan sebelumnya (mis. sudah mentok di batas
+        // stok lalu user klik + lagi), tidak perlu kirim request ke server.
+        if (val === previousVal) return;
 
         fetch(`/cart/${card.dataset.id}`, {
             method: 'PUT',
@@ -406,7 +450,27 @@
             body: JSON.stringify({
                 quantity: val
             })
-        }).catch(() => showToast('Gagal menyimpan jumlah'));
+        }).then(async r => {
+            if (!r.ok) {
+                const data = await r.json().catch(() => ({}));
+                // Server adalah sumber kebenaran terakhir soal stok. Kalau
+                // ditolak, kembalikan tampilan ke nilai sebelumnya.
+                span.textContent = previousVal;
+                if (typeof data.max_stok !== 'undefined') {
+                    card.dataset.stok = data.max_stok;
+                }
+                recalcCard(card);
+                refreshQtyButtonsState(card);
+                updateSummary();
+                showToast(data.message || 'Gagal menyimpan jumlah');
+            }
+        }).catch(() => {
+            span.textContent = previousVal;
+            recalcCard(card);
+            refreshQtyButtonsState(card);
+            updateSummary();
+            showToast('Gagal menyimpan jumlah');
+        });
     }
 
     function removeItem(btn) {
@@ -523,6 +587,7 @@
             if (s && eEl) eEl.min = s;
 
             recalcCard(card);
+            refreshQtyButtonsState(card);
         });
 
         validateExpiredItems();
