@@ -213,7 +213,7 @@ class PaymentController extends Controller
         if (str_starts_with($phone, '0')) {
             $phone = '62' . substr($phone, 1);
         }
-        $message = "Pembayaran Anda telah kami terima! 🎉 Pesanan sewa Anda kini sedang kami siapkan. Kami akan segera memproses dan mengemas perlengkapan Anda. Jika ada informasi pesanan yang perlu dikoreksi, segera hubungi kami sebelum barang dikirim. Terima kasih telah menyewa di Camplore! 🏕️";
+        $message = "Pembayaran Anda telah kami terima! Pesanan sewa Anda kini sedang kami siapkan. Kami akan segera memproses dan mengemas perlengkapan Anda. Jika ada informasi pesanan yang perlu dikoreksi, segera hubungi kami sebelum barang dikirim. Terima kasih telah menyewa di Camplore! 🏕️";
 
         sendWhatsapp($phone, $message);
 

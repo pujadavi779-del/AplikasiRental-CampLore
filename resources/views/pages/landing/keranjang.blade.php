@@ -213,13 +213,20 @@
 
     function validateExpiredItems() {
         document.querySelectorAll('.card-item').forEach(card => {
-            const checkbox = card.querySelector('.item-checkbox');
+            const checkboxes = card.querySelectorAll('.item-checkbox');
             const startDate = card.querySelector('.start-date')?.value;
+            const qtyButtons = card.querySelectorAll('button[onclick^="changeQty"]');
 
             if (startDate && startDate < today) {
+                checkboxes.forEach(checkbox => {
+                    checkbox.checked = false;
+                    checkbox.disabled = true;
+                });
 
-                checkbox.checked = false;
-                checkbox.disabled = true;
+                qtyButtons.forEach(btn => {
+                    btn.disabled = true;
+                    btn.classList.add('opacity-50', 'pointer-events-none');
+                });
 
                 if (!card.querySelector('.expired-warning')) {
                     const warning = document.createElement('div');
@@ -231,17 +238,26 @@
 
                     card.appendChild(warning);
                 }
+            } else {
+                checkboxes.forEach(checkbox => {
+                    checkbox.disabled = false;
+                });
+
+                qtyButtons.forEach(btn => {
+                    btn.disabled = false;
+                    btn.classList.remove('opacity-50', 'pointer-events-none');
+                });
+
+                const warning = card.querySelector('.expired-warning');
+                if (warning) warning.remove();
             }
         });
     }
 
-    // Ambil jumlah hari dari data-days attribute (sudah dihitung server)
-    // dan update jika user ganti tanggal
     function getDays(card) {
         const s = card.querySelector('.start-date')?.value;
         const e = card.querySelector('.end-date')?.value;
         if (!s || !e) {
-            // fallback ke data-days dari server jika input belum ada
             return parseInt(card.dataset.days) || 1;
         }
         const d = Math.floor((new Date(e) - new Date(s)) / 86400000);
@@ -260,17 +276,22 @@
 
     function updateSummary() {
         let total = 0,
-            count = 0;
+            count = 0,
+            activeCardsCount = 0;
 
-        // Ambil unique card-item (bukan checkbox), lalu cek apakah ada checkbox yang dicentang
         document.querySelectorAll('.card-item').forEach(card => {
-            const checked = card.querySelector('.item-checkbox')?.checked;
-            if (checked) {
-                const price = parseFloat(card.dataset.price) || 0;
-                const qty = parseInt(card.querySelector('.qty-val').textContent) || 1;
-                const days = getDays(card);
-                total += price * qty * days;
-                count++;
+            const checkbox = card.querySelector('.item-checkbox');
+            
+            if (checkbox && !checkbox.disabled) {
+                activeCardsCount++;
+                
+                if (checkbox.checked) {
+                    const price = parseFloat(card.dataset.price) || 0;
+                    const qty = parseInt(card.querySelector('.qty-val').textContent) || 1;
+                    const days = getDays(card);
+                    total += price * qty * days;
+                    count++;
+                }
             }
         });
 
@@ -278,11 +299,11 @@
         document.getElementById('countItems').textContent = count;
         document.getElementById('totalChecked').textContent = count;
 
-        // Sinkronkan tombol "Pilih Semua"
-        const allCards = document.querySelectorAll('.card-item').length;
         const selectAllCb = document.getElementById('selectAll');
-        selectAllCb.checked = allCards > 0 && count === allCards;
-        selectAllCb.indeterminate = count > 0 && count < allCards;
+        
+        selectAllCb.checked = activeCardsCount > 0 && count === activeCardsCount;
+        
+        selectAllCb.indeterminate = false; 
     }
 
     function toggleDate(strip) {
@@ -320,7 +341,6 @@
             return;
         }
 
-        // Update data-days agar getDays() konsisten
         card.dataset.days = diff;
 
         badge.textContent = diff + ' hari';
@@ -332,7 +352,6 @@
         };
         dsum.innerHTML = `${fmt(s)} – ${fmt(e)}`;
 
-        // Update atau buat pill di date strip
         let pill = card.querySelector('.strip-pill');
         if (!pill) {
             pill = document.createElement('span');
@@ -436,13 +455,12 @@
     }
 
     function selAllChange(src) {
-
         document.querySelectorAll('.card-item').forEach(card => {
-
             card.querySelectorAll('.item-checkbox').forEach(cb => {
-                cb.checked = src.checked;
+                if (!cb.disabled) {
+                    cb.checked = src.checked;
+                }
             });
-
         });
 
         updateSummary();
@@ -455,30 +473,31 @@
     }
 
     function goToCheckout() {
-    const checkedCards = [...new Set(
-        Array.from(document.querySelectorAll('.item-checkbox:checked'))
-        .map(cb => cb.closest('.card-item'))
-    )];
+        const checkedCards = [...new Set(
+            Array.from(document.querySelectorAll('.item-checkbox:checked'))
+            .filter(cb => !cb.disabled)
+            .map(cb => cb.closest('.card-item'))
+        )];
 
-    if (!checkedCards.length) {
-        alert('Silakan pilih minimal satu produk untuk dicheckout!');
-        return;
-    }
-
-    if (checkedCards.length > 5) {
-        alert('Maksimal checkout hanya 5 barang dalam satu transaksi.');
-        return;
-    }
-
-    const params = new URLSearchParams();
-    checkedCards.forEach(card => {
-        if (card.dataset.id) {
-            params.append('ids[]', card.dataset.id); // mengambil id_keranjang
+        if (!checkedCards.length) {
+            alert('Silakan pilih minimal satu produk aktif untuk dicheckout!');
+            return;
         }
-    });
-    
-    window.location.href = `/checkout?${params.toString()}`;
-}
+
+        if (checkedCards.length > 5) {
+            alert('Maksimal checkout hanya 5 barang dalam satu transaksi.');
+            return;
+        }
+
+        const params = new URLSearchParams();
+        checkedCards.forEach(card => {
+            if (card.dataset.id) {
+                params.append('ids[]', card.dataset.id);
+            }
+        });
+        
+        window.location.href = `/checkout?${params.toString()}`;
+    }
 
     function showToast(msg) {
         const t = document.createElement('div');
