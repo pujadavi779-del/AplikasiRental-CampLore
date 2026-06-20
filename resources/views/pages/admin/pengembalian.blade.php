@@ -11,13 +11,22 @@
 
 <div class="max-w-full">
 
-    {{-- ══════════ STAT CARDS ══════════ --}}
+    {{-- ══════════ REAL-TIME STAT CARDS ══════════ --}}
     @php
-    $col          = collect($data_pengembalian);
-    $totalAktif   = $col->count();
-    $perluKembali = $col->filter(fn($i) => !empty($i->tanggal_kembali) && \Carbon\Carbon::parse($i->tanggal_kembali)->isToday())->count();
-    $terlambat    = $col->filter(fn($i) => ($i->hari_terlambat ?? 0) > 0)->count();
-    $tepatWaktu   = $totalAktif - $terlambat;
+        use Carbon\Carbon;
+        $hariIni = Carbon::now()->startOfDay();
+        $col     = collect($data_pengembalian);
+
+        // Menghitung data terlambat secara dinamis berdasarkan batas kembali
+        $totalAktif   = $col->count();
+        $perluKembali = $col->filter(fn($i) => !empty($i->tanggal_kembali) && Carbon::parse($i->tanggal_kembali)->isToday())->count();
+        
+        $terlambat = $col->filter(function($i) use ($hariIni) {
+            if (empty($i->tanggal_kembali)) return false;
+            return $hariIni->gt(Carbon::parse($i->tanggal_kembali)->startOfDay());
+        })->count();
+
+        $tepatWaktu = $totalAktif - $terlambat;
     @endphp
 
     <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
@@ -75,10 +84,15 @@
                 <tbody class="divide-y divide-gray-100" id="tableBody">
                     @forelse($data_pengembalian as $item)
                     @php
-                        $tglKembali    = !empty($item->tanggal_kembali) ? \Carbon\Carbon::parse($item->tanggal_kembali) : null;
-                        $isOverdue     = ($item->hari_terlambat ?? 0) > 0;
-                        $hariTerlambat = $item->hari_terlambat ?? 0;
-                        $totalDenda    = $item->keterlambatan_biaya ?? 0;
+                        $tglKembali = !empty($item->tanggal_kembali) ? Carbon::parse($item->tanggal_kembali)->startOfDay() : null;
+                        
+                        // Hitung keterlambatan secara dinamis dari waktu sekarang
+                        $isOverdue = $tglKembali ? $hariIni->gt($tglKembali) : false;
+                        $hariTerlambat = $isOverdue ? $hariIni->diffInDays($tglKembali) : 0;
+                        
+                        // Kalkulasi denda dinamis (misal Rp 10.000 per hari jika telat)
+                        $totalDenda = $isOverdue ? ($hariTerlambat * 10000) : 0;
+
                         $tglFormatted  = $tglKembali ? $tglKembali->format('d M Y') : '-';
                         $products      = collect($item->products ?? []);
                         $initial       = strtoupper(substr($item->pelanggan->name ?? 'U', 0, 1));
@@ -140,7 +154,7 @@
                             @endif
                         </td>
 
-                        {{-- Aksi — SATU tombol untuk semua --}}
+                        {{-- Aksi --}}
                         <td class="px-6 py-4">
                             <button type="button"
                                 onclick='bukaModalKonfirmasi(
