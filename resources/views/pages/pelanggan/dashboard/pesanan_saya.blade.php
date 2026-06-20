@@ -318,24 +318,39 @@
 
                 {{-- Pengembalian info --}}
                 @if($status === 'pengembalian')
+                @php
+                    // Ambil end_date dari item pertama sebagai acuan batas pengembalian
+                    $endDate = isset($items[0]) ? \Carbon\Carbon::parse($items[0]->end_date)->startOfDay() : null;
+                    $today = \Carbon\Carbon::now()->startOfDay();
+                    
+                    // Hitung selisih hari keterlambatan
+                    $hariTerlambat = 0;
+                    if ($endDate && $today->gt($endDate)) {
+                        $hariTerlambat = $today->diffInDays($endDate);
+                    }
+                    
+                    // Hitung denda dinamis (10.000 per hari)
+                    $totalDenda = $hariTerlambat * 10000;
+                @endphp
+
                 <div class="grid grid-cols-2 gap-2.5 mt-3.5">
                     <div class="bg-[#fef2f2] border border-[#fecaca] rounded-xl px-3.5 py-3">
                         <div class="text-[11px] font-semibold text-[#dc2626] mb-1">Batas Pengembalian</div>
                         <div class="text-[15px] font-extrabold text-[#dc2626]">
-                            {{ isset($items[0]) ? \Carbon\Carbon::parse($items[0]->end_date)->format('d M Y') : '-' }}
+                            {{ $endDate ? $endDate->translatedFormat('d M Y') : '-' }}
                         </div>
                     </div>
                     <div class="bg-[#fef2f2] border border-[#fecaca] rounded-xl px-3.5 py-3">
                         <div class="text-[11px] font-semibold text-[#dc2626] mb-1">Keterlambatan</div>
                         <div class="text-[15px] font-extrabold text-[#dc2626]">
-                            {{ $rental->hari_terlambat ?? 0 }} hari
+                            {{ $hariTerlambat }} hari
                         </div>
                     </div>
                 </div>
                 <div class="flex items-center justify-between mt-2.5 px-3.5 py-3 bg-[#f5f6f4] rounded-xl border border-[#e5e7eb]">
                     <div>
                         <div class="text-xs text-[#6b7280] font-medium mb-0.5">Total denda</div>
-                        <div class="text-base font-black text-[#dc2626]">Rp {{ number_format($rental->keterlambatan_biaya ?? 0, 0, ',', '.') }}</div>
+                        <div class="text-base font-black text-[#dc2626]">Rp {{ number_format($totalDenda, 0, ',', '.') }}</div>
                     </div>
                     <div class="flex gap-2 items-center">
                         <a href="#" class="px-[18px] py-[9px] rounded-[10px] text-xs font-bold bg-[#1a5c3a] text-white
@@ -345,7 +360,7 @@
                     </div>
                 </div>
 
-                {{-- Note denda -- tambahkan ini --}}
+                {{-- Note denda --}}
                 <div class="flex items-start gap-2 mt-2 px-1">
                     <svg class="w-3.5 h-3.5 text-[#c2410c] flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
