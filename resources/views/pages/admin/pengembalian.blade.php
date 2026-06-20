@@ -3,30 +3,30 @@
 @section('title', 'Pengembalian - CampLore')
 
 @php
-    $NavParent = 'Manajemen Operasional';
-    $section = 'Pengembalian';
+$NavParent = 'Manajemen Operasional';
+$section = 'Pengembalian';
 @endphp
 
 @section('content')
 
 <div class="max-w-full">
 
-    {{-- ══════════ REAL-TIME STAT CARDS ══════════ --}}
+    {{-- ══════════ STAT CARDS (REAL-TIME) ══════════ --}}
     @php
-        use Carbon\Carbon;
-        $hariIni = Carbon::now()->startOfDay();
-        $col     = collect($data_pengembalian);
+    use Carbon\Carbon;
+    $hariIni = Carbon::now()->startOfDay();
+    $col = collect($data_pengembalian);
 
-        // Menghitung data terlambat secara dinamis berdasarkan batas kembali
-        $totalAktif   = $col->count();
-        $perluKembali = $col->filter(fn($i) => !empty($i->tanggal_kembali) && Carbon::parse($i->tanggal_kembali)->isToday())->count();
-        
-        $terlambat = $col->filter(function($i) use ($hariIni) {
-            if (empty($i->tanggal_kembali)) return false;
-            return $hariIni->gt(Carbon::parse($i->tanggal_kembali)->startOfDay());
-        })->count();
+    $totalAktif = $col->count();
+    $perluKembali = $col->filter(fn($i) => !empty($i->tanggal_kembali) && Carbon::parse($i->tanggal_kembali)->isToday())->count();
 
-        $tepatWaktu = $totalAktif - $terlambat;
+    // filter jumlah terlambat riil hari ini
+    $terlambat = $col->filter(function($i) use ($hariIni) {
+    if (empty($i->tanggal_kembali)) return false;
+    return $hariIni->gt(Carbon::parse($i->tanggal_kembali)->startOfDay());
+    })->count();
+
+    $tepatWaktu = $totalAktif - $terlambat;
     @endphp
 
     <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
@@ -84,20 +84,17 @@
                 <tbody class="divide-y divide-gray-100" id="tableBody">
                     @forelse($data_pengembalian as $item)
                     @php
-                        $tglKembali = !empty($item->tanggal_kembali) ? Carbon::parse($item->tanggal_kembali)->startOfDay() : null;
-                        
-                        // Hitung keterlambatan secara dinamis dari waktu sekarang
-                        $isOverdue = $tglKembali ? $hariIni->gt($tglKembali) : false;
-                        $hariTerlambat = $isOverdue ? $hariIni->diffInDays($tglKembali) : 0;
-                        
-                        // Kalkulasi denda dinamis (misal Rp 10.000 per hari jika telat)
-                        $totalDenda = $isOverdue ? ($hariTerlambat * 10000) : 0;
+                    $tglKembali = !empty($item->tanggal_kembali) ? Carbon::parse($item->tanggal_kembali)->startOfDay() : null;
 
-                        $tglFormatted  = $tglKembali ? $tglKembali->format('d M Y') : '-';
-                        $products      = collect($item->products ?? []);
-                        $initial       = strtoupper(substr($item->pelanggan->name ?? 'U', 0, 1));
-                        $avatarBgs     = ['bg-blue-100 text-blue-700','bg-pink-100 text-pink-700','bg-emerald-100 text-emerald-700','bg-violet-100 text-violet-700','bg-amber-100 text-amber-700'];
-                        $avatarClass   = $avatarBgs[$loop->index % count($avatarBgs)];
+                    $isOverdue = $tglKembali ? $hariIni->gt($tglKembali) : false;
+                    $hariTerlambat = $isOverdue ? $hariIni->diffInDays($tglKembali) : 0;
+                    $totalDenda = $isOverdue ? ($hariTerlambat * 10000) : 0;
+
+                    $tglFormatted = $tglKembali ? $tglKembali->format('d M Y') : '-';
+                    $products = collect($item->products ?? []);
+                    $initial = strtoupper(substr($item->pelanggan->name ?? 'U', 0, 1));
+                    $avatarBgs = ['bg-blue-100 text-blue-700','bg-pink-100 text-pink-700','bg-emerald-100 text-emerald-700','bg-violet-100 text-violet-700','bg-amber-100 text-amber-700'];
+                    $avatarClass = $avatarBgs[$loop->index % count($avatarBgs)];
                     @endphp
                     <tr class="hover:bg-gray-50 transition-colors return-row">
 
@@ -135,7 +132,7 @@
                                 {{ $tglFormatted }}
                             </div>
                             @if($isOverdue)
-                            <div class="text-xs text-red-400 mt-0.5">Telat {{ $hariTerlambat }} hari · Denda Rp {{ number_format($totalDenda, 0, ',', '.') }}</div>
+                            <div class="text-xs text-red-400 mt-0.5">Telat {{ $hariTerlambat }} hari</div>
                             @else
                             <div class="text-xs text-green-500 mt-0.5">Tepat waktu</div>
                             @endif
@@ -157,23 +154,22 @@
                         {{-- Aksi --}}
                         <td class="px-6 py-4">
                             <button type="button"
-                                onclick='bukaModalKonfirmasi(
-                                    @json($item->pelanggan->name ?? "-"),
-                                    @json($item->pelanggan->email ?? $item->pelanggan->no_hp ?? "-"),
-                                    @json($item->id_pesanan),
-                                    @json($products->values()->all()),
-                                    @json($tglFormatted),
-                                    {{ $hariTerlambat }},
-                                    {{ $totalDenda }}
-                                )'
+                                onclick="bukaModalKonfirmasi(
+            '{{ $item->pelanggan->name ?? '-' }}',
+            '{{ $item->pelanggan->email ?? $item->pelanggan->no_hp ?? '-' }}',
+            '{{ $item->id_pesanan }}',
+            {{ json_encode($products->values()->all()) }},
+            '{{ $tglFormatted }}',
+            {{ $isOverdue ? 'true' : 'false' }},
+            {{ (int)$hariTerlambat }},
+            {{ (int)$totalDenda }}
+        )"
                                 class="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-bold rounded-xl transition-colors
-                                    {{ $isOverdue
-                                        ? "text-white bg-red-500 hover:bg-red-600"
-                                        : "text-white bg-[#22543D] hover:bg-[#1a4230]" }}">
+            {{ $isOverdue ? 'text-white bg-red-500 hover:bg-red-600' : 'text-white bg-[#22543D] hover:bg-[#1a4230]' }}">
                                 @if($isOverdue)
-                                    ⚠ Konfirmasi + Denda
+                                ⚠ Konfirmasi + Denda
                                 @else
-                                    ✓ Konfirmasi Kembali
+                                ✓ Konfirmasi Kembali
                                 @endif
                             </button>
                         </td>
@@ -184,7 +180,7 @@
                         <td colspan="6" class="px-6 py-16 text-center text-sm text-gray-400">
                             <div class="flex flex-col items-center gap-2">
                                 <svg class="w-10 h-10 text-gray-200" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                                 </svg>
                                 <p>Tidak ada data pengembalian.</p>
                             </div>
@@ -213,7 +209,7 @@
             </div>
             <button onclick="tutupModal()" class="w-7 h-7 flex items-center justify-center border border-gray-200 rounded-lg text-gray-500 hover:bg-gray-50">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
                 </svg>
             </button>
         </div>
@@ -244,7 +240,7 @@
                     <p id="mkTglKembali" class="text-sm font-bold text-gray-800"></p>
                 </div>
                 <div id="mkDendaBox" class="rounded-xl p-3.5 text-center">
-                    <p class="text-xs text-gray-400 uppercase tracking-wide mb-1">Denda</p>
+                    <p class="text-xs text-gray-400 uppercase tracking-wide mb-1">Status Denda</p>
                     <p id="mkDendaVal" class="text-sm font-bold"></p>
                     <p id="mkDendaInfo" class="text-xs mt-0.5"></p>
                 </div>
@@ -277,7 +273,7 @@
                 Batal
             </button>
             <button onclick="konfirmasiKembali()" id="btnKonfirmasi"
-                class="flex-[2] py-2.5 text-sm font-bold text-white bg-[#22543D] rounded-xl hover:bg-[#1a4230] disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
+                class="flex-[2] py-2.5 text-sm font-bold text-white bg-[#22543D] rounded-xl hover:bg-[#1a4230] transition-colors">
                 ✓ Konfirmasi Barang Kembali
             </button>
         </div>
@@ -285,127 +281,152 @@
 </div>
 
 <script>
-var currentOrderId = null;
-var isOverdueModal = false;
+    var currentOrderId = null;
+    var isOverdueModal = false;
 
-// Search
-document.getElementById('searchInput').addEventListener('input', function() {
-    var q = this.value.toLowerCase();
-    document.querySelectorAll('.return-row').forEach(function(row) {
-        row.style.display = row.textContent.toLowerCase().includes(q) ? '' : 'none';
-    });
-});
-
-function bukaModalKonfirmasi(nama, kontak, idPesanan, produk, tglKembali, hariTerlambat, totalDenda) {
-    currentOrderId = idPesanan;
-    isOverdueModal = hariTerlambat > 0;
-
-    // Reset checklist
-    document.getElementById('check1').checked = false;
-    document.getElementById('check2').checked = false;
-    document.getElementById('check3').checked = false;
-
-    // Isi data
-    document.getElementById('mkAvatar').textContent = nama.charAt(0).toUpperCase();
-    document.getElementById('mkNama').textContent = nama;
-    document.getElementById('mkKontak').textContent = kontak;
-    document.getElementById('mkIdPesanan').textContent = 'ID: ' + idPesanan;
-    document.getElementById('mkTglKembali').textContent = tglKembali;
-
-    // Produk list
-    var html = '';
-    if (Array.isArray(produk) && produk.length > 0) {
-        produk.forEach(function(p) {
-            html += '<div class="flex items-center justify-between px-3 py-2.5 bg-gray-50 border border-gray-200 rounded-xl">' +
-                '<span class="text-sm font-semibold text-gray-900">' + (p.name || '-') + '</span>' +
-                '<span class="text-xs text-gray-400">' + (p.kategori || '') + '</span>' +
-                '</div>';
+    // Fitur Pencarian
+    document.getElementById('searchInput').addEventListener('input', function() {
+        var q = this.value.toLowerCase();
+        document.querySelectorAll('.return-row').forEach(function(row) {
+            row.style.display = row.textContent.toLowerCase().includes(q) ? '' : 'none';
         });
-    } else {
-        html = '<div class="text-sm text-gray-400 italic">Tidak ada data produk.</div>';
-    }
-    document.getElementById('mkProdukList').innerHTML = html;
-
-    // Denda box
-    var box = document.getElementById('mkDendaBox');
-    var val = document.getElementById('mkDendaVal');
-    var info = document.getElementById('mkDendaInfo');
-    var checkDendaWrap = document.getElementById('checkDendaWrap');
-
-    if (hariTerlambat > 0) {
-        box.className = 'bg-red-50 border border-red-200 rounded-xl p-3.5 text-center';
-        val.className = 'text-sm font-bold text-red-600';
-        val.textContent = 'Rp ' + Number(totalDenda).toLocaleString('id-ID');
-        info.className = 'text-xs mt-0.5 text-red-400';
-        info.textContent = hariTerlambat + ' hari × Rp 10.000';
-        checkDendaWrap.style.display = 'flex';
-        document.getElementById('btnKonfirmasi').className = 'flex-[2] py-2.5 text-sm font-bold text-white bg-red-500 rounded-xl hover:bg-red-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors';
-        document.getElementById('btnKonfirmasi').textContent = '⚠ Konfirmasi + Catat Denda';
-    } else {
-        box.className = 'bg-green-50 border border-green-200 rounded-xl p-3.5 text-center';
-        val.className = 'text-sm font-bold text-green-600';
-        val.textContent = 'Tidak Ada Denda';
-        info.className = 'text-xs mt-0.5 text-green-400';
-        info.textContent = 'Tepat waktu ✓';
-        checkDendaWrap.style.display = 'none';
-        document.getElementById('btnKonfirmasi').className = 'flex-[2] py-2.5 text-sm font-bold text-white bg-[#22543D] rounded-xl hover:bg-[#1a4230] disabled:opacity-50 disabled:cursor-not-allowed transition-colors';
-        document.getElementById('btnKonfirmasi').textContent = '✓ Konfirmasi Barang Kembali';
-    }
-
-    document.getElementById('modalKonfirmasi').classList.remove('hidden');
-}
-
-function tutupModal() {
-    document.getElementById('modalKonfirmasi').classList.add('hidden');
-    currentOrderId = null;
-}
-
-// Close backdrop
-document.getElementById('modalKonfirmasi').addEventListener('click', function(e) {
-    if (e.target === this) tutupModal();
-});
-
-function konfirmasiKembali() {
-    if (!currentOrderId) return;
-
-    var check1 = document.getElementById('check1').checked;
-    var check2 = document.getElementById('check2').checked;
-    var check3 = document.getElementById('check3').checked;
-
-    if (!check1 || !check2) {
-        alert('Mohon centang semua checklist terlebih dahulu.');
-        return;
-    }
-    if (isOverdueModal && !check3) {
-        alert('Mohon konfirmasi bahwa denda sudah dibayar/dicatat.');
-        return;
-    }
-
-    var btn = document.getElementById('btnKonfirmasi');
-    btn.disabled = true;
-    btn.textContent = 'Memproses...';
-
-    fetch('/admin/pengembalian/' + currentOrderId + '/konfirmasi', {
-        method: 'POST',
-        headers: {
-            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
-            'Content-Type': 'application/json'
-        }
-    })
-    .then(function(res) { return res.json(); })
-    .then(function(data) {
-        tutupModal();
-        if (data.success) {
-            window.location.reload();
-        } else {
-            alert(data.message || 'Terjadi kesalahan.');
-        }
-    })
-    .catch(function() {
-        alert('Gagal menghubungi server.');
-        btn.disabled = false;
     });
-}
+
+    document.addEventListener('click', function(e) {
+        var tombol = e.target.closest('.btn-buka-modal');
+        if (!tombol) return;
+
+        var nama = tombol.getAttribute('data-nama');
+        var kontak = tombol.getAttribute('data-kontak');
+        var idPesanan = tombol.getAttribute('data-id-pesanan');
+        var produk = JSON.parse(tombol.getAttribute('data-produk') || '[]');
+        var tglKembali = tombol.getAttribute('data-tgl-kembali');
+        var hariTerlambat = parseInt(tombol.getAttribute('data-hari-terlambat') || '0');
+        var totalDenda = parseInt(tombol.getAttribute('data-total-denda') || '0');
+
+        bukaModalKonfirmasi(nama, kontak, idPesanan, produk, tglKembali, hariTerlambat, totalDenda);
+    });
+
+    function bukaModalDariElement(el) {
+        var nama = el.getAttribute('data-nama');
+        var kontak = el.getAttribute('data-kontak');
+        var idPesanan = el.getAttribute('data-id-pesanan');
+        var produk = JSON.parse(el.getAttribute('data-produk'));
+        var tglKembali = el.getAttribute('data-tgl-kembali');
+        var hariTerlambat = parseInt(el.getAttribute('data-hari-terlambat')) || 0;
+        var totalDenda = parseInt(el.getAttribute('data-total-denda')) || 0;
+
+        bukaModalKonfirmasi(nama, kontak, idPesanan, produk, tglKembali, hariTerlambat, totalDenda);
+    }
+
+    function bukaModalKonfirmasi(nama, kontak, idPesanan, produk, tglKembali, isOverdue, hariTerlambat, totalDenda) {
+        currentOrderId = idPesanan;
+        isOverdueModal = isOverdue;
+
+        document.getElementById('check1').checked = false;
+        document.getElementById('check2').checked = false;
+        document.getElementById('check3').checked = false;
+
+        document.getElementById('mkAvatar').textContent = nama.charAt(0).toUpperCase();
+        document.getElementById('mkNama').textContent = nama;
+        document.getElementById('mkKontak').textContent = kontak;
+        document.getElementById('mkIdPesanan').textContent = 'ID: ' + idPesanan;
+        document.getElementById('mkTglKembali').textContent = tglKembali;
+
+        var html = '';
+        if (Array.isArray(produk) && produk.length > 0) {
+            produk.forEach(function(p) {
+                html += '<div class="flex items-center justify-between px-3 py-2.5 bg-gray-50 border border-gray-200 rounded-xl">' +
+                    '<span class="text-sm font-semibold text-gray-900">' + (p.name || '-') + '</span>' +
+                    '<span class="text-xs text-gray-400">' + (p.kategori || '') + '</span>' +
+                    '</div>';
+            });
+        } else {
+            html = '<div class="text-sm text-gray-400 italic">Tidak ada data produk.</div>';
+        }
+        document.getElementById('mkProdukList').innerHTML = html;
+
+        var box = document.getElementById('mkDendaBox');
+        var val = document.getElementById('mkDendaVal');
+        var info = document.getElementById('mkDendaInfo');
+        var checkDendaWrap = document.getElementById('checkDendaWrap');
+
+        if (isOverdue) {
+            // ini jika dia berstatus terlambat
+            box.className = 'bg-red-50 border border-red-200 rounded-xl p-3.5 text-center';
+            val.className = 'text-sm font-bold text-red-600';
+            val.textContent = 'Rp ' + Number(totalDenda).toLocaleString('id-ID');
+            info.className = 'text-xs mt-0.5 text-red-400';
+            info.textContent = hariTerlambat + ' hari · Terlambat';
+            checkDendaWrap.style.display = 'flex';
+
+            document.getElementById('btnKonfirmasi').className = 'flex-[2] py-2.5 text-sm font-bold text-white bg-red-500 rounded-xl hover:bg-red-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors';
+            document.getElementById('btnKonfirmasi').textContent = '⚠ Konfirmasi + Catat Denda';
+        } else {
+            // ini jika dia tepat waktu
+            box.className = 'bg-green-50 border border-green-200 rounded-xl p-3.5 text-center';
+            val.className = 'text-sm font-bold text-green-600';
+            val.textContent = 'Tidak Ada Denda';
+            info.className = 'text-xs mt-0.5 text-green-400';
+            info.textContent = 'Tepat waktu ✓';
+            checkDendaWrap.style.display = 'none';
+
+            document.getElementById('btnKonfirmasi').className = 'flex-[2] py-2.5 text-sm font-bold text-white bg-[#22543D] rounded-xl hover:bg-[#1a4230] disabled:opacity-50 disabled:cursor-not-allowed transition-colors';
+            document.getElementById('btnKonfirmasi').textContent = '✓ Konfirmasi Barang Kembali';
+        }
+
+        document.getElementById('modalKonfirmasi').classList.remove('hidden');
+    }
+
+    function tutupModal() {
+        document.getElementById('modalKonfirmasi').classList.add('hidden');
+        currentOrderId = null;
+    }
+
+    function konfirmasiKembali() {
+        if (!currentOrderId) return;
+
+        var check1 = document.getElementById('check1').checked;
+        var check2 = document.getElementById('check2').checked;
+        var check3 = document.getElementById('check3').checked;
+
+        if (!check1 || !check2) {
+            alert('Mohon centang semua checklist terlebih dahulu.');
+            return;
+        }
+        if (isOverdueModal && !check3) {
+            alert('Mohon konfirmasi bahwa denda sudah dibayar/dicatat.');
+            return;
+        }
+
+        var btn = document.getElementById('btnKonfirmasi');
+        btn.disabled = true;
+        btn.textContent = 'Memproses...';
+
+        fetch('/admin/pengembalian/' + currentOrderId + '/konfirmasi', {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(function(res) {
+                return res.json();
+            })
+            .then(function(data) {
+                tutupModal();
+                if (data.success) {
+                    window.location.reload();
+                } else {
+                    alert(data.message || 'Terjadi kesalahan.');
+                    btn.disabled = false;
+                }
+            })
+            .catch(function() {
+                alert('Gagal menghubungi server.');
+                btn.disabled = false;
+            });
+    }
 </script>
 
 @endsection
