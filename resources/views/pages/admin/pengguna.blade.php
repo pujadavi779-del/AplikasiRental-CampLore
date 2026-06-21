@@ -84,7 +84,7 @@
                         <td class="px-6 py-4">
                             <div class="flex items-center gap-3">
                                 <div>
-                                    <p class="font-semibold text-gray-800">{{ $customer->name }}</p>
+                                    <p class="font-semibold text-gray-800">{{ $customer->nama_lengkap}}</p>
                                     <p class="text-[11px] text-gray-400">{{ $customer->email }}</p>
                                 </div>
                             </div>
@@ -99,10 +99,10 @@
                         <td class="px-6 py-4 text-center">
                             @if($customer->foto_ktp)
                             <button type="button"
-                                onclick="bukaKTP('{{ addslashes($customer->name) }}', '{{ asset('storage/'.$customer->foto_ktp) }}')"
+                                onclick="bukaKTP('{{ addslashes($customer->nama_lengkap) }}', '{{ asset('storage/'.$customer->foto_ktp) }}')"
                                 class="inline-block">
                                 <img src="{{ asset('storage/'.$customer->foto_ktp) }}"
-                                    alt="KTP {{ $customer->name }}"
+                                    alt="KTP {{ $customer->nama_lengkap }}"
                                     class="h-12 w-20 object-cover rounded-lg border border-gray-200 hover:opacity-80 transition shadow-sm">
                             </button>
                             @else

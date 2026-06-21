@@ -30,7 +30,7 @@ class CreateProductController extends Controller
         }
 
         Barang::create([
-            'name'              => $request->name,
+            'name'              => $request->name, // ← UPDATE
             'kategori'          => $request->Kategori_data,
             'harga_per_hari'    => $request->harga_per_hari,
             'stok'              => $request->stok,

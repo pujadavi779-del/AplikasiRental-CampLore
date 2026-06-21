@@ -182,7 +182,7 @@ class CampingController extends Controller
         }
 
         Barang::create([
-            'name' => $request->name,
+            'name' => $request->name, // ← UPDATE
             'kategori' => $request->kategori,
             'id_tipe_kategori' => $request->id_tipe_kategori,
             'id_merek_kategori' => $request->id_merek_kategori,
@@ -217,7 +217,7 @@ class CampingController extends Controller
         ]);
 
         $data = [
-            'name' => $request->name,
+            'name' => $request->name, // ← UPDATE
             'kategori' => $request->kategori,
             'id_tipe_kategori' => $request->id_tipe_kategori,
             'id_merek_kategori' => $request->id_merek_kategori,

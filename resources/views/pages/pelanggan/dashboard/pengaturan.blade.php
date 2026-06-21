@@ -41,7 +41,7 @@ $urlSendOtp = route('otp.phone.send');
 $urlVerifyOtp = route('otp.phone.verify');
 $fotoProfil = $pelanggan->foto_profile
 ? asset('storage/' . $pelanggan->foto_profile)
-: 'https://ui-avatars.com/api/?name=' . urlencode($pelanggan->name) . '&background=22543D&color=fff&size=128';
+: 'https://ui-avatars.com/api/?name=' . urlencode($pelanggan->nama_lengkap) . '&background=22543D&color=fff&size=128';
 @endphp
 
 <div x-data="{
@@ -152,8 +152,8 @@ $fotoProfil = $pelanggan->foto_profile
                 {{-- Nama --}}
                 <div class="space-y-2">
                     <label class="text-[11px] font-bold text-gray-400 uppercase tracking-widest">Nama Lengkap</label>
-                    <input type="text" name="name"
-                        value="{{ old('name', $pelanggan->name) }}"
+                    <input type="text" name="nama_lengkap"
+                        value="{{ old('nama_lengkap', $pelanggan->nama_lengkap) }}"
                         class="input-field w-full px-4 py-3 rounded-xl text-sm font-medium text-gray-700">
                 </div>
 

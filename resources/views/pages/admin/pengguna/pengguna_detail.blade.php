@@ -31,7 +31,7 @@
                     </div>
                     <div>
                         <h2 class="text-xl font-extrabold text-gray-900" style="font-family:'Playfair Display',Georgia,serif;">
-                            {{ $customer->name ?? $customer->nama }}
+                            {{ $customer->nama_lengkap?? $customer->nama }}
                         </h2>
                         <p class="text-sm text-gray-400 flex items-center gap-1 mt-0.5">
                             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -155,7 +155,7 @@
                 @if($customer->foto_ktp)
                     <div class="rounded-xl overflow-hidden border border-gray-200 shadow-sm bg-white">
                         <img src="{{ asset('storage/'.$customer->foto_ktp) }}"
-                            alt="KTP {{ $customer->name }}"
+                            alt="KTP {{ $customer->nama_lengkap }}"
                             class="w-full object-contain max-h-80">
                     </div>
                 @else

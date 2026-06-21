@@ -73,7 +73,7 @@ class CameraController extends Controller
         }
 
         Barang::create([
-            'name'              => $request->name,
+            'name'              => $request->name, // ← UPDATE
             'id_tipe_kategori'  => $request->id_tipe_kategori,  // Hubungkan foreign key tipe
             'id_merek_kategori' => $request->id_merek_kategori, // Hubungkan foreign key merek
             'stok'             => $request->stok,
@@ -114,7 +114,7 @@ class CameraController extends Controller
         }
 
         $item->update([
-            'name'              => $request->name,
+            'name'              => $request->name, // Update nama lengkap
             'id_tipe_kategori'  => $request->id_tipe_kategori,  // Update foreign key tipe
             'id_merek_kategori' => $request->id_merek_kategori, // Update foreign key merek
             'stok'             => $request->stok,

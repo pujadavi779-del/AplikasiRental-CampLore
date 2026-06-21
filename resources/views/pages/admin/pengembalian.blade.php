@@ -92,9 +92,28 @@ $section = 'Pengembalian';
 
                     $tglFormatted = $tglKembali ? $tglKembali->format('d M Y') : '-';
                     $products = collect($item->products ?? []);
-                    $initial = strtoupper(substr($item->pelanggan->name ?? 'U', 0, 1));
+                    
+                    // VALIDASI EXTRA: Memastikan nama_lengkap ditarik dengan benar dari objek atau array relasi
+                    $namaUser = '-';
+                    if (isset($item->pelanggan)) {
+                        $namaUser = is_array($item->pelanggan) 
+                            ? ($item->pelanggan['nama_lengkap'] ?? $item->pelanggan['name'] ?? '-') 
+                            : ($item->pelanggan->nama_lengkap ?? $item->pelanggan->name ?? '-');
+                    }
+                    
+                    // Jika relasi langsung null, kita coba fallback mencari alternatif properti di model utama (misal ada duplikasi kolom)
+                    if($namaUser == '-') {
+                        $namaUser = $item->nama_lengkap ?? $item->nama_pelanggan ?? '-';
+                    }
+
+                    $initial = strtoupper(substr(($namaUser && $namaUser != '-') ? $namaUser : 'U', 0, 1));
+                    
                     $avatarBgs = ['bg-blue-100 text-blue-700','bg-pink-100 text-pink-700','bg-emerald-100 text-emerald-700','bg-violet-100 text-violet-700','bg-amber-100 text-amber-700'];
                     $avatarClass = $avatarBgs[$loop->index % count($avatarBgs)];
+                    
+                    $emailUser = is_array($item->pelanggan ?? null) 
+                        ? ($item->pelanggan['email'] ?? '-') 
+                        : ($item->pelanggan->email ?? $item->email ?? '-');
                     @endphp
                     <tr class="hover:bg-gray-50 transition-colors return-row">
 
@@ -105,8 +124,8 @@ $section = 'Pengembalian';
                                     {{ $initial }}
                                 </div>
                                 <div>
-                                    <div class="font-semibold text-gray-900 text-sm">{{ $item->pelanggan->name ?? '-' }}</div>
-                                    <div class="text-xs text-gray-400">{{ $item->pelanggan->email ?? $item->pelanggan->no_hp ?? '-' }}</div>
+                                    <div class="font-semibold text-gray-900 text-sm">{{ $namaUser }}</div>
+                                    <div class="text-xs text-gray-400">{{ $emailUser }}</div>
                                 </div>
                             </div>
                         </td>
@@ -155,17 +174,17 @@ $section = 'Pengembalian';
                         <td class="px-6 py-4">
                             <button type="button"
                                 onclick="bukaModalKonfirmasi(
-            '{{ $item->pelanggan->name ?? '-' }}',
-            '{{ $item->pelanggan->email ?? $item->pelanggan->no_hp ?? '-' }}',
-            '{{ $item->id_pesanan }}',
-            {{ json_encode($products->values()->all()) }},
-            '{{ $tglFormatted }}',
-            {{ $isOverdue ? 'true' : 'false' }},
-            {{ (int)$hariTerlambat }},
-            {{ (int)$totalDenda }}
-        )"
+                                '{{ addslashes($namaUser) }}',
+                                '{{ $emailUser }}',
+                                '{{ $item->id_pesanan }}',
+                                {{ json_encode($products->values()->all()) }},
+                                '{{ $tglFormatted }}',
+                                {{ $isOverdue ? 'true' : 'false' }},
+                                {{ (int)$hariTerlambat }},
+                                {{ (int)$totalDenda }}
+                                )"
                                 class="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-bold rounded-xl transition-colors
-            {{ $isOverdue ? 'text-white bg-red-500 hover:bg-red-600' : 'text-white bg-[#22543D] hover:bg-[#1a4230]' }}">
+                            {{ $isOverdue ? 'text-white bg-red-500 hover:bg-red-600' : 'text-white bg-[#22543D] hover:bg-[#1a4230]' }}">
                                 @if($isOverdue)
                                 ⚠ Konfirmasi + Denda
                                 @else
@@ -292,33 +311,6 @@ $section = 'Pengembalian';
         });
     });
 
-    document.addEventListener('click', function(e) {
-        var tombol = e.target.closest('.btn-buka-modal');
-        if (!tombol) return;
-
-        var nama = tombol.getAttribute('data-nama');
-        var kontak = tombol.getAttribute('data-kontak');
-        var idPesanan = tombol.getAttribute('data-id-pesanan');
-        var produk = JSON.parse(tombol.getAttribute('data-produk') || '[]');
-        var tglKembali = tombol.getAttribute('data-tgl-kembali');
-        var hariTerlambat = parseInt(tombol.getAttribute('data-hari-terlambat') || '0');
-        var totalDenda = parseInt(tombol.getAttribute('data-total-denda') || '0');
-
-        bukaModalKonfirmasi(nama, kontak, idPesanan, produk, tglKembali, hariTerlambat, totalDenda);
-    });
-
-    function bukaModalDariElement(el) {
-        var nama = el.getAttribute('data-nama');
-        var kontak = el.getAttribute('data-kontak');
-        var idPesanan = el.getAttribute('data-id-pesanan');
-        var produk = JSON.parse(el.getAttribute('data-produk'));
-        var tglKembali = el.getAttribute('data-tgl-kembali');
-        var hariTerlambat = parseInt(el.getAttribute('data-hari-terlambat')) || 0;
-        var totalDenda = parseInt(el.getAttribute('data-total-denda')) || 0;
-
-        bukaModalKonfirmasi(nama, kontak, idPesanan, produk, tglKembali, hariTerlambat, totalDenda);
-    }
-
     function bukaModalKonfirmasi(nama, kontak, idPesanan, produk, tglKembali, isOverdue, hariTerlambat, totalDenda) {
         currentOrderId = idPesanan;
         isOverdueModal = isOverdue;
@@ -352,7 +344,6 @@ $section = 'Pengembalian';
         var checkDendaWrap = document.getElementById('checkDendaWrap');
 
         if (isOverdue) {
-            // ini jika dia berstatus terlambat
             box.className = 'bg-red-50 border border-red-200 rounded-xl p-3.5 text-center';
             val.className = 'text-sm font-bold text-red-600';
             val.textContent = 'Rp ' + Number(totalDenda).toLocaleString('id-ID');
@@ -363,7 +354,6 @@ $section = 'Pengembalian';
             document.getElementById('btnKonfirmasi').className = 'flex-[2] py-2.5 text-sm font-bold text-white bg-red-500 rounded-xl hover:bg-red-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors';
             document.getElementById('btnKonfirmasi').textContent = '⚠ Konfirmasi + Catat Denda';
         } else {
-            // ini jika dia tepat waktu
             box.className = 'bg-green-50 border border-green-200 rounded-xl p-3.5 text-center';
             val.className = 'text-sm font-bold text-green-600';
             val.textContent = 'Tidak Ada Denda';

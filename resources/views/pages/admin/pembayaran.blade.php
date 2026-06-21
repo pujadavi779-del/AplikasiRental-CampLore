@@ -217,7 +217,7 @@ $section = 'Pengguna';
                     + $allOrderItems->first()->biaya_pengiriman
                     + $allOrderItems->first()->biaya_layanan;
 
-                    $namaUser = optional($pesanan->pelanggan)->name ?? 'Pelanggan';
+                    $namaUser = optional($pesanan->pelanggan)->nama_lengkap ?? 'Pelanggan';
                     $parts = explode(' ', $namaUser);
                     $inisial = strtoupper(substr($parts[0],0,1).(isset($parts[1])?substr($parts[1],0,1):''));
 

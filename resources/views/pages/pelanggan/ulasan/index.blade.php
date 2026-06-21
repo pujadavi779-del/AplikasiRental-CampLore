@@ -97,13 +97,13 @@
                                 {{-- Avatar --}}
                                 <div class="w-11 h-11 rounded-full flex items-center justify-center text-white text-sm font-bold shrink-0"
                                     style="background: {{ ['linear-gradient(135deg,#22543D,#38a169)','linear-gradient(135deg,#ED64A6,#f43f8e)','linear-gradient(135deg,#6366f1,#8b5cf6)','linear-gradient(135deg,#f59e0b,#ef4444)'][$loop->index % 4] }}">
-                                    {{ strtoupper(substr($review->pelanggan->name ?? 'U', 0, 2)) }}
+                                    {{ strtoupper(substr($review->pelanggan->nama_lengkap ?? 'U', 0, 2)) }}
                                 </div>
 
                                 {{-- Content --}}
                                 <div class="flex-1 min-w-0">
                                     <div class="flex flex-wrap items-center gap-2 mb-1">
-                                        <span class="font-bold text-gray-800 text-sm">{{ $review->pelanggan->name ?? 'Pengguna' }}</span>
+                                        <span class="font-bold text-gray-800 text-sm">{{ $review->pelanggan->nama_lengkap ?? 'Pengguna' }}</span>
                                         <span class="text-[10px] text-[#6b7280] bg-[#f3f4f6] px-2 py-0.5 rounded-full">{{ $review->created_at->diffForHumans() }}</span>
                                         @if(!$review->is_replied)
                                             <span class="text-[10px] font-bold text-[#ED64A6] bg-[#fce7f3] px-2 py-0.5 rounded-full">● Belum Dibalas</span>
@@ -174,7 +174,7 @@
 
                                     <div class="bg-[#f9fdfb] rounded-xl border border-[#d7e6de] p-4">
                                         <p class="text-xs font-semibold text-[#22543D] mb-2">
-                                            Balas ulasan dari <span class="text-[#ED64A6]">{{ $review->pelanggan->name ?? 'Pengguna' }}</span>
+                                            Balas ulasan dari <span class="text-[#ED64A6]">{{ $review->pelanggan->nama_lengkap ?? 'Pengguna' }}</span>
                                         </p>
                                         <textarea
                                             name="balas_pesan"

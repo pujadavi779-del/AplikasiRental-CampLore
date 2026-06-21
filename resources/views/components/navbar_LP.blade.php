@@ -123,13 +123,13 @@ $cartCount = auth()->check()
                 {{-- Login sebagai PELANGGAN --}}
                 @else
                 <button class="flex items-center gap-2 px-3 py-2 rounded-xl border border-gray-200 hover:bg-gray-50 transition">
-                    <span class="text-sm font-semibold text-[#1A392D]">{{ auth()->user()->name }}</span>
+                    <span class="text-sm font-semibold text-[#1A392D]">{{ auth()->user()->nama_lengkap }}</span>
                 </button>
 
                 {{-- Dropdown Pelanggan --}}
                 <div class="absolute right-0 top-12 w-64 bg-white rounded-2xl shadow-xl border border-gray-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 overflow-hidden">
                     <div class="px-5 py-4 border-b border-gray-100 bg-gray-50/50">
-                        <p class="text-sm font-extrabold text-gray-800 truncate">{{ auth()->user()->name }}</p>
+                        <p class="text-sm font-extrabold text-gray-800 truncate">{{ auth()->user()->nama_lengkap }}</p>
                         <p class="text-xs text-gray-400 truncate italic normal-case">{{ auth()->user()->email }}</p>
                     </div>
                     <div class="py-1">
@@ -220,7 +220,7 @@ $cartCount = auth()->check()
             @elseif(Auth::guard('web')->check())
             <div class="mt-4 border-t border-gray-100 pt-4">
                 <div class="px-3 mb-4">
-                    <p class="text-sm font-extrabold text-gray-800 normal-case">{{ auth()->user()->name }}</p>
+                    <p class="text-sm font-extrabold text-gray-800 normal-case">{{ auth()->user()->nama_lengkap }}</p>
                     <p class="text-[10px] text-gray-400 italic normal-case">{{ auth()->user()->email }}</p>
                 </div>
                 <a href="{{ route('dashboard_pelanggan') }}" class="flex items-center gap-3 px-3 py-3 rounded-xl text-xs normal-case text-gray-600 hover:bg-pink-50">

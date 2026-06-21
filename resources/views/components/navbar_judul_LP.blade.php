@@ -2,7 +2,7 @@
     @push('styles')
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght=700;800&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@700;800&display=swap" rel="stylesheet">
         <style>
             .topbar-nav, .topbar-nav * { font-family: 'Inter', sans-serif; }
             [x-cloak] { display: none !important; }
@@ -105,7 +105,7 @@
                         <div class="w-8 h-8 rounded-full overflow-hidden flex-shrink-0 border border-gray-100 flex items-center justify-center bg-gray-100">
                             @if($review->pelanggan && $review->pelanggan->foto_profile)
                                 <img src="{{ asset('storage/' . $review->pelanggan->foto_profile) }}"
-                                    alt="{{ $review->pelanggan->name }}"
+                                    alt="{{ $review->pelanggan->nama_lengkap }}"
                                     class="w-full h-full object-cover">
                             @else
                                 @php
@@ -114,7 +114,7 @@
                                 @endphp
                                 <div class="w-full h-full flex items-center justify-center text-white text-xs font-bold"
                                     style="background: {{ $aColor }}">
-                                    {{ strtoupper(substr($review->pelanggan->name ?? 'U', 0, 2)) }}
+                                    {{ strtoupper(substr($review->pelanggan->nama_lengkap ?? 'U', 0, 2)) }}
                                 </div>
                             @endif
                         </div>
@@ -122,7 +122,7 @@
                         {{-- Teks Informasi Ulasan (Persis Versi Awal Kamu yang Bagus) --}}
                         <div class="flex-1 min-w-0">
                             <p class="text-xs font-semibold text-gray-800 truncate m-0">
-                                {{ $review->pelanggan->name ?? 'Pengguna' }}
+                                {{ $review->pelanggan->nama_lengkap ?? 'Pengguna' }}
                             </p>
                             <p class="text-[11px] text-gray-400 truncate m-0">
                                 {{ $review->product->name ?? 'Produk' }}

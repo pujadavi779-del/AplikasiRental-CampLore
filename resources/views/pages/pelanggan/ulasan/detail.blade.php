@@ -53,18 +53,18 @@
                     <div class="w-10 h-10 rounded-full overflow-hidden flex-shrink-0">
                         @if(optional($review->pelanggan)->foto_profile)
                         <img src="{{ asset('storage/' . $review->pelanggan->foto_profile) }}"
-                            alt="{{ $review->pelanggan->name }}"
+                            alt="{{ $review->pelanggan->nama_lengkap }}"
                             class="w-full h-full object-cover">
                         @else
                         <div class="w-10 h-10 rounded-full flex items-center justify-center text-white text-sm font-bold"
                             style="background: linear-gradient(135deg,#22543D,#38a169)">
-                            {{ strtoupper(substr(optional($review->pelanggan)->name ?? 'U', 0, 2)) }}
+                            {{ strtoupper(substr(optional($review->pelanggan)->nama_lengkap ?? 'U', 0, 2)) }}
                         </div>
                         @endif
                     </div>
                     <div>
                         <div class="flex items-center gap-2">
-                            <span class="text-sm font-bold text-[#1a1a1a]">{{ optional($review->pelanggan)->name ?? '-' }}</span>
+                            <span class="text-sm font-bold text-[#1a1a1a]">{{ optional($review->pelanggan)->nama_lengkap ?? '-' }}</span>
                             <span class="text-[10px] font-bold text-[#22543D] bg-[#d1fae5] px-2 py-0.5 rounded-full">
                                 ✓ Terverifikasi
                             </span>

@@ -103,7 +103,7 @@
                     onerror="this.src='https://ui-avatars.com/api/?name={{ urlencode($cart->product->name ?? '?') }}&background=FF6B95&color=fff'">
                 @else
                 <div class="w-full h-full flex items-center justify-center bg-pink-100 text-[#FF6B95] font-bold text-lg">
-                    {{ substr($cart->product->name ?? '?', 0, 1) }}
+                    {{ substr($cart->product->name?? '?', 0, 1) }}
                 </div>
                 @endif
             </div>

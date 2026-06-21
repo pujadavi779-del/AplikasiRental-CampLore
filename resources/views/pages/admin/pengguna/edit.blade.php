@@ -57,7 +57,7 @@
                         <select name="user_id" class="w-full px-5 py-4 rounded-2xl border border-gray-100 bg-gray-50 text-sm focus:ring-4 focus:ring-[#22543D]/5 focus:border-[#22543D] outline-none transition-all">
                             @foreach($pelanggan as $pelanggan)
                             <option value="{{ $pelanggan->id }}" {{ $pesanan->user_id == $pelanggan->id ? 'selected' : '' }}>
-                                {{ $pelanggan->name }} — {{ $pelanggan->email }}
+                                {{ $pelanggan->nama_lengkap}} — {{ $pelanggan->email }}
                             </option>
                             @endforeach
                         </select>
@@ -71,7 +71,7 @@
                                 <option value="{{ $product->id }}"
                                     data-price="{{ $product->price }}"
                                     {{ $pesanan->product_id == $product->id ? 'selected' : '' }}>
-                                    {{ $product->name }} (Rp {{ number_format($product->price, 0, ',', '.') }}/hari)
+                                    {{ $product->name}} (Rp {{ number_format($product->price, 0, ',', '.') }}/hari)
                                 </option>
                                 @endforeach
                             </select>

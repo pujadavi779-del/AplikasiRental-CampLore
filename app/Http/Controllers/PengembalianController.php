@@ -30,9 +30,10 @@ class PengembalianController extends Controller
                 'tanggal_kembali'    => $first->end_date,
                 'minta_perpanjangan' => false,
                 'pelanggan' => (object) [
-                    'name'  => $first->nama_pelanggan ?? ($first->pelanggan->name ?? '-'),
-                    'email' => $first->pelanggan->email ?? '-',
-                    'no_hp' => $first->pelanggan_telepon ?? '-',
+                    // DI SINI PERBAIKANNYA: Menggunakan 'nama_lengkap' sesuai kolom riil di DB Anda
+                    'nama_lengkap' => $first->pelanggan->nama_lengkap ?? $first->nama_pelanggan ?? '-',
+                    'email'        => $first->pelanggan->email ?? '-',
+                    'no_hp'        => $first->pelanggan->no_tlp ?? $first->pelanggan_telepon ?? '-',
                 ],
                 'products' => $items->map(fn($i) => (object) [
                     'name'     => $i->product->name ?? 'Produk Dihapus',
@@ -60,12 +61,18 @@ class PengembalianController extends Controller
         Pesanan::where('order_id', $orderId)->update(['status' => 'selesai']);
 
         $firstOrder = $pesanan->first();
-        if ($firstOrder->pelanggan && $firstOrder->pelanggan->no_tlp) {
-            $phone = $firstOrder->pelanggan->no_tlp;
+        
+        // Memastikan pengecekan no_tlp / no_hp aman
+        $phone = $firstOrder->pelanggan->no_tlp ?? $firstOrder->pelanggan->no_hp ?? null;
+        
+        if ($phone) {
             if (str_starts_with($phone, '0')) {
                 $phone = '62' . substr($phone, 1);
             }
-            sendWhatsapp($phone, "Pesanan sewa Anda telah selesai! 🎉 Terima kasih telah mempercayakan kebutuhan petualangan Anda kepada Camplore. Sampai jumpa di petualangan berikutnya! 🏕️");
+            // Pastikan helper atau fungsi sendWhatsapp() Anda sudah aktif
+            if (function_exists('sendWhatsapp')) {
+                sendWhatsapp($phone, "Pesanan sewa Anda telah selesai! 🎉 Terima kasih telah mempercayakan kebutuhan petualangan Anda kepada Camplore. Sampai jumpa di petualangan berikutnya! 🏕️");
+            }
         }
 
         return response()->json(['success' => true]);

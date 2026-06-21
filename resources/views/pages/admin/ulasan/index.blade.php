@@ -79,7 +79,7 @@
             <img src="{{ Str::startsWith($product->gambar_barang, 'http') 
                 ? $product->gambar_barang 
                 : asset($product->gambar_barang) }}" 
-                alt="{{ $product->name }}"
+                alt="{{ $product->name}}"
                 class="w-full h-full object-cover">
             @else                                                                                           
             <div class="w-full h-full flex items-center justify-center">
@@ -91,7 +91,7 @@
         </div>
 
         <div class="flex-1 min-w-0">
-            <p class="text-sm font-bold text-gray-900">{{ $product->name ?? 'Produk Dihapus' }}</p>
+            <p class="text-sm font-bold text-gray-900">{{ $product->name?? 'Produk Dihapus' }}</p>
             <div class="flex items-center gap-2 mt-1">
                 <div class="flex items-center gap-0.5">
                     @for($i = 1; $i <= 5; $i++)
@@ -134,17 +134,17 @@
         <div class="w-9 h-9 rounded-full overflow-hidden flex-shrink-0 border border-gray-100">
             @if($fotoPelanggan)
                 <img src="{{ asset('storage/'.$fotoPelanggan) }}"
-                    alt="{{ $review->pelanggan->name }}"
+                    alt="{{ $review->pelanggan->nama_lengkap}}"
                     class="w-full h-full object-cover">
             @else
                 <div class="w-full h-full flex items-center justify-center text-white text-xs font-bold"
                     style="background: {{ $aColor }}">
-                    {{ strtoupper(substr($review->pelanggan->name ?? 'U', 0, 2)) }}
+                    {{ strtoupper(substr($review->pelanggan->nama_lengkap?? 'U', 0, 2)) }}
                 </div>
             @endif
         </div>
         <div class="flex items-center gap-2 flex-wrap">
-            <span class="text-sm font-semibold text-gray-800">{{ $review->pelanggan->name ?? 'Pengguna' }}</span>
+            <span class="text-sm font-semibold text-gray-800">{{ $review->pelanggan->nama_lengkap ?? 'Pengguna' }}</span>
             <span class="text-[11px] text-gray-400">{{ $review->created_at->diffForHumans() }}</span>
             @if($review->is_replied)
             <span class="text-[10px] font-bold text-[#0F6E56] bg-[#E1F5EE] px-2 py-0.5 rounded-full">✓ Dibalas</span>

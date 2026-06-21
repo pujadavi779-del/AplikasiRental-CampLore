@@ -48,7 +48,7 @@ class DeliveryController extends Controller
 
             $pengiriman[] = [
                 'id_pesanan'        => $orderId,
-                'pemesan'           => $firstItem->pelanggan->name ?? '-',
+                'pemesan'           => $firstItem->pelanggan->nama_lengkap ?? '-',
                 'alamat'            => $alamat,
                 'no_tlp'            => $firstItem->pelanggan->no_tlp ?? '-',
                 'metode_pengiriman' => $shippingMethod,
@@ -100,7 +100,7 @@ class DeliveryController extends Controller
 
         $pengiriman = [
             'id_pesanan'        => $firstItem->order_id,
-            'pemesan'           => $firstItem->pelanggan->name ?? '-',
+            'pemesan'           => $firstItem->pelanggan->nama_lengkap ?? '-',
             'alamat'            => $alamat,
             'no_hp'             => $firstItem->pelanggan->no_tlp ?? '-',
             'metode_pengiriman' => $shippingMethod,

@@ -96,14 +96,14 @@
                 class="w-14 h-14 rounded-full object-cover border-2 border-white ring-2 ring-green-50 shadow-md">
             @else
             <div class="w-14 h-14 rounded-full bg-gradient-to-tr from-green-600 to-green-400 flex items-center justify-center text-white text-lg font-bold shadow-md border-2 border-white ring-2 ring-green-50">
-                {{ strtoupper(substr(auth()->user()->name ?? 'U', 0, 2)) }}
+                {{ strtoupper(substr(auth()->user()->nama_lengkap ?? 'U', 0, 2)) }}
             </div>
             @endif
             <span class="absolute bottom-0 right-0 w-3.5 h-3.5 bg-pink-500 border-2 border-white rounded-full"></span>
         </div>
         <div class="flex flex-col min-w-0">
             <h2 class="text-[15px] font-extrabold text-gray-900 truncate tracking-tight leading-none mb-1">
-                {{ auth()->user()->name ?? 'Pelanggan' }}
+                {{ auth()->user()->nama_lengkap ?? 'Pelanggan' }}
             </h2>
             <p class="text-[11px] text-gray-400 font-medium truncate italic">
                 {{ auth()->user()->email ?? 'pelanggan@email.com' }}

@@ -101,7 +101,7 @@ class ProductController extends Controller
         ]);
 
         $data = [
-            'name'              => $request->name,
+            'name'              => $request->name, // ← UPDATE
             'stok'              => $request->stok,
             'kategori'          => $request->kategori,
             'harga_per_hari'    => $request->harga_per_hari,

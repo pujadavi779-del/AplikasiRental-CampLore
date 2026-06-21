@@ -34,7 +34,7 @@ class ProfileController extends Controller
     'name.regex' => 'Nama hanya boleh berisi huruf, spasi, dan titik.',
     ]);
 
-        $pelanggan->name   = $request->name;
+        $pelanggan->nama_lengkap = $request->nama_lengkap; // DIUBAH: gunakan nama_lengkap
         $pelanggan->email  = $request->email;
         $pelanggan->no_tlp = $request->no_tlp;
         $pelanggan->nik    = $request->nik;

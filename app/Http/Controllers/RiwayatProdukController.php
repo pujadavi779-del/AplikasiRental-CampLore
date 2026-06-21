@@ -30,7 +30,7 @@ class RiwayatProdukController extends Controller
 
                 'riwayat' => $pesanan->map(function ($pesanan) {
                     return [
-                        'nama' => $pesanan->pelanggan->name ?? 'Pelanggan',
+                        'nama' => $pesanan->pelanggan->nama_lengkap ?? 'Pelanggan',
                         'periode' =>
                         \Carbon\Carbon::parse($pesanan->start_date)->format('d M Y')
                             . ' - ' .
