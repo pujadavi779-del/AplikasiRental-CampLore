@@ -14,6 +14,14 @@ if (!isset($accordions)) {
 }
 @endphp
 
+{{-- Paksa scroll ke atas saat halaman dimuat --}}
+<script>
+    if ('scrollRestoration' in history) {
+        history.scrollRestoration = 'manual';
+    }
+    window.scrollTo(0, 0);
+</script>
+
 <div style="font-family:'DM Sans',sans-serif;">
 
     {{-- ── BREADCRUMB ─────────────────────────────────────────── --}}
@@ -22,7 +30,7 @@ if (!isset($accordions)) {
         <span>/</span>
         <a href="{{ route($kategori . '.LP') }}" class="hover:text-gray-900 transition-colors">{{ $categoryLabel }}</a>
         <span>/</span>
-        <span class="text-orange-600 font-medium truncate">{{ $item->name}}</span>
+        <span class="text-orange-600 font-medium truncate">{{ $item->name }}</span>
     </nav>
 
     {{-- ══════════════════════════════════════════════════════════
@@ -32,10 +40,15 @@ if (!isset($accordions)) {
 
         {{-- Main Image --}}
         <div class="relative bg-gray-100 w-full" style="aspect-ratio:1/1;">
+            @if($item->stok == 0)
+            <div class="absolute top-3 left-3 z-10 bg-red-500 text-white text-xs font-black px-3 py-1 rounded-lg tracking-widest uppercase">
+                HABIS
+            </div>
+            @endif
             <img id="mainImgMobile"
                 src="{{ str_starts_with($item->gambar_barang, 'http') ? $item->gambar_barang : asset($item->gambar_barang) }}"
                 alt="{{ $item->name }}"
-                class="w-full h-full object-cover">
+                class="w-full h-full object-cover {{ $item->stok == 0 ? 'opacity-60' : '' }}">
         </div>
 
         {{-- Thumbnail horizontal scroll --}}
@@ -43,7 +56,6 @@ if (!isset($accordions)) {
 
         {{-- Info --}}
         <div class="px-4 pb-32">
-            {{-- Badge --}}
             <div class="flex items-center justify-between mb-2">
                 <div>
                     @if($item->is_new ?? false)
@@ -53,9 +65,21 @@ if (!isset($accordions)) {
             </div>
 
             <h1 class="text-xl font-bold text-gray-900 leading-snug mb-2">{{ $item->name }}</h1>
+
+            @if($item->stok == 0)
+            <div class="inline-flex items-center gap-1.5 bg-red-50 border border-red-200 text-red-600 text-xs font-bold px-3 py-1.5 rounded-lg mb-3">
+                <span>🚫</span> Stok Habis
+            </div>
+            @else
+            <div class="inline-flex items-center gap-1.5 bg-green-50 border border-green-200 text-green-700 text-xs font-bold px-3 py-1.5 rounded-lg mb-3">
+                <span>✓</span> Tersedia {{ $item->stok }} unit
+            </div>
+            @endif
+
             <p class="text-2xl font-bold text-orange-600 mb-1">Rp {{ number_format($item->harga_per_hari, 0, ',', '.') }}</p>
             <p class="text-xs text-gray-400 mb-5" id="totalPriceNoteMobile"></p>
 
+            @if($item->stok > 0)
             {{-- Tanggal --}}
             <p class="text-xs font-bold tracking-widest uppercase text-gray-400 mb-2">Tanggal Penyewaan</p>
             <div class="flex gap-3 mb-3">
@@ -83,6 +107,7 @@ if (!isset($accordions)) {
                 <div id="qtyDisplay" class="w-12 h-12 flex items-center justify-center border-x-2 border-gray-100 text-sm font-bold text-gray-900">1</div>
                 <button onclick="changeQty(1)" class="w-12 h-12 flex items-center justify-center bg-white text-xl text-gray-500 hover:bg-gray-50 select-none">+</button>
             </div>
+            @endif
 
             {{-- Accordion --}}
             <div class="border-t border-gray-100">
@@ -102,6 +127,7 @@ if (!isset($accordions)) {
 
         {{-- CTA Fixed Bottom --}}
         <div class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-100 px-4 py-3 flex gap-3 z-50 lg:hidden">
+            @if($item->stok > 0)
             <button onclick="addToCart({{ $item->id_barang }})"
                 class="flex-1 py-3.5 rounded-xl bg-gray-900 text-white text-xs font-black tracking-widest uppercase hover:bg-gray-700 active:scale-95 transition-all">
                 + Keranjang
@@ -110,8 +136,14 @@ if (!isset($accordions)) {
                 class="flex-1 py-3.5 rounded-xl bg-[#ED64A6] text-white text-xs font-black tracking-widest uppercase hover:bg-[#d45592] active:scale-95 transition-all">
                 Sewa Sekarang
             </button>
+            @else
+            <div class="flex-1 py-3.5 rounded-xl bg-red-100 border-2 border-red-300 text-red-600 text-xs font-black tracking-widest uppercase text-center flex items-center justify-center gap-2">
+                🚫 Stok Habis
+            </div>
+            @endif
         </div>
-    </div>
+
+    </div>{{-- END MOBILE --}}
 
     {{-- ══════════════════════════════════════════════════════════
          DESKTOP LAYOUT (>= lg)
@@ -121,11 +153,16 @@ if (!isset($accordions)) {
             <div class="flex flex-col items-center gap-2 shrink-0" style="width:72px;"></div>
 
             {{-- Main Image --}}
-            <div class="flex-1 rounded-2xl overflow-hidden bg-gray-100 group" style="aspect-ratio:1/1;min-width:0;">
+            <div class="flex-1 rounded-2xl overflow-hidden bg-gray-100 group relative" style="aspect-ratio:1/1;min-width:0;">
+                @if($item->stok == 0)
+                <div class="absolute top-4 left-4 z-10 bg-red-500 text-white text-xs font-black px-3 py-1.5 rounded-lg tracking-widest uppercase shadow">
+                    HABIS
+                </div>
+                @endif
                 <img id="mainImg"
                     src="{{ str_starts_with($item->gambar_barang, 'http') ? $item->gambar_barang : asset($item->gambar_barang) }}"
                     alt="{{ $item->name }}"
-                    class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
+                    class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105 {{ $item->stok == 0 ? 'opacity-60' : '' }}">
             </div>
 
             {{-- Info column --}}
@@ -139,8 +176,21 @@ if (!isset($accordions)) {
                     <p class="text-2xl font-bold text-orange-600" id="displayPrice">Rp {{ number_format($item->harga_per_hari, 0, ',', '.') }}</p>
                     <span class="text-sm text-gray-400">/ hari</span>
                 </div>
+
+                {{-- Stok Badge --}}
+                @if($item->stok == 0)
+                <div class="inline-flex items-center gap-1.5 bg-red-50 border border-red-200 text-red-600 text-xs font-bold px-3 py-1.5 rounded-lg mb-4 w-fit">
+                    🚫 Stok Habis — Tidak tersedia untuk disewa
+                </div>
+                @else
+                <div class="items-center gap-1.5 border-gray-300 text-xs font-bold py-1.5 mb-4 w-fit">
+                Tersedia {{ $item->stok }} unit
+                </div>
+                @endif
+
                 <p class="text-xs text-gray-400 mb-5" id="totalPriceNote"></p>
 
+                @if($item->stok > 0)
                 {{-- Tanggal --}}
                 <p class="text-xs font-bold tracking-widest uppercase text-gray-400 mb-3">Tanggal Penyewaan</p>
                 <div class="flex gap-3 mb-3">
@@ -169,7 +219,7 @@ if (!isset($accordions)) {
                     <button onclick="changeQty(1)" class="w-12 h-12 flex items-center justify-center bg-white text-xl text-gray-500 hover:bg-gray-50 active:bg-gray-100 transition-colors select-none">+</button>
                 </div>
 
-                {{-- CTA --}}
+                {{-- CTA Buttons --}}
                 <div class="flex gap-3 mb-6">
                     <button onclick="addToCart({{ $item->id_barang }})" id="addToCartBtnD"
                         class="flex-1 py-4 rounded-xl bg-gray-900 text-white text-xs font-black tracking-widest uppercase hover:bg-gray-700 active:scale-95 transition-all duration-200">
@@ -180,6 +230,15 @@ if (!isset($accordions)) {
                         Sewa Sekarang
                     </button>
                 </div>
+                @else
+                {{-- Stok Habis — CTA disabled --}}
+                <div class="mb-8">
+                    <div class="w-full py-4 rounded-xl bg-red-50 border-2 border-red-200 text-red-500 text-xs font-black tracking-widest uppercase text-center cursor-not-allowed">
+                        🚫 Produk Tidak Tersedia
+                    </div>
+                    <p class="text-xs text-gray-400 mt-2 text-center">Stok habis. Silakan cek produk lain atau kembali lagi nanti.</p>
+                </div>
+                @endif
 
                 {{-- Accordion --}}
                 <div>
@@ -195,10 +254,11 @@ if (!isset($accordions)) {
                     </div>
                     @endforeach
                 </div>
-            </div>
+            </div>{{-- END Info column --}}
         </div>
-    </div>
-</div>
+    </div>{{-- END DESKTOP --}}
+
+</div>{{-- END main wrapper --}}
 
 {{-- Toast --}}
 <div id="toast"
@@ -236,127 +296,141 @@ if (!isset($accordions)) {
         @endif
     </div>
 
-    {{-- Form Tulis Ulasan (DI SINI PERBAIKAN ROUTE PARAMETER) --}}
-    @if(isset($canReview) && $canReview && isset($reviewOrder))
-    @php 
-        // Mengamankan penarikan parameter orderId agar tidak memicu UrlGenerationException
+    {{-- Form Tulis Ulasan --}}
+    @if(isset($canReview) && $canReview && isset($reviewOrder) && $reviewOrder !== null)
+    @php
         $orderParamId = $reviewOrder->order_id ?? $reviewOrder->id_pesanan ?? $reviewOrder->id ?? null;
     @endphp
-        @if($orderParamId)
-        <div class="bg-[#f9fdfb] border border-[#d7e6de] rounded-2xl p-6 mb-8">
-            <h3 class="text-base font-bold text-gray-900 mb-1">Tulis Ulasanmu</h3>
-            <p class="text-xs text-gray-400 mb-5">Bagikan pengalamanmu menyewa produk ini.</p>
+    @if($orderParamId)
+    <div class="bg-[#f9fdfb] border border-[#d7e6de] rounded-2xl p-6 mb-8">
+        <h3 class="text-base font-bold text-gray-900 mb-1">Tulis Ulasanmu</h3>
+        <p class="text-xs text-gray-400 mb-5">Bagikan pengalamanmu menyewa produk ini.</p>
 
-            @if($errors->any())
-            <div class="mb-4 bg-red-50 border border-red-200 text-red-600 text-sm px-4 py-3 rounded-xl">
-                <ul class="list-disc list-inside">
-                    @foreach($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                    @endforeach
-                </ul>
-            </div>
-            @endif
-
-            <form action="{{ route('pelanggan.ulasan.store', ['orderId' => $orderParamId]) }}" method="POST">
-                @csrf
-                <input type="hidden" name="bintang" id="rating-input-detail" value="{{ old('bintang', 0) }}">
-
-                {{-- Bintang --}}
-                <div class="mb-4">
-                    <p class="text-xs font-bold text-gray-700 mb-2">Rating <span class="text-pink-500">*</span></p>
-                    <div class="flex items-center gap-2" id="star-detail">
-                        @for($i = 1; $i <= 5; $i++)
-                        <button type="button" data-value="{{ $i }}"
-                            class="star-btn-detail focus:outline-none transition-transform hover:scale-110">
-                            <svg width="32" height="32" viewBox="0 0 24 24"
-                                fill="#e5e7eb" stroke="#d1d5db" stroke-width="1.5" class="star-icon-detail">
-                                <polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/>
-                            </svg>
-                        </button>
-                        @endfor
-                        <span id="rating-label-detail" class="text-sm font-bold text-amber-500 ml-1"></span>
-                    </div>
-                </div>
-
-                {{-- Komentar --}}
-                <div class="mb-4">
-                    <p class="text-xs font-bold text-gray-700 mb-2">Komentar <span class="text-pink-500">*</span></p>
-                    <textarea name="komentar" rows="4" maxlength="1000"
-                        placeholder="Ceritakan pengalamanmu menyewa produk ini..."
-                        class="w-full text-sm bg-white border border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#22543D] resize-none placeholder-gray-300">{{ old('komentar') }}</textarea>
-                </div>
-
-                <div class="flex justify-end">
-                    <button type="submit"
-                        class="px-6 py-2.5 bg-gray-900 hover:bg-gray-700 text-white text-sm font-bold rounded-xl transition-colors flex items-center gap-2">
-                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/>
-                        </svg>
-                        Kirim Ulasan
-                    </button>
-                </div>
-            </form>
+        @if($errors->any())
+        <div class="mb-4 bg-red-50 border border-red-200 text-red-600 text-sm px-4 py-3 rounded-xl">
+            <ul class="list-disc list-inside">
+                @foreach($errors->all() as $error)
+                <li>{{ $error }}</li>
+                @endforeach
+            </ul>
         </div>
         @endif
+
+        <form action="{{ route('pelanggan.ulasan.store', ['orderId' => $orderParamId]) }}" method="POST">
+            @csrf
+            <input type="hidden" name="bintang" id="rating-input-detail" value="{{ old('bintang', 0) }}">
+
+            {{-- Bintang --}}
+            <div class="mb-4">
+                <p class="text-xs font-bold text-gray-700 mb-2">Rating <span class="text-pink-500">*</span></p>
+                <div class="flex items-center gap-2" id="star-detail">
+                    @for($i = 1; $i <= 5; $i++)
+                    <button type="button" data-value="{{ $i }}"
+                        class="star-btn-detail focus:outline-none transition-transform hover:scale-110">
+                        <svg width="32" height="32" viewBox="0 0 24 24"
+                            fill="#e5e7eb" stroke="#d1d5db" stroke-width="1.5" class="star-icon-detail">
+                            <polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/>
+                        </svg>
+                    </button>
+                    @endfor
+                    <span id="rating-label-detail" class="text-sm font-bold text-amber-500 ml-1"></span>
+                </div>
+            </div>
+
+            {{-- Komentar --}}
+            <div class="mb-4">
+                <p class="text-xs font-bold text-gray-700 mb-2">Komentar <span class="text-pink-500">*</span></p>
+                <textarea name="komentar" rows="4" maxlength="1000"
+                    placeholder="Ceritakan pengalamanmu menyewa produk ini..."
+                    class="w-full text-sm bg-white border border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#22543D] resize-none placeholder-gray-300">{{ old('komentar') }}</textarea>
+            </div>
+
+            <div class="flex justify-end">
+                <button type="submit"
+                    class="px-6 py-2.5 bg-gray-900 hover:bg-gray-700 text-white text-sm font-bold rounded-xl transition-colors flex items-center gap-2">
+                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/>
+                    </svg>
+                    Kirim Ulasan
+                </button>
+            </div>
+        </form>
+    </div>
+    @endif
     @endif
 
     {{-- Daftar Ulasan --}}
     @if(isset($reviews) && $reviews->count() > 0)
-        <div class="space-y-4" id="review-list">
-            @foreach($reviews as $review)
-            <div class="bg-white border border-gray-100 rounded-2xl p-5 shadow-sm">
-                <div class="flex items-start justify-between gap-3">
-                    <div class="flex items-center gap-3">
-                        @php
-                            $fotoPelanggan = $review->pelanggan->foto_profile ?? null;
-                        @endphp
-                        <div class="w-10 h-10 rounded-full overflow-hidden flex-shrink-0 border border-gray-100">
-                            @if($fotoPelanggan)
-                                <img src="{{ str_starts_with($fotoPelanggan, 'http') ? $fotoPelanggan : asset('storage/'.$fotoPelanggan) }}"
-                                    alt="{{ $review->pelanggan->nama_lengkap ?? 'User' }}"
-                                    class="w-full h-full object-cover">
-                            @else
-                                <div class="w-full h-full flex items-center justify-center text-white text-sm font-bold"
-                                    style="background: linear-gradient(135deg,#22543D,#38a169)">
-                                    {{ strtoupper(substr($review->pelanggan->nama_lengkap ?? 'U', 0, 2)) }}
-                                </div>
-                            @endif
+    <div class="space-y-4" id="review-list">
+        @foreach($reviews as $review)
+        <div class="bg-white border border-gray-100 rounded-2xl p-5 shadow-sm">
+            <div class="flex items-start justify-between gap-3">
+                <div class="flex items-center gap-3">
+                    @php
+                        $fotoPelanggan = $review->pelanggan->foto_profile ?? null;
+                    @endphp
+                    <div class="w-10 h-10 rounded-full overflow-hidden flex-shrink-0 border border-gray-100">
+                        @if($fotoPelanggan)
+                        <img src="{{ str_starts_with($fotoPelanggan, 'http') ? $fotoPelanggan : asset('storage/'.$fotoPelanggan) }}"
+                            alt="{{ $review->pelanggan->nama_lengkap ?? 'User' }}"
+                            class="w-full h-full object-cover">
+                        @else
+                        <div class="w-full h-full flex items-center justify-center text-white text-sm font-bold"
+                            style="background: linear-gradient(135deg,#22543D,#38a169)">
+                            {{ strtoupper(substr($review->pelanggan->nama_lengkap ?? 'U', 0, 2)) }}
                         </div>
-                        <div>
-                            <div class="flex items-center gap-2">
-                                <span class="text-sm font-bold text-gray-900">{{ $review->pelanggan->nama_lengkap ?? $review->pelanggan->name ?? 'Pengguna' }}</span>
-                                <span class="text-[10px] font-bold text-[#22543D] bg-[#d1fae5] px-2 py-0.5 rounded-full">✓ Terverifikasi</span>
-                            </div>
-                            <div class="flex items-center gap-0.5 mt-0.5">
-                                @for($i = 1; $i <= 5; $i++)
-                                <svg width="13" height="13" viewBox="0 0 24 24"
-                                    fill="{{ $i <= $review->bintang ? '#f59e0b' : '#e5e7eb' }}"
-                                    stroke="{{ $i <= $review->bintang ? '#f59e0b' : '#d1d5db' }}"
-                                    stroke-width="1.5">
-                                    <polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/>
-                                </svg>
-                                @endfor
-                            </div>
+                        @endif
+                    </div>
+                    <div>
+                        <div class="flex items-center gap-2">
+                            <span class="text-sm font-bold text-gray-900">{{ $review->pelanggan->nama_lengkap ?? $review->pelanggan->name ?? 'Pengguna' }}</span>
+                            <span class="text-[10px] font-bold text-[#22543D] bg-[#d1fae5] px-2 py-0.5 rounded-full">✓ Terverifikasi</span>
+                        </div>
+                        <div class="flex items-center gap-0.5 mt-0.5">
+                            @for($i = 1; $i <= 5; $i++)
+                            <svg width="13" height="13" viewBox="0 0 24 24"
+                                fill="{{ $i <= $review->bintang ? '#f59e0b' : '#e5e7eb' }}"
+                                stroke="{{ $i <= $review->bintang ? '#f59e0b' : '#d1d5db' }}"
+                                stroke-width="1.5">
+                                <polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/>
+                            </svg>
+                            @endfor
                         </div>
                     </div>
-                    <span class="text-xs text-gray-400">{{ $review->created_at ? $review->created_at->diffForHumans() : '-' }}</span>
                 </div>
-                <p class="text-sm text-gray-600 mt-3 leading-relaxed">{{ $review->komentar }}</p>
+                <span class="text-xs text-gray-400 shrink-0">{{ $review->created_at ? $review->created_at->diffForHumans() : '-' }}</span>
             </div>
-            @endforeach
+            <p class="text-sm text-gray-600 mt-3 leading-relaxed">{{ $review->komentar }}</p>
+
+            {{-- Balasan Admin --}}
+            @if(isset($review->is_replied) && $review->is_replied && $review->balas_pesan)
+            <div class="mt-3 bg-[#f9fdfb] border-l-4 border-[#22543D] rounded-r-xl px-4 py-3">
+                <p class="text-[10px] font-bold text-[#22543D] uppercase tracking-wide mb-1">Balasan Camplore</p>
+                <p class="text-sm text-gray-600 leading-relaxed">{{ $review->balas_pesan }}</p>
+            </div>
+            @endif
         </div>
+        @endforeach
+    </div>
     @else
-        <p class="text-sm text-gray-400 italic text-center py-6">Belum ada ulasan untuk produk ini.</p>
+    <p class="text-sm text-gray-400 italic text-center py-6">Belum ada ulasan untuk produk ini.</p>
     @endif
-</div>
+
+</div>{{-- END ULASAN --}}
 
 <script>
-    const isLoggedIn = {{ Auth::check() ? 'true' : 'false' }};
-    let thumbOffset = 0, qty = 1;
-        
-    const PRICE_PER_DAY = {{ $item->harga_per_hari ?? 0 }};
-    const MAX_STOCK = {{ $item->stok ?? 99 }};
+    // ── Paksa scroll ke atas, cegah browser restore posisi scroll ──
+    document.addEventListener('DOMContentLoaded', function () {
+        window.scrollTo({ top: 0, behavior: 'instant' });
+    });
 
+    const isLoggedIn = {{ Auth::check() ? 'true' : 'false' }};
+    let qty = 1;
+
+    const PRICE_PER_DAY = {{ $item->harga_per_hari ?? 0 }};
+    const MAX_STOCK     = {{ $item->stok ?? 0 }};
+
+    // ── Qty ──────────────────────────────────────────────────────
     function syncQty() {
         ['qtyDisplay', 'qtyDisplay2'].forEach(id => {
             const el = document.getElementById(id);
@@ -365,6 +439,10 @@ if (!isset($accordions)) {
     }
 
     function changeQty(d) {
+        if (MAX_STOCK === 0) {
+            showToast('Produk ini sedang habis stok', 'error');
+            return;
+        }
         const next = qty + d;
         if (next < 1) return;
         if (next > MAX_STOCK) {
@@ -376,14 +454,16 @@ if (!isset($accordions)) {
         updatePrice();
     }
 
+    // ── Accordion ────────────────────────────────────────────────
     function toggleAcc(button) {
         const deskripsi = button.nextElementSibling;
-        const icon = button.querySelector('.acc-icon');
-        const open = deskripsi.style.maxHeight && deskripsi.style.maxHeight !== '0px';
+        const icon      = button.querySelector('.acc-icon');
+        const open      = deskripsi.style.maxHeight && deskripsi.style.maxHeight !== '0px';
         deskripsi.style.maxHeight = open ? '0px' : deskripsi.scrollHeight + 'px';
         icon.classList.toggle('rotate-180', !open);
     }
 
+    // ── Tanggal ──────────────────────────────────────────────────
     const today = new Date().toISOString().split('T')[0];
     ['startDate', 'endDate', 'startDateM', 'endDateM'].forEach(id => {
         const el = document.getElementById(id);
@@ -404,17 +484,17 @@ if (!isset($accordions)) {
         onDateChangeM();
     }
 
-    function onDateChange() { handleDateChange(''); }
+    function onDateChange()  { handleDateChange(''); }
     function onDateChangeM() { handleDateChange('M'); }
 
     function handleDateChange(sfx) {
-        const s = document.getElementById('startDate' + sfx)?.value;
-        const e = document.getElementById('endDate' + sfx)?.value;
-        const err = document.getElementById('dateError' + sfx);
+        const s     = document.getElementById('startDate' + sfx)?.value;
+        const e     = document.getElementById('endDate'   + sfx)?.value;
+        const err   = document.getElementById('dateError'    + sfx);
         const badge = document.getElementById('durationBadge' + sfx);
-        const text = document.getElementById('durationText' + sfx);
+        const text  = document.getElementById('durationText'  + sfx);
 
-        if (err) err.classList.add('hidden');
+        if (err)   err.classList.add('hidden');
         if (badge) badge.classList.add('hidden');
 
         if (s && e) {
@@ -435,7 +515,7 @@ if (!isset($accordions)) {
 
     function getDays(sfx = '') {
         const s = document.getElementById('startDate' + sfx)?.value;
-        const e = document.getElementById('endDate' + sfx)?.value;
+        const e = document.getElementById('endDate'   + sfx)?.value;
         if (!s || !e) return 0;
         const d = Math.round((new Date(e) - new Date(s)) / 86400000);
         return d > 0 ? d : 0;
@@ -443,18 +523,19 @@ if (!isset($accordions)) {
 
     function updatePrice() {
         const days = getDays('') || getDays('M');
-        const txt = days > 0 ?
-            `Total ${days} hari × ${qty} unit = ${fmtRp(PRICE_PER_DAY * days * qty)}` :
-            (qty > 1 ? `${qty} unit dipilih` : '');
+        const txt  = days > 0
+            ? `Total ${days} hari × ${qty} unit = ${fmtRp(PRICE_PER_DAY * days * qty)}`
+            : (qty > 1 ? `${qty} unit dipilih` : '');
         ['totalPriceNote', 'totalPriceNoteMobile'].forEach(id => {
             const el = document.getElementById(id);
             if (el) el.textContent = txt;
         });
     }
 
+    // ── Toast ────────────────────────────────────────────────────
     function showToast(msg, type = 'success') {
         const t = document.getElementById('toast');
-        if(!t) return;
+        if (!t) return;
         t.textContent = msg;
         t.style.background = type === 'error' ? '#e53e3e' : '#1a1a1a';
         t.classList.remove('opacity-0', 'pointer-events-none');
@@ -465,15 +546,23 @@ if (!isset($accordions)) {
         }, 2500);
     }
 
+    // ── Form Data ────────────────────────────────────────────────
     function getFormData() {
         return {
-            startDate: document.getElementById('startDate')?.value || document.getElementById('startDateM')?.value,
-            endDate: document.getElementById('endDate')?.value || document.getElementById('endDateM')?.value,
+            startDate: document.getElementById('startDate')?.value  || document.getElementById('startDateM')?.value,
+            endDate:   document.getElementById('endDate')?.value    || document.getElementById('endDateM')?.value,
         };
     }
 
+    // ── Add to Cart ──────────────────────────────────────────────
     function addToCart(itemId) {
         if (!isLoggedIn) { window.location.href = "{{ route('login') }}"; return; }
+
+        if (MAX_STOCK === 0) {
+            showToast('Produk ini sedang habis stok', 'error');
+            return;
+        }
+
         const { startDate, endDate } = getFormData();
         if (!startDate || !endDate) {
             showToast('Pilih tanggal penyewaan terlebih dahulu', 'error');
@@ -490,12 +579,7 @@ if (!isset($accordions)) {
                 'Accept': 'application/json',
                 'X-CSRF-TOKEN': '{{ csrf_token() }}'
             },
-            body: JSON.stringify({
-                product_id: itemId,
-                quantity: qty,
-                start_date: startDate,
-                end_date: endDate
-            })
+            body: JSON.stringify({ product_id: itemId, quantity: qty, start_date: startDate, end_date: endDate })
         })
         .then(r => r.status === 401 ? window.location.href = "{{ route('login') }}" : r.json())
         .then(data => {
@@ -514,7 +598,13 @@ if (!isset($accordions)) {
         }));
     }
 
+    // ── Rent Now ─────────────────────────────────────────────────
     function rentNow(idBarang) {
+        if (MAX_STOCK === 0) {
+            showToast('Produk ini sedang habis stok', 'error');
+            return;
+        }
+
         const { startDate, endDate } = getFormData();
         if (!startDate || !endDate) {
             showToast('Pilih tanggal penyewaan terlebih dahulu', 'error');
@@ -528,12 +618,7 @@ if (!isset($accordions)) {
                 'X-CSRF-TOKEN': '{{ csrf_token() }}',
                 'Accept': 'application/json'
             },
-            body: JSON.stringify({
-                product_id: idBarang,
-                quantity: qty,
-                start_date: startDate,
-                end_date: endDate
-            })
+            body: JSON.stringify({ product_id: idBarang, quantity: qty, start_date: startDate, end_date: endDate })
         })
         .then(response => response.json())
         .then(data => {
@@ -543,33 +628,30 @@ if (!isset($accordions)) {
                 showToast('Gagal: ' + (data.message || 'Terjadi kesalahan'), 'error');
             }
         })
-        .catch(error => {
-            console.error('Error:', error);
-            showToast('Terjadi kesalahan koneksi ke server.', 'error');
-        });
+        .catch(() => showToast('Terjadi kesalahan koneksi ke server.', 'error'));
     }
 
-    // Engine Interaktivitas Input Bintang Ulasan
+    // ── Bintang Ulasan ───────────────────────────────────────────
     document.addEventListener('DOMContentLoaded', () => {
-        const ratingInput = document.getElementById('rating-input-detail');
-        const starButtons = document.querySelectorAll('.star-btn-detail');
-        const labelReview = document.getElementById('rating-label-detail');
-        const labels = {1: 'Buruk', 2: 'Cukup', 3: 'Bagus', 4: 'Sangat Bagus', 5: 'Sempurna 🎉'};
+        const ratingInput  = document.getElementById('rating-input-detail');
+        const starButtons  = document.querySelectorAll('.star-btn-detail');
+        const labelReview  = document.getElementById('rating-label-detail');
+        const labels = { 1: 'Buruk', 2: 'Cukup', 3: 'Bagus', 4: 'Sangat Bagus', 5: 'Sempurna 🎉' };
 
         starButtons.forEach(button => {
             button.addEventListener('click', () => {
                 const value = parseInt(button.getAttribute('data-value'));
-                if(ratingInput) ratingInput.value = value;
-                if(labelReview) labelReview.textContent = labels[value];
+                if (ratingInput) ratingInput.value = value;
+                if (labelReview) labelReview.textContent = labels[value];
 
                 starButtons.forEach(btn => {
                     const btnValue = parseInt(btn.getAttribute('data-value'));
-                    const icon = btn.querySelector('.star-icon-detail');
+                    const icon     = btn.querySelector('.star-icon-detail');
                     if (btnValue <= value) {
-                        icon.setAttribute('fill', '#f59e0b');
+                        icon.setAttribute('fill',   '#f59e0b');
                         icon.setAttribute('stroke', '#f59e0b');
                     } else {
-                        icon.setAttribute('fill', '#e5e7eb');
+                        icon.setAttribute('fill',   '#e5e7eb');
                         icon.setAttribute('stroke', '#d1d5db');
                     }
                 });
@@ -577,4 +659,5 @@ if (!isset($accordions)) {
         });
     });
 </script>
+
 @endsection

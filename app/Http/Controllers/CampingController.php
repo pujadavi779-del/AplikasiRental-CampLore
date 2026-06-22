@@ -107,18 +107,21 @@ class CampingController extends Controller
 
     $avgRating = $reviews->count() ? round($reviews->avg('bintang'), 1) : 0;
 
-    $canReview = false;
-    $reviewOrder = null;
-    if (auth()->check()) {
-        $reviewOrder = \App\Models\Pemesanan::where('user_id', auth()->id())
-            ->where('product_id', $id)
-            ->where('status', 'selesai')
-            ->first();
-        $alreadyReviewed = \App\Models\Review::where('user_id', auth()->id())
-            ->where('product_id', $id)
-            ->exists();
-        $canReview = $reviewOrder && !$alreadyReviewed;
-    }
+    // CameraController.php & CampingController.php - method show()
+
+        $canReview = false;
+        $reviewOrder = null;
+        if (auth()->check()) {
+            $reviewOrder = \App\Models\Pemesanan::where('user_id', auth()->id())
+                ->where('product_id', $id)
+                ->where('status', 'selesai')        // ← INI yang sudah ada
+                ->whereNotIn('status', ['dibatalkan', 'pengembalian', 'dikemas', 'jalan']) // ← TAMBAH INI
+                ->first();
+            $alreadyReviewed = \App\Models\Review::where('user_id', auth()->id())
+                ->where('product_id', $id)
+                ->exists();
+            $canReview = $reviewOrder && !$alreadyReviewed;
+        }
 
     return view('pages.landing.kategori.details_LP', [
         'item'          => $item,
