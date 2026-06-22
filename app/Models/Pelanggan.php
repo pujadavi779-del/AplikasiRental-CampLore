@@ -18,7 +18,7 @@ class Pelanggan extends Authenticatable
     }
 
     protected $fillable = [
-        'name',
+        'nama_lengkap',   // FIX: kolom asli di database adalah 'nama_lengkap', bukan 'name'
         'username',
         'nik',
         'email',

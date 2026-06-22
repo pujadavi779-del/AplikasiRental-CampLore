@@ -56,9 +56,9 @@
 
                 <div class="mb-3">
                     <label class="block text-[10px] font-medium tracking-[1.5px] uppercase text-[#999990] mb-1.5">Nama Lengkap (Sesuai KTP)</label>
-                    <input type="text" id="reg_name" name="name"
+                    <input type="text" id="reg_name" name="nama_lengkap"
                         placeholder="Masukkan Nama Lengkap"
-                        value="{{ old('name') }}" autocomplete="name"
+                        value="{{ old('nama_lengkap') }}" autocomplete="name"
                         class="w-full px-4 py-3 border border-[#e2e2de] rounded-[3px] text-sm font-light text-[#1a1a18] bg-[#f7f7f5] outline-none transition focus:border-[#38856a] focus:bg-white placeholder-[#bebeba]">
                     <p class="hidden text-[11px] text-red-600 mt-1" id="e_name">Nama hanya boleh huruf, spasi, dan titik (minimal 3 karakter)</p>
                 </div>
@@ -334,6 +334,19 @@ function prevStep(from) {
 }
 
 function submitForm() {
+    // Paksa ulang value name & username persis sebelum submit,
+    // jaga-jaga kalau ada perubahan DOM/state yang mengosongkan input.
+    const nameInput = document.getElementById('reg_name');
+    const nameVal = nameInput.value.trim();
+
+    if (!nameVal) {
+        // Jika benar-benar kosong, jangan submit — balik ke step 1 dan tampilkan error.
+        goStep(1);
+        showErr('e_name', 'reg_name');
+        document.getElementById('e_name').textContent = 'Nama lengkap wajib diisi. Silakan isi ulang.';
+        return;
+    }
+
     const btn = document.getElementById('btn_submit');
     btn.disabled = true;
     btn.textContent = 'Mendaftar…';
