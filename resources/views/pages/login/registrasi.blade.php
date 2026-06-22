@@ -26,7 +26,7 @@
         <h1 class="font-['Playfair_Display',serif] text-[26px] font-semibold tracking-[3px] uppercase text-[#22543D] text-center mb-2">Buat Akun</h1>
         <p class="text-center text-xs font-light text-[#999990] tracking-[0.3px] mb-7">Isi data berikut untuk mendaftar</p>
 
-<div class="bg-[#FFF5F7] border border-[#FED7E2] rounded-[4px] px-3.5 py-3 mb-6 text-[12px] text-[#B83280] leading-relaxed">
+        <div class="bg-[#FFF5F7] border border-[#FED7E2] rounded-[4px] px-3.5 py-3 mb-6 text-[12px] text-[#B83280] leading-relaxed">
             <strong class="text-[#ED64A6]">Penting:</strong> Data NIK yang Anda masukkan harus sesuai dengan KTP fisik. Tim kami akan melakukan verifikasi data NIK saat proses pengambilan alat di lokasi.
         </div>
 
@@ -54,14 +54,15 @@
             {{-- ============ STEP 1 – Identitas ============ --}}
             <div class="block" id="step1">
 
-             <div class="mb-3">
+                <div class="mb-3">
                     <label class="block text-[10px] font-medium tracking-[1.5px] uppercase text-[#999990] mb-1.5">Nama Lengkap (Sesuai KTP)</label>
                     <input type="text" id="reg_name" name="name"
                         placeholder="Masukkan Nama Lengkap"
                         value="{{ old('name') }}" autocomplete="name"
                         class="w-full px-4 py-3 border border-[#e2e2de] rounded-[3px] text-sm font-light text-[#1a1a18] bg-[#f7f7f5] outline-none transition focus:border-[#38856a] focus:bg-white placeholder-[#bebeba]">
-                    <p class="hidden text-[11px] text-red-600 mt-1" id="e_name">Nama hanya boleh huruf, spasi, dan titik</p>
+                    <p class="hidden text-[11px] text-red-600 mt-1" id="e_name">Nama hanya boleh huruf, spasi, dan titik (minimal 3 karakter)</p>
                 </div>
+
                 <div class="mb-3">
                     <label class="block text-[10px] font-medium tracking-[1.5px] uppercase text-[#999990] mb-1.5">Username</label>
                     <input type="text" id="reg_username" name="username"
@@ -100,19 +101,16 @@
             {{-- ============ STEP 2 – Verifikasi OTP ============ --}}
             <div class="hidden" id="step2">
 
-                {{-- Info OTP --}}
                 <div class="bg-[#f0f7f4] border border-[#c6dfd5] rounded-[4px] px-3.5 py-3 mb-3.5 text-[13px] text-[#2d6b50] leading-relaxed">
                     Kode OTP dikirim ke email<br>
                     <strong class="text-[#22543D]" id="show_email">—</strong>
                 </div>
 
-                {{-- Alert --}}
                 <div class="hidden px-3.5 py-2.5 rounded text-xs bg-[#fff5f5] border border-[#fed7d7] text-[#c53030] mb-2.5" id="otp_alert_err"></div>
                 <div class="hidden px-3.5 py-2.5 rounded text-xs bg-[#f0fff4] border border-[#c6f6d5] text-[#276749] mb-2.5" id="otp_alert_ok"></div>
 
                 <p class="text-xs text-[#999990] text-center mb-2">Masukkan 6 digit kode OTP</p>
 
-                {{-- OTP Boxes --}}
                 <div class="flex gap-2.5 justify-center my-3.5">
                     <input type="text" maxlength="1" inputmode="numeric" id="d0"
                         class="otp-digit w-[46px] h-[54px] text-center text-[22px] font-medium border-[1.5px] border-[#e2e2de] rounded-[5px] bg-[#f7f7f5] text-[#1a1a18] outline-none transition focus:border-[#38856a] focus:bg-white">
@@ -128,7 +126,6 @@
                         class="otp-digit w-[46px] h-[54px] text-center text-[22px] font-medium border-[1.5px] border-[#e2e2de] rounded-[5px] bg-[#f7f7f5] text-[#1a1a18] outline-none transition focus:border-[#38856a] focus:bg-white">
                 </div>
 
-                {{-- Timer --}}
                 <div class="flex items-center justify-between mt-2">
                     <div class="flex items-center gap-1.5 text-xs text-[#999990]">
                         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -142,7 +139,6 @@
                     </button>
                 </div>
 
-                {{-- Timer bar --}}
                 <div class="h-[3px] bg-[#e2e2de] rounded-sm mt-2 overflow-hidden">
                     <div id="timer_bar" class="h-[3px] bg-[#22543D] rounded-sm w-full transition-all"></div>
                 </div>
@@ -174,7 +170,6 @@
                             </svg>
                         </button>
                     </div>
-                    {{-- Password strength --}}
                     <div class="hidden flex gap-1 items-center mt-1.5" id="pwBar">
                         <div class="flex-1 h-[2px] rounded-sm bg-[#e2e2de]" id="b1"></div>
                         <div class="flex-1 h-[2px] rounded-sm bg-[#e2e2de]" id="b2"></div>
@@ -204,6 +199,10 @@
                 </div>
 
                 <div class="flex gap-2 mt-4">
+                    <button type="button" onclick="prevStep(2)"
+                        class="py-3 px-4 bg-transparent border border-[#e2e2de] rounded-[3px] text-[13px] text-[#999990] cursor-pointer hover:border-[#38856a] hover:text-[#22543D] transition">
+                        ←
+                    </button>
                     <button type="button" onclick="nextStep(3)"
                         class="flex-1 py-3 bg-[#22543D] text-white border-none rounded-[3px] text-xs font-medium tracking-[3px] uppercase cursor-pointer hover:bg-[#2d6b50] transition">
                         Selanjutnya →
@@ -219,13 +218,13 @@
                 </p>
 
                 <div class="bg-[#f7f7f5] border border-[#e2e2de] rounded-[4px] px-4 py-3.5 mb-4 text-[13px] leading-loose">
-                <div>
-                    <span class="text-[#999990] inline-block min-w-[110px]">Nama Lengkap</span>
-                    <strong id="sum_name">—</strong>
-                </div>    
-                <div>
-                    <span class="text-[#999990] inline-block min-w-[110px]">Username</span>
-                    <strong id="sum_username">—</strong>
+                    <div>
+                        <span class="text-[#999990] inline-block min-w-[110px]">Nama Lengkap</span>
+                        <strong id="sum_name">—</strong>
+                    </div>
+                    <div>
+                        <span class="text-[#999990] inline-block min-w-[110px]">Username</span>
+                        <strong id="sum_username">—</strong>
                     </div>
                     <div>
                         <span class="text-[#999990] inline-block min-w-[110px]">NIK</span>
@@ -246,8 +245,8 @@
                         class="py-3 px-4 bg-transparent border border-[#e2e2de] rounded-[3px] text-[13px] text-[#999990] cursor-pointer hover:border-[#38856a] hover:text-[#22543D] transition">
                         ←
                     </button>
-                    <button type="button" onclick="submitForm()"
-                        class="flex-1 py-3 bg-[#ED64A6] text-white border-none rounded-[3px] text-xs font-medium tracking-[3px] uppercase cursor-pointer hover:bg-[#d4528f] transition">
+                    <button type="button" id="btn_submit" onclick="submitForm()"
+                        class="flex-1 py-3 bg-[#ED64A6] text-white border-none rounded-[3px] text-xs font-medium tracking-[3px] uppercase cursor-pointer hover:bg-[#d4528f] disabled:opacity-60 disabled:cursor-not-allowed transition">
                         Daftar
                     </button>
                 </div>
@@ -321,7 +320,7 @@ function nextStep(from) {
         if (pw !== pw2)    { showErr('e_pw2', 'reg_pw2'); ok = false; } else clrErr('e_pw2', 'reg_pw2');
         if (!ok) return;
 
-        document.getElementById('sum_name').textContent     = document.getElementById('reg_name').value;     // TAMBAHAN
+        document.getElementById('sum_name').textContent     = document.getElementById('reg_name').value;
         document.getElementById('sum_username').textContent = document.getElementById('reg_username').value;
         document.getElementById('sum_nik').textContent      = document.getElementById('reg_nik').value;
         document.getElementById('sum_email').textContent    = document.getElementById('reg_email').value;
@@ -335,6 +334,10 @@ function prevStep(from) {
 }
 
 function submitForm() {
+    const btn = document.getElementById('btn_submit');
+    btn.disabled = true;
+    btn.textContent = 'Mendaftar…';
+
     const form = document.getElementById('regForm');
     form.onsubmit = null;
     form.submit();
@@ -342,15 +345,18 @@ function submitForm() {
 
 // ── Step 1 → OTP ──────────────────────────────────────────────────────────
 async function goToOtp() {
-    const u   = document.getElementById('reg_username').value.trim();
-    const nik = document.getElementById('reg_nik').value.trim();
-    const e   = document.getElementById('reg_email').value.trim();
+    // FIX: variabel "name" tadinya tidak diambil dari input, sehingga
+    // selalu memvalidasi window.name (string kosong) -> error selalu muncul.
+    const name = document.getElementById('reg_name').value.trim();
+    const u     = document.getElementById('reg_username').value.trim();
+    const nik   = document.getElementById('reg_nik').value.trim();
+    const e     = document.getElementById('reg_email').value.trim();
     let ok = true;
 
     if (!/^[A-Za-z\s.]{3,}$/.test(name)) { showErr('e_name', 'reg_name'); ok = false; } else clrErr('e_name', 'reg_name');
-    if (u.length < 3)                           { showErr('e_username', 'reg_username'); ok = false; } else clrErr('e_username', 'reg_username');
-    if (!/^\d{16}$/.test(nik))                  { showErr('e_nik', 'reg_nik'); ok = false; }          else clrErr('e_nik', 'reg_nik');
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e)) { showErr('e_email', 'reg_email'); ok = false; }       else clrErr('e_email', 'reg_email');
+    if (u.length < 3)                     { showErr('e_username', 'reg_username'); ok = false; } else clrErr('e_username', 'reg_username');
+    if (!/^\d{16}$/.test(nik))            { showErr('e_nik', 'reg_nik'); ok = false; }            else clrErr('e_nik', 'reg_nik');
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e)) { showErr('e_email', 'reg_email'); ok = false; }   else clrErr('e_email', 'reg_email');
     if (!ok) return;
 
     const btn = document.getElementById('btn_step1');
@@ -439,9 +445,19 @@ async function resendOtp() {
             body: JSON.stringify({ email }),
         });
         const text = await res.text();
-        console.log("RESPONSE:", text);
         let data;
-        try { data = JSON.parse(text); } catch (e) { console.error("INI ERROR LARAVEL:", text); throw e; }
+        try {
+            data = JSON.parse(text);
+        } catch (e) {
+            console.error("Respons bukan JSON (cek error Laravel di server):", text);
+            showAlert('otp_alert_err', 'Terjadi kesalahan pada server.');
+            return;
+        }
+
+        if (!res.ok || !data.success) {
+            showAlert('otp_alert_err', data.message || 'Gagal mengirim ulang OTP.');
+            return;
+        }
 
         document.querySelectorAll('.otp-digit').forEach(i => { i.value = ''; i.classList.remove('!border-[#2d6b50]'); });
         showAlert('otp_alert_ok', 'Kode OTP baru telah dikirim.');
