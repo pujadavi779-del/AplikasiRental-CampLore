@@ -113,6 +113,7 @@
             'belum_bayar' => 1,
             'dikemas' => 2,
             'dikirim' => 3,
+            'jalan' => 3,
             'pengembalian' => 4,
             'selesai' => 5,
             'dibatalkan' => 6,
@@ -126,6 +127,7 @@
 
             @php
             $status = strtolower($rental->status ?? 'belum_bayar');
+            if ($status === 'jalan') $status = 'dikirim';
 
             $badgeClass = 'bg-[#f3f4f6] text-[#6b7280] border border-[#e5e7eb]';
             $badgeLabel = ucfirst($status);
@@ -137,14 +139,13 @@
             if ($status === 'dibatalkan') { $badgeClass = 'bg-[#fef2f2] text-[#991b1b] border border-[#fecaca]'; $badgeLabel = 'Dibatalkan'; }
             if ($status === 'pengembalian') { $badgeClass = 'bg-[#faf5ff] text-[#7e22ce] border border-[#e9d5ff]'; $badgeLabel = 'Pengembalian'; }
 
-            // LOGIKA STEP INDEX UNTUK MENYALAKAN GARIS PROGRESS
+       
             $stepIndex = 0;
             if (in_array($status, ['dikemas', 'dikirim', 'pengembalian', 'selesai'])) $stepIndex = 1;
             if (in_array($status, ['dikirim', 'pengembalian', 'selesai'])) $stepIndex = 2;
             if (in_array($status, ['pengembalian', 'selesai'])) $stepIndex = 3;
             if ($status === 'selesai') $stepIndex = 4;
 
-            // Progress bar akan muncul jika status ada di list ini
             $showProgress = in_array($status, ['dikemas', 'dikirim', 'pengembalian', 'selesai']);
 
             $items = $rental->items ?? [];
@@ -319,18 +320,18 @@
                 {{-- Pengembalian info --}}
                 @if($status === 'pengembalian')
                 @php
-                    // Ambil end_date dari item pertama sebagai acuan batas pengembalian
-                    $endDate = isset($items[0]) ? \Carbon\Carbon::parse($items[0]->end_date)->startOfDay() : null;
-                    $today = \Carbon\Carbon::now()->startOfDay();
-                    
-                    // Hitung selisih hari keterlambatan
-                    $hariTerlambat = 0;
-                    if ($endDate && $today->gt($endDate)) {
-                        $hariTerlambat = $today->diffInDays($endDate);
-                    }
-                    
-                    // Hitung denda dinamis (10.000 per hari)
-                    $totalDenda = $hariTerlambat * 10000;
+                // Ambil end_date dari item pertama sebagai acuan batas pengembalian
+                $endDate = isset($items[0]) ? \Carbon\Carbon::parse($items[0]->end_date)->startOfDay() : null;
+                $today = \Carbon\Carbon::now()->startOfDay();
+
+                // Hitung selisih hari keterlambatan
+                $hariTerlambat = 0;
+                if ($endDate && $today->gt($endDate)) {
+                $hariTerlambat = $today->diffInDays($endDate);
+                }
+
+                // Hitung denda dinamis (10.000 per hari)
+                $totalDenda = $hariTerlambat * 10000;
                 @endphp
 
                 <div class="grid grid-cols-2 gap-2.5 mt-3.5">
@@ -378,12 +379,23 @@
                     &bull; {{ $itemCount }} produk, {{ $totalQty }} item
                 </div>
 
+                {{-- Dikirim info --}}
+                @if($status === 'dikirim')
+                <div class="mt-3 bg-[#eff6ff] border border-[#bfdbfe] rounded-[10px] px-3.5 py-[10px] flex items-center gap-2.5">
+                    <svg class="w-[15px] h-[15px] text-[#1d4ed8] flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8l1 12a2 2 0 002 2h8a2 2 0 002-2l1-12M10 12a1 1 0 100 2 1 1 0 000-2zm4 0a1 1 0 100 2 1 1 0 000-2z" />
+                    </svg>
+                    <span class="text-xs font-semibold text-[#1e40af]">Barang sedang dalam perjalanan menuju lokasi Anda.</span>
+                </div>
+                @endif
+
                 {{-- Progress bar --}}
                 @if($showProgress)
                 @php
                 $stepIndex = 0;
-                if (in_array($status, ['dikemas','dikirim','pengembalian','selesai'])) $stepIndex = 1;
-                if (in_array($status, ['dikirim','pengembalian','selesai'])) $stepIndex = 2;
+                if (in_array($status, ['dikemas', 'dikirim', 'pengembalian', 'selesai'])) $stepIndex = 1;
+                if (in_array($status, ['dikirim', 'pengembalian', 'selesai'])) $stepIndex = 2;
                 if (in_array($status, ['pengembalian','selesai'])) $stepIndex = 3;
                 if ($status === 'selesai') $stepIndex = 4;
                 @endphp
@@ -660,6 +672,6 @@
                 .catch(() => alert('Terjadi kesalahan koneksi.'));
         };
 
-    }); // end DOMContentLoaded
+    });
 </script>
 @endpush

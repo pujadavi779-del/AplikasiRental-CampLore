@@ -577,5 +577,4 @@ if (!isset($accordions)) {
         });
     });
 </script>
-
 @endsection

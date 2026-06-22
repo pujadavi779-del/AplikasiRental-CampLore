@@ -19,8 +19,8 @@ class CreateProductController extends Controller
             'deskripsi'         => 'nullable|string',
             'sorotan'           => 'nullable|string',
             'isi_paket'         => 'nullable|string',
-            'id_tipe_kategori'  => 'nullable|exists:data_kategori,id_kategori', // ← UPDATE
-            'id_merek_kategori' => 'nullable|exists:data_kategori,id_kategori', // ← UPDATE
+            'id_tipe_kategori'  => 'nullable|exists:data_kategori,id_kategori',
+            'id_merek_kategori' => 'nullable|exists:data_kategori,id_kategori',
             'image'             => 'required|image|mimes:jpeg,png,jpg|max:2048',
         ]);
 
