@@ -132,7 +132,6 @@ class CameraController extends Controller
     {
         $item = Barang::findOrFail($id);
         
-        // Opsional: Hapus file gambar dari local storage saat data dihapus
         if ($item->gambar_barang && file_exists(public_path($item->gambar_barang))) {
             @unlink(public_path($item->gambar_barang));
         }

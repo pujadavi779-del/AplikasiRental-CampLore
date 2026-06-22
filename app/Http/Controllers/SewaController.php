@@ -34,7 +34,7 @@ class SewaController extends Controller
                 Pesanan::where('order_id', $first->order_id)
                     ->where('status', 'belum_bayar')
                     ->update(['status' => 'dibatalkan']);
-                $first->status = 'dibatalkan'; 
+                $first->status = 'dibatalkan';
             }
 
             return (object)[
@@ -48,16 +48,22 @@ class SewaController extends Controller
                 'hari_terlambat'   => $first->hari_terlambat ?? 0,
                 'keterlambatan_biaya' => $first->keterlambatan_biaya ?? 0,
                 'snap_token'       => $first->snap_token,
-                'items'            => $items->map(function($o) {
+                'items'            => $items->map(function ($o) {
                     $namaProduk = $o->product->nama_barang ?? $o->product->name ?? '-';
-                    
+
                     $kolomGambar = $o->product->gambar_barang ?? $o->product->gambar ?? $o->product->foto ?? null;
-                    
+
                     $urlGambar = null;
                     if ($kolomGambar) {
-                        $urlGambar = str_contains($kolomGambar, 'http') 
-                            ? $kolomGambar 
-                            : asset('storage/' . ltrim($kolomGambar, '/'));
+                        if (str_contains($kolomGambar, 'http')) {
+                            $urlGambar = $kolomGambar;
+                        } elseif (str_starts_with($kolomGambar, 'img_foto/')) {
+                            // Foto kamera & camping disimpan langsung di public/img_foto, bukan storage
+                            $urlGambar = asset(ltrim($kolomGambar, '/'));
+                        } else {
+                            // Foto produk lain disimpan di storage/app/public
+                            $urlGambar = asset('storage/' . ltrim($kolomGambar, '/'));
+                        }
                     }
 
                     return (object)[
