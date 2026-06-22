@@ -9,42 +9,47 @@ use App\Mail\BarangTibaMail;
 
 class DeliveryController extends Controller
 {
-    public function pengiriman()
+    public function pengiriman(Request $request)
     {
-        $pesanan = Pemesanan::with(['pelanggan.alamatPengiriman', 'barang'])
-            ->whereIn('status', ['dikemas', 'jalan', 'pengembalian'])
-            ->get()
-            ->groupBy('order_id');
+        $metode = $request->query('metode', 'semua');
+        $status = $request->query('status', 'semua');
+
+        // ═══ STAT CARDS → selalu total keseluruhan, TANPA filter ═══
+        $stats = [
+            'total'   => Pemesanan::whereIn('status', ['dikemas', 'jalan', 'pengembalian'])->distinct()->count('order_id'),
+            'diantar' => Pemesanan::where('status', 'jalan')->distinct()->count('order_id'),
+            'pickup'  => Pemesanan::whereIn('status', ['dikemas', 'jalan', 'pengembalian'])->where('metode_pengiriman', 'pickup')->distinct()->count('order_id'),
+            'selesai' => Pemesanan::where('status', 'pengembalian')->distinct()->count('order_id'),
+        ];
+
+        // ═══ DATA TABLE → pakai filter ═══
+        $query = Pemesanan::with(['pelanggan.alamatPengiriman', 'barang'])
+            ->whereIn('status', ['dikemas', 'jalan', 'pengembalian']);
+
+        if ($metode !== 'semua') {
+            $query->where('metode_pengiriman', $metode);
+        }
+
+        if ($status !== 'semua') {
+            $query->where('status', $status);
+        }
+
+        $pesanan = $query->get()->groupBy('order_id');
 
         $pengiriman = [];
-        $stats = ['total' => 0, 'diantar' => 0, 'pickup' => 0, 'selesai' => 0];
 
         foreach ($pesanan as $orderId => $items) {
             $firstItem = $items->first();
-
             $shippingMethod = $firstItem->metode_pengiriman ?? 'delivery';
 
-            if ($firstItem->status === 'dikemas') {
-                $statusPengiriman = 'proses';
-            } elseif ($firstItem->status === 'jalan') {
-                $statusPengiriman = 'jalan';
-            } elseif ($firstItem->status === 'pengembalian') {
-                $statusPengiriman = 'pengembalian';
-            } else {
-                $statusPengiriman = 'proses';
-            }
+            if ($firstItem->status === 'dikemas') $statusPengiriman = 'proses';
+            elseif ($firstItem->status === 'jalan') $statusPengiriman = 'jalan';
+            elseif ($firstItem->status === 'pengembalian') $statusPengiriman = 'pengembalian';
+            else $statusPengiriman = 'proses';
 
-            $stats['total']++;
-            if ($statusPengiriman === 'jalan') $stats['diantar']++;
-            if ($shippingMethod === 'pickup') $stats['pickup']++;
-            if ($statusPengiriman === 'pengembalian') $stats['selesai']++;
-
-            if ($shippingMethod === 'pickup') {
-                $alamat = 'Ambil di toko';
-            } else {
-                $alamat = $firstItem->alamat_pelanggan 
-                    ?? ($firstItem->pelanggan->alamatPengiriman->alamat_lengkap ?? '-');
-            }
+            $alamat = $shippingMethod === 'pickup'
+                ? 'Ambil di toko'
+                : ($firstItem->alamat_pelanggan ?? ($firstItem->pelanggan->alamatPengiriman->alamat_lengkap ?? '-'));
 
             $pengiriman[] = [
                 'id_pesanan'        => $orderId,
@@ -52,20 +57,17 @@ class DeliveryController extends Controller
                 'alamat'            => $alamat,
                 'no_tlp'            => $firstItem->pelanggan->no_tlp ?? '-',
                 'metode_pengiriman' => $shippingMethod,
-                'tanggal_mulai'     => $firstItem->start_date
-                    ? \Carbon\Carbon::parse($firstItem->start_date)->format('d M Y')
-                    : '-',
+                'status'            => $statusPengiriman,
                 'barang'            => $items->map(fn($item) => [
                     'nama'   => $item->barang->name ?? ($item->barang->nama_barang ?? 'Produk'),
                     'jumlah' => $item->quantity ?? 1,
                 ])->toArray(),
-                'status'            => $statusPengiriman,
             ];
         }
 
-        return view('pages.admin.pengiriman', compact('pengiriman', 'stats'));
+        return view('pages.admin.pengiriman', compact('pengiriman', 'stats', 'metode', 'status'));
     }
-
+    
     public function detail($id)
     {
         $items = Pemesanan::with(['pelanggan.alamatPengiriman', 'barang'])
@@ -94,7 +96,7 @@ class DeliveryController extends Controller
         if ($shippingMethod === 'pickup') {
             $alamat = 'Ambil di toko';
         } else {
-            $alamat = $firstItem->alamat_pelanggan 
+            $alamat = $firstItem->alamat_pelanggan
                 ?? ($firstItem->pelanggan->alamatPengiriman->alamat_lengkap ?? '-');
         }
 

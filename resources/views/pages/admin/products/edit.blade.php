@@ -104,8 +104,8 @@
                                        focus:ring-2 focus:ring-[#22543D]/20 focus:border-[#22543D] outline-none
                                        transition-all appearance-none
                                        @error('Kategori_data') border-red-400 @enderror">
-                            <option value="" disabled>Pilih Kategori</option>
-                            @foreach(['Kamera','Camping','Lensa','Aksesoris'] as $cat)
+                            
+                            @foreach(['Kamera','Camping'] as $cat)
                             <option value="{{ $cat }}"
                                 {{ old('kategori', $product->kategori) === $cat ? 'selected' : '' }}>
                                 {{ $cat }}
@@ -126,8 +126,6 @@
                         <select name="id_tipe_kategori" required
                             class="w-full px-4 py-3 bg-gray-50 border border-[#eef4f0] rounded-xl text-sm">
 
-                            <option value="">Pilih Tipe</option>
-
                             @foreach($types as $type)
                             <option value="{{ $type->id_kategori }}"
                                 {{ old('id_tipe_kategori', $product->id_tipe_kategori) == $type->id_kategori ? 'selected' : '' }}>
@@ -145,9 +143,6 @@
 
                         <select name="id_merek_kategori" required
                             class="w-full px-4 py-3 bg-gray-50 border border-[#eef4f0] rounded-xl text-sm">
-
-                            <option value="">Pilih Merek</option>
-
                             @foreach($brands as $brand)
                             <option value="{{ $brand->id_kategori }}"
                                 {{ old('id_merek_kategori', $product->id_merek_kategori) == $brand->id_kategori ? 'selected' : '' }}>

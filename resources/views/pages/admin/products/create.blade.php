@@ -75,14 +75,12 @@
                     </div>
 
                     <div>
-                        <label class="block text-[11px] font-black text-gray-400 uppercase tracking-widest mb-2">Kategori</label>
+                        <label class="block text-[11px] font-black text-gray-400 uppercase tracking-widest mb-2">Kategori Utama</label>
                         <select name="Kategori_data" required
                             class="w-full px-4 py-3 bg-gray-50 border border-[#eef4f0] rounded-xl text-sm focus:ring-2 focus:ring-[#22543D]/20 focus:border-[#22543D] outline-none transition-all appearance-none">
                             <option value="" disabled selected>Pilih Kategori</option>
                             <option value="Kamera">Kamera</option>
                             <option value="Camping">Camping</option>
-                            <option value="Lensa">Lensa</option>
-                            <option value="Aksesoris">Aksesoris</option>
                         </select>
                     </div>
 
