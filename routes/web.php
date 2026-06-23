@@ -33,6 +33,7 @@
     use App\Http\Controllers\Admin\ReviewController;
     use App\Http\Controllers\RiwayatProdukController;
     use App\Http\Controllers\CustomerReviewController;
+    use App\Http\Controllers\Admin\DashboardController;
 
 
     /*
@@ -161,7 +162,7 @@
 
     Route::prefix('admin')->middleware('admin.auth')->name('admin.')->group(function () {
 
-        Route::get('/dashboard_admin', fn() => view('pages.admin.dashboard_admin'))->name('dashboard');
+        Route::get('/dashboard_admin', [DashboardController::class, 'index'])->name('dashboard');
 
         // Pemesanan
         Route::get('/pemesanan',           [PemesananController::class, 'index'])->name('pesanan.index');
