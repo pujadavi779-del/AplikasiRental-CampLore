@@ -348,7 +348,7 @@ $section = 'Pengguna';
                 <div class="p-6 space-y-5">
                     <div>
                         <label for="name_brand" class="block mb-2 text-[11px] font-bold text-gray-900 uppercase tracking-wider">Nama Merek</label>
-                        <input type="text" name="name" id="name_brand" class="bg-gray-50 border border-none text-gray-900 text-sm rounded-xl focus:ring-2 focus:ring-gray-200 block w-full p-3.5 placeholder-gray-400 placeholder:font-medium" placeholder="Contoh: Eiger, Consina, Canon, Sony" required>
+                        <input type="text" name="nama_kategori" id="name_brand" class="bg-gray-50 border border-none text-gray-900 text-sm rounded-xl focus:ring-2 focus:ring-gray-200 block w-full p-3.5 placeholder-gray-400 placeholder:font-medium" placeholder="Contoh: Eiger, Consina, Canon, Sony" required>
                     </div>
                     <div>
                         <label for="main_category_brand" class="block mb-2 text-[11px] font-bold text-gray-900 uppercase tracking-wider">Kategori Terkait</label>
