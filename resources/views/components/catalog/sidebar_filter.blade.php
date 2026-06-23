@@ -54,13 +54,13 @@
 
         @foreach($filterTipes as $tipe)
         <a href="{{ route($kategori . '.LP', [
-        'type' => $tipe->id,
+        'type' => $tipe->id_kategori,
         'brand' => request('brand')
     ]) }}"
             class="flex items-center gap-2 text-sm hover:text-black">
 
             <div class="w-4 h-4 rounded border border-gray-300
-            {{ request('type') == $tipe->id ? 'bg-black border-black' : '' }}">
+            {{ request('type') == $tipe->id_kategori ? 'bg-black border-black' : '' }}">
             </div>
 
             {{ $tipe->nama_kategori }}
@@ -68,7 +68,7 @@
         @endforeach
 
     </div>
-
+    <br>
     {{-- MEREK --}}
     <p class="text-xs font-bold tracking-[0.14em] uppercase text-gray-400 mb-3">
         Merek
@@ -96,13 +96,13 @@
         @foreach($filterMereks as $merek)
         <a href="{{ route($kategori . '.LP', [
         'type' => request('type'),
-        'brand' => $merek->id
+        'brand' => $merek->id_kategori
     ]) }}"
             class="cursor-pointer text-center group">
 
             <div class="aspect-square rounded-xl border-2 bg-white flex items-center justify-center overflow-hidden
             transition
-            {{ request('brand') == $merek->id ? 'border-black' : 'border-gray-200' }}">
+            {{ request('brand') == $merek->id_kategori ? 'border-black' : 'border-gray-200' }}">
 
                 <img
                     src="{{ $merek->foto_logo  ? asset($merek->foto_logo) : 'https://placehold.co/60x60/e8e7e3/aaa?text='.urlencode(Str::limit($merek->nama_kategori,3,'')) }}"
@@ -159,7 +159,7 @@
             @foreach($filterTipes as $tipe)
             <label class="flex items-center gap-3 px-4 py-3 rounded-xl border border-gray-200 cursor-pointer
                           hover:border-gray-400 has-[:checked]:border-gray-900 has-[:checked]:bg-gray-50 transition">
-                <input type="checkbox" name="tipe[]" value="{{ $tipe->id }}"
+                <input type="checkbox" name="tipe[]" value="{{ $tipe->id_kategori }}"
                     class="w-4 h-4 rounded accent-gray-900">
                 <span class="text-sm font-medium text-gray-800">{{ $tipe->nama_kategori }}</span>
             </label>
@@ -212,7 +212,7 @@
                         alt="{{ $merek->nama_kategori }}" class="w-4/5 h-4/5 object-contain">
                 </div>
                 <p class="mt-1 text-[10px] text-gray-400 font-semibold uppercase tracking-wide merek-label">{{ $merek->nama_kategori }}</p>
-                <input type="checkbox" name="merek[]" value="{{ $merek->id }}" class="hidden merek-check">
+                <input type="checkbox" name="merek[]" value="{{ $merek->id_kategori }}" class="hidden merek-check">
             </label>
             @endforeach
         </div>
