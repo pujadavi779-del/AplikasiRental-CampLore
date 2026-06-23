@@ -36,7 +36,10 @@ class KategoriController extends Controller
             ->get();
 
         return view('pages.admin.kategori_produk', compact(
-            'tipeKamera', 'merekKamera', 'tipeCamping', 'merekCamping'
+            'tipeKamera',
+            'merekKamera',
+            'tipeCamping',
+            'merekCamping'
         ));
     }
 
@@ -134,7 +137,7 @@ class KategoriController extends Controller
 
     public function destroyType(Kategori_data $kategori)
     {
-        $productCount = Barang::where('id_tipe_kategori', $kategori->id)->count();
+        $productCount = Barang::where('id_tipe_kategori', $kategori->id_kategori)->count();
         if ($productCount > 0) {
             return back()->with('error', 'Tidak bisa menghapus tipe ini karena masih digunakan oleh ' . $productCount . ' produk.');
         }
@@ -144,7 +147,7 @@ class KategoriController extends Controller
 
     public function destroyBrand(Kategori_data $kategori)
     {
-        $productCount = Barang::where('id_merek_kategori', $kategori->id)->count();
+        $productCount = Barang::where('id_merek_kategori', $kategori->id_kategori)->count();
         if ($productCount > 0) {
             return back()->with('error', 'Tidak bisa menghapus merek ini karena masih digunakan oleh ' . $productCount . ' produk.');
         }
@@ -165,7 +168,7 @@ class KategoriController extends Controller
     public function brandDetail(Kategori_data $kategori)
     {
         $products = Barang::with(['typeCategory'])
-            ->where('id_merek_kategori', $kategori->id)
+            ->where('id_merek_kategori', $kategori->id_kategori)
             ->select('id', 'name', 'id_tipe_kategori', 'stok', 'harga_per_hari', 'kategori')
             ->get()
             ->map(function ($product) {
@@ -187,7 +190,11 @@ class KategoriController extends Controller
 
         return response()->json([
             'merek'     => $kategori->nama_kategori,
-            'foto_logo' => $kategori->foto_logo ? asset($kategori->foto_logo) : null,
+            'foto_logo' => $kategori->foto_logo
+                ? (str_starts_with($kategori->foto_logo, 'brands/')
+                    ? asset('storage/' . $kategori->foto_logo)
+                    : asset($kategori->foto_logo))
+                : null,
             'aktif'     => $kategori->aktif,
             'products'  => $products,
         ]);
@@ -196,7 +203,7 @@ class KategoriController extends Controller
     public function typeDetail(Kategori_data $kategori)
     {
         $products = Barang::with(['brandCategory'])
-            ->where('id_tipe_kategori', $kategori->id)
+            ->where('id_tipe_kategori', $kategori->id_kategori)
             ->select('id', 'name', 'id_merek_kategori', 'stok', 'harga_per_hari', 'kategori')
             ->get()
             ->map(function ($product) {

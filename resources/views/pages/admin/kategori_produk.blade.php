@@ -261,7 +261,7 @@ $section = 'Pengguna';
                         <div @click="openDetailMerek('{{ $merek->id_kategori }}', '{{ $merek->nama_kategori }}')"
                             class="w-14 h-14 cursor-pointer {{ $merek->aktif ? 'bg-gray-100' : 'bg-gray-200 opacity-50' }} border border-transparent rounded-xl flex items-center justify-center text-gray-400 font-bold text-sm tracking-wide group-hover:border-gray-200 group-hover:bg-white group-hover:shadow-sm transition-all duration-200">
                             @if($merek->foto_logo)
-                            <img src="{{ asset($merek->foto_logo) }}" alt="{{ $merek->nama_kategori }}" class="w-10 h-10 object-contain">
+                            <img src="{{ str_starts_with($merek->foto_logo, 'brands/') ? asset('storage/' . $merek->foto_logo) : asset($merek->foto_logo) }}" alt="{{ $merek->nama_kategori }}" class="w-10 h-10 object-contain">
                             @else
                             {{ Str::limit($merek->nama_kategori, 3, '') }}
                             @endif
@@ -348,7 +348,7 @@ $section = 'Pengguna';
                 <div class="p-6 space-y-5">
                     <div>
                         <label for="name_brand" class="block mb-2 text-[11px] font-bold text-gray-900 uppercase tracking-wider">Nama Merek</label>
-                        <input type="text" name="name" id="name_brand" class="bg-gray-50 border border-none text-gray-900 text-sm rounded-xl focus:ring-2 focus:ring-gray-200 block w-full p-3.5 placeholder-gray-400 placeholder:font-medium" placeholder="Contoh: Eiger, Consina, Canon, Sony" required>
+                        <input type="text" name="nama_kategori" id="name_brand" class="bg-gray-50 border border-none text-gray-900 text-sm rounded-xl focus:ring-2 focus:ring-gray-200 block w-full p-3.5 placeholder-gray-400 placeholder:font-medium" placeholder="Contoh: Eiger, Consina, Canon, Sony" required>
                     </div>
                     <div>
                         <label for="main_category_brand" class="block mb-2 text-[11px] font-bold text-gray-900 uppercase tracking-wider">Kategori Terkait</label>
