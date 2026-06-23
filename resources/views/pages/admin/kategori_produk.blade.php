@@ -3,8 +3,8 @@
 @section('title', 'Kategori Produk - Camplore Admin')
 
 @php
-$NavParent = 'Manajemen Operasional';
-$section = 'Pengguna';
+$NavParent = 'Manajemen Rental';
+$section = 'Kategori Produk';
 @endphp
 @section('content')
 
@@ -343,6 +343,15 @@ $section = 'Pengguna';
                     </svg>
                 </button>
             </div>
+            @if ($errors->any())
+            <div class="mx-6 mt-4 bg-red-50 text-red-700 p-4 rounded-xl text-sm font-bold">
+                <ul class="list-disc list-inside space-y-1">
+                    @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+            @endif
             <form action="{{ route('admin.category.storeBrand') }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 <div class="p-6 space-y-5">
@@ -367,17 +376,18 @@ $section = 'Pengguna';
                     <div>
                         <label class="block mb-2 text-[11px] font-bold text-gray-900 uppercase tracking-wider">Logo Merek</label>
                         <div class="flex items-center justify-center w-full">
-                            <label for="logo_merek" class="flex flex-col items-center justify-center w-full h-40 border-2 border-gray-200 border-dashed rounded-[16px] cursor-pointer bg-white hover:bg-gray-50/50 hover:border-gray-300 transition-all">
-                                <div class="flex flex-col items-center justify-center pt-5 pb-6 text-center px-4">
+                            <label for="logo_merek" class="relative flex items-center justify-center w-full h-40 border-2 border-gray-200 border-dashed rounded-[16px] cursor-pointer bg-white hover:bg-gray-50/50 hover:border-gray-300 transition-all overflow-hidden">
+                                <div id="logo_placeholder" class="flex flex-col items-center justify-center pt-5 pb-6 text-center px-4">
                                     <div class="w-10 h-10 bg-gray-50 border border-gray-100 rounded-lg flex items-center justify-center text-gray-700 shadow-sm mb-3">
                                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v1m-4-8l-4-4m0 0L8 8m4-4v12" />
                                         </svg>
                                     </div>
                                     <p class="text-sm font-bold text-gray-900">Klik untuk mengunggah logo</p>
-                                    <p class="text-[11px] font-medium text-gray-400 mt-1">SVG, PNG, atau JPG (Maks. 2MB)</p>
+                                    <p class="text-[11px] font-medium text-gray-400 mt-1">PNG atau JPG saja (Maks. 2MB)</p>
                                 </div>
-                                <input id="logo_merek" name="foto_logo" type="file" class="hidden" accept="image/*" />
+                                <img id="logo_preview" src="" alt="Preview" class="hidden absolute inset-0 w-full h-full object-cover">
+                                <input id="logo_merek" name="foto_logo" type="file" class="hidden" accept=".png,.jpg,.jpeg" />
                             </label>
                         </div>
                     </div>
@@ -471,6 +481,20 @@ $section = 'Pengguna';
                 dangerToast.remove();
             }, 4000);
         }
+    });
+
+    //untuk foto post foto merek
+    document.getElementById('logo_merek').addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = function(ev) {
+            document.getElementById('logo_preview').src = ev.target.result;
+            document.getElementById('logo_preview').classList.remove('hidden');
+            document.getElementById('logo_placeholder').classList.add('hidden');
+        };
+        reader.readAsDataURL(file);
     });
 </script>
 

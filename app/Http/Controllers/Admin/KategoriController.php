@@ -77,7 +77,7 @@ class KategoriController extends Controller
         $request->validate([
             'nama_kategori'  => 'required|string|max:255',
             'kategori_utama' => 'required|in:Kamera,Camping',
-            'foto_logo'      => 'nullable|image|mimes:svg,png,jpg,jpeg|max:2048',
+            'foto_logo' => 'nullable|image|mimes:png,jpg,jpeg|max:2048',
         ]);
 
         $exists = Kategori_data::where('nama_kategori', $request->nama_kategori)
@@ -103,7 +103,7 @@ class KategoriController extends Controller
             'kategori_utama' => $request->kategori_utama,
             'jenis_atribut'  => 'Merek',
             'foto_logo'      => $logoPath,
-            'aktif'          => $request->boolean('aktif', true),
+            'aktif'          => $request->boolean('aktif', false),
         ]);
 
         return back()->with('success', 'Merek "' . $request->nama_kategori . '" berhasil ditambahkan.');
@@ -120,12 +120,12 @@ class KategoriController extends Controller
     {
         $request->validate([
             'nama_kategori' => 'required|string|max:255',
-            'foto_logo'     => 'nullable|image|mimes:svg,png,jpg,jpeg|max:2048',
+            'foto_logo'     => 'nullable|image|mimes:png,jpg,jpeg|max:2048',
         ]);
 
         $data = [
             'nama_kategori' => $request->nama_kategori,
-            'aktif'         => $request->boolean('aktif', true),
+            'aktif'         => $request->boolean('aktif', false),
         ];
 
         if ($request->hasFile('foto_logo')) {
@@ -145,6 +145,16 @@ class KategoriController extends Controller
         return back()->with('success', 'Merek berhasil diperbarui.');
     }
 
+    public function destroyType(Kategori_data $kategori)
+    {
+        $productCount = Barang::where('id_tipe_kategori', $kategori->id_kategori)->count();
+        if ($productCount > 0) {
+            return back()->with('error', 'Tidak bisa menghapus tipe ini karena masih digunakan oleh ' . $productCount . ' produk.');
+        }
+        $kategori->delete();
+        return back()->with('success', 'Tipe "' . $kategori->nama_kategori . '" berhasil dihapus.');
+    }
+
     public function destroyBrand(Kategori_data $kategori)
     {
         $productCount = Barang::where('id_merek_kategori', $kategori->id_kategori)->count();
@@ -162,7 +172,9 @@ class KategoriController extends Controller
     {
         $kategori->update(['aktif' => !$kategori->aktif]);
         $status = $kategori->aktif ? 'diaktifkan' : 'dinonaktifkan';
-        return back()->with('success', 'Merek "' . $kategori->nama_kategori . '" berhasil ' . $status . '.');
+        return back()
+            ->with('success', 'Merek "' . $kategori->nama_kategori . '" berhasil ' . $status . '.')
+            ->with('last_tab', strtolower($kategori->kategori_utama));
     }
 
     public function brandDetail(Kategori_data $kategori)
