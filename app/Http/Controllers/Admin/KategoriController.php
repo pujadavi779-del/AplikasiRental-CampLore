@@ -91,7 +91,11 @@ class KategoriController extends Controller
 
         $logoPath = null;
         if ($request->hasFile('foto_logo')) {
-            $logoPath = $request->file('foto_logo')->store('brands', 'public');
+            $folder = $request->kategori_utama === 'Kamera' ? 'logo_camera' : 'logo_camping';
+            $file = $request->file('foto_logo');
+            $filename = time() . '_' . preg_replace('/[^A-Za-z0-9\-]/', '', $request->nama_kategori) . '.' . $file->getClientOriginalExtension();
+            $file->move(public_path('images/' . $folder), $filename);
+            $logoPath = 'images/' . $folder . '/' . $filename;
         }
 
         Kategori_data::create([
@@ -125,24 +129,20 @@ class KategoriController extends Controller
         ];
 
         if ($request->hasFile('foto_logo')) {
-            if ($kategori->foto_logo) {
-                Storage::disk('public')->delete($kategori->foto_logo);
+            // hapus file lama kalau ada
+            if ($kategori->foto_logo && file_exists(public_path($kategori->foto_logo))) {
+                unlink(public_path($kategori->foto_logo));
             }
-            $data['foto_logo'] = $request->file('foto_logo')->store('brands', 'public');
+
+            $folder = $kategori->kategori_utama === 'Kamera' ? 'logo_camera' : 'logo_camping';
+            $file = $request->file('foto_logo');
+            $filename = time() . '_' . preg_replace('/[^A-Za-z0-9\-]/', '', $request->nama_kategori) . '.' . $file->getClientOriginalExtension();
+            $file->move(public_path('images/' . $folder), $filename);
+            $data['foto_logo'] = 'images/' . $folder . '/' . $filename;
         }
 
         $kategori->update($data);
         return back()->with('success', 'Merek berhasil diperbarui.');
-    }
-
-    public function destroyType(Kategori_data $kategori)
-    {
-        $productCount = Barang::where('id_tipe_kategori', $kategori->id_kategori)->count();
-        if ($productCount > 0) {
-            return back()->with('error', 'Tidak bisa menghapus tipe ini karena masih digunakan oleh ' . $productCount . ' produk.');
-        }
-        $kategori->delete();
-        return back()->with('success', 'Tipe "' . $kategori->nama_kategori . '" berhasil dihapus.');
     }
 
     public function destroyBrand(Kategori_data $kategori)
@@ -151,8 +151,8 @@ class KategoriController extends Controller
         if ($productCount > 0) {
             return back()->with('error', 'Tidak bisa menghapus merek ini karena masih digunakan oleh ' . $productCount . ' produk.');
         }
-        if ($kategori->foto_logo) {
-            Storage::disk('public')->delete($kategori->foto_logo);
+        if ($kategori->foto_logo && file_exists(public_path($kategori->foto_logo))) {
+            unlink(public_path($kategori->foto_logo));
         }
         $kategori->delete();
         return back()->with('success', 'Merek "' . $kategori->nama_kategori . '" berhasil dihapus.');
@@ -190,11 +190,7 @@ class KategoriController extends Controller
 
         return response()->json([
             'merek'     => $kategori->nama_kategori,
-            'foto_logo' => $kategori->foto_logo
-                ? (str_starts_with($kategori->foto_logo, 'brands/')
-                    ? asset('storage/' . $kategori->foto_logo)
-                    : asset($kategori->foto_logo))
-                : null,
+            'foto_logo' => $kategori->foto_logo ? asset($kategori->foto_logo) : null,
             'aktif'     => $kategori->aktif,
             'products'  => $products,
         ]);

@@ -261,7 +261,7 @@ $section = 'Pengguna';
                         <div @click="openDetailMerek('{{ $merek->id_kategori }}', '{{ $merek->nama_kategori }}')"
                             class="w-14 h-14 cursor-pointer {{ $merek->aktif ? 'bg-gray-100' : 'bg-gray-200 opacity-50' }} border border-transparent rounded-xl flex items-center justify-center text-gray-400 font-bold text-sm tracking-wide group-hover:border-gray-200 group-hover:bg-white group-hover:shadow-sm transition-all duration-200">
                             @if($merek->foto_logo)
-                            <img src="{{ str_starts_with($merek->foto_logo, 'brands/') ? asset('storage/' . $merek->foto_logo) : asset($merek->foto_logo) }}" alt="{{ $merek->nama_kategori }}" class="w-10 h-10 object-contain">
+                            <img src="{{ asset($merek->foto_logo) }}" alt="{{ $merek->nama_kategori }}" class="w-10 h-10 object-contain">
                             @else
                             {{ Str::limit($merek->nama_kategori, 3, '') }}
                             @endif
