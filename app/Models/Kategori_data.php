@@ -26,6 +26,11 @@ class Kategori_data extends Model
         'aktif' => 'boolean',
     ];
 
+    public function keterlambatan()
+    {
+        return $this->hasOne(Keterlambatan::class, 'id_tipe_kategori', 'id_kategori');
+    }
+
     public function barangSebagaiTipe(): HasMany
     {
         return $this->hasMany(Barang::class, 'id_tipe_kategori', 'id_kategori');

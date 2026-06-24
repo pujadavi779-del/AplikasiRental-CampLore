@@ -139,7 +139,7 @@
             if ($status === 'dibatalkan') { $badgeClass = 'bg-[#fef2f2] text-[#991b1b] border border-[#fecaca]'; $badgeLabel = 'Dibatalkan'; }
             if ($status === 'pengembalian') { $badgeClass = 'bg-[#faf5ff] text-[#7e22ce] border border-[#e9d5ff]'; $badgeLabel = 'Pengembalian'; }
 
-       
+
             $stepIndex = 0;
             if (in_array($status, ['dikemas', 'dikirim', 'pengembalian', 'selesai'])) $stepIndex = 1;
             if (in_array($status, ['dikirim', 'pengembalian', 'selesai'])) $stepIndex = 2;
@@ -320,19 +320,88 @@
                 {{-- Pengembalian info --}}
                 @if($status === 'pengembalian')
                 @php
-                // Ambil end_date dari item pertama sebagai acuan batas pengembalian
                 $endDate = isset($items[0]) ? \Carbon\Carbon::parse($items[0]->end_date)->startOfDay() : null;
                 $today = \Carbon\Carbon::now()->startOfDay();
 
-                // Hitung selisih hari keterlambatan
                 $hariTerlambat = 0;
                 if ($endDate && $today->gt($endDate)) {
                 $hariTerlambat = $today->diffInDays($endDate);
                 }
 
-                // Hitung denda dinamis (10.000 per hari)
-                $totalDenda = $hariTerlambat * 10000;
+                $totalDenda = 0;
+                foreach($items as $item) {
+                $totalDenda += $hariTerlambat * ($item->denda_per_hari ?? 0) * ($item->quantity ?? 1);
+                }
+
+                $isOverdue = $hariTerlambat > 0;
+                $dendaDibayar = $rental->denda_dibayar ?? false;
                 @endphp
+
+                @if($isOverdue)
+                @if($dendaDibayar)
+                {{-- DENDA SUDAH DIBAYAR --}}
+                <div class="mt-3.5 bg-[#f0fdf4] border border-[#86efac] rounded-xl px-3.5 py-3 flex items-center gap-3">
+                    <div class="w-8 h-8 bg-[#166534] rounded-full flex items-center justify-center flex-shrink-0">
+                        <svg class="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7" />
+                        </svg>
+                    </div>
+                    <div>
+                        <div class="text-xs font-bold text-[#166534]">Denda Sudah Dibayar</div>
+                        <div class="text-[11px] text-[#15803d]">Rp {{ number_format($totalDenda, 0, ',', '.') }} &bull; Terlambat {{ $hariTerlambat }} hari &bull; Menunggu admin memproses.</div>
+                    </div>
+                </div>
+                @else
+                {{-- BELUM BAYAR DENDA --}}
+                <div class="grid grid-cols-2 gap-2.5 mt-3.5">
+                    <div class="bg-[#fef2f2] border border-[#fecaca] rounded-xl px-3.5 py-3">
+                        <div class="text-[11px] font-semibold text-[#dc2626] mb-1">Batas Pengembalian</div>
+                        <div class="text-[15px] font-extrabold text-[#dc2626]">
+                            {{ $endDate ? $endDate->translatedFormat('d M Y') : '-' }}
+                        </div>
+                    </div>
+                    <div class="bg-[#fef2f2] border border-[#fecaca] rounded-xl px-3.5 py-3">
+                        <div class="text-[11px] font-semibold text-[#dc2626] mb-1">Keterlambatan</div>
+                        <div class="text-[15px] font-extrabold text-[#dc2626]">
+                            {{ $hariTerlambat }} hari
+                        </div>
+                    </div>
+                </div>
+                <div class="flex items-center justify-between mt-2.5 px-3.5 py-3 bg-[#f5f6f4] rounded-xl border border-[#e5e7eb]">
+                    <div>
+                        <div class="text-xs text-[#6b7280] font-medium mb-0.5">Total denda (Bayar Cash)</div>
+                        <div class="text-base font-black text-[#dc2626]">Rp {{ number_format($totalDenda, 0, ',', '.') }}</div>
+                    </div>
+                    <button onclick="bayarDendaCash('{{ $rental->order_id }}', {{ $totalDenda }})"
+                        class="px-[18px] py-[9px] rounded-[10px] text-xs font-bold bg-[#dc2626] text-white
+                                   hover:bg-[#b91c1c] transition-colors duration-200 cursor-pointer inline-flex items-center gap-1.5">
+                        <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
+                        </svg>
+                        Konfirmasi Bayar Cash
+                    </button>
+                </div>
+                <div class="flex items-start gap-2 mt-2 px-1">
+                    <svg class="w-3.5 h-3.5 text-[#c2410c] flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" />
+                    </svg>
+                    <p class="text-[11px] text-[#c2410c] font-semibold leading-relaxed">
+                        Denda dibayar secara <strong>cash</strong> di tempat. Klik tombol di atas setelah membayar.
+                    </p>
+                </div>
+                @endif
+                @else
+                {{-- BELUM OVERDUE — TANPA TOMBOL DENDA --}}
+                <div class="mt-3.5 bg-[#eff6ff] border border-[#bfdbfe] rounded-xl px-3.5 py-3 flex items-center gap-2.5">
+                    <svg class="w-[15px] h-[15px] text-[#1d4ed8] flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <span class="text-xs font-semibold text-[#1e40af]">
+                        Batas pengembalian: <strong>{{ $endDate ? $endDate->translatedFormat('d M Y') : '-' }}</strong>. Harap kembalikan tepat waktu.
+                    </span>
+                </div>
+                @endif
+                
 
                 <div class="grid grid-cols-2 gap-2.5 mt-3.5">
                     <div class="bg-[#fef2f2] border border-[#fecaca] rounded-xl px-3.5 py-3">
@@ -368,7 +437,7 @@
                             d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" />
                     </svg>
                     <p class="text-[11px] text-[#c2410c] font-semibold leading-relaxed">
-                        Keterlambatan pengembalian dikenakan denda <span class="font-extrabold">Rp 10.000 per hari</span>. Segera kembalikan barang untuk menghindari denda tambahan.
+                        Denda dihitung otomatis berdasarkan aturan tipe barang. Segera kembalikan barang untuk menghindari denda tambahan.
                     </p>
                 </div>
                 @endif
@@ -673,5 +742,6 @@
         };
 
     });
+    
 </script>
 @endpush

@@ -74,6 +74,34 @@ $section = 'Kategori Produk';
         return Math.ceil(this.total[cat] / this.perPage);
     },
 
+    editTipe: {
+        id: null,
+        nama: '',
+        kategori_utama: '',
+        denda_per_hari: 0,
+    },
+
+    openEditTipe(id, nama, kategoriUtama, dendaPerHari) {
+        this.editTipe.id = id;
+        this.editTipe.nama = nama;
+        this.editTipe.kategori_utama = kategoriUtama;
+        this.editTipe.denda_per_hari = dendaPerHari;
+
+        const modalElement = document.getElementById('edit-tipe-modal');
+        if (!modalElement) return;
+
+        document.getElementById('edit_tipe_form').action = '/admin/kategori/tipe/' + id;
+        document.getElementById('edit_name').value = nama;
+        document.getElementById('edit_main_category').value = kategoriUtama;
+        document.getElementById('edit_denda_per_hari').value = dendaPerHari;
+
+        let modal = FlowbiteInstances.getInstance('Modal', 'edit-tipe-modal');
+        if (!modal) {
+            modal = new Modal(modalElement, {}, { id: 'edit-tipe-modal', override: true });
+        }
+        modal.show();
+    },
+
     openDetailMerek(merekId, namaMerek) {
     const modalElement = document.getElementById('detail-merek-modal');
     if (!modalElement) return;
@@ -210,7 +238,9 @@ $section = 'Kategori Produk';
                             class="flex justify-between items-center py-3.5 px-1 hover:bg-gray-50/30 transition-colors">
                             <span class="font-bold text-gray-800 text-sm">{{ $tipe->nama_kategori }}</span>
                             <div class="flex gap-3 text-xs font-bold">
-                                <button class="text-gray-400 hover:text-gray-600 transition-colors">Edit</button>
+                                <button type="button"
+                                    @click="openEditTipe('{{ $tipe->id_kategori }}', '{{ addslashes($tipe->nama_kategori) }}', '{{ $tipe->kategori_utama }}', '{{ $tipe->keterlambatan->denda_per_hari ?? 0 }}')"
+                                    class="text-gray-400 hover:text-gray-600 transition-colors">Edit</button>
                                 <form action="{{ route('admin.category.destroyType', $tipe->id_kategori) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus tipe ini?');" class="inline">
                                     @csrf
                                     @method('DELETE')
@@ -321,10 +351,74 @@ $section = 'Kategori Produk';
                             </div>
                         </div>
                     </div>
+                    <div>
+                        <label for="denda_per_hari" class="block mb-2 text-[11px] font-bold text-gray-900 uppercase tracking-wider">Denda Keterlambatan / Hari</label>
+                        <div class="relative">
+                            <span class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5 text-gray-400 text-sm font-bold">Rp</span>
+                            <input type="number" name="denda_per_hari" id="denda_per_hari" min="0" step="1000" value="0"
+                                class="bg-gray-50 border border-none text-gray-900 text-sm rounded-xl focus:ring-2 focus:ring-gray-200 block w-full p-3.5 pl-10 placeholder-gray-400 placeholder:font-medium"
+                                placeholder="Contoh: 50000" required>
+                        </div>
+                        <p class="mt-1.5 text-xs text-gray-400 font-medium">Berlaku untuk semua barang dengan tipe ini jika pengembalian terlambat.</p>
+                    </div>
                 </div>
                 <div class="flex items-center justify-end p-6 space-x-3 bg-gray-50/50 border-t border-gray-100">
                     <button data-modal-hide="tambah-tipe-modal" type="button" class="text-gray-700 bg-transparent hover:bg-gray-100 font-bold text-sm px-5 py-2.5 rounded-xl transition-colors">Batal</button>
                     <button type="submit" class="text-white bg-black hover:bg-gray-900 font-bold text-sm px-5 py-2.5 rounded-xl transition-all shadow-sm">Simpan Tipe</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+{{-- MODAL EDIT TIPE --}}
+<div id="edit-tipe-modal" tabindex="-1" aria-hidden="true" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full bg-black/40 backdrop-blur-sm animate-fade-in">
+    <div class="relative p-4 w-full max-w-lg max-h-full">
+        <div class="relative bg-white rounded-[24px] shadow-2xl border border-gray-100 overflow-hidden">
+            <div class="flex items-center justify-between p-6 border-b border-gray-100">
+                <h3 class="text-lg font-bold text-gray-900 tracking-tight">Edit Tipe</h3>
+                <button type="button" class="text-gray-400 bg-transparent hover:bg-gray-100 hover:text-gray-900 rounded-xl text-sm w-9 h-9 ms-auto inline-flex justify-center items-center transition-colors" data-modal-hide="edit-tipe-modal">
+                    <svg class="w-3.5 h-3.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
+                    </svg>
+                </button>
+            </div>
+            <form id="edit_tipe_form" action="" method="POST">
+                @csrf
+                @method('PUT')
+                <div class="p-6 space-y-5">
+                    <div>
+                        <label for="edit_name" class="block mb-2 text-[11px] font-bold text-gray-900 uppercase tracking-wider">Nama Tipe</label>
+                        <input type="text" name="nama_kategori" id="edit_name" class="bg-gray-50 border border-none text-gray-900 text-sm rounded-xl focus:ring-2 focus:ring-gray-200 block w-full p-3.5 placeholder-gray-400 placeholder:font-medium" placeholder="Contoh: Mirrorless, Dome Tent..." required>
+                    </div>
+                    <div>
+                        <label for="edit_main_category" class="block mb-2 text-[11px] font-bold text-gray-900 uppercase tracking-wider">Kategori Terkait</label>
+                        <div class="relative">
+                            <select id="edit_main_category" name="kategori_utama" class="bg-gray-50 border border-none text-gray-900 text-sm rounded-xl focus:ring-2 focus:ring-gray-200 block w-full p-3.5 appearance-none font-semibold pr-10 cursor-pointer">
+                                <option value="Kamera">Kamera</option>
+                                <option value="Camping">Camping</option>
+                            </select>
+                            <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-gray-500">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <label for="edit_denda_per_hari" class="block mb-2 text-[11px] font-bold text-gray-900 uppercase tracking-wider">Denda Keterlambatan / Hari</label>
+                        <div class="relative">
+                            <span class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5 text-gray-400 text-sm font-bold">Rp</span>
+                            <input type="number" name="denda_per_hari" id="edit_denda_per_hari" min="0" step="1000"
+                                class="bg-gray-50 border border-none text-gray-900 text-sm rounded-xl focus:ring-2 focus:ring-gray-200 block w-full p-3.5 pl-10 placeholder-gray-400 placeholder:font-medium"
+                                placeholder="Contoh: 50000" required>
+                        </div>
+                        <p class="mt-1.5 text-xs text-gray-400 font-medium">Berlaku untuk semua barang dengan tipe ini jika pengembalian terlambat.</p>
+                    </div>
+                </div>
+                <div class="flex items-center justify-end p-6 space-x-3 bg-gray-50/50 border-t border-gray-100">
+                    <button data-modal-hide="edit-tipe-modal" type="button" class="text-gray-700 bg-transparent hover:bg-gray-100 font-bold text-sm px-5 py-2.5 rounded-xl transition-colors">Batal</button>
+                    <button type="submit" class="text-white bg-black hover:bg-gray-900 font-bold text-sm px-5 py-2.5 rounded-xl transition-all shadow-sm">Simpan Perubahan</button>
                 </div>
             </form>
         </div>

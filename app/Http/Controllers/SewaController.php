@@ -47,6 +47,7 @@ class SewaController extends Controller
                 'payment_deadline' => $first->created_at->addHours(24),
                 'hari_terlambat'   => $first->hari_terlambat ?? 0,
                 'keterlambatan_biaya' => $first->keterlambatan_biaya ?? 0,
+                'denda_dibayar'       => $first->denda_dibayar ?? false,
                 'snap_token'       => $first->snap_token,
                 'items'            => $items->map(function ($o) {
                     $namaProduk = $o->product->nama_barang ?? $o->product->name ?? '-';
@@ -76,11 +77,56 @@ class SewaController extends Controller
                         'quantity'      => $o->quantity,
                         'overdue'       => false,
                         'product_id'    => $o->product_id,
+                        'id_tipe_kategori' => $o->product->id_tipe_kategori ?? null,
+                        'denda_per_hari' => ($o->product && $o->product->id_tipe_kategori)
+                            ? \App\Models\Keterlambatan::where('id_tipe_kategori', $o->product->id_tipe_kategori)->value('denda_per_hari') ?? 0
+                            : 0,
                     ];
                 })->values()->all(),
             ];
         })->values()->all();
 
         return view('pages.pelanggan.dashboard.pesanan_saya', compact('activeStatus', 'pesanan'));
+    }
+
+    public function bayarDendaCash(Request $request)
+    {
+        $request->validate(['order_id' => 'required']);
+
+        $pesanans = Pesanan::where('order_id', $request->order_id)
+            ->where('user_id', Auth::id())
+            ->get();
+
+        if ($pesanans->isEmpty()) {
+            return response()->json(['status' => 'error', 'message' => 'Pesanan tidak ditemukan.']);
+        }
+
+        $endDate = \Carbon\Carbon::parse($pesanans->first()->end_date)->startOfDay();
+        $today = \Carbon\Carbon::now()->startOfDay();
+
+        $hariTerlambat = 0;
+        if ($today->gt($endDate)) {
+            $hariTerlambat = $today->diffInDays($endDate);
+        }
+
+        $totalDenda = 0;
+        foreach ($pesanans as $p) {
+            $barang = \App\Models\Barang::withTrashed()->find($p->product_id);
+            $dendaPerHari = 0;
+            if ($barang && $barang->id_tipe_kategori) {
+                $dendaPerHari = \App\Models\Keterlambatan::where('id_tipe_kategori', $barang->id_tipe_kategori)->value('denda_per_hari') ?? 0;
+            }
+            $totalDenda += $hariTerlambat * $dendaPerHari * $p->quantity;
+        }
+
+        Pesanan::where('order_id', $request->order_id)
+            ->where('user_id', Auth::id())
+            ->update([
+                'denda_dibayar' => 1,
+                'hari_terlambat' => $hariTerlambat,
+                'keterlambatan_biaya' => $totalDenda,
+            ]);
+
+        return response()->json(['status' => 'success', 'message' => 'Pembayaran denda cash dikonfirmasi.']);
     }
 }

@@ -268,3 +268,5 @@
         Route::get('/ulasan/{reviewId}/detail', [CustomerReviewController::class, 'show'])
         ->name('pelanggan.ulasan.show');
     });
+
+    Route::post('/pesanan/bayar-denda-cash', [SewaController::class, 'bayarDendaCash'])->name('pesanan.bayar-denda-cash');

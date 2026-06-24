@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Kategori_data;
+use App\Models\Keterlambatan;
 use App\Models\Barang;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -15,6 +16,7 @@ class KategoriController extends Controller
     {
         $tipeKamera = Kategori_data::where('kategori_utama', 'Kamera')
             ->where('jenis_atribut', 'Tipe')
+            ->with('keterlambatan')
             ->orderBy('nama_kategori')
             ->get();
 
@@ -26,6 +28,7 @@ class KategoriController extends Controller
 
         $tipeCamping = Kategori_data::where('kategori_utama', 'Camping')
             ->where('jenis_atribut', 'Tipe')
+            ->with('keterlambatan')
             ->orderBy('nama_kategori')
             ->get();
 
@@ -48,6 +51,7 @@ class KategoriController extends Controller
         $request->validate([
             'nama_kategori'  => 'required|string|max:255',
             'kategori_utama' => 'required|in:Kamera,Camping',
+            'denda_per_hari' => 'required|numeric|min:0',
         ]);
 
         $exists = Kategori_data::where('nama_kategori', $request->nama_kategori)
@@ -59,17 +63,40 @@ class KategoriController extends Controller
             return back()->with('error', 'Tipe "' . $request->nama_kategori . '" sudah terdaftar.');
         }
 
-        Kategori_data::create([
+        $tipe = Kategori_data::create([
             'nama_kategori'  => $request->nama_kategori,
             'kategori_utama' => $request->kategori_utama,
             'jenis_atribut'  => 'Tipe',
             'aktif'          => true,
         ]);
 
+        Keterlambatan::create([
+            'id_tipe_kategori' => $tipe->id_kategori,
+            'denda_per_hari'   => $request->denda_per_hari,
+        ]);
+
         return back()
             ->with('success', 'Tipe "' . $request->nama_kategori . '" berhasil ditambahkan.')
             ->with('last_tab', strtolower($request->kategori_utama))
             ->with('jump_to_last', true);
+    }
+
+    public function updateType(Request $request, Kategori_data $kategori)
+    {
+        $request->validate([
+            'nama_kategori'  => 'required|string|max:255',
+            'denda_per_hari' => 'required|numeric|min:0',
+        ]);
+
+        $kategori->update(['nama_kategori' => $request->nama_kategori]);
+
+        // update atau buat baru kalau belum ada
+        Keterlambatan::updateOrCreate(
+            ['id_tipe_kategori' => $kategori->id_kategori],
+            ['denda_per_hari'   => $request->denda_per_hari]
+        );
+
+        return back()->with('success', 'Tipe berhasil diperbarui.');
     }
 
     public function storeBrand(Request $request)
@@ -109,13 +136,6 @@ class KategoriController extends Controller
         return back()->with('success', 'Merek "' . $request->nama_kategori . '" berhasil ditambahkan.');
     }
 
-    public function updateType(Request $request, Kategori_data $kategori)
-    {
-        $request->validate(['nama_kategori' => 'required|string|max:255']);
-        $kategori->update(['nama_kategori' => $request->nama_kategori]);
-        return back()->with('success', 'Tipe berhasil diperbarui.');
-    }
-
     public function updateBrand(Request $request, Kategori_data $kategori)
     {
         $request->validate([
@@ -129,7 +149,6 @@ class KategoriController extends Controller
         ];
 
         if ($request->hasFile('foto_logo')) {
-            // hapus file lama kalau ada
             if ($kategori->foto_logo && file_exists(public_path($kategori->foto_logo))) {
                 unlink(public_path($kategori->foto_logo));
             }
@@ -181,16 +200,16 @@ class KategoriController extends Controller
     {
         $products = Barang::with(['typeCategory'])
             ->where('id_merek_kategori', $kategori->id_kategori)
-            ->select('id', 'name', 'id_tipe_kategori', 'stok', 'harga_per_hari', 'kategori')
+            ->select('id_barang', 'name', 'id_tipe_kategori', 'stok', 'harga_per_hari', 'kategori')
             ->get()
             ->map(function ($product) {
                 $lajuSewa = DB::table('pesanan')
-                    ->where('product_id', $product->id)
+                    ->where('product_id', $product->id_barang)
                     ->whereIn('status', ['selesai', 'dikemas', 'dikirim', 'pengembalian'])
                     ->count();
 
                 return [
-                    'id'        => $product->id,
+                    'id'        => $product->id_barang,
                     'name'      => $product->name,
                     'tipe'      => $product->typeCategory?->nama_kategori ?? '-',
                     'stok'      => $product->stok,
@@ -212,11 +231,11 @@ class KategoriController extends Controller
     {
         $products = Barang::with(['brandCategory'])
             ->where('id_tipe_kategori', $kategori->id_kategori)
-            ->select('id', 'name', 'id_merek_kategori', 'stok', 'harga_per_hari', 'kategori')
+            ->select('id_barang', 'name', 'id_merek_kategori', 'stok', 'harga_per_hari', 'kategori')
             ->get()
             ->map(function ($product) {
                 return [
-                    'id'       => $product->id,
+                    'id'       => $product->id_barang,
                     'name'     => $product->name,
                     'merek'    => $product->brandCategory?->nama_kategori ?? '-',
                     'stok'     => $product->stok,
