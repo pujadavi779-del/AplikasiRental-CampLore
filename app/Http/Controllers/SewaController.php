@@ -43,7 +43,7 @@ class SewaController extends Controller
                 'order_db_id'      => $first->id,
                 'order_number'     => $first->order_id,
                 'status'           => $first->status,
-                'total_harga'      => $items->sum('total_harga') + $first->biaya_pengiriman + $first->biaya_layanan,
+                'total_harga' => $items->sum('total_harga'),
                 'payment_deadline' => $first->created_at->addHours(24),
                 'hari_terlambat'   => $first->hari_terlambat ?? 0,
                 'keterlambatan_biaya' => $first->keterlambatan_biaya ?? 0,
@@ -62,8 +62,7 @@ class SewaController extends Controller
                             // Foto kamera & camping disimpan langsung di public/img_foto, bukan storage
                             $urlGambar = asset(ltrim($kolomGambar, '/'));
                         } else {
-                            // Foto produk lain disimpan di storage/app/public
-                            $urlGambar = asset('storage/' . ltrim($kolomGambar, '/'));
+                            $urlGambar = asset($kolomGambar);
                         }
                     }
 
