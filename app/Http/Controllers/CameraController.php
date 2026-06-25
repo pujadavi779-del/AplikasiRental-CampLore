@@ -56,7 +56,7 @@ class CameraController extends Controller
         // Ambil data kategori untuk dropdown di form tambah kamera
         $types = Kategori_data::where('kategori_utama', 'Kamera')->where('jenis_atribut', 'Tipe')->get();
         $brands = Kategori_data::where('kategori_utama', 'Kamera')->where('jenis_atribut', 'Merek')->get();
-        
+
         return view('camera.create_camera', compact('types', 'brands'));
     }
 
@@ -93,7 +93,7 @@ class CameraController extends Controller
         $item = Barang::findOrFail($id);
         $types = Kategori_data::where('kategori_utama', 'Kamera')->where('jenis_atribut', 'Tipe')->get();
         $brands = Kategori_data::where('kategori_utama', 'Kamera')->where('jenis_atribut', 'Merek')->get();
-        
+
         return view('camera.edit_camera', compact('item', 'types', 'brands'));
     }
 
@@ -131,7 +131,7 @@ class CameraController extends Controller
     public function destroy($id)
     {
         $item = Barang::findOrFail($id);
-        
+
         if ($item->gambar_barang && file_exists(public_path($item->gambar_barang))) {
             @unlink(public_path($item->gambar_barang));
         }
@@ -141,53 +141,57 @@ class CameraController extends Controller
     }
 
     public function show($id)
-{
-    $item = Barang::findOrFail($id);
+    {
+        $item = Barang::findOrFail($id);
 
-    $relatedItems = Barang::where('kategori', 'Kamera')
-        ->where('id_barang', '!=', $item->id_barang)
-        ->take(5)
-        ->get();
+        $relatedItems = Barang::where('kategori', 'Kamera')
+            ->where('id_barang', '!=', $item->id_barang)
+            ->take(5)
+            ->get();
 
-    // Ambil reviews dengan pelanggan
-    $reviews = \App\Models\Review::with('pelanggan')
-        ->where('product_id', $id)
-        ->latest()
-        ->get();
+        // Ambil reviews dengan pelanggan
+        $reviews = \App\Models\Review::with('pelanggan')
+            ->where('product_id', $id)
+            ->latest()
+            ->get();
 
-    $avgRating = $reviews->count() ? round($reviews->avg('bintang'), 1) : 0;
+        $avgRating = $reviews->count() ? round($reviews->avg('bintang'), 1) : 0;
 
-    // Cek apakah pelanggan yang login boleh review
-    // CameraController.php & CampingController.php - method show()
+        // Cek apakah pelanggan yang login boleh review
+        // CameraController.php & CampingController.php - method show()
 
-$canReview = false;
-$reviewOrder = null;
-if (auth()->check()) {
-    $reviewOrder = \App\Models\Pemesanan::where('user_id', auth()->id())
-        ->where('product_id', $id)
-        ->where('status', 'selesai')        // ← INI yang sudah ada
-        ->whereNotIn('status', ['dibatalkan', 'pengembalian', 'dikemas', 'jalan']) // ← TAMBAH INI
-        ->first();
-    $alreadyReviewed = \App\Models\Review::where('user_id', auth()->id())
-        ->where('product_id', $id)
-        ->exists();
-    $canReview = $reviewOrder && !$alreadyReviewed;
-}
+        $canReview = false;
+        $reviewOrder = null;
+        if (auth()->check()) {
+            // FIX: Cari di pesanan_detail, bukan langsung di pesanan. Juga typo Pemesanan -> Pesanan
+            $reviewOrder = \App\Models\Pesanan::where('user_id', auth()->id())
+                ->where('status', 'selesai')
+                ->whereHas('details', function ($q) use ($id) {
+                    $q->where('product_id', $id);
+                })
+                ->first();
 
-    return view('pages.landing.kategori.details_LP', [
-        'item'          => $item,
-        'relatedItems'  => $relatedItems,
-        'kategori'      => 'camera',
-        'categoryLabel' => 'Kamera',
-        'reviews'       => $reviews,
-        'avgRating'     => $avgRating,
-        'canReview'     => $canReview,
-        'reviewOrder'   => $reviewOrder,
-        'accordions'    => [
-            ['title' => 'Tentang Kamera ini', 'deskripsi' => $item->deskripsi ?? 'Deskripsi tidak tersedia.', 'open' => true],
-            ['title' => 'Sorotan',            'deskripsi' => $item->sorotan ?? 'Spesifikasi unggulan tidak tersedia.', 'open' => false],
-            ['title' => 'Isi Paket',          'deskripsi' => $item->isi_paket ?? 'Informasi isi paket tidak tersedia.', 'open' => false],
-        ],
-    ]);
-}
+            $alreadyReviewed = \App\Models\Review::where('user_id', auth()->id())
+                ->where('product_id', $id)
+                ->exists();
+
+            $canReview = $reviewOrder && !$alreadyReviewed;
+        }
+
+        return view('pages.landing.kategori.details_LP', [
+            'item'          => $item,
+            'relatedItems'  => $relatedItems,
+            'kategori'      => 'camera',
+            'categoryLabel' => 'Kamera',
+            'reviews'       => $reviews,
+            'avgRating'     => $avgRating,
+            'canReview'     => $canReview,
+            'reviewOrder'   => $reviewOrder,
+            'accordions'    => [
+                ['title' => 'Tentang Kamera ini', 'deskripsi' => $item->deskripsi ?? 'Deskripsi tidak tersedia.', 'open' => true],
+                ['title' => 'Sorotan',            'deskripsi' => $item->sorotan ?? 'Spesifikasi unggulan tidak tersedia.', 'open' => false],
+                ['title' => 'Isi Paket',          'deskripsi' => $item->isi_paket ?? 'Informasi isi paket tidak tersedia.', 'open' => false],
+            ],
+        ]);
+    }
 }

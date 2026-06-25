@@ -33,10 +33,17 @@
             <div>
                 <div class="text-[11px] font-semibold text-[#6b7280] uppercase tracking-wide mb-0.5">Produk yang kamu sewa</div>
                 <div class="text-base font-extrabold text-[#1a1a1a]">{{ $product->name }}</div>
+                @php
+                    // Ambil detail pertama untuk mendapatkan tanggal & durasi sewa
+                    if (!$pesanan->relationLoaded('details')) {
+                        $pesanan->load('details');
+                    }
+                    $detailUlasan = $pesanan->details->first();
+                @endphp
                 <div class="text-xs text-[#6b7280] mt-0.5">
-                    Sewa {{ $pesanan->days }} hari •
-                    {{ \Carbon\Carbon::parse($pesanan->start_date)->format('d M') }} –
-                    {{ \Carbon\Carbon::parse($pesanan->end_date)->format('d M Y') }}
+                    Sewa {{ $detailUlasan ? $detailUlasan->days : '-' }} hari &bull;
+                    {{ $detailUlasan ? \Carbon\Carbon::parse($detailUlasan->start_date)->format('d M') : '-' }} &ndash;
+                    {{ $detailUlasan ? \Carbon\Carbon::parse($detailUlasan->end_date)->format('d M Y') : '-' }}
                 </div>
             </div>
         </div>

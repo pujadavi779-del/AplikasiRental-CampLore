@@ -212,19 +212,27 @@ $section = 'Pengguna';
                     ];
                     $st = $statusMap[$pesanan->status] ?? ['label' => ucfirst($pesanan->status), 'badge' => 'badge-default', 'color' => 'gray'];
 
-                    $allOrderItems = \App\Models\Pesanan::where('order_id', $pesanan->order_id)->get();
-                    $totalBayar = $allOrderItems->sum('total_harga')
-                    + $allOrderItems->first()->biaya_pengiriman
-                    + $allOrderItems->first()->biaya_layanan;
+                    // Sekarang total_harga sudah merupakan grand total (termasuk ongkir & layanan)
+                    $totalBayar = $pesanan->total_harga;
 
                     $namaUser = optional($pesanan->pelanggan)->nama_lengkap ?? 'Pelanggan';
                     $parts = explode(' ', $namaUser);
                     $inisial = strtoupper(substr($parts[0],0,1).(isset($parts[1])?substr($parts[1],0,1):''));
 
-                    $orderItems = $allOrderItems->map(fn($o) => [
-                    'nama' => $o->product->name ?? 'Produk',
-                    'kategori' => $o->product->kategori ?? 'Lainnya',
+                    // Load relasi details jika belum ter-load
+                    if (!$pesanan->relationLoaded('details')) {
+                        $pesanan->load('details.barang');
+                    }
+
+                    $orderItems = $pesanan->details->map(fn($d) => [
+                    'nama' => $d->barang->name ?? 'Produk',
+                    'kategori' => $d->barang->kategori ?? 'Lainnya',
                     ]);
+
+                    // Ambil tanggal dari detail pertama
+                    $firstDetail = $pesanan->details->first();
+                    $tanggalMulai = $firstDetail ? \Carbon\Carbon::parse($firstDetail->start_date)->format('d M Y') : '-';
+                    $tanggalSelesai = $firstDetail ? \Carbon\Carbon::parse($firstDetail->end_date)->format('d M Y') : '-';
                     @endphp
 
                     <tr class="pay-row">
@@ -278,8 +286,8 @@ $section = 'Pengguna';
                                     statusColor: '{{ $st['color'] }}',
                                     metode:      'QRIS / Transfer',
                                     total:       'Rp {{ number_format($totalBayar, 0, ',', '.') }}',
-                                    mulai:       '{{ $pesanan->start_date ? \Carbon\Carbon::parse($pesanan->start_date)->format('d M Y') : '-' }}',
-                                    selesai:     '{{ $pesanan->end_date   ? \Carbon\Carbon::parse($pesanan->end_date)->format('d M Y')   : '-' }}',
+                                    mulai:       '{{ $tanggalMulai }}',
+                                    selesai:     '{{ $tanggalSelesai }}',
                                     noHp:        '{{ $pesanan->alamatPengiriman && $pesanan->alamatPengiriman->no_tlp ? $pesanan->alamatPengiriman->no_tlp : ($pesanan->pelanggan && $pesanan->pelanggan->no_tlp ? $pesanan->pelanggan->no_tlp : '-') }}',
                                     alamat:      '{{ $pesanan->alamatPengiriman ? addslashes($pesanan->alamatPengiriman->alamat_lengkap) : '-' }}',
                                     items:       {{ json_encode($orderItems->values()) }}

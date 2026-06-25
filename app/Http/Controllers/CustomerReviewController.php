@@ -16,14 +16,24 @@ class CustomerReviewController extends Controller
      */
     public function create($orderId)
     {
-        $pesanan = Pesanan::where('id_pesanan', $orderId)
+        $pesanan = Pesanan::with('details.barang')
+            ->where('id_pesanan', $orderId)
             ->where('user_id', Auth::id())
             ->where('status', 'selesai')
             ->firstOrFail();
 
+        // Ambil detail pesanan pertama (karena 1 pesanan bisa punya banyak item, 
+        // untuk review saat ini kita ambil item pertama)
+        $detail = $pesanan->details->first();
+
+        if (!$detail) {
+            return redirect()->route('pelanggan.sewa')
+                ->with('error', 'Detail pesanan tidak ditemukan.');
+        }
+
         // Cek apakah sudah pernah review produk ini
         $alreadyReviewed = Review::where('user_id', Auth::id())
-            ->where('product_id', $pesanan->product_id)
+            ->where('product_id', $detail->product_id)
             ->exists();
 
         if ($alreadyReviewed) {
@@ -31,7 +41,7 @@ class CustomerReviewController extends Controller
                 ->with('success', 'Kamu sudah pernah memberikan ulasan untuk produk ini.');
         }
 
-        $product = $pesanan->product;
+        $product = $detail->barang;
 
         return view('pages.pelanggan.ulasan.tulis', compact('pesanan', 'product'));
     }
@@ -41,14 +51,23 @@ class CustomerReviewController extends Controller
      */
     public function store(Request $request, $orderId)
     {
-        $pesanan = Pesanan::where('id_pesanan', $orderId)
+        $pesanan = Pesanan::with('details')
+            ->where('id_pesanan', $orderId)
             ->where('user_id', Auth::id())
             ->where('status', 'selesai')
             ->firstOrFail();
 
+        // Ambil detail pesanan pertama
+        $detail = $pesanan->details->first();
+
+        if (!$detail) {
+            return redirect()->route('pelanggan.sewa')
+                ->with('error', 'Detail pesanan tidak ditemukan.');
+        }
+
         // Pastikan belum review
         $alreadyReviewed = Review::where('user_id', Auth::id())
-            ->where('product_id', $pesanan->product_id)
+            ->where('product_id', $detail->product_id)
             ->exists();
 
         if ($alreadyReviewed) {
@@ -67,7 +86,7 @@ class CustomerReviewController extends Controller
 
         Review::create([
             'user_id'    => Auth::id(),
-            'product_id' => $pesanan->product_id,
+            'product_id' => $detail->product_id,
             'bintang'     => $request->bintang,
             'komentar'    => $request->komentar,
             'is_replied' => false,
@@ -76,6 +95,7 @@ class CustomerReviewController extends Controller
         return redirect()->route('pelanggan.sewa')
             ->with('success', 'Ulasan berhasil dikirim! Terima kasih atas penilaianmu.');
     }
+
     public function show($reviewId)
     {
         $review = Review::with(['product' => function ($q) {

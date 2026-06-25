@@ -13,40 +13,38 @@ class Pesanan extends Model
         'order_id',
         'user_id',
         'alamat_pengiriman_id',
-        'product_id',
-        'start_date',
-        'end_date',
-        'days',
-        'quantity',
-        'note',
-        'harga_per_hari',
-        'total_harga',
+        'status',
+        'snap_token',
+        'metode_pengiriman',
         'biaya_pengiriman',
         'biaya_layanan',
-        'metode_pengiriman',
-        'snap_token',
-        'status',
+        'total_harga',
         'bukti_pembayaran',
-        'bukti_pengiriman',
     ];
 
     protected $casts = [
-        'start_date' => 'date',
-        'end_date' => 'date',
+        'total_harga' => 'decimal:2',
     ];
 
-    public function alamatPengiriman()
-{
-    return $this->belongsTo(AlamatPengiriman::class, 'alamat_pengiriman_id', 'id_alamat');
-}
-
-    public function product()
+    // === RELASI BARU KE DETAIL ===
+    public function details()
     {
-        return $this->belongsTo(Barang::class, 'product_id');
+        return $this->hasMany(PesananDetail::class, 'pesanan_id', 'id_pesanan');
+    }
+
+    public function alamatPengiriman()
+    {
+        return $this->belongsTo(AlamatPengiriman::class, 'alamat_pengiriman_id', 'id_alamat');
     }
 
     public function pelanggan()
     {
         return $this->belongsTo(Pelanggan::class, 'user_id', 'id_pelanggan');
+    }
+
+    // === HELPER: ambil subtotal dari detail ===
+    public function getSubtotalAttribute()
+    {
+        return $this->details->sum('subtotal');
     }
 }

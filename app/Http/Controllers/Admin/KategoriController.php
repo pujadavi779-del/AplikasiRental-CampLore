@@ -198,20 +198,22 @@ class KategoriController extends Controller
 
     public function brandDetail(Kategori_data $kategori)
     {
-        $products = Barang::with(['typeCategory'])
-            ->where('id_merek_kategori', $kategori->id_kategori)
+        $products = Barang::where('id_merek_kategori', $kategori->id_kategori)
             ->select('id_barang', 'name', 'id_tipe_kategori', 'stok', 'harga_per_hari', 'kategori')
             ->get()
             ->map(function ($product) {
+                // FIX: Join ke pesanan_detail karena product_id sudah pindah
                 $lajuSewa = DB::table('pesanan')
-                    ->where('product_id', $product->id_barang)
-                    ->whereIn('status', ['selesai', 'dikemas', 'dikirim', 'pengembalian'])
-                    ->count();
+                    ->join('pesanan_detail', 'pesanan.id_pesanan', '=', 'pesanan_detail.pesanan_id')
+                    ->where('pesanan_detail.product_id', $product->_id_barang)
+                    ->whereIn('pesanan.status', ['selesai', 'dikemas', 'dikirim', 'pengembalian'])
+                    ->distinct()
+                    ->count('pesanan.id_pesanan');
 
                 return [
                     'id'        => $product->id_barang,
                     'name'      => $product->name,
-                    'tipe'      => $product->typeCategory?->nama_kategori ?? '-',
+                    'tipe'      => '-', // Sementara diarah ke '-' karena tabel data_kategori sudah dihapus
                     'stok'      => $product->stok,
                     'price'     => $product->harga_per_hari,
                     'kategori'  => $product->kategori,

@@ -7,8 +7,13 @@
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap');
 
-    * { font-family: 'Inter', sans-serif; }
-    .font-serif { font-family: 'Playfair Display', serif !important; }
+    * {
+        font-family: 'Inter', sans-serif;
+    }
+
+    .font-serif {
+        font-family: 'Playfair Display', serif !important;
+    }
 </style>
 
 {{-- Navbar Breadcrumb --}}
@@ -63,6 +68,14 @@
                         </select>
                     </div>
 
+                    @php
+                    // Karena form ini mengedit 1 item, kita ambil detail pesanan pertama
+                    if (!$pesanan->relationLoaded('details')) {
+                    $pesanan->load('details.barang');
+                    }
+                    $detail = $pesanan->details->first();
+                    @php
+
                     <div>
                         <label class="block text-[10px] font-bold text-[#22543D] uppercase tracking-widest mb-3 px-1">Produk Disewa</label>
                         <div class="p-1 rounded-2xl bg-gray-50 border border-gray-100">
@@ -70,7 +83,7 @@
                                 @foreach($products as $product)
                                 <option value="{{ $product->id }}"
                                     data-price="{{ $product->price }}"
-                                    {{ $pesanan->product_id == $product->id ? 'selected' : '' }}>
+                                    {{ $detail && $detail->product_id == $product->id ? 'selected' : '' }}>
                                     {{ $product->name}} (Rp {{ number_format($product->price, 0, ',', '.') }}/hari)
                                 </option>
                                 @endforeach
@@ -81,11 +94,11 @@
                     <div class="grid grid-cols-2 gap-6">
                         <div>
                             <label class="block text-[10px] font-bold text-[#22543D] uppercase tracking-widest mb-3 px-1">Mulai Sewa</label>
-                            <input type="date" name="start_date" id="start_date" value="{{ $pesanan->start_date }}" class="w-full px-5 py-4 rounded-2xl border border-gray-100 bg-gray-50 text-sm focus:ring-4 focus:ring-[#22543D]/5 outline-none transition-all">
+                            <input type="date" name="start_date" id="start_date" value="{{ $detail ? $detail->start_date->format('Y-m-d') : '' }}" class="w-full px-5 py-4 rounded-2xl border border-gray-100 bg-gray-50 text-sm focus:ring-4 focus:ring-[#22543D]/5 outline-none transition-all">
                         </div>
                         <div>
                             <label class="block text-[10px] font-bold text-[#22543D] uppercase tracking-widest mb-3 px-1">Berakhir</label>
-                            <input type="date" name="end_date" id="end_date" value="{{ $pesanan->end_date }}" class="w-full px-5 py-4 rounded-2xl border border-gray-100 bg-gray-50 text-sm focus:ring-4 focus:ring-[#22543D]/5 outline-none transition-all">
+                            <input type="date" name="end_date" id="end_date" value="{{ $detail ? $detail->end_date->format('Y-m-d') : '' }}" class="w-full px-5 py-4 rounded-2xl border border-gray-100 bg-gray-50 text-sm focus:ring-4 focus:ring-[#22543D]/5 outline-none transition-all">
                         </div>
                     </div>
                 </div>
@@ -112,19 +125,24 @@
                         <div class="space-y-5">
                             <div class="flex justify-between text-xs">
                                 <span class="opacity-70">Harga Sewa / Hari</span>
-                                <span id="display-price" class="font-semibold text-sm">Rp {{ number_format($pesanan->harga_per_hari, 0, ',', '.') }}</span>
+                                <span id="display-price" class="font-semibold text-sm">Rp {{ number_format($detail ? $detail->harga_per_hari : 0, 0, ',', '.') }}</span>
                             </div>
                             <div class="flex justify-between text-xs">
                                 <span class="opacity-70">Durasi Sewa</span>
-                                <span id="display-days" class="font-semibold text-sm">{{ $pesanan->days }} Hari</span>
+                                <span id="display-days" class="font-semibold text-sm">{{ $detail ? $detail->days : 0 }} Hari</span>
                             </div>
                             <div class="pt-6 border-t border-white/10 flex justify-between items-center">
-                                <span class="text-xs font-bold uppercase tracking-widest opacity-80">Total Tagihan</span>
-                                <span id="display-total" class="text-3xl font-serif font-bold tracking-tight">Rp {{ number_format($pesanan->total_harga, 0, ',', '.') }}</span>
+                                <span class="text-xs font-bold uppercase tracking-widest opacity-80">Subtotal Item</span>
+                                <span id="display-total" class="text-3xl font-serif font-bold tracking-tight">Rp {{ number_format($detail ? $detail->subtotal : 0, 0, ',', '.') }}</span>
                             </div>
                         </div>
 
-                        <input type="hidden" name="total_harga" id="input-total" value="{{ $pesanan->total_harga }}">
+                        @php
+                        // Biaya dasar untuk dikirim ke JS agar hitungan akurat
+                        $biayaTambahan = ($pesanan->biaya_pengiriman ?? 0) + ($pesanan->biaya_layanan ?? 0);
+                        @php
+                        <input type="hidden" name="biaya_tambahan" id="input-biaya-tambahan" value="{{ $biayaTambahan }}">
+                        <input type="hidden" name="subtotal" id="input-total" value="{{ $detail ? $detail->subtotal : 0 }}">
                     </div>
                 </div>
 
@@ -157,12 +175,12 @@
         if (start && end && end >= start) {
             const diffTime = Math.abs(end - start);
             const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1;
-            const total = diffDays * pricePerDay;
+            const subtotal = diffDays * pricePerDay; // Ini hanya subtotal item
 
             document.getElementById('display-price').innerText = `Rp ${parseInt(pricePerDay).toLocaleString('id-ID')}`;
             document.getElementById('display-days').innerText = `${diffDays} Hari`;
-            document.getElementById('display-total').innerText = `Rp ${total.toLocaleString('id-ID')}`;
-            document.getElementById('input-total').value = total;
+            document.getElementById('display-total').innerText = `Rp ${subtotal.toLocaleString('id-ID')}`;
+            document.getElementById('input-total').value = subtotal; // Diubah namanya jadi subtotal
         }
     }
 

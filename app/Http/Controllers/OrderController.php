@@ -5,29 +5,39 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Models\Pesanan;
+use App\Models\PesananDetail;
 use App\Models\Barang;
+use Carbon\Carbon;
 
 class OrderController extends Controller
 {
     public function index()
     {
-        $pesanan = Pesanan::with(['products', 'pelanggan'])->get()->map(fn($o) => [
-            'id'       => '#ORD-' . str_pad($o->id, 3, '0', STR_PAD_LEFT),
-            'name'     => $o->pelanggan->name,
-            'email'    => $o->pelanggan->email,
-            'av'       => strtoupper(
-                substr($o->pelanggan->name, 0, 1) .
-                    substr($o->pelanggan->name, strpos($o->pelanggan->name, ' ') + 1, 1)
-            ),
-            'products' => $o->products->map(fn($p) => [
-                'name' => $p->name,
-                'type' => $p->type
-            ]),
-            'price'    => $o->total_harga,
-            'days'     => $o->duration_days,
-            'status'   => $o->status,
-            'date'     => $o->created_at->format('Y-m-d'),
-        ]);
+        $pesanan = Pesanan::with(['details.barang', 'pelanggan'])->get()->map(function ($o) {
+            // Kelompokkan produk dari detail
+            $products = $o->details->map(fn($d) => [
+                'name' => $d->barang->name ?? 'Produk Dihapus',
+                'type' => $d->barang->tipeKategori->nama_tipe ?? '-',
+            ]);
+
+            // Ambil total hari dari detail pertama (untuk display sederhana)
+            $days = $o->details->isNotEmpty() ? $o->details->first()->days : 0;
+
+            return [
+                'id'       => '#ORD-' . str_pad($o->id_pesanan, 3, '0', STR_PAD_LEFT),
+                'name'     => $o->pelanggan->nama_lengkap ?? 'Unknown',
+                'email'    => $o->pelanggan->email ?? '-',
+                'av'       => strtoupper(
+                    substr($o->pelanggan->nama_lengkap ?? 'U', 0, 1) .
+                    substr($o->pelanggan->nama_lengkap ?? 'U', strpos($o->pelanggan->nama_lengkap ?? 'U', ' ') + 1, 1)
+                ),
+                'products' => $products,
+                'price'    => $o->total_harga,
+                'days'     => $days,
+                'status'   => $o->status,
+                'date'     => $o->created_at->format('Y-m-d'),
+            ];
+        });
 
         return view('admin.pesanan.index', compact('pesanan'));
     }
@@ -38,28 +48,28 @@ class OrderController extends Controller
             $orderId = $request->input('order_id');
 
             return DB::transaction(function () use ($orderId) {
-                // Ambil dulu pesanan yang akan dibatalkan, sekaligus lock barisnya
-                $pesananList = Pesanan::where('order_id', $orderId)
+                // Sekarang 1 order_id = 1 header pesanan
+                $pesanan = Pesanan::where('order_id', $orderId)
                     ->where('user_id', auth()->id())
                     ->where('status', 'belum_bayar')
                     ->lockForUpdate()
-                    ->get();
+                    ->first();
 
-                if ($pesananList->isEmpty()) {
+                if (!$pesanan) {
                     return response()->json([
-                        'status' => 'error',
+                        'status'  => 'error',
                         'message' => 'Pesanan tidak ditemukan atau tidak bisa dibatalkan'
                     ], 404);
                 }
 
-                foreach ($pesananList as $pesanan) {
-                    // Kembalikan stok karena pesanan dibatalkan
-                    Barang::where('id_barang', $pesanan->product_id)
+                // Kembalikan stok untuk SEMUA detail di pesanan ini
+                foreach ($pesanan->details as $detail) {
+                    Barang::where('id_barang', $detail->product_id)
                         ->lockForUpdate()
-                        ->increment('stok', $pesanan->quantity);
-
-                    $pesanan->update(['status' => 'dibatalkan']);
+                        ->increment('stok', $detail->quantity);
                 }
+
+                $pesanan->update(['status' => 'dibatalkan']);
 
                 return response()->json(['status' => 'success']);
             });
@@ -75,12 +85,14 @@ class OrderController extends Controller
 
             return DB::transaction(function () use ($request, $items) {
                 $orderId = 'CPL-' . date('Ymd') . '-' . strtoupper(substr(uniqid(), -5));
-                $idPelanggan = auth()->user()->id_pelanggan ?? auth()->user()->id ?? auth()->id();
+                $idPelanggan = auth()->user()->id_pelanggan ?? auth()->id();
 
-                // Validasi stok untuk SEMUA item dulu sebelum membuat pesanan apa pun
                 $cartsToProcess = [];
+                $totalSubtotal = 0;
 
+                // 1. VALIDASI STOK UNTUK SEMUA ITEM
                 foreach ($items as $item) {
+                    // Sesuaikan nama model keranjang (Cart atau Keranjang)
                     $cart = \App\Models\Cart::with('product')
                         ->where('id_keranjang', $item['id'])
                         ->where('user_id', $idPelanggan)
@@ -88,53 +100,39 @@ class OrderController extends Controller
 
                     if (!$cart) {
                         return response()->json([
-                            'status' => 'error',
+                            'status'  => 'error',
                             'message' => 'Data keranjang tidak ditemukan.'
                         ], 400);
                     }
 
                     $requestedQty = (int) ($item['quantity'] ?? 0);
 
-                    // Lock baris produk supaya stok tidak berubah ditengah proses
-                    // (penting kalau ada 2 checkout bersamaan untuk produk yang sama)
                     $barang = Barang::where('id_barang', $cart->product_id)
                         ->lockForUpdate()
                         ->first();
 
                     if (!$barang) {
                         return response()->json([
-                            'status' => 'error',
+                            'status'  => 'error',
                             'message' => 'Produk tidak ditemukan.'
                         ], 400);
                     }
 
                     if ($requestedQty < 1) {
                         return response()->json([
-                            'status' => 'error',
+                            'status'  => 'error',
                             'message' => 'Jumlah produk tidak valid.'
                         ], 400);
                     }
 
                     if ($barang->stok < $requestedQty) {
                         return response()->json([
-                            'status' => 'error',
+                            'status'  => 'error',
                             'message' => "Stok {$barang->name} tidak mencukupi. Sisa stok: {$barang->stok}."
                         ], 400);
                     }
 
-                    $cartsToProcess[] = [
-                        'cart'   => $cart,
-                        'barang' => $barang,
-                        'item'   => $item,
-                    ];
-                }
-
-                // Semua item lolos validasi stok → baru buat pesanan & kurangi stok
-                foreach ($cartsToProcess as $data) {
-                    $cart   = $data['cart'];
-                    $barang = $data['barang'];
-                    $item   = $data['item'];
-
+                    // Hitung tanggal & hari
                     $startDate = $cart->start_date ?? now()->format('Y-m-d');
                     $endDate   = $cart->end_date ?? now()->addDays($item['days'] ?? 1)->format('Y-m-d');
 
@@ -142,30 +140,57 @@ class OrderController extends Controller
                         [$startDate, $endDate] = [$endDate, $startDate];
                     }
 
-                    Pesanan::create([
-                        'order_id'         => $orderId,
-                        'user_id'          => auth()->id(),
-                        'product_id'       => $item['product_id'],
-                        'start_date'       => $startDate,
-                        'end_date'         => $endDate,
-                        'days'             => $item['days'] ?? 1,
-                        'quantity'         => $item['quantity'],
-                        'note'             => $item['note'] ?? '',
-                        'harga_per_hari'    => $cart->product->harga_per_hari ?? 0,
-                        'total_harga'      => ($cart->product->harga_per_hari ?? 0) * $item['quantity'] * ($item['days'] ?? 1),
-                        'biaya_pengiriman' => $request->input('biaya_pengiriman', 0),
-                        'biaya_layanan'      => $request->input('biaya_layanan', 2000),
-                        'metode_pengiriman'  => $request->input('metode_pengiriman', 'pickup'),
-                        'nama_pelanggan'    => $request->input('nama_pelanggan'),
-                        'pelanggan_telepon'   => $request->input('pelanggan_telepon'),
-                        'alamat_pengiriman_id' => $request->input('alamat_pengiriman_id'),
-                        'status'           => 'belum_bayar',
+                    $days = max(1, Carbon::parse($startDate)->diffInDays(Carbon::parse($endDate)));
+                    $subtotal = $barang->harga_per_hari * $requestedQty * $days;
+                    $totalSubtotal += $subtotal;
+
+                    $cartsToProcess[] = [
+                        'cart'      => $cart,
+                        'barang'    => $barang,
+                        'item'      => $item,
+                        'start_date'=> $startDate,
+                        'end_date'  => $endDate,
+                        'days'      => $days,
+                        'subtotal'  => $subtotal,
+                    ];
+                }
+
+                // 2. HITUNG GRAND TOTAL
+                $biayaPengiriman = (int) $request->input('biaya_pengiriman', 0);
+                $biayaLayanan = (int) $request->input('biaya_layanan', 2000);
+                $grandTotal = $totalSubtotal + $biayaPengiriman + $biayaLayanan;
+
+                // 3. BUAT 1 HEADER PESANAN
+                $pesanan = Pesanan::create([
+                    'order_id'            => $orderId,
+                    'user_id'             => auth()->id(),
+                    'alamat_pengiriman_id' => $request->input('alamat_pengiriman_id'),
+                    'status'              => 'belum_bayar',
+                    'metode_pengiriman'   => $request->input('metode_pengiriman', 'pickup'),
+                    'biaya_pengiriman'    => $biayaPengiriman,
+                    'biaya_layanan'       => $biayaLayanan,
+                    'total_harga'         => $grandTotal,
+                ]);
+
+                // 4. BUAT DETAIL PESANAN & KURANGI STOK
+                foreach ($cartsToProcess as $data) {
+                    PesananDetail::create([
+                        'pesanan_id'     => $pesanan->id_pesanan,
+                        'product_id'     => $data['barang']->id_barang,
+                        'quantity'       => (int) $data['item']['quantity'],
+                        'start_date'     => $data['start_date'],
+                        'end_date'       => $data['end_date'],
+                        'days'           => $data['days'],
+                        'harga_per_hari' => $data['barang']->harga_per_hari,
+                        'subtotal'       => $data['subtotal'],
+                        'note'           => $data['item']['note'] ?? '',
                     ]);
 
-                    // Kurangi stok sesuai jumlah yang dipesan
-                    $barang->decrement('stok', (int) $item['quantity']);
-
-                    $cart->delete();
+                    // Kurangi stok
+                    $data['barang']->decrement('stok', (int) $data['item']['quantity']);
+                    
+                    // Hapus keranjang
+                    $data['cart']->delete();
                 }
 
                 return response()->json(['status' => 'success']);

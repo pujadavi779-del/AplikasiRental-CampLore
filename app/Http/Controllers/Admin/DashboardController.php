@@ -18,15 +18,18 @@ class DashboardController extends Controller
         $totalKamera  = Barang::where('kategori', 'Kamera')->count();
         $totalCamping = Barang::where('kategori', 'Camping')->count();
 
+        // FIX: Join melewati pesanan_detail
         $kameraDipinjam = DB::table('pesanan')
-            ->join('barang', 'pesanan.product_id', '=', 'barang.id_barang')
+            ->join('pesanan_detail', 'pesanan.id_pesanan', '=', 'pesanan_detail.pesanan_id')
+            ->join('barang', 'pesanan_detail.product_id', '=', 'barang.id_barang')
             ->whereIn('pesanan.status', ['proses', 'pengiriman', 'jalan', 'dikembalikan'])
             ->where('barang.kategori', 'Kamera')
             ->whereNull('barang.deleted_at')
             ->count();
 
         $campingDipinjam = DB::table('pesanan')
-            ->join('barang', 'pesanan.product_id', '=', 'barang.id_barang')
+            ->join('pesanan_detail', 'pesanan.id_pesanan', '=', 'pesanan_detail.pesanan_id')
+            ->join('barang', 'pesanan_detail.product_id', '=', 'barang.id_barang')
             ->whereIn('pesanan.status', ['proses', 'pengiriman', 'jalan', 'dikembalikan'])
             ->where('barang.kategori', 'Camping')
             ->whereNull('barang.deleted_at')
@@ -35,9 +38,12 @@ class DashboardController extends Controller
         $kameraTersedia  = $totalKamera  - $kameraDipinjam;
         $campingTersedia = $totalCamping - $campingDipinjam;
 
-        $rentalTerlambat = Pesanan::where('end_date', '<', now())
-            ->whereNotIn('status', ['selesai', 'dibatalkan'])
-            ->count();
+        // FIX: Cek end_date dari pesanan_detail
+        $rentalTerlambat = Pesanan::whereHas('details', function ($q) {
+            $q->where('end_date', '<', now());
+        })
+        ->whereNotIn('status', ['selesai', 'dibatalkan'])
+        ->count();
 
         // ── CHART — 7 hari terakhir ──────────────────────────────
         $days = collect(range(6, 0))->map(fn($i) => Carbon::today()->subDays($i));
@@ -49,15 +55,18 @@ class DashboardController extends Controller
         foreach ($days as $day) {
             $labels[] = $day->locale('id')->isoFormat('ddd');
 
+            // FIX: Join melewati pesanan_detail
             $kameraPerHari[] = DB::table('pesanan')
-                ->join('barang', 'pesanan.product_id', '=', 'barang.id_barang')
+                ->join('pesanan_detail', 'pesanan.id_pesanan', '=', 'pesanan_detail.pesanan_id')
+                ->join('barang', 'pesanan_detail.product_id', '=', 'barang.id_barang')
                 ->whereDate('pesanan.created_at', $day)
                 ->where('barang.kategori', 'Kamera')
                 ->whereNull('barang.deleted_at')
                 ->count();
 
             $campingPerHari[] = DB::table('pesanan')
-                ->join('barang', 'pesanan.product_id', '=', 'barang.id_barang')
+                ->join('pesanan_detail', 'pesanan.id_pesanan', '=', 'pesanan_detail.pesanan_id')
+                ->join('barang', 'pesanan_detail.product_id', '=', 'barang.id_barang')
                 ->whereDate('pesanan.created_at', $day)
                 ->where('barang.kategori', 'Camping')
                 ->whereNull('barang.deleted_at')
@@ -75,8 +84,10 @@ class DashboardController extends Controller
         $trendLabel = ($persenNaik >= 0 ? '↑' : '↓') . ' ' . abs($persenNaik) . '% minggu ini';
 
         // ── TOP PRODUK bulan ini (hanya status aktif) ────────────
+        // FIX: Join melewati pesanan_detail
         $topRaw = DB::table('pesanan')
-            ->join('barang', 'pesanan.product_id', '=', 'barang.id_barang')
+            ->join('pesanan_detail', 'pesanan.id_pesanan', '=', 'pesanan_detail.pesanan_id')
+            ->join('barang', 'pesanan_detail.product_id', '=', 'barang.id_barang')
             ->whereMonth('pesanan.created_at', now()->month)
             ->whereIn('pesanan.status', ['selesai', 'pengiriman', 'proses', 'jalan', 'dikembalikan'])
             ->whereNull('barang.deleted_at')

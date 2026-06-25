@@ -147,6 +147,7 @@
 
             $showProgress = in_array($status, ['dikemas', 'dikirim', 'pengembalian', 'selesai']);
 
+            // Data items sudah di-map dengan rapi dari SewaController
             $items = $rental->items ?? [];
             $itemCount = count($items);
             $visibleItems = array_slice($items, 0, 1);
@@ -329,8 +330,7 @@
                     }
 
                     $isOverdue = $hariTerlambat > 0;
-                    $dendaDibayar = $rental->denda_dibayar ?? false;
-                    @endphp
+                    $dendaDibayar = isset($items[0]) ? ($items[0]->denda_dibayar ?? false) : false;                    @endphp
 
                     @if($isOverdue)
                         @if($dendaDibayar)

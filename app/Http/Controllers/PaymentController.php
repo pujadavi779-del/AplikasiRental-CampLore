@@ -10,7 +10,6 @@ class PaymentController extends Controller
 {
     public function getToken(Request $request)
     {
-        // Konfigurasi Midtrans
         \Midtrans\Config::$serverKey = env('MIDTRANS_SERVER_KEY');
         \Midtrans\Config::$isProduction = false;
         \Midtrans\Config::$isSanitized = true;
@@ -70,13 +69,6 @@ class PaymentController extends Controller
                 ];
             }
 
-            $address_details = [
-                'first_name'   => $customerName,
-                'phone'        => $customerPhone,
-                'address'      => $customerAddress,
-                'country_code' => 'IDN'
-            ];
-
             $customer_details = [
                 'first_name'       => $customerName,
                 'email'            => auth()->user()->email ?? 'customer@camplore.com',
@@ -114,41 +106,39 @@ class PaymentController extends Controller
 
         try {
             $orderId = $request->input('order_id');
+            
+            // FIX: Sekarang 1 order_id = 1 baris header pesanan
             $pesanan = \App\Models\Pesanan::where('order_id', $orderId)
                 ->where('user_id', auth()->id())
-                ->with('product')
-                ->get();
+                ->with('details.barang')
+                ->first();
 
-            if ($pesanan->isEmpty()) {
+            if (!$pesanan) {
                 return response()->json(['status' => 'error', 'message' => 'Pesanan tidak ditemukan'], 404);
             }
 
-            $first = $pesanan->first();
-
             // Kalau snap_token sudah ada, langsung pakai
-            if ($first->snap_token) {
-                return response()->json(['snapToken' => $first->snap_token]);
+            if ($pesanan->snap_token) {
+                return response()->json(['snapToken' => $pesanan->snap_token]);
             }
 
-            $subtotal = $pesanan->sum('total_harga');
-            $total    = $subtotal + $first->biaya_pengiriman + $first->biaya_layanan;
-
-            $itemDetails = $pesanan->map(fn($o) => [
-                'id'       => 'prod-' . $o->product_id,
-                'price'    => (int) ($o->harga_per_hari * $o->quantity * $o->days),
+            // FIX: Map item details dari relasi 'details'
+            $itemDetails = $pesanan->details->map(fn($d) => [
+                'id'       => 'prod-' . $d->product_id,
+                'price'    => (int) ($d->harga_per_hari * $d->quantity * $d->days),
                 'quantity' => 1,
-                'name'     => substr($o->product->name ?? 'Produk', 0, 50),
+                'name'     => substr($d->barang->name ?? 'Produk', 0, 50),
             ])->toArray();
 
             $total = collect($itemDetails)->sum('price');
 
-            if ($first->biaya_layanan > 0) {
-                $itemDetails[] = ['id' => 'service', 'price' => (int)$first->biaya_layanan, 'quantity' => 1, 'name' => 'Biaya Layanan'];
-                $total += (int)$first->biaya_layanan;
+            if ($pesanan->biaya_layanan > 0) {
+                $itemDetails[] = ['id' => 'service', 'price' => (int)$pesanan->biaya_layanan, 'quantity' => 1, 'name' => 'Biaya Layanan'];
+                $total += (int)$pesanan->biaya_layanan;
             }
-            if ($first->biaya_pengiriman > 0) {
-                $itemDetails[] = ['id' => 'shipping', 'price' => (int)$first->biaya_pengiriman, 'quantity' => 1, 'name' => 'Biaya Pengantaran'];
-                $total += (int)$first->biaya_pengiriman;
+            if ($pesanan->biaya_pengiriman > 0) {
+                $itemDetails[] = ['id' => 'shipping', 'price' => (int)$pesanan->biaya_pengiriman, 'quantity' => 1, 'name' => 'Biaya Pengantaran'];
+                $total += (int)$pesanan->biaya_pengiriman;
             }
 
             $params = [
@@ -158,16 +148,16 @@ class PaymentController extends Controller
                 ],
                 'item_details'     => $itemDetails,
                 'customer_details' => [
-                    'first_name' => $first->nama_pelanggan,
+                    'first_name' => $pesanan->pelanggan->nama_lengkap ?? 'Pelanggan',
                     'email'      => auth()->user()->email,
-                    'phone'      => $first->pelanggan_telepon,
+                    'phone'      => $pesanan->pelanggan->no_tlp ?? '',
                 ],
             ];
 
             $snapToken = \Midtrans\Snap::getSnapToken($params);
 
             // Simpan snap_token
-            \App\Models\Pesanan::where('order_id', $orderId)->update(['snap_token' => $snapToken]);
+            $pesanan->update(['snap_token' => $snapToken]);
 
             return response()->json(['snapToken' => $snapToken]);
         } catch (\Exception $e) {
@@ -178,16 +168,12 @@ class PaymentController extends Controller
     public function webhook(Request $request)
     {
         $transactionStatus = $request->input('transaction_status');
-        $orderId = $request->input('order_id'); // Ini order_id dari pelanggan
+        $orderId = $request->input('order_id'); 
 
         if ($transactionStatus == 'settlement' || $transactionStatus == 'capture') {
-
             \App\Models\Pesanan::where('order_id', $orderId)->update([
                 'status' => 'selesai'
             ]);
-
-            // Catatan: Karena di DeliveryController fungsi pengiriman() kita sudah membaca 
-            // status 'selesai', maka otomatis data ini langsung muncul di halaman Pengiriman Admin!
         }
 
         return response()->json(['status' => 'success']);
@@ -219,16 +205,13 @@ class PaymentController extends Controller
 
         return response()->json(['status' => 'success']);
     }
+
     public function adminIndex(Request $request)
     {
-        $query = \App\Models\Pesanan::with(['pelanggan', 'product'])
+        // FIX: Hapus logic groupBy karena sekarang 1 order_id = 1 baris
+        $query = \App\Models\Pesanan::with(['pelanggan', 'details.barang'])
             ->orderBy('created_at', 'desc')
-            ->whereIn('status', ['belum_bayar', 'dikemas', 'dikirim', 'selesai', 'dibatalkan'])
-            ->whereIn('id_pesanan', function ($sub) {
-                $sub->selectRaw('MIN(id_pesanan)')
-                    ->from('pesanan')
-                    ->groupBy('order_id');
-            });
+            ->whereIn('status', ['belum_bayar', 'dikemas', 'dikirim', 'selesai', 'dibatalkan']);
 
         if ($request->filled('search')) {
             $search = $request->search;
@@ -242,28 +225,23 @@ class PaymentController extends Controller
 
         return view('pages.admin.pembayaran', compact('payments'));
     }
+
     public function kirimPesanan($id)
     {
         try {
-            // Cari pesanan berdasarkan ID atau Pesanan ID
-            // Karena satu transaksi bisa berisi banyak barang dengan order_id yang sama
-            $pesanan = \App\Models\Pesanan::where('order_id', $id)->get();
+            // FIX: Sekarang 1 order_id = 1 baris, jadi cukup pakai first()
+            $pesanan = \App\Models\Pesanan::where('order_id', $id)->first();
 
-            if ($pesanan->isEmpty()) {
+            if (!$pesanan) {
                 return response()->json([
                     'success' => false,
                     'message' => 'Data transaksi tidak ditemukan.'
                 ], 404);
             }
 
-            // Jalankan update status untuk semua item di dalam transaksi tersebut
-            // Diubah menjadi 'selesai' agar otomatis lolos filter masuk ke menu Pengiriman
-            \App\Models\Pesanan::where('order_id', $id)->update([
-                'status' => 'dikirim'
-            ]);
+            $pesanan->update(['status' => 'dikirim']);
 
-            $pesanan = \App\Models\Pesanan::where('order_id', $id)->with('pelanggan')->first();
-            if ($pesanan && $pesanan->pelanggan) {
+            if ($pesanan->pelanggan) {
                 $phone = $pesanan->pelanggan->no_tlp;
                 if (str_starts_with($phone, '0')) {
                     $phone = '62' . substr($phone, 1);
@@ -273,7 +251,7 @@ class PaymentController extends Controller
 
             return response()->json([
                 'success' => true,
-                'message' => 'Status transaksi berhasil diubah menjadi Selesai dan diteruskan ke Pengiriman!'
+                'message' => 'Status transaksi berhasil diubah menjadi Dikirim!'
             ]);
         } catch (\Exception $e) {
             return response()->json([
@@ -285,11 +263,9 @@ class PaymentController extends Controller
 
     public function exportExcel()
     {
-        $pesanan = \App\Models\Pesanan::with(['pelanggan', 'product'])
+        // FIX: Hapus logic groupBy, ganti product dengan details.barang
+        $pesanan = \App\Models\Pesanan::with(['pelanggan', 'details.barang'])
             ->whereIn('status', ['dikemas', 'selesai', 'dibatalkan'])
-            ->whereIn('id_pesanan', function ($sub) {
-                $sub->selectRaw('MIN(id_pesanan)')->from('pesanan')->groupBy('order_id');
-            })
             ->orderBy('created_at', 'desc')
             ->get();
 

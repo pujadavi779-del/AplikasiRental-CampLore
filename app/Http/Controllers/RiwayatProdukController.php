@@ -14,12 +14,20 @@ class RiwayatProdukController extends Controller
 
         $dataAlat = $products->map(function ($product) {
 
-            $pesanan = Pesanan::with('pelanggan')
-                ->where('product_id', $product->id)
+            // Cari pesanan yang di dalamnya ada detail dengan product_id ini
+            $pesanan = Pesanan::with([
+                    'pelanggan',
+                    'details' => function ($q) use ($product) {
+                        $q->where('product_id', $product->id_barang);
+                    }
+                ])
+                ->whereHas('details', function ($q) use ($product) {
+                    $q->where('product_id', $product->id_barang);
+                })
                 ->get();
 
             return [
-                'id' => $product->id,
+                'id' => $product->id_barang,
                 'nama' => $product->name,
                 'kategori' => $product->kategori,
                 'img' => $product->gambar_barang
@@ -29,14 +37,17 @@ class RiwayatProdukController extends Controller
                 'totalSewa' => $pesanan->count(),
 
                 'riwayat' => $pesanan->map(function ($pesanan) {
+                    // Ambil detail spesifik untuk produk ini
+                    $detail = $pesanan->details->first();
+
                     return [
                         'nama' => $pesanan->pelanggan->nama_lengkap ?? 'Pelanggan',
                         'periode' =>
-                        \Carbon\Carbon::parse($pesanan->start_date)->format('d M Y')
+                            \Carbon\Carbon::parse($detail->start_date)->format('d M Y')
                             . ' - ' .
-                            \Carbon\Carbon::parse($pesanan->end_date)->format('d M Y'),
+                            \Carbon\Carbon::parse($detail->end_date)->format('d M Y'),
 
-                        'durasi' => $pesanan->days . ' Hari',
+                        'durasi' => $detail->days . ' Hari',
                     ];
                 })->values(),
             ];

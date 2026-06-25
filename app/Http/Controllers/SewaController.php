@@ -12,7 +12,8 @@ class SewaController extends Controller
     {
         $activeStatus = $request->query('status', 'semua');
 
-        $query = Pesanan::with('product')
+        // 1. Query langsung ke tabel pesanan (tidak perlu groupBy lagi)
+        $query = Pesanan::with('details.barang')
             ->where('user_id', Auth::id())
             ->orderBy('created_at', 'desc');
 
@@ -26,62 +27,64 @@ class SewaController extends Controller
             }
         }
 
-        $pesanan = $query->get()->groupBy('order_id')->map(function ($items) {
-            $first = $items->first();
-            $deadline = $first->created_at->addHours(24);
+        $pesanan = $query->get()->map(function ($rental) {
+            $deadline = $rental->created_at->addHours(24);
 
-            if ($first->status === 'belum_bayar' && now()->gt($deadline)) {
-                Pesanan::where('order_id', $first->order_id)
-                    ->where('status', 'belum_bayar')
-                    ->update(['status' => 'dibatalkan']);
-                $first->status = 'dibatalkan';
+            // Auto cancel jika melewati 24 jam
+            if ($rental->status === 'belum_bayar' && now()->gt($deadline)) {
+                $rental->update(['status' => 'dibatalkan']);
+                $rental->status = 'dibatalkan';
             }
 
-            return (object)[
-                'id'               => $first->id,
-                'order_id'         => $first->order_id,
-                'order_db_id'      => $first->id,
-                'order_number'     => $first->order_id,
-                'status'           => $first->status,
-                'total_harga' => $items->sum('total_harga'),
-                'payment_deadline' => $first->created_at->addHours(24),
-                'hari_terlambat'   => $first->hari_terlambat ?? 0,
-                'keterlambatan_biaya' => $first->keterlambatan_biaya ?? 0,
-                'denda_dibayar'       => $first->denda_dibayar ?? false,
-                'snap_token'       => $first->snap_token,
-                'items'            => $items->map(function ($o) {
-                    $namaProduk = $o->product->nama_barang ?? $o->product->name ?? '-';
+            // 2. Map data details menjadi format yang dimengerti oleh View
+            $items = $rental->details->map(function ($detail) {
+                $barang = $detail->barang;
+                $namaProduk = $barang->name ?? '-';
 
-                    $kolomGambar = $o->product->gambar_barang ?? $o->product->gambar ?? $o->product->foto ?? null;
-
-                    $urlGambar = null;
-                    if ($kolomGambar) {
-                        if (str_contains($kolomGambar, 'http')) {
-                            $urlGambar = $kolomGambar;
-                        } elseif (str_starts_with($kolomGambar, 'img_foto/')) {
-                            // Foto kamera & camping disimpan langsung di public/img_foto, bukan storage
-                            $urlGambar = asset(ltrim($kolomGambar, '/'));
-                        } else {
-                            $urlGambar = asset($kolomGambar);
-                        }
+                $kolomGambar = $barang->gambar_barang ?? null;
+                $urlGambar = null;
+                
+                if ($kolomGambar) {
+                    if (str_contains($kolomGambar, 'http')) {
+                        $urlGambar = $kolomGambar;
+                    } elseif (str_starts_with($kolomGambar, 'img_foto/')) {
+                        $urlGambar = asset(ltrim($kolomGambar, '/'));
+                    } else {
+                        $urlGambar = asset($kolomGambar);
                     }
+                }
 
-                    return (object)[
-                        'name'          => $namaProduk,
-                        'gambar_barang' => $urlGambar,
-                        'duration'      => $o->days,
-                        'start_date'    => $o->start_date,
-                        'end_date'      => $o->end_date,
-                        'price'         => $o->harga_per_hari,
-                        'quantity'      => $o->quantity,
-                        'overdue'       => false,
-                        'product_id'    => $o->product_id,
-                        'id_tipe_kategori' => $o->product->id_tipe_kategori ?? null,
-                        'denda_per_hari' => ($o->product && $o->product->id_tipe_kategori)
-                            ? \App\Models\Keterlambatan::where('id_tipe_kategori', $o->product->id_tipe_kategori)->value('denda_per_hari') ?? 0
-                            : 0,
-                    ];
-                })->values()->all(),
+                $dendaPerHari = 0;
+                if ($barang && $barang->id_tipe_kategori) {
+                    $dendaPerHari = \App\Models\Keterlambatan::where('id_tipe_kategori', $barang->id_tipe_kategori)->value('denda_per_hari') ?? 0;
+                }
+
+                return (object)[
+                    'name'            => $namaProduk,
+                    'gambar_barang'   => $urlGambar,
+                    'duration'        => $detail->days,
+                    'start_date'      => $detail->start_date,
+                    'end_date'        => $detail->end_date,
+                    'price'           => $detail->harga_per_hari,
+                    'quantity'        => $detail->quantity,
+                    'overdue'         => false,
+                    'product_id'      => $detail->product_id,
+                    'id_tipe_kategori'=> $barang->id_tipe_kategori ?? null,
+                    'denda_per_hari'  => $dendaPerHari,
+                    'denda_dibayar'   => $detail->denda_dibayar ?? false, // Dipakai oleh view pesanan_saya
+                ];
+            })->values()->all();
+
+            return (object)[
+                'id'                 => $rental->id_pesanan,
+                'order_id'           => $rental->order_id,
+                'order_db_id'        => $rental->id_pesanan,
+                'order_number'       => $rental->order_id,
+                'status'             => $rental->status,
+                'total_harga'        => $rental->total_harga, // Sekarang sudah grand total
+                'payment_deadline'   => $rental->created_at->addHours(24),
+                'snap_token'         => $rental->snap_token,
+                'items'              => $items,
             ];
         })->values()->all();
 
@@ -92,39 +95,41 @@ class SewaController extends Controller
     {
         $request->validate(['order_id' => 'required']);
 
-        $pesanans = Pesanan::where('order_id', $request->order_id)
+        $pesanan = Pesanan::where('order_id', $request->order_id)
             ->where('user_id', Auth::id())
-            ->get();
+            ->first();
 
-        if ($pesanans->isEmpty()) {
+        if (!$pesanan) {
             return response()->json(['status' => 'error', 'message' => 'Pesanan tidak ditemukan.']);
         }
 
-        $endDate = \Carbon\Carbon::parse($pesanans->first()->end_date)->startOfDay();
         $today = \Carbon\Carbon::now()->startOfDay();
-
-        $hariTerlambat = 0;
-        if ($today->gt($endDate)) {
-            $hariTerlambat = $today->diffInDays($endDate);
-        }
-
         $totalDenda = 0;
-        foreach ($pesanans as $p) {
-            $barang = \App\Models\Barang::withTrashed()->find($p->product_id);
-            $dendaPerHari = 0;
-            if ($barang && $barang->id_tipe_kategori) {
-                $dendaPerHari = \App\Models\Keterlambatan::where('id_tipe_kategori', $barang->id_tipe_kategori)->value('denda_per_hari') ?? 0;
-            }
-            $totalDenda += $hariTerlambat * $dendaPerHari * $p->quantity;
-        }
 
-        Pesanan::where('order_id', $request->order_id)
-            ->where('user_id', Auth::id())
-            ->update([
-                'denda_dibayar' => 1,
-                'hari_terlambat' => $hariTerlambat,
-                'keterlambatan_biaya' => $totalDenda,
+        // Hitung denda dan update per detail item
+        foreach ($pesanan->details as $detail) {
+            $endDate = \Carbon\Carbon::parse($detail->end_date)->startOfDay();
+
+            $hariTerlambat = 0;
+            if ($today->gt($endDate)) {
+                $hariTerlambat = $today->diffInDays($endDate);
+            }
+
+            $dendaPerHari = 0;
+            if ($detail->barang && $detail->barang->id_tipe_kategori) {
+                $dendaPerHari = \App\Models\Keterlambatan::where('id_tipe_kategori', $detail->barang->id_tipe_kategori)->value('denda_per_hari') ?? 0;
+            }
+
+            $dendaItem = $hariTerlambat * $dendaPerHari * $detail->quantity;
+            $totalDenda += $dendaItem;
+
+            // Update status denda di tabel pesanan_detail
+            $detail->update([
+                'denda_dibayar'       => 1,
+                'hari_terlambat'      => $hariTerlambat,
+                'keterlambatan_biaya' => $dendaItem,
             ]);
+        }
 
         return response()->json(['status' => 'success', 'message' => 'Pembayaran denda cash dikonfirmasi.']);
     }

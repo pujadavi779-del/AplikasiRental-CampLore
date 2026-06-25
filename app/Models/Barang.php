@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use App\Models\PesananDetail;
 
 class Barang extends Model
 {
@@ -27,6 +28,11 @@ class Barang extends Model
         'isi_paket',
         'stok',
     ];
+
+    public function details()
+    {
+        return $this->hasMany(PesananDetail::class, 'product_id', 'id_barang');
+    }
 
     public function typeCategory(): BelongsTo
     {

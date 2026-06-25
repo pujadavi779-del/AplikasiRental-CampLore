@@ -10,7 +10,7 @@ class LandingController extends Controller
     public function index()
     {
         $items = Barang::where('stok', '>', 0)
-            ->withCount('pesanan')
+            ->withCount(['details as pesanan_count']) // GANTI: hitung dari pesanan_detail
             ->orderByDesc('pesanan_count')
             ->orderByDesc('created_at')
             ->take(8)
