@@ -13,7 +13,7 @@ class CreateProductController extends Controller
     {
         $request->validate([
             'name'              => 'required|string|max:255',
-            'Kategori_data'     => 'required|string',
+            'kategori'          => 'required|string',
             'harga_per_hari'    => 'required|numeric',
             'stok'              => 'required|integer|min:0',
             'deskripsi'         => 'nullable|string',
@@ -21,17 +21,17 @@ class CreateProductController extends Controller
             'isi_paket'         => 'nullable|string',
             'id_tipe_kategori'  => 'nullable|exists:data_kategori,id_kategori',
             'id_merek_kategori' => 'nullable|exists:data_kategori,id_kategori',
-            'image'             => 'required|image|mimes:jpeg,png,jpg|max:2048',
+            'gambar_barang'     => 'required|image|mimes:jpeg,png,jpg|max:2048',
         ]);
 
         $imagePath = null;
-        if ($request->hasFile('image')) {
-            $imagePath = 'storage/' . $request->file('image')->store('products', 'public');
+        if ($request->hasFile('gambar_barang')) {
+            $imagePath = 'storage/' . $request->file('gambar_barang')->store('products', 'public');
         }
 
         Barang::create([
-            'name'              => $request->name, // ← UPDATE
-            'kategori'          => $request->Kategori_data,
+            'name'              => $request->name,
+            'kategori'          => $request->kategori,
             'harga_per_hari'    => $request->harga_per_hari,
             'stok'              => $request->stok,
             'deskripsi'         => $request->deskripsi,

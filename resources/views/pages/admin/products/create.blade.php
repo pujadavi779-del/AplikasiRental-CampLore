@@ -1,6 +1,6 @@
 @php
-    $NavParent = 'Product Management';
-    $section = 'Tambah Produk';
+$NavParent = 'Product Management';
+$section = 'Tambah Produk';
 @endphp
 
 @extends('layouts.admin')
@@ -44,6 +44,16 @@
         <form action="{{ route('admin.products.store') }}" method="POST" enctype="multipart/form-data" class="p-8">
             @csrf
 
+            @if ($errors->any())
+            <div class="mb-6 p-4 bg-red-50 border border-red-200 rounded-xl">
+                <ul class="text-sm text-red-600 space-y-1">
+                    @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+            @endif
+
             <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
 
                 {{-- Kiri: Input Text --}}
@@ -76,7 +86,7 @@
 
                     <div>
                         <label class="block text-[11px] font-black text-gray-400 uppercase tracking-widest mb-2">Kategori Utama</label>
-                        <select name="Kategori_data" required
+                        <select name="kategori" required
                             class="w-full px-4 py-3 bg-gray-50 border border-[#eef4f0] rounded-xl text-sm focus:ring-2 focus:ring-[#22543D]/20 focus:border-[#22543D] outline-none transition-all appearance-none">
                             <option value="" disabled selected>Pilih Kategori</option>
                             <option value="Kamera">Kamera</option>
@@ -96,9 +106,7 @@
                             <option value="">Pilih Tipe</option>
 
                             @foreach($types as $type)
-                            <option value="{{ $type->id }}">
-                                {{ $type->nama_kategori  }}
-                            </option>
+                            <option value="{{ $type->id_kategori }}">{{ $type->nama_kategori }}</option>
                             @endforeach
                         </select>
                     </div>
@@ -111,9 +119,7 @@
                             <option value="">Pilih Merek</option>
 
                             @foreach($brands as $brand)
-                            <option value="{{ $brand->id }}">
-                                {{ $brand->nama_kategori  }}
-                            </option>
+                            <option value="{{ $brand->id_kategori }}">{{ $brand->nama_kategori }}</option>
                             @endforeach
                         </select>
                     </div>
@@ -164,7 +170,7 @@
                             <p class="text-[10px] text-[#7c8b84] mt-1 uppercase tracking-wider">PNG, JPG, JPEG (Max 2MB)</p>
                         </div>
 
-                        <input type="file" name="image" id="product_image" class="absolute inset-0 opacity-0 cursor-pointer" accept="image/*" onchange="previewImage(this)">
+                        <input type="file" name="gambar_barang" id="product_image" class="absolute inset-0 opacity-0 cursor-pointer" accept="image/*" onchange="previewImage(this)">
                     </div>
                 </div>
 

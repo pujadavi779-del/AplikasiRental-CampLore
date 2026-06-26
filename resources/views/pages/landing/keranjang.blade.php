@@ -61,7 +61,7 @@
                     <div class="min-w-0">
                         <p class="text-sm font-bold text-gray-900 truncate">{{ $cart->product->name ?? '-' }}</p>
                         <p class="text-[11px] font-semibold text-[#FF6B95] uppercase tracking-wide mt-0.5">Kategori: {{ $cart->product->kategori ?? '-' }}</p>
-                        <p class="text-[10px] font-medium text-gray-500 uppercase tracking-wide">Merek: {{ $cart->product->deskripsi ?? '-' }}</p>
+                        <p class="text-[10px] font-medium text-gray-500 uppercase tracking-wide">Merek: {{ $cart->product->brandCategory->nama_kategori ?? '-' }}</p>
                     </div>
                 </div>
 

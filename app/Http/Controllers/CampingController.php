@@ -15,7 +15,7 @@ class CampingController extends Controller
         return view('admin.camping.camping_LP', compact('items'));
     }
 
-   
+
     public function landing(Request $request)
     {
         $query = Barang::where('kategori', 'Camping');
@@ -78,7 +78,7 @@ class CampingController extends Controller
     public function destroy($id)
     {
         $item = Barang::findOrFail($id);
-        
+
         // Opsional: Hapus file gambar dari public folder saat data dihapus
         if ($item->gambar_barang && file_exists(public_path($item->gambar_barang))) {
             @unlink(public_path($item->gambar_barang));
@@ -92,30 +92,31 @@ class CampingController extends Controller
 
     // 🔹 DETAIL PRODUK (SHOW)
     public function show($id)
-{
-    $item = Barang::findOrFail($id);
+    {
+        $item = Barang::findOrFail($id);
 
-    $relatedItems = Barang::where('kategori', 'Camping')
-        ->where('id_barang', '!=', $item->id_barang)
-        ->take(5)
-        ->get();
+        $relatedItems = Barang::where('kategori', 'Camping')
+            ->where('id_barang', '!=', $item->id_barang)
+            ->take(5)
+            ->get();
 
-    $reviews = \App\Models\Review::with('pelanggan')
-        ->where('product_id', $id)
-        ->latest()
-        ->get();
+        $reviews = \App\Models\Review::with('pelanggan')
+            ->where('product_id', $id)
+            ->latest()
+            ->get();
 
-    $avgRating = $reviews->count() ? round($reviews->avg('bintang'), 1) : 0;
+        $avgRating = $reviews->count() ? round($reviews->avg('bintang'), 1) : 0;
 
-    // CameraController.php & CampingController.php - method show()
+        // CameraController.php & CampingController.php - method show()
 
         $canReview = false;
         $reviewOrder = null;
         if (auth()->check()) {
-            $reviewOrder = \App\Models\Pemesanan::where('user_id', auth()->id())
-                ->where('product_id', $id)
-                ->where('status', 'selesai')        // ← INI yang sudah ada
-                ->whereNotIn('status', ['dibatalkan', 'pengembalian', 'dikemas', 'jalan']) // ← TAMBAH INI
+            $reviewOrder = \App\Models\Pesanan::where('user_id', auth()->id())
+                ->where('status', 'selesai')
+                ->whereHas('details', function ($q) use ($id) {
+                    $q->where('product_id', $id);
+                })
                 ->first();
             $alreadyReviewed = \App\Models\Review::where('user_id', auth()->id())
                 ->where('product_id', $id)
@@ -123,22 +124,22 @@ class CampingController extends Controller
             $canReview = $reviewOrder && !$alreadyReviewed;
         }
 
-    return view('pages.landing.kategori.details_LP', [
-        'item'          => $item,
-        'relatedItems'  => $relatedItems,
-        'kategori'      => 'camping',
-        'categoryLabel' => 'Camping',
-        'reviews'       => $reviews,
-        'avgRating'     => $avgRating,
-        'canReview'     => $canReview,
-        'reviewOrder'   => $reviewOrder,
-        'accordions'    => [
-            ['title' => 'Tentang Alat ini', 'deskripsi' => $item->deskripsi ?? 'Deskripsi tidak tersedia.', 'open' => true],
-            ['title' => 'Sorotan',          'deskripsi' => $item->sorotan ?? 'Spesifikasi unggulan tidak tersedia.', 'open' => false],
-            ['title' => 'Isi Paket',        'deskripsi' => $item->isi_paket ?? 'Informasi isi paket tidak tersedia.', 'open' => false],
-        ],
-    ]);
-}
+        return view('pages.landing.kategori.details_LP', [
+            'item'          => $item,
+            'relatedItems'  => $relatedItems,
+            'kategori'      => 'camping',
+            'categoryLabel' => 'Camping',
+            'reviews'       => $reviews,
+            'avgRating'     => $avgRating,
+            'canReview'     => $canReview,
+            'reviewOrder'   => $reviewOrder,
+            'accordions'    => [
+                ['title' => 'Tentang Alat ini', 'deskripsi' => $item->deskripsi ?? 'Deskripsi tidak tersedia.', 'open' => true],
+                ['title' => 'Sorotan',          'deskripsi' => $item->sorotan ?? 'Spesifikasi unggulan tidak tersedia.', 'open' => false],
+                ['title' => 'Isi Paket',        'deskripsi' => $item->isi_paket ?? 'Informasi isi paket tidak tersedia.', 'open' => false],
+            ],
+        ]);
+    }
 
     public function create()
     {
@@ -236,7 +237,7 @@ class CampingController extends Controller
             if ($product->gambar_barang && file_exists(public_path($product->gambar_barang))) {
                 @unlink(public_path($product->gambar_barang));
             }
-            
+
             $file = $request->file('gambar_barang');
             $filename = time() . '_' . $file->getClientOriginalName();
             $file->move(public_path('img_foto/camping'), $filename);

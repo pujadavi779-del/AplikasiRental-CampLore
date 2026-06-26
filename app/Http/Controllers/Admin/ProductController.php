@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Barang;
 use App\Models\Kategori_data;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
 
 class ProductController extends Controller
@@ -33,8 +34,8 @@ class ProductController extends Controller
             'deskripsi'         => 'required|string',
             'sorotan'           => 'required|string',
             'isi_paket'         => 'required|string',
-            'id_tipe_kategori'  => 'nullable|exists:data_kategori,id_kategori', // ← UPDATE
-            'id_merek_kategori' => 'nullable|exists:data_kategori,id_kategori', // ← UPDATE
+            'id_tipe_kategori'  => 'nullable|exists:data_kategori,id_kategori',
+            'id_merek_kategori' => 'nullable|exists:data_kategori,id_kategori',
             'gambar_barang'     => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
         ]);
 
@@ -44,10 +45,18 @@ class ProductController extends Controller
             $imageName = time() . '.' . $request->gambar_barang->extension();
 
             if ($request->kategori == 'Kamera') {
-                $request->gambar_barang->move(public_path('img_foto/camera'), $imageName);
+                $dir = public_path('img_foto/camera');
+                if (!File::isDirectory($dir)) {
+                    File::makeDirectory($dir, 0755, true);
+                }
+                $request->gambar_barang->move($dir, $imageName);
                 $imagePath = 'img_foto/camera/' . $imageName;
             } elseif ($request->kategori == 'Camping') {
-                $request->gambar_barang->move(public_path('img_foto/camping'), $imageName);
+                $dir = public_path('img_foto/camping');
+                if (!File::isDirectory($dir)) {
+                    File::makeDirectory($dir, 0755, true);
+                }
+                $request->gambar_barang->move($dir, $imageName);
                 $imagePath = 'img_foto/camping/' . $imageName;
             }
         }
@@ -133,13 +142,14 @@ class ProductController extends Controller
         return redirect()->route('admin.products')->with('success', 'Produk berhasil diperbarui!');
     }
 
-    public function destroy($id_barang) // ← UPDATE parameter name
+    public function destroy($id_barang)
     {
         $product = Barang::findOrFail($id_barang);
 
-        $activeOrderCount = \DB::table('pesanan')
-            ->where('product_id', $id_barang)
-            ->whereNotIn('status', ['selesai', 'dibatalkan'])
+        $activeOrderCount = \DB::table('pesanan_detail')
+            ->join('pesanan', 'pesanan_detail.pesanan_id', '=', 'pesanan.id_pesanan')
+            ->where('pesanan_detail.product_id', $id_barang)
+            ->whereNotIn('pesanan.status', ['selesai', 'dibatalkan'])
             ->count();
 
         if ($activeOrderCount > 0) {
