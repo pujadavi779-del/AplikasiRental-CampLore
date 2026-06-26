@@ -18,32 +18,41 @@ $section = 'Pengembalian';
     $col = collect($data_pengembalian);
 
     $totalAktif = $col->count();
-    $perluKembali = $col->filter(fn($i) => !empty($i->tanggal_kembali) && Carbon::parse($i->tanggal_kembali)->isToday())->count();
 
-    // filter jumlah terlambat riil hari ini
-    $terlambat = $col->filter(function($i) use ($hariIni) {
-    if (empty($i->tanggal_kembali)) return false;
-    return $hariIni->gt(Carbon::parse($i->tanggal_kembali)->startOfDay());
+    // Belum jatuh tempo: tanggal_kembali > hari ini
+    $sedangDisewa = $col->filter(function($i) use ($hariIni) {
+        if (empty($i->tanggal_kembali)) return false;
+        return Carbon::parse($i->tanggal_kembali)->startOfDay()->gt($hariIni);
     })->count();
 
-    $tepatWaktu = $totalAktif - $terlambat;
+    // Jatuh tempo hari ini: tanggal_kembali == hari ini
+    $menungguPengembalian = $col->filter(function($i) use ($hariIni) {
+        if (empty($i->tanggal_kembali)) return false;
+        return Carbon::parse($i->tanggal_kembali)->startOfDay()->equalTo($hariIni);
+    })->count();
+
+    // Lewat jatuh tempo: tanggal_kembali < hari ini
+    $terlambat = $col->filter(function($i) use ($hariIni) {
+        if (empty($i->tanggal_kembali)) return false;
+        return $hariIni->gt(Carbon::parse($i->tanggal_kembali)->startOfDay());
+    })->count();
     @endphp
 
     <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
         <div class="bg-white border border-gray-200 rounded-xl p-5">
             <p class="text-xs font-semibold text-gray-400 uppercase tracking-wide">Total Pengembalian</p>
             <p class="text-3xl font-bold text-gray-900 mt-1">{{ $totalAktif }}</p>
-            <p class="text-xs text-gray-400 mt-1">Menunggu konfirmasi admin</p>
+            <p class="text-xs text-gray-400 mt-1">Belum dikonfirmasi admin</p>
         </div>
         <div class="bg-white border border-gray-200 rounded-xl p-5">
-            <p class="text-xs font-semibold text-gray-400 uppercase tracking-wide">Perlu Kembali Hari Ini</p>
-            <p class="text-3xl font-bold text-orange-500 mt-1">{{ $perluKembali }}</p>
+            <p class="text-xs font-semibold text-gray-400 uppercase tracking-wide">Sedang Disewa</p>
+            <p class="text-3xl font-bold text-blue-500 mt-1">{{ $sedangDisewa }}</p>
+            <p class="text-xs text-gray-400 mt-1">Belum jatuh tempo</p>
+        </div>
+        <div class="bg-white border border-gray-200 rounded-xl p-5">
+            <p class="text-xs font-semibold text-gray-400 uppercase tracking-wide">Menunggu Pengembalian</p>
+            <p class="text-3xl font-bold text-orange-500 mt-1">{{ $menungguPengembalian }}</p>
             <p class="text-xs text-gray-400 mt-1">Batas kembali hari ini</p>
-        </div>
-        <div class="bg-white border border-gray-200 rounded-xl p-5">
-            <p class="text-xs font-semibold text-gray-400 uppercase tracking-wide">Tepat Waktu</p>
-            <p class="text-3xl font-bold text-green-600 mt-1">{{ $tepatWaktu }}</p>
-            <p class="text-xs text-gray-400 mt-1">Belum melewati batas</p>
         </div>
         <div class="bg-white border border-gray-200 rounded-xl p-5">
             <p class="text-xs font-semibold text-gray-400 uppercase tracking-wide">Terlambat</p>
@@ -86,33 +95,40 @@ $section = 'Pengembalian';
                     @php
                     $tglKembali = !empty($item->tanggal_kembali) ? Carbon::parse($item->tanggal_kembali)->startOfDay() : null;
 
+                    // Tiga kondisi status berdasarkan tanggal batas kembali
+                    $isBelumJatuhTempo = $tglKembali ? $tglKembali->gt($hariIni) : false;
+                    $isJatuhTempoHariIni = $tglKembali ? $tglKembali->equalTo($hariIni) : false;
                     $isOverdue = $tglKembali ? $hariIni->gt($tglKembali) : false;
+
+                    // Tombol konfirmasi hanya tampil kalau sudah jatuh tempo (hari ini atau lewat)
+                    $bisaKonfirmasi = $isJatuhTempoHariIni || $isOverdue;
+
                     $hariTerlambat = $isOverdue ? $hariIni->diffInDays($tglKembali) : 0;
                     $totalDenda = $isOverdue ? ($hariTerlambat * 10000) : 0;
 
                     $tglFormatted = $tglKembali ? $tglKembali->format('d M Y') : '-';
                     $products = collect($item->products ?? []);
-                    
+
                     // VALIDASI EXTRA: Memastikan nama_lengkap ditarik dengan benar dari objek atau array relasi
                     $namaUser = '-';
                     if (isset($item->pelanggan)) {
-                        $namaUser = is_array($item->pelanggan) 
-                            ? ($item->pelanggan['nama_lengkap'] ?? $item->pelanggan['name'] ?? '-') 
+                        $namaUser = is_array($item->pelanggan)
+                            ? ($item->pelanggan['nama_lengkap'] ?? $item->pelanggan['name'] ?? '-')
                             : ($item->pelanggan->nama_lengkap ?? $item->pelanggan->name ?? '-');
                     }
-                    
+
                     // Jika relasi langsung null, kita coba fallback mencari alternatif properti di model utama (misal ada duplikasi kolom)
                     if($namaUser == '-') {
                         $namaUser = $item->nama_lengkap ?? $item->nama_pelanggan ?? '-';
                     }
 
                     $initial = strtoupper(substr(($namaUser && $namaUser != '-') ? $namaUser : 'U', 0, 1));
-                    
+
                     $avatarBgs = ['bg-blue-100 text-blue-700','bg-pink-100 text-pink-700','bg-emerald-100 text-emerald-700','bg-violet-100 text-violet-700','bg-amber-100 text-amber-700'];
                     $avatarClass = $avatarBgs[$loop->index % count($avatarBgs)];
-                    
-                    $emailUser = is_array($item->pelanggan ?? null) 
-                        ? ($item->pelanggan['email'] ?? '-') 
+
+                    $emailUser = is_array($item->pelanggan ?? null)
+                        ? ($item->pelanggan['email'] ?? '-')
                         : ($item->pelanggan->email ?? $item->email ?? '-');
                     @endphp
                     <tr class="hover:bg-gray-50 transition-colors return-row">
@@ -152,8 +168,10 @@ $section = 'Pengembalian';
                             </div>
                             @if($isOverdue)
                             <div class="text-xs text-red-400 mt-0.5">Telat {{ $hariTerlambat }} hari</div>
+                            @elseif($isJatuhTempoHariIni)
+                            <div class="text-xs text-orange-400 mt-0.5">Hari ini</div>
                             @else
-                            <div class="text-xs text-green-500 mt-0.5">Tepat waktu</div>
+                            <div class="text-xs text-gray-400 mt-0.5">Belum jatuh tempo</div>
                             @endif
                         </td>
 
@@ -163,15 +181,20 @@ $section = 'Pengembalian';
                             <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold text-red-700 bg-red-50 border border-red-100">
                                 <span class="w-1.5 h-1.5 rounded-full bg-red-500"></span>Terlambat
                             </span>
+                            @elseif($isJatuhTempoHariIni)
+                            <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold text-orange-700 bg-orange-50 border border-orange-100">
+                                <span class="w-1.5 h-1.5 rounded-full bg-orange-500"></span>Menunggu Pengembalian
+                            </span>
                             @else
-                            <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold text-green-700 bg-green-50 border border-green-100">
-                                <span class="w-1.5 h-1.5 rounded-full bg-green-500"></span>Tepat Waktu
+                            <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold text-blue-700 bg-blue-50 border border-blue-100">
+                                <span class="w-1.5 h-1.5 rounded-full bg-blue-500"></span>Sedang Disewa
                             </span>
                             @endif
                         </td>
 
                         {{-- Aksi --}}
                         <td class="px-6 py-4">
+                            @if($bisaKonfirmasi)
                             <button type="button"
                                 onclick="bukaModalKonfirmasi(
                                 '{{ addslashes($namaUser) }}',
@@ -191,6 +214,9 @@ $section = 'Pengembalian';
                                 ✓ Konfirmasi Kembali
                                 @endif
                             </button>
+                            @else
+                            <span class="text-xs text-gray-400 italic">Belum bisa dikonfirmasi</span>
+                            @endif
                         </td>
 
                     </tr>
