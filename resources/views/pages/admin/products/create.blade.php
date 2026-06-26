@@ -86,7 +86,7 @@ $section = 'Tambah Produk';
 
                     <div>
                         <label class="block text-[11px] font-black text-gray-400 uppercase tracking-widest mb-2">Kategori Utama</label>
-                        <select name="kategori" required
+                        <select name="kategori" id="select_kategori" required
                             class="w-full px-4 py-3 bg-gray-50 border border-[#eef4f0] rounded-xl text-sm focus:ring-2 focus:ring-[#22543D]/20 focus:border-[#22543D] outline-none transition-all appearance-none">
                             <option value="" disabled selected>Pilih Kategori</option>
                             <option value="Kamera">Kamera</option>
@@ -99,27 +99,27 @@ $section = 'Tambah Produk';
                         <label class="block text-[11px] font-black text-gray-400 uppercase tracking-widest mb-2">
                             Tipe
                         </label>
-
-                        <select name="id_tipe_kategori" required
+                        <select name="id_tipe_kategori" id="select_tipe" required
                             class="w-full px-4 py-3 bg-gray-50 border border-[#eef4f0] rounded-xl text-sm">
-
                             <option value="">Pilih Tipe</option>
-
                             @foreach($types as $type)
-                            <option value="{{ $type->id_kategori }}">{{ $type->nama_kategori }}</option>
+                            <option value="{{ $type->id_kategori }}" data-kategori="{{ $type->kategori_utama }}">
+                                {{ $type->nama_kategori }}
+                            </option>
                             @endforeach
                         </select>
                     </div>
 
-
+                    {{-- MEREK --}}
                     <div>
                         <label class="block text-[11px] font-black text-gray-400 uppercase tracking-widest mb-2">Merek</label>
-                        <select name="id_merek_kategori" required
+                        <select name="id_merek_kategori" id="select_merek" required
                             class="w-full px-4 py-3 bg-gray-50 border border-[#eef4f0] rounded-xl text-sm focus:ring-2 focus:ring-[#22543D]/20 focus:border-[#22543D] outline-none transition-all appearance-none">
                             <option value="">Pilih Merek</option>
-
                             @foreach($brands as $brand)
-                            <option value="{{ $brand->id_kategori }}">{{ $brand->nama_kategori }}</option>
+                            <option value="{{ $brand->id_kategori }}" data-kategori="{{ $brand->kategori_utama }}">
+                                {{ $brand->nama_kategori }}
+                            </option>
                             @endforeach
                         </select>
                     </div>
@@ -214,6 +214,34 @@ $section = 'Tambah Produk';
         container.classList.add('hidden');
         info.classList.remove('hidden');
     }
+
+    function filterByKategori() {
+        const kategori = document.getElementById('select_kategori').value;
+
+        ['select_tipe', 'select_merek'].forEach(function(id) {
+            const select = document.getElementById(id);
+            const options = select.querySelectorAll('option[data-kategori]');
+
+            options.forEach(function(opt) {
+                if (opt.dataset.kategori === kategori) {
+                    opt.hidden = false;
+                    opt.disabled = false;
+                } else {
+                    opt.hidden = true;
+                    opt.disabled = true;
+                }
+            });
+
+            // reset pilihan kalau opsi yang sedang terpilih jadi tidak valid
+            const selected = select.querySelector('option:checked');
+            if (selected && selected.dataset.kategori && selected.dataset.kategori !== kategori) {
+                select.value = '';
+            }
+        });
+    }
+
+    document.getElementById('select_kategori').addEventListener('change', filterByKategori);
+    document.addEventListener('DOMContentLoaded', filterByKategori);
 </script>
 
 @endsection

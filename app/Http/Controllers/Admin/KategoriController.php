@@ -202,10 +202,11 @@ class KategoriController extends Controller
             ->select('id_barang', 'name', 'id_tipe_kategori', 'stok', 'harga_per_hari', 'kategori')
             ->get()
             ->map(function ($product) {
-                // FIX: Join ke pesanan_detail karena product_id sudah pindah
+                $tipe = Kategori_data::where('id_kategori', $product->id_tipe_kategori)->first();
+
                 $lajuSewa = DB::table('pesanan')
                     ->join('pesanan_detail', 'pesanan.id_pesanan', '=', 'pesanan_detail.pesanan_id')
-                    ->where('pesanan_detail.product_id', $product->_id_barang)
+                    ->where('pesanan_detail.product_id', $product->id_barang)
                     ->whereIn('pesanan.status', ['selesai', 'dikemas', 'dikirim', 'pengembalian'])
                     ->distinct()
                     ->count('pesanan.id_pesanan');
@@ -213,7 +214,7 @@ class KategoriController extends Controller
                 return [
                     'id'        => $product->id_barang,
                     'name'      => $product->name,
-                    'tipe'      => '-', // Sementara diarah ke '-' karena tabel data_kategori sudah dihapus
+                    'tipe'      => $tipe->nama_kategori ?? '-',
                     'stok'      => $product->stok,
                     'price'     => $product->harga_per_hari,
                     'kategori'  => $product->kategori,
@@ -249,6 +250,33 @@ class KategoriController extends Controller
         return response()->json([
             'tipe'     => $kategori->nama_kategori,
             'products' => $products,
+        ]);
+    }
+
+    public function getMerekDetail($merekId)
+    {
+        // ✅ PASTIKAN query ini filter berdasarkan merek YANG BENAR
+        $products = Product::where('merek_id', $merekId)
+            ->where('kategori_utama', function ($query) use ($merekId) {
+                // Ambil kategori_utama dari tabel kategori merek
+                $merek = Kategori::where('id_kategori', $merekId)->first();
+                return $merek ? $merek->kategori_utama : 'Kamera';
+            })
+            ->with(['tipeKategori', 'rentalCount']) // pastikan relasi benar
+            ->get()
+            ->map(function ($product) {
+                return [
+                    'name' => $product->nama_produk,
+                    'tipe' => $product->tipeKategori->nama_kategori ?? '-',
+                    'stok' => $product->stok_tersedia ?? 0,
+                    'price' => $product->harga_sewa ?? 0,
+                    'laju_sewa' => ($product->rentalCount ?? 0) . 'x disewa', // ✅ FIX: format laju_sewa
+                    'foto' => $product->foto_utama ? asset($product->foto_utama) : null,
+                ];
+            });
+
+        return response()->json([
+            'products' => $products
         ]);
     }
 }

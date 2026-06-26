@@ -204,14 +204,14 @@
                             <span class="text-[11px] text-gray-300">— Belum ada tanggal</span>
                         @endif
                     </div>
-
+<!-- 
                     {{-- Catatan --}}
                     <div class="mx-4 md:mx-5 mb-4">
                         <p class="text-[10px] text-gray-400 font-semibold mb-1">Catatan (opsional)</p>
                         <textarea id="note-{{ $cart->id_keranjang }}" rows="2"
                             placeholder="Contoh: tolong bawa baterai cadangan, kondisi harus mulus, dll."
                             class="w-full text-sm p-3 border border-gray-200 rounded-xl outline-none focus:border-[#FF6B95] transition resize-none text-gray-700 placeholder-gray-300"></textarea>
-                    </div>
+                    </div> -->
                 </div>
             @empty
                 <div class="p-10 text-center text-gray-400 italic">Tidak ada produk.</div>

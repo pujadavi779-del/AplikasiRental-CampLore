@@ -426,4 +426,5 @@ if (!isset($accordions)) {
 ></div>
 
 @vite('resources/js/detail_produk.js')
+@include('layouts.footer_biasa')    
 @endsection
