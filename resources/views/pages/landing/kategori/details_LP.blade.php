@@ -299,7 +299,7 @@ if (!isset($accordions)) {
     {{-- Form Tulis Ulasan --}}
     @if(isset($canReview) && $canReview && isset($reviewOrder) && $reviewOrder !== null)
     @php
-        $orderParamId = $reviewOrder->order_id ?? $reviewOrder->id_pesanan ?? $reviewOrder->id ?? null;
+        $orderParamId = $reviewOrder->id_pesanan ?? null;
     @endphp
     @if($orderParamId)
     <div class="bg-[#f9fdfb] border border-[#d7e6de] rounded-2xl p-6 mb-8">
