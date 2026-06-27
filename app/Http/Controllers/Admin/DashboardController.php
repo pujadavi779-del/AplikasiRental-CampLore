@@ -18,7 +18,6 @@ class DashboardController extends Controller
         $totalKamera  = Barang::where('kategori', 'Kamera')->count();
         $totalCamping = Barang::where('kategori', 'Camping')->count();
 
-        // FIX: Join melewati pesanan_detail
         $kameraDipinjam = DB::table('pesanan')
             ->join('pesanan_detail', 'pesanan.id_pesanan', '=', 'pesanan_detail.pesanan_id')
             ->join('barang', 'pesanan_detail.product_id', '=', 'barang.id_barang')
@@ -38,7 +37,6 @@ class DashboardController extends Controller
         $kameraTersedia  = $totalKamera  - $kameraDipinjam;
         $campingTersedia = $totalCamping - $campingDipinjam;
 
-        // FIX: Cek end_date dari pesanan_detail
         $rentalTerlambat = Pesanan::whereHas('details', function ($q) {
             $q->where('end_date', '<', now());
         })
@@ -55,7 +53,6 @@ class DashboardController extends Controller
         foreach ($days as $day) {
             $labels[] = $day->locale('id')->isoFormat('ddd');
 
-            // FIX: Join melewati pesanan_detail
             $kameraPerHari[] = DB::table('pesanan')
                 ->join('pesanan_detail', 'pesanan.id_pesanan', '=', 'pesanan_detail.pesanan_id')
                 ->join('barang', 'pesanan_detail.product_id', '=', 'barang.id_barang')
@@ -83,8 +80,7 @@ class DashboardController extends Controller
 
         $trendLabel = ($persenNaik >= 0 ? '↑' : '↓') . ' ' . abs($persenNaik) . '% minggu ini';
 
-        // ── TOP PRODUK bulan ini (hanya status aktif) ────────────
-        // FIX: Join melewati pesanan_detail
+        // ── TOP PRODUK bulan ini ─────────────────────────────────
         $topRaw = DB::table('pesanan')
             ->join('pesanan_detail', 'pesanan.id_pesanan', '=', 'pesanan_detail.pesanan_id')
             ->join('barang', 'pesanan_detail.product_id', '=', 'barang.id_barang')
@@ -104,11 +100,13 @@ class DashboardController extends Controller
             round(($p->total / $maxTotal) * 100),
         ]);
 
-        // ── TRANSAKSI TERBARU ────────────────────────────────────
-        $transactions = Pesanan::with('pelanggan')
-            ->latest()
-            ->limit(5)
-            ->get();
+       // ── TRANSAKSI TERBARU ────────────────────────────────────────
+        // ── TRANSAKSI TERBARU ────────────────────────────────────────
+ $transactions = Pesanan::with('pelanggan')
+    ->whereIn('status', ['proses', 'dibatalkan', 'selesai'])
+    ->latest()
+    ->limit(5)
+    ->get();
 
         // ── UNREPLIED COUNT ──────────────────────────────────────
         $unrepliedCount = \App\Models\Review::where('is_replied', false)->count();
