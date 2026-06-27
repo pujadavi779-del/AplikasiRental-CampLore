@@ -180,11 +180,9 @@
                         @forelse($transactions as $trx)
                         @php
                         $statusStyle = match(strtolower($trx->status ?? '')) {
-                            'lunas', 'selesai', 'paid'                       => 'bg-[#e8f8f0] text-[#4caf82] border border-[#b6e8d0]',
-                            'proses', 'pending', 'belum_bayar', 'menunggu'   => 'bg-[#fff8e1] text-[#e09a5a] border border-[#f5d8b0]',
-                            'dibatalkan'                                      => 'bg-[#fdf0f5] text-[#e07a9a] border border-[#f5c6d8]',
-                            'terlambat'                                       => 'bg-red-50 text-red-600 border border-red-100',
-                            default                                           => 'bg-gray-100 text-gray-400 border border-gray-200',
+                            'selesai', 'dikemas'  => 'bg-[#e8f8f0] text-[#4caf82] border border-[#b6e8d0]',
+                            'batal'          => 'bg-[#fdf0f5] text-[#e07a9a] border border-[#f5c6d8]',
+                            default               => 'bg-gray-100 text-gray-400 border border-gray-200',
                         };
                         $initials = strtoupper(substr($trx->pelanggan->nama_lengkap ?? '-', 0, 2));
                         @endphp
@@ -201,11 +199,13 @@
                                 {{ $trx->created_at ? $trx->created_at->format('d M Y') : '-' }}
                             </td>
                             <td class="py-5 px-2 text-sm text-center font-bold text-gray-400">
-                                {{ $trx->end_date ? \Carbon\Carbon::parse($trx->end_date)->format('d M Y') : '-' }}
+                                {{ $trx->details->first()?->end_date 
+                                    ? \Carbon\Carbon::parse($trx->details->first()->end_date)->format('d M Y') 
+                                    : '-' }}
                             </td>
                             <td class="py-5 px-2 text-right">
                                 <span class="px-4 py-1.5 rounded-full text-[11px] font-semibold {{ $statusStyle }}">
-                                    {{ $trx->status === 'belum_bayar' ? 'Proses' : ucfirst(str_replace('_', ' ', $trx->status ?? '-')) }}
+                                    {{ $trx->status === 'selesai' || $trx->status === 'dikemas' ? 'Lunas' : ($trx->status === 'dibatalkan' ? 'Batal' : ucfirst($trx->status)) }}
 
                             </td>
                         </tr>

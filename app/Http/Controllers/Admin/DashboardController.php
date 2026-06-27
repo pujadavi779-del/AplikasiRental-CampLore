@@ -100,13 +100,11 @@ class DashboardController extends Controller
             round(($p->total / $maxTotal) * 100),
         ]);
 
-       // ── TRANSAKSI TERBARU ────────────────────────────────────────
-        // ── TRANSAKSI TERBARU ────────────────────────────────────────
- $transactions = Pesanan::with('pelanggan')
-    ->whereIn('status', ['proses', 'dibatalkan', 'selesai'])
-    ->latest()
-    ->limit(5)
-    ->get();
+        $transactions = Pesanan::with(['pelanggan', 'details'])
+        ->whereIn('status', ['dikemas', 'dibatalkan', 'selesai'])
+        ->latest()
+        ->limit(5)
+        ->get();
 
         // ── UNREPLIED COUNT ──────────────────────────────────────
         $unrepliedCount = \App\Models\Review::where('is_replied', false)->count();
