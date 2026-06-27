@@ -125,7 +125,7 @@ class PaymentController extends Controller
             // FIX: Map item details dari relasi 'details'
             $itemDetails = $pesanan->details->map(fn($d) => [
                 'id'       => 'prod-' . $d->product_id,
-                'price'    => (int) ($d->harga_per_hari * $d->quantity * $d->days),
+                'price'    => (int) ($d->harga_per_hari * $d->quantity * $d->hari_lama_sewa),
                 'quantity' => 1,
                 'name'     => substr($d->barang->name ?? 'Produk', 0, 50),
             ])->toArray();

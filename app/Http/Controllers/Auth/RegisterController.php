@@ -138,7 +138,7 @@ class RegisterController extends Controller
     {
         $request->validate([
             'nama_lengkap' => ['required', 'string', 'max:255', 'regex:/^[A-Za-z\s.]+$/'],
-            'username'     => ['required', 'string', 'min:3', 'max:30', 'unique:pelanggan,username'],
+            'nama_pengguna' => ['required', 'string', 'min:3', 'max:30', 'unique:pelanggan,nama_pengguna'],
             'nik'          => ['required', 'digits:16', 'unique:pelanggan,nik'],
             'email'        => ['required', 'email', 'unique:pelanggan,email'],
             'password'     => ['required', 'confirmed', Password::min(8)
@@ -147,7 +147,7 @@ class RegisterController extends Controller
         ], [
             'nama_lengkap.required' => 'Nama lengkap wajib diisi.',
             'nama_lengkap.regex'    => 'Nama hanya boleh berisi huruf, spasi, dan titik.',
-            'username.unique'       => 'Username ini sudah dipakai.',
+            'nama_pengguna.unique'  => 'Nama pengguna ini sudah dipakai.',
             'nik.unique'            => 'NIK ini sudah terdaftar.',
             'email.unique'          => 'Email ini sudah terdaftar.',
         ]);
@@ -159,7 +159,7 @@ class RegisterController extends Controller
 
         Pelanggan::create([
             'nama_lengkap' => $request->nama_lengkap,
-            'username'     => $request->username,
+            'nama_pengguna' => $request->nama_pengguna,
             'nik'          => $request->nik,
             'email'        => $request->email,
             'password'     => Hash::make($request->password),

@@ -37,8 +37,8 @@
 
             {{-- Username --}}
             <div class="mb-3">
-                <input type="text" name="username" placeholder="Username"
-                    value="{{ old('username') }}" required
+                <input type="text" name="nama_pengguna" placeholder="Masukkan Nama Pengguna"
+                    value="{{ old('nama_pengguna') }}" required
                     class="w-full px-4 py-3 border border-[#e2e2de] rounded-[3px] text-sm font-light text-[#1a1a18] bg-[#f7f7f5] outline-none transition focus:border-[#38856a] focus:bg-white placeholder-[#bebeba]">
             </div>
 

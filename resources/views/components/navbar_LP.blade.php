@@ -124,7 +124,7 @@ $cartCount = auth()->check()
                 @else
                 {{-- Tombol navbar: tampilkan username --}}
                 <button class="flex items-center gap-2 px-3 py-2 rounded-xl border border-gray-200 hover:bg-gray-50 transition">
-                    <span class="text-sm font-semibold text-[#1A392D]">{{ auth()->user()->username }}</span>
+                    <span class="text-sm font-semibold text-[#1A392D]">{{ auth()->user()->nama_pengguna }}</span>
                 </button>
 
                 {{-- Dropdown Pelanggan: header tampilkan nama lengkap + email --}}
@@ -222,7 +222,7 @@ $cartCount = auth()->check()
             <div class="mt-4 border-t border-gray-100 pt-4">
                 <div class="px-3 mb-4">
                     {{-- Mobile: tampilkan username di atas, nama lengkap di bawah --}}
-                    <p class="text-sm font-extrabold text-gray-800 normal-case">{{ auth()->user()->username }}</p>
+                    <p class="text-sm font-extrabold text-gray-800 normal-case">{{ auth()->user()->nama_pengguna }}</p>
                     <p class="text-[10px] text-gray-400 italic normal-case">{{ auth()->user()->email }}</p>
                 </div>
                 <a href="{{ route('dashboard_pelanggan') }}" class="flex items-center gap-3 px-3 py-3 rounded-xl text-xs normal-case text-gray-600 hover:bg-pink-50">

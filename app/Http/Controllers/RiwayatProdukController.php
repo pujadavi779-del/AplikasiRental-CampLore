@@ -47,7 +47,7 @@ class RiwayatProdukController extends Controller
                             . ' - ' .
                             \Carbon\Carbon::parse($detail->end_date)->format('d M Y'),
 
-                        'durasi' => $detail->days . ' Hari',
+                        'durasi' => $detail->hari_lama_sewa . ' Hari',
                     ];
                 })->values(),
             ];

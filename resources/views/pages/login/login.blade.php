@@ -43,9 +43,9 @@
 
             {{-- Username --}}
             <div class="mb-3">
-                <input type="text" name="username" id="username"
+                <input type="text" name="nama_pengguna" id="nama_pengguna"
                     placeholder="Nama Pengguna"
-                    value="{{ old('username') }}"
+                    value="{{ old('nama_pengguna') }}"
                     autocomplete="username"
                     class="w-full px-4 py-3 border border-[#e2e2de] rounded-[3px] text-sm font-light text-[#1a1a18] bg-[#f7f7f5] outline-none transition focus:border-[#38856a] focus:bg-white placeholder-[#bebeba] tracking-[0.3px]">
             </div>

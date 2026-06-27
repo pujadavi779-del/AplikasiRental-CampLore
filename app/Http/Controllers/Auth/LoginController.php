@@ -19,7 +19,7 @@ class LoginController extends Controller
     {
         // validasi input
         $credentials = $request->validate([
-            'username' => 'required',
+            'nama_pengguna' => 'required',
             'password' => 'required',
         ]);
 
@@ -33,7 +33,7 @@ class LoginController extends Controller
 
         // kalau gagal
         return back()->withErrors([
-            'username' => 'Username atau password salah!',
+            'nama_pengguna' => 'Nama pengguna atau password salah!',
         ])->withInput();
     }
 

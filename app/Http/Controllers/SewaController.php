@@ -62,7 +62,7 @@ class SewaController extends Controller
                 return (object)[
                     'name'            => $namaProduk,
                     'gambar_barang'   => $urlGambar,
-                    'duration'        => $detail->days,
+                    'duration'        => $detail->hari_lama_sewa,
                     'start_date'      => $detail->start_date,
                     'end_date'        => $detail->end_date,
                     'price'           => $detail->harga_per_hari,

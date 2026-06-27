@@ -41,7 +41,7 @@
                     $detailUlasan = $pesanan->details->first();
                 @endphp
                 <div class="text-xs text-[#6b7280] mt-0.5">
-                    Sewa {{ $detailUlasan ? $detailUlasan->days : '-' }} hari &bull;
+                    Sewa {{ $detailUlasan ? $detailUlasan->hari_lama_sewa : '-' }} hari &bull;
                     {{ $detailUlasan ? \Carbon\Carbon::parse($detailUlasan->start_date)->format('d M') : '-' }} &ndash;
                     {{ $detailUlasan ? \Carbon\Carbon::parse($detailUlasan->end_date)->format('d M Y') : '-' }}
                 </div>

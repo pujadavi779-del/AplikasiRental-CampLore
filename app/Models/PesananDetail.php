@@ -18,7 +18,7 @@ class PesananDetail extends Model
         'quantity',
         'start_date',
         'end_date',
-        'days',
+        'hari_lama_sewa',
         'harga_per_hari',
         'subtotal',
         'note',

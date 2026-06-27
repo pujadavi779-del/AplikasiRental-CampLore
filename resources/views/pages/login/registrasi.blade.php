@@ -65,11 +65,11 @@
 
                 <div class="mb-3">
                     <label class="block text-[10px] font-medium tracking-[1.5px] uppercase text-[#999990] mb-1.5">Username</label>
-                    <input type="text" id="reg_username" name="username"
+                    <input type="text" id="reg_nama_pengguna" name="nama_pengguna"
                         placeholder="Masukkan Nama Pengguna"
-                        value="{{ old('username') }}" autocomplete="username"
+                        value="{{ old('nama_pengguna') }}" autocomplete="username"
                         class="w-full px-4 py-3 border border-[#e2e2de] rounded-[3px] text-sm font-light text-[#1a1a18] bg-[#f7f7f5] outline-none transition focus:border-[#38856a] focus:bg-white placeholder-[#bebeba]">
-                    <p class="hidden text-[11px] text-red-600 mt-1" id="e_username">Username minimal 3 karakter</p>
+                    <p class="hidden text-[11px] text-red-600 mt-1" id="e_nama_pengguna">Username minimal 3 karakter</p>
                 </div>
 
                 <div class="mb-3">
@@ -223,8 +223,8 @@
                         <strong id="sum_name">—</strong>
                     </div>
                     <div>
-                        <span class="text-[#999990] inline-block min-w-[110px]">Username</span>
-                        <strong id="sum_username">—</strong>
+                        <span class="text-[#999990] inline-block min-w-[110px]">Nama Pengguna</span>
+                        <strong id="sum_nama_pengguna">—</strong>
                     </div>
                     <div>
                         <span class="text-[#999990] inline-block min-w-[110px]">NIK</span>
@@ -321,7 +321,7 @@ function nextStep(from) {
         if (!ok) return;
 
         document.getElementById('sum_name').textContent     = document.getElementById('reg_name').value;
-        document.getElementById('sum_username').textContent = document.getElementById('reg_username').value;
+        document.getElementById('sum_nama_pengguna').textContent = document.getElementById('reg_nama_pengguna').value;
         document.getElementById('sum_nik').textContent      = document.getElementById('reg_nik').value;
         document.getElementById('sum_email').textContent    = document.getElementById('reg_email').value;
         goStep(4);
@@ -361,13 +361,13 @@ async function goToOtp() {
     // FIX: variabel "name" tadinya tidak diambil dari input, sehingga
     // selalu memvalidasi window.name (string kosong) -> error selalu muncul.
     const name = document.getElementById('reg_name').value.trim();
-    const u     = document.getElementById('reg_username').value.trim();
+    const u     = document.getElementById('reg_nama_pengguna').value.trim();
     const nik   = document.getElementById('reg_nik').value.trim();
     const e     = document.getElementById('reg_email').value.trim();
     let ok = true;
 
     if (!/^[A-Za-z\s.]{3,}$/.test(name)) { showErr('e_name', 'reg_name'); ok = false; } else clrErr('e_name', 'reg_name');
-    if (u.length < 3)                     { showErr('e_username', 'reg_username'); ok = false; } else clrErr('e_username', 'reg_username');
+    if (u.length < 3)                     { showErr('e_nama_pengguna', 'reg_nama_pengguna'); ok = false; } else clrErr('e_nama_pengguna', 'reg_nama_pengguna');
     if (!/^\d{16}$/.test(nik))            { showErr('e_nik', 'reg_nik'); ok = false; }            else clrErr('e_nik', 'reg_nik');
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e)) { showErr('e_email', 'reg_email'); ok = false; }   else clrErr('e_email', 'reg_email');
     if (!ok) return;

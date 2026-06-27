@@ -29,7 +29,7 @@ class AdminAuthController extends Controller
     public function login(Request $request)
     {
         $credentials = $request->validate([
-            'username' => 'required',
+            'nama_pengguna' => 'required',
             'password' => 'required',
         ]);
 
@@ -44,8 +44,8 @@ class AdminAuthController extends Controller
         }
 
         return back()->withErrors([
-            'username' => 'Username atau password salah.',
-        ])->withInput($request->only('username'));
+            'nama_pengguna' => 'Nama pengguna atau password salah.',
+        ])->withInput($request->only('nama_pengguna'));
     }
 
     /**

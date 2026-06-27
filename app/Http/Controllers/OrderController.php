@@ -21,7 +21,7 @@ class OrderController extends Controller
             ]);
 
             // Ambil total hari dari detail pertama (untuk display sederhana)
-            $days = $o->details->isNotEmpty() ? $o->details->first()->days : 0;
+            $days = $o->details->isNotEmpty() ? $o->details->first()->hari_lama_sewa : 0;
 
             return [
                 'id'       => '#ORD-' . str_pad($o->id_pesanan, 3, '0', STR_PAD_LEFT),
@@ -33,7 +33,7 @@ class OrderController extends Controller
                 ),
                 'products' => $products,
                 'price'    => $o->total_harga,
-                'days'     => $days,
+                'hari_lama_sewa'     => $days,
                 'status'   => $o->status,
                 'date'     => $o->created_at->format('Y-m-d'),
             ];
@@ -150,7 +150,7 @@ class OrderController extends Controller
                         'item'      => $item,
                         'start_date'=> $startDate,
                         'end_date'  => $endDate,
-                        'days'      => $days,
+                        'hari_lama_sewa'      => $days,
                         'subtotal'  => $subtotal,
                     ];
                 }
@@ -180,7 +180,7 @@ class OrderController extends Controller
                         'quantity'       => (int) $data['item']['quantity'],
                         'start_date'     => $data['start_date'],
                         'end_date'       => $data['end_date'],
-                        'days'           => $data['days'],
+                        'hari_lama_sewa' => $data['hari_lama_sewa'],
                         'harga_per_hari' => $data['barang']->harga_per_hari,
                         'subtotal'       => $data['subtotal'],
                         'note'           => $data['item']['note'] ?? '',

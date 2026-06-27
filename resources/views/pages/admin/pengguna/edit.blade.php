@@ -74,7 +74,7 @@
                     $pesanan->load('details.barang');
                     }
                     $detail = $pesanan->details->first();
-                    @php
+                    @endphp
 
                     <div>
                         <label class="block text-[10px] font-bold text-[#22543D] uppercase tracking-widest mb-3 px-1">Produk Disewa</label>
@@ -129,7 +129,7 @@
                             </div>
                             <div class="flex justify-between text-xs">
                                 <span class="opacity-70">Durasi Sewa</span>
-                                <span id="display-days" class="font-semibold text-sm">{{ $detail ? $detail->days : 0 }} Hari</span>
+                                <span id="display-days" class="font-semibold text-sm">{{ $detail ? $detail->hari_lama_sewa : 0 }} Hari</span>
                             </div>
                             <div class="pt-6 border-t border-white/10 flex justify-between items-center">
                                 <span class="text-xs font-bold uppercase tracking-widest opacity-80">Subtotal Item</span>
@@ -140,7 +140,7 @@
                         @php
                         // Biaya dasar untuk dikirim ke JS agar hitungan akurat
                         $biayaTambahan = ($pesanan->biaya_pengiriman ?? 0) + ($pesanan->biaya_layanan ?? 0);
-                        @php
+                        @endphp
                         <input type="hidden" name="biaya_tambahan" id="input-biaya-tambahan" value="{{ $biayaTambahan }}">
                         <input type="hidden" name="subtotal" id="input-total" value="{{ $detail ? $detail->subtotal : 0 }}">
                     </div>
