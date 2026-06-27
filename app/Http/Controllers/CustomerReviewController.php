@@ -17,7 +17,7 @@ class CustomerReviewController extends Controller
     public function create($orderId)
     {
         $pesanan = Pesanan::with('details.barang')
-            ->where('id_pesanan', $orderId)
+            ->where('order_id', $orderId)
             ->where('user_id', Auth::id())
             ->where('status', 'selesai')
             ->firstOrFail();
