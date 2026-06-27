@@ -39,7 +39,7 @@
 
     <div class="flex items-center gap-4">
 
-        {{-- Search --}}
+        <!-- {{-- Search --}}
         <div class="relative hidden md:block">
             <span class="absolute inset-y-0 left-3 flex items-center text-[#22543D]">
                 <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -49,7 +49,7 @@
             </span>
             <input type="text" placeholder="Cari unit..."
                 class="pl-9 pr-4 py-1.5 bg-[#f1f8f4] rounded-lg text-xs w-40 focus:w-56 transition-all focus:ring-1 focus:ring-[#ED64A6] border-none outline-none">
-        </div>
+        </div> -->
 
         {{-- Notifikasi Ulasan --}}
         <div class="relative" x-data="{ open: false }">

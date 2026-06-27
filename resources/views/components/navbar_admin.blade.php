@@ -113,7 +113,7 @@
                                 {{ $review->pelanggan->nama_lengkap ?? 'Pengguna' }}
                             </p>
                             <p class="text-[11px] text-gray-400 truncate m-0">
-                                {{ $review->product->nama_lengkap ?? 'Produk' }}
+                                {{ $review->product->name ?? 'Produk' }}
                             </p>
                             
                             {{-- Tampilan Rating Bintang di dalam Notifikasi --}}
