@@ -66,7 +66,7 @@ class SewaController extends Controller
                     'start_date'      => $detail->start_date,
                     'end_date'        => $detail->end_date,
                     'price'           => $detail->harga_per_hari,
-                    'quantity'        => $detail->quantity,
+                    'quantity'        => $detail->jumlah,
                     'overdue'         => false,
                     'product_id'      => $detail->product_id,
                     'id_tipe_kategori'=> $barang->id_tipe_kategori ?? null,
@@ -120,7 +120,7 @@ class SewaController extends Controller
                 $dendaPerHari = \App\Models\Keterlambatan::where('id_tipe_kategori', $detail->barang->id_tipe_kategori)->value('denda_per_hari') ?? 0;
             }
 
-            $dendaItem = $hariTerlambat * $dendaPerHari * $detail->quantity;
+            $dendaItem = $hariTerlambat * $dendaPerHari * $detail->jumlah;
             $totalDenda += $dendaItem;
 
             // Update status denda di tabel pesanan_detail

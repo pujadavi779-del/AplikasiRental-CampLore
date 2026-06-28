@@ -54,7 +54,7 @@ class BarangKategoriController extends Controller
         ]);
     }
 
-    public function show(string $kategoriUtama, $id)
+    public function show($id, string $kategoriUtama)
     {
         $cfg = $this->config($kategoriUtama);
         $item = Barang::findOrFail($id);

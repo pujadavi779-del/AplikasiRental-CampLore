@@ -15,7 +15,7 @@ class PesananDetail extends Model
     protected $fillable = [
         'pesanan_id',
         'product_id',
-        'quantity',
+        'jumlah',
         'start_date',
         'end_date',
         'hari_lama_sewa',

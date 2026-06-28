@@ -322,7 +322,7 @@
             {
                 id:         {{ $cart->id_keranjang }},
                 product_id: {{ $cart->product_id ?? 0 }},
-                quantity:   {{ $cart->quantity }},
+                jumlah:     {{ $cart->quantity }},  
                 days:       {{ ($cart->start_date && $cart->end_date) ? max(1, \Carbon\Carbon::parse($cart->start_date)->diffInDays($cart->end_date)) : 1 }}
             },
             @endforeach
