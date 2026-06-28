@@ -162,7 +162,7 @@ class RegisterController extends Controller
             'nama_pengguna' => $request->nama_pengguna,
             'nik'          => $request->nik,
             'email'        => $request->email,
-            'password'     => Hash::make($request->password),
+            'kata_sandi'     => Hash::make($request->password),
         ]);
 
         // Hapus sesi OTP

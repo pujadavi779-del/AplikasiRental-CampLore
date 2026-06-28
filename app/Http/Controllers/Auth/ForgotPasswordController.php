@@ -177,7 +177,7 @@ class ForgotPasswordController extends Controller
 
         // Update password
         $pelanggan->update([
-            'password' => Hash::make($request->password),
+            'kata_sandi' => Hash::make($request->password),
         ]);
 
         // Hapus OTP & session

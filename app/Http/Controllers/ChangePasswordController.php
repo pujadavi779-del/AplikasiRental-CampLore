@@ -31,7 +31,7 @@ class ChangePasswordController extends Controller
 
         // Cek password lama
         //() tanpa memerlukan data tambahan
-        if (!Hash::check($request->current_password, $pelanggan->password)) {
+        if (!Hash::check($request->current_password, $pelanggan->kata_sandi)) {
             return back()->withErrors([
                 'current_password' => 'Password lama salah.'
             ]);
@@ -39,14 +39,14 @@ class ChangePasswordController extends Controller
 //!hash itu mencocokan pengguna dengan password sebelumnya 
 //has itu untuk mengubah password baru 
         // Cek password baru tidak boleh sama
-        if (Hash::check($request->new_password, $pelanggan->password)) {
+        if (Hash::check($request->new_password, $pelanggan->kata_sandi)) {
             return back()->withErrors([
                 'new_password' => 'Password baru tidak boleh sama dengan password lama.'
             ]);
         }
 
         // Update password
-        $pelanggan->password = Hash::make($request->new_password);
+        $pelanggan->kata_sandi = Hash::make($request->new_password);
         $pelanggan->save();
 
         return back()->with('success', 'Password berhasil diperbarui.');

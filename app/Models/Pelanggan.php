@@ -22,7 +22,7 @@ class Pelanggan extends Authenticatable
         'nama_pengguna',
         'nik',
         'email',
-        'password',
+        'kata_sandi',
         'no_tlp',
         'foto_profile',
         'foto_ktp',
@@ -31,7 +31,7 @@ class Pelanggan extends Authenticatable
         'ktp_updated_at',
     ];
 
-    protected $hidden = ['password'];
+    protected $hidden = ['kata_sandi'];
 
     protected $casts = [
         'ktp_updated_at' => 'datetime',
@@ -41,4 +41,9 @@ class Pelanggan extends Authenticatable
     {
         return $this->hasOne(AlamatPengiriman::class, 'user_id', 'id_pelanggan');
     }
+
+    public function getAuthPassword()
+{
+    return $this->kata_sandi;
+}
 }

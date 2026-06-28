@@ -16,26 +16,26 @@ class LoginController extends Controller
 
     // PROSES LOGIN
     public function login(Request $request)
-    {
-        // validasi input
-        $credentials = $request->validate([
-            'nama_pengguna' => 'required',
-            'password' => 'required',
-        ]);
+{
+    $request->validate([
+        'nama_pengguna' => 'required',
+        'password'      => 'required',
+    ]);
 
-        // cek login
-        if (Auth::attempt($credentials)) {
-            $request->session()->regenerate();
+    // Cari pelanggan by nama_pengguna
+    $pelanggan = \App\Models\Pelanggan::where('nama_pengguna', $request->nama_pengguna)->first();
 
-            // redirect kalau berhasil
-            return redirect()->intended('/dashboard_pelanggan');
-        }
-
-        // kalau gagal
-        return back()->withErrors([
-            'nama_pengguna' => 'Nama pengguna atau password salah!',
-        ])->withInput();
+    // Cek manual karena kolom bukan 'password'
+    if ($pelanggan && \Illuminate\Support\Facades\Hash::check($request->password, $pelanggan->kata_sandi)) {
+        Auth::login($pelanggan);
+        $request->session()->regenerate();
+        return redirect()->intended('/dashboard_pelanggan');
     }
+
+    return back()->withErrors([
+        'nama_pengguna' => 'Nama pengguna atau password salah!',
+    ])->withInput();
+}
 
     // LOGOUT
     public function logout(Request $request)
