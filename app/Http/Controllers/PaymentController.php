@@ -263,11 +263,12 @@ class PaymentController extends Controller
 
     public function exportExcel()
     {
-        // FIX: Hapus logic groupBy, ganti product dengan details.barang
         $pesanan = \App\Models\Pesanan::with(['pelanggan', 'details.barang'])
             ->whereIn('status', ['dikemas', 'selesai', 'dibatalkan'])
             ->orderBy('created_at', 'desc')
             ->get();
+
+        if (ob_get_contents()) ob_end_clean();
 
         return (new \App\Exports\PembayaranExport($pesanan))->download();
     }

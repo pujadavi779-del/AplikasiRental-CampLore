@@ -273,12 +273,17 @@ class PembayaranExport
         // ── Stream download ───────────────────────────────────
         $filename = 'Laporan_Pembayaran_' . now()->format('d-m-Y') . '.xlsx';
 
-        return response()->streamDownload(function () use ($spreadsheet) {
+        if (ob_get_contents()) {
+            ob_end_clean();
+        }
+
+        return new StreamedResponse(function () use ($spreadsheet) {
             $writer = new Xlsx($spreadsheet);
             $writer->save('php://output');
-        }, $filename, [
+        }, 200, [
             'Content-Type'        => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
             'Content-Disposition' => "attachment; filename=\"{$filename}\"",
+            'Cache-Control'       => 'max-age=0',
         ]);
     }
 }
