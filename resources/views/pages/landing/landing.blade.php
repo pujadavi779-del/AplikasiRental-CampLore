@@ -369,7 +369,7 @@
             $faqs = [
                 ['q'=>'Bagaimana proses penyewaan bekerja?','a'=>'Pilih alat di website, isi form booking, unggah KTP. Alat bisa diambil di store kami atau dikirim ke lokasi Anda sesuai area operasional kami.'],
                 ['q'=>'Apakah diperlukan deposit?','a'=>'Ya, kami membutuhkan deposit berupa uang jaminan atau menahan kartu identitas asli (SIM/Paspor) selama masa sewa untuk item premium.'],
-                ['q'=>'Apa yang terjadi jika peralatan rusak?','a'=>'Kami menyarankan penambahan asuransi sewa kecil di awal. Jika tidak berasuransi, penyewa bertanggung jawab penuh atas biaya perbaikan kerusakan alat.'],
+                // ['q'=>'Apa yang terjadi jika peralatan rusak?','a'=>'Kami menyarankan penambahan asuransi sewa kecil di awal. Jika tidak berasuransi, penyewa bertanggung jawab penuh atas biaya perbaikan kerusakan alat.'],
                 ['q'=>'Apakah Anda mengirim ke lokasi basecamp?','a'=>'Tentu! Kami melayani pengiriman ke area basecamp gunung atau pantai populer di wilayah operasional kami di Batam dan sekitarnya.'],
                 ['q'=>'Berapa lama minimal sewa?','a'=>'Minimal sewa adalah 1 hari (24 jam).'],
             ];
