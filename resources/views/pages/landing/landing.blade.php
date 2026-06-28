@@ -163,7 +163,6 @@
             </div>
         </div>
 
-        {{-- ✅ FIX: 2 tombol terpisah — Kamera & Camping --}}
         <div class="flex flex-col sm:flex-row items-center justify-center gap-4 mt-10">
             <a href="{{ route('camera.LP') }}"
                class="group flex items-center gap-3 bg-[#22543D] hover:bg-[#1a3f2e] text-white font-bold text-xs tracking-widest uppercase px-8 py-4 transition-all duration-200 shadow-md hover:shadow-xl hover:-translate-y-0.5">
@@ -185,9 +184,6 @@
         </div>
     </section>
 
-    {{-- ============================================================ --}}
-    {{-- ✅ FIX: SHOP BY Kategori_data — Kontras lebih kuat, dark green bg --}}
-    {{-- ============================================================ --}}
     <section class="bg-[#22543D] py-20 px-5 md:px-10">
         <div class="max-w-[1240px] mx-auto">
 
@@ -261,9 +257,6 @@
         </div>
     </section>
 
-    {{-- ============================================================ --}}
-    {{-- ✅ FIX: HOW IT WORKS — bg putih bersih, numbered steps kontras --}}
-    {{-- ============================================================ --}}
     <section class="py-24 px-5 md:px-10 bg-[#FAFAF8] border-t border-gray-100">
         <div class="max-w-[1100px] mx-auto">
 
@@ -378,7 +371,7 @@
                 ['q'=>'Apakah diperlukan deposit?','a'=>'Ya, kami membutuhkan deposit berupa uang jaminan atau menahan kartu identitas asli (SIM/Paspor) selama masa sewa untuk item premium.'],
                 ['q'=>'Apa yang terjadi jika peralatan rusak?','a'=>'Kami menyarankan penambahan asuransi sewa kecil di awal. Jika tidak berasuransi, penyewa bertanggung jawab penuh atas biaya perbaikan kerusakan alat.'],
                 ['q'=>'Apakah Anda mengirim ke lokasi basecamp?','a'=>'Tentu! Kami melayani pengiriman ke area basecamp gunung atau pantai populer di wilayah operasional kami di Batam dan sekitarnya.'],
-                ['q'=>'Berapa lama minimal sewa?','a'=>'Minimal sewa adalah 1 hari (24 jam). Tersedia juga paket 3 hari dan 7 hari dengan harga yang lebih hemat.'],
+                ['q'=>'Berapa lama minimal sewa?','a'=>'Minimal sewa adalah 1 hari (24 jam).'],
             ];
             @endphp
             <div class="divide-y divide-gray-200">

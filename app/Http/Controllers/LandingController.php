@@ -10,7 +10,7 @@ class LandingController extends Controller
     public function index()
     {
         $items = Barang::where('stok', '>', 0)
-            ->withCount(['details as pesanan_count']) // GANTI: hitung dari pesanan_detail
+            ->withCount(['details as pesanan_count'])
             ->orderByDesc('pesanan_count')
             ->orderByDesc('created_at')
             ->take(8)
@@ -20,7 +20,7 @@ class LandingController extends Controller
             if ($item->pesanan_count >= 5) {
                 $badge = 'Best Seller';
             } elseif ($item->created_at && $item->created_at->diffInDays(now()) <= 14) {
-                $badge = 'New';
+                $badge = 'Baru';
             } else {
                 $badge = 'Top Pick';
             }

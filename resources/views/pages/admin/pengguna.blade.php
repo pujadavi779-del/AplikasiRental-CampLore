@@ -72,7 +72,7 @@ $section = 'Pengguna';
                 </thead>
                 <tbody class="divide-y divide-[#eef4f0]" id="tableBody">
                     @forelse($customers as $customer)
-                    @php $status = $customer->ktp_status ?? 'pending'; @endphp
+                    @php $status = $customer->ktp_status ?? 'tertunda'; @endphp
                     <tr class="hover:bg-[#fcfdfb] transition-colors customer-row">
 
                         {{-- No --}}
@@ -139,7 +139,7 @@ $section = 'Pengguna';
                             @else
                             <div class="flex flex-col items-center gap-1">
                                 <span class="inline-flex items-center gap-1 px-3 py-1.5 rounded-full bg-yellow-100 text-yellow-700 text-[10px] font-bold uppercase border border-yellow-200">
-                                    Pending
+                                    Tertunda
                                 </span>
                                 @if($customer->ktp_updated_at)
                                 <span class="text-[9px] text-blue-500 font-bold flex items-center gap-1">
