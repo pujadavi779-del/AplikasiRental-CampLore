@@ -5,8 +5,7 @@
     use Illuminate\Support\Facades\Auth;
 
     // Controllers
-    use App\Http\Controllers\CampingController;
-    use App\Http\Controllers\CameraController;
+    use App\Http\Controllers\BarangKategoriController;
     use App\Http\Controllers\LandingController;
     use App\Http\Controllers\Auth\RegisterController;
     use App\Http\Controllers\DeliveryController;
@@ -48,11 +47,15 @@
         return view('pages.landing.about');
     })->name('pages.landing.about');
 
-    Route::get('/camera', [CameraController::class, 'landing'])->name('camera.LP');
-    Route::get('/camping', [CampingController::class, 'landing'])->name('camping.LP');
+    Route::get('/camera', [BarangKategoriController::class, 'landing'])
+        ->defaults('kategoriUtama', 'Kamera')->name('camera.LP');
+    Route::get('/camping', [BarangKategoriController::class, 'landing'])
+        ->defaults('kategoriUtama', 'Camping')->name('camping.LP');
 
-    Route::get('/camera/{id}', [CameraController::class, 'show'])->name('camera.show');
-    Route::get('/camping/{id}', [CampingController::class, 'show'])->name('camping.show');
+    Route::get('/camera/{id}', [BarangKategoriController::class, 'show'])
+        ->defaults('kategoriUtama', 'Kamera')->name('camera.show');
+    Route::get('/camping/{id}', [BarangKategoriController::class, 'show'])
+        ->defaults('kategoriUtama', 'Camping')->name('camping.show');
 
     /*
     |--------------------------------------------------------------------------
@@ -197,12 +200,16 @@
         Route::delete('/kategori/merek/{kategori}',     [KategoriController::class, 'destroyBrand'])->name('category.destroyBrand');
         Route::get('/kategori/merek/{kategori}/detail', [KategoriController::class, 'brandDetail'])->name('category.brandDetail');
         Route::patch('/kategori/merek/{kategori}/toggle', [KategoriController::class, 'toggleBrand'])->name('category.toggleBrand');
-        
+
         // Products
         Route::get('/products', function (Request $request) {
             $query = Barang::query();
             if ($request->kategori) $query->where('kategori', $request->kategori);
             if ($request->search)   $query->where('name', 'like', '%' . $request->search . '%');
+
+            // Produk yang stoknya tersedia ditampilkan duluan, yang habis di bawah
+            $query->orderByRaw('stok = 0')->orderBy('created_at', 'desc');
+
             $products = $query->paginate(10)->withQueryString();
             return view('pages.admin.products', compact('products'));
         })->name('products');
@@ -263,10 +270,10 @@
         Route::post('/ulasan/{orderId}/simpan', [CustomerReviewController::class, 'store'])
             ->name('pelanggan.ulasan.store');
         Route::get('/sewa', [SewaController::class, 'index'])
-        ->name('pelanggan.sewa');
+            ->name('pelanggan.sewa');
         //ualsan detail pelanggan
         Route::get('/ulasan/{reviewId}/detail', [CustomerReviewController::class, 'show'])
-        ->name('pelanggan.ulasan.show');
+            ->name('pelanggan.ulasan.show');
     });
 
     Route::post('/pesanan/bayar-denda-cash', [SewaController::class, 'bayarDendaCash'])->name('pesanan.bayar-denda-cash');

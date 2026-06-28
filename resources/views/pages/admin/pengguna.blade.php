@@ -3,8 +3,8 @@
 @section('title', 'Pengguna - Camplore Admin')
 
 @php
-    $NavParent = 'Manajemen Operasional';
-    $section = 'Pengguna';
+$NavParent = 'Manajemen Operasional';
+$section = 'Pengguna';
 @endphp
 @section('content')
 
@@ -83,8 +83,17 @@
                         {{-- Nama --}}
                         <td class="px-6 py-4">
                             <div class="flex items-center gap-3">
+                                @if($customer->foto_profile)
+                                <img src="{{ asset('storage/' . $customer->foto_profile) }}"
+                                    alt="{{ $customer->nama_lengkap }}"
+                                    class="w-9 h-9 rounded-full object-cover border border-gray-200">
+                                @else
+                                <div class="w-9 h-9 rounded-full bg-gray-200 flex items-center justify-center text-xs font-semibold text-gray-500 uppercase">
+                                    {{ substr($customer->nama_lengkap, 0, 1) }}
+                                </div>
+                                @endif
                                 <div>
-                                    <p class="font-semibold text-gray-800">{{ $customer->nama_lengkap}}</p>
+                                    <p class="font-semibold text-gray-800">{{ $customer->nama_lengkap }}</p>
                                     <p class="text-[11px] text-gray-400">{{ $customer->email }}</p>
                                 </div>
                             </div>

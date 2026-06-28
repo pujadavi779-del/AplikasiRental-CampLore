@@ -6,10 +6,11 @@
 $NavParent = 'Manajemen Rental';
 $section = 'Produk';
 @endphp
+
 @section('content')
 
-
 <div class="max-w-full">
+
     {{-- Toast Success --}}
     @if(session('success'))
     <div id="toast-success" class="fixed top-6 right-6 z-50 flex items-center w-full max-w-sm p-4 text-gray-700 bg-white rounded-xl shadow-lg border border-emerald-200" role="alert">
@@ -45,8 +46,6 @@ $section = 'Produk';
         </button>
     </div>
     @endif
-
-
 
     <div class="bg-white rounded-[28px] border border-[#d7e6de] shadow-sm overflow-hidden">
 
@@ -85,21 +84,21 @@ $section = 'Produk';
                 {{-- ALL --}}
                 <a href="{{ route('admin.products') }}"
                     class="px-4 py-2 text-xs rounded-lg font-bold transition-colors
-                    {{ !request('Kategori') ? 'bg-[#22543D] text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200' }}">
+                    {{ !request('kategori') ? 'bg-[#22543D] text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200' }}">
                     Semua
                 </a>
 
                 {{-- KAMERA --}}
-                <a href="{{ route('admin.products', ['Kategori' => 'Kamera']) }}"
+                <a href="{{ route('admin.products', ['kategori' => 'Kamera']) }}"
                     class="px-4 py-2 text-xs rounded-lg font-bold transition-colors
-                    {{ request('Kategori') == 'Kamera' ? 'bg-[#22543D] text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200' }}">
+                    {{ request('kategori') == 'Kamera' ? 'bg-[#22543D] text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200' }}">
                     Kamera
                 </a>
 
                 {{-- CAMPING --}}
-                <a href="{{ route('admin.products', ['Kategori' => 'Camping']) }}"
+                <a href="{{ route('admin.products', ['kategori' => 'Camping']) }}"
                     class="px-4 py-2 text-xs rounded-lg font-bold transition-colors
-                    {{ request('Kategori') == 'Camping' ? 'bg-[#22543D] text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200' }}">
+                    {{ request('kategori') == 'Camping' ? 'bg-[#22543D] text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200' }}">
                     Camping
                 </a>
             </div>
@@ -110,16 +109,16 @@ $section = 'Produk';
             <table class="w-full text-left border-collapse">
                 <thead>
                     <tr class="bg-[#fcfdfb] border-b border-[#f1f8f4]">
-                        {{-- Judul kolom digabung dan menggunakan colspan="2" agar sejajar sempurna dengan isi di bawahnya --}}
-                        <th class="px-6 py-4 text-[10px] font-black text-gray-400 uppercase tracking-widest" colspan="2">Gambar & Nama Produk</th>
-                        <th class="px-6 py-4 text-[10px] font-black text-gray-400 uppercase tracking-widest text-center">Kategori</th>
+                        {{-- Judul kolom digabung menggunakan colspan="2" agar sejajar dengan isi di bawahnya --}}
+                        <th class="px-6 py-4 text-[10px] font-black text-gray-400 uppercase tracking-widest" colspan="2">Gambar &amp; Nama Produk</th>
+                        <th class="px-6 py-4 text-[10px] font-black text-gray-400 uppercase tracking-widest text-center">Tersedia</th>
                         <th class="px-6 py-4 text-[10px] font-black text-gray-400 uppercase tracking-widest">Harga/Perhari</th>
                         <th class="px-6 py-4 text-[10px] font-black text-gray-400 uppercase tracking-widest text-right">Tindakan</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-[#f1f8f4]">
                     @forelse($products as $product)
-                    <tr class="hover:bg-gray-50/80 transition-colors">
+                    <tr class="hover:bg-gray-50/80 transition-colors {{ $product->stok <= 0 ? 'opacity-60' : '' }}">
 
                         {{-- GAMBAR DAN NAMA PRODUK --}}
                         <td class="px-6 py-4 vertical-align-middle" colspan="2">
@@ -130,27 +129,25 @@ $section = 'Produk';
                                         onerror="this.src='https://via.placeholder.com/100?text=No+Image'"
                                         class="w-full h-full object-cover">
                                 </div>
-                                {{-- Teks Nama & Stok --}}
+                                {{-- Nama + Kategori --}}
                                 <div>
                                     <div class="text-sm font-bold text-[#22543D] mb-0.5">{{ $product->name }}</div>
-                                    <div class="text-[10px] font-bold flex items-center gap-1">
-                                        @if($product->stok > 0)
-                                        <span class="text-emerald-500 text-[8px]">●</span>
-                                        <span class="text-emerald-500">Tersedia: {{ $product->stok }} Unit</span>
-                                        @else
-                                        <span class="text-red-400 text-[8px]">●</span>
-                                        <span class="text-red-400">Habis</span>
-                                        @endif
-                                    </div>
+                                    <span class="text-[10px] text-[#7c8b84] font-semibold uppercase tracking-wide">{{ $product->kategori }}</span>
                                 </div>
                             </div>
                         </td>
 
-                        {{-- KATEGORI --}}
+                        {{-- STOK TERSEDIA --}}
                         <td class="px-6 py-4 text-center vertical-align-middle">
-                            <span class="px-3 py-1 bg-[#f1f8f4] text-[#22543D] text-[10px] font-bold rounded-lg border border-[#d7e6de] inline-block min-w-[70px]">
-                                {{ $product->kategori }}
+                            @if($product->stok > 0)
+                            <span class="px-3 py-1 bg-emerald-50 text-emerald-600 text-[10px] font-bold rounded-lg border border-emerald-200 inline-block min-w-[70px]">
+                                {{ $product->stok }} Unit
                             </span>
+                            @else
+                            <span class="px-3 py-1 bg-red-50 text-red-400 text-[10px] font-bold rounded-lg border border-red-200 inline-block min-w-[70px]">
+                                Habis
+                            </span>
+                            @endif
                         </td>
 
                         {{-- HARGA --}}
@@ -207,16 +204,14 @@ $section = 'Produk';
                 Menampilkan {{ $products->count() }} dari {{ $products->total() }} Produk
             </span>
 
-            {{-- Navigasi Halaman Bergaya Kustom (Sisi Kanan) --}}
+            {{-- Navigasi Halaman (Sisi Kanan) --}}
             <div class="flex items-center gap-4">
-                {{-- Info Halaman Ke- Berapa --}}
                 <span class="text-xs font-semibold text-gray-400 selection:bg-transparent">
                     Halaman <span class="text-gray-900">{{ $products->currentPage() }}</span> dari <span class="text-gray-900">{{ $products->lastPage() }}</span>
                 </span>
 
-                {{-- Tombol-Tombol Angka --}}
                 <div class="inline-flex gap-1">
-                    {{-- Tombol Previous (<) --}}
+                    {{-- Tombol Previous --}}
                     @if ($products->onFirstPage())
                     <button disabled class="px-2.5 py-1.5 border border-gray-200 rounded-lg text-xs font-bold opacity-40 cursor-not-allowed text-gray-400 shadow-sm">
                         &lt;
@@ -227,22 +222,20 @@ $section = 'Produk';
                     </a>
                     @endif
 
-                    {{-- Render Angka Halaman Secara Dinamis --}}
+                    {{-- Angka halaman --}}
                     @foreach ($products->getUrlRange(1, $products->lastPage()) as $page => $url)
                     @if ($page == $products->currentPage())
-                    {{-- Halaman Aktif (Menggunakan warna hijau khas CampLore) --}}
                     <span class="px-3 py-1.5 bg-[#22543D] text-white border border-[#22543D] rounded-lg text-xs font-bold shadow-sm inline-block">
                         {{ $page }}
                     </span>
                     @else
-                    {{-- Halaman Biasa --}}
                     <a href="{{ $url }}" class="px-3 py-1.5 border border-gray-200 rounded-lg text-xs font-bold text-gray-600 hover:bg-gray-50 transition-all inline-block">
                         {{ $page }}
                     </a>
                     @endif
                     @endforeach
 
-                    {{-- Tombol Next (>) --}}
+                    {{-- Tombol Next --}}
                     @if ($products->hasMorePages())
                     <a href="{{ $products->nextPageUrl() }}" class="px-2.5 py-1.5 border border-gray-200 rounded-lg text-xs font-bold transition-colors shadow-sm hover:bg-gray-50 text-gray-700">
                         &gt;
@@ -269,12 +262,12 @@ $section = 'Produk';
     }
 </style>
 
-    {{-- Auto hide toast setelah 3 detik --}}
-    <script>
-        setTimeout(() => {
-            document.getElementById('toast-success')?.remove();
-            document.getElementById('toast-error')?.remove();
-        }, 3000);
-    </script>
+{{-- Auto hide toast setelah 3 detik --}}
+<script>
+    setTimeout(() => {
+        document.getElementById('toast-success')?.remove();
+        document.getElementById('toast-error')?.remove();
+    }, 3000);
+</script>
 
 @endsection

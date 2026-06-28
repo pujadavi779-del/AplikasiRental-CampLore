@@ -136,9 +136,6 @@ $section = 'Pengembalian';
                         {{-- Penyewa --}}
                         <td class="px-6 py-4">
                             <div class="flex items-center gap-3">
-                                <div class="w-9 h-9 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0 {{ $avatarClass }}">
-                                    {{ $initial }}
-                                </div>
                                 <div>
                                     <div class="font-semibold text-gray-900 text-sm">{{ $namaUser }}</div>
                                     <div class="text-xs text-gray-400">{{ $emailUser }}</div>

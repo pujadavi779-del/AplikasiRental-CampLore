@@ -38,8 +38,6 @@ $section = 'Tambah Produk';
             </a>
         </div>
 
-
-
         {{-- Form Section --}}
         <form action="{{ route('admin.products.store') }}" method="POST" enctype="multipart/form-data" class="p-8">
             @csrf
@@ -123,7 +121,6 @@ $section = 'Tambah Produk';
                             @endforeach
                         </select>
                     </div>
-
 
                     <div>
                         <label class="block text-[11px] font-black text-gray-400 uppercase tracking-widest mb-2">Tentang Kamera ini</label>
@@ -215,33 +212,58 @@ $section = 'Tambah Produk';
         info.classList.remove('hidden');
     }
 
-    function filterByKategori() {
-        const kategori = document.getElementById('select_kategori').value;
+    // ── Filter Tipe & Merek berdasarkan Kategori Utama ──────────────────────
+    // FIX: <option hidden> tidak konsisten disembunyikan oleh semua browser.
+    // Solusinya: simpan semua opsi asli sekali di awal, lalu setiap kategori
+    // berubah, REBUILD isi <select> hanya dengan opsi yang kategorinya cocok.
 
-        ['select_tipe', 'select_merek'].forEach(function(id) {
-            const select = document.getElementById(id);
-            const options = select.querySelectorAll('option[data-kategori]');
+    let originalTipeOptions = [];
+    let originalMerekOptions = [];
 
-            options.forEach(function(opt) {
-                if (opt.dataset.kategori === kategori) {
-                    opt.hidden = false;
-                    opt.disabled = false;
-                } else {
-                    opt.hidden = true;
-                    opt.disabled = true;
-                }
-            });
-
-            // reset pilihan kalau opsi yang sedang terpilih jadi tidak valid
-            const selected = select.querySelector('option:checked');
-            if (selected && selected.dataset.kategori && selected.dataset.kategori !== kategori) {
-                select.value = '';
-            }
-        });
+    function cloneOptions(select) {
+        // Simpan semua <option> asli (termasuk placeholder "Pilih Tipe/Merek")
+        return Array.from(select.querySelectorAll('option')).map(opt => opt.cloneNode(true));
     }
 
-    document.getElementById('select_kategori').addEventListener('change', filterByKategori);
-    document.addEventListener('DOMContentLoaded', filterByKategori);
+    function rebuildSelect(select, originalOptions, kategori) {
+        const currentValue = select.value;
+        select.innerHTML = '';
+
+        originalOptions.forEach(opt => {
+            // Placeholder (value kosong, tanpa data-kategori) selalu ditampilkan
+            const isPlaceholder = !opt.dataset.kategori;
+            const matches = isPlaceholder || opt.dataset.kategori === kategori;
+
+            if (matches) {
+                select.appendChild(opt.cloneNode(true));
+            }
+        });
+
+        // Pertahankan pilihan sebelumnya jika masih valid untuk kategori baru
+        const stillValid = Array.from(select.querySelectorAll('option')).some(o => o.value === currentValue);
+        select.value = stillValid ? currentValue : '';
+    }
+
+    function filterByKategori() {
+        const kategori = document.getElementById('select_kategori').value;
+        const selectTipe = document.getElementById('select_tipe');
+        const selectMerek = document.getElementById('select_merek');
+
+        rebuildSelect(selectTipe, originalTipeOptions, kategori);
+        rebuildSelect(selectMerek, originalMerekOptions, kategori);
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        // Simpan opsi asli SEBELUM dimanipulasi
+        originalTipeOptions = cloneOptions(document.getElementById('select_tipe'));
+        originalMerekOptions = cloneOptions(document.getElementById('select_merek'));
+
+        document.getElementById('select_kategori').addEventListener('change', filterByKategori);
+
+        // Jika form sedang diisi ulang (misal validasi gagal & old() terisi),
+        // langsung filter sesuai kategori yang sudah terpilih
+        filterByKategori();
+    });
 </script>
 
 @endsection

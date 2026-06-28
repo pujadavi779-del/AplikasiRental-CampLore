@@ -3,8 +3,8 @@
 @section('title', 'Transaksi Pembayaran - CampLore')
 
 @php
-$NavParent = 'Manajemen Operasional';
-$section = 'Pengguna';
+$NavParent = 'Manajemen Pesanan';
+$section = 'Transaksi Pembayaran';
 @endphp
 
 @section('content')
@@ -130,7 +130,6 @@ $section = 'Pengguna';
         {{-- ── HEADER ─────────────────────────────────────── --}}
         <div class="px-6 pt-6 pb-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[var(--greenlt)]">
             <div>
-                <p class="text-[10px] font-bold tracking-widest text-[var(--accent)] uppercase mb-1">Manajemen Operasional</p>
                 <h2 class="font-display text-2xl text-[var(--green)] leading-tight">Transaksi Pembayaran</h2>
                 <p class="text-[11px] text-[#7c8b84] mt-0.5">Daftar semua transaksi yang telah melewati proses pembayaran.</p>
             </div>
@@ -239,17 +238,13 @@ $section = 'Pengguna';
                         {{-- ID --}}
                         <td class="px-5 py-3.5">
                             <span class="text-xs font-bold text-[var(--green)] font-mono tracking-tight">
-                                {{ $pesanan->order_id }}
+                                #{{ $pesanan->order_id }}
                             </span>
                         </td>
 
                         {{-- Pelanggan --}}
                         <td class="px-5 py-3.5">
                             <div class="flex items-center gap-2.5">
-                                <div class="w-7 h-7 rounded-full bg-[var(--greenlt)] flex items-center justify-center
-                                            text-[10px] font-bold text-[var(--green)] shrink-0">
-                                    {{ $inisial }}
-                                </div>
                                 <span class="text-xs text-gray-700 font-medium truncate max-w-[120px]">{{ $namaUser }}</span>
                             </div>
                         </td>
