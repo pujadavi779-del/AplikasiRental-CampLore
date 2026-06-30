@@ -48,4 +48,13 @@ class Barang extends Model
     {
         return $this->hasMany(\App\Models\Pesanan::class, 'product_id', 'id_barang');
     }
+
+    public function keterlambatan()
+    {
+        return $this->hasOne(
+            Keterlambatan::class,
+            'id_tipe_kategori',
+            'id_tipe_kategori'
+        );
+    }
 }

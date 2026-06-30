@@ -316,13 +316,15 @@
                 {{-- ============================================= --}}
                 @if($status === 'pengembalian')
                 @php
-                $endDate = isset($items[0]) ? \Carbon\Carbon::parse($items[0]->end_date)->startOfDay() : null;
+                $endDate = isset($items[0])
+                ? \Carbon\Carbon::parse($items[0]->end_date)->startOfDay()
+                : null;
+
                 $today = \Carbon\Carbon::now()->startOfDay();
 
                 $hariTerlambat = 0;
 
                 if ($endDate) {
-                // Selisih hari dari batas pengembalian
                 $selisihHari = $endDate->diffInDays($today, false);
 
                 // H+1 masih toleransi
@@ -331,10 +333,19 @@
                 }
                 }
 
-                $totalDenda = $hariTerlambat * 10000;
+                $totalDenda = 0;
+
+                foreach ($items as $item) {
+                $dendaPerHari = $item->denda_per_hari ?? 0;
+
+                $totalDenda +=
+                $hariTerlambat *
+                $dendaPerHari *
+                $item->quantity;
+                }
 
                 $isOverdue = $hariTerlambat > 0;
-                $dendaDibayar = isset($items[0]) ? ($items[0]->denda_dibayar ?? false) : false;
+                $dendaDibayar = $items[0]->denda_dibayar ?? false;
                 @endphp
 
                 @if($isOverdue)
@@ -372,73 +383,14 @@
                         <div class="text-xs text-[#6b7280] font-medium mb-0.5">Total denda (Bayar Cash)</div>
                         <div class="text-base font-black text-[#dc2626]">Rp {{ number_format($totalDenda, 0, ',', '.') }}</div>
                     </div>
-                    <button type="button" onclick="openDendaModal({{ $rental->id }})"
-                        class="px-[18px] py-[9px] rounded-[10px] text-xs font-bold bg-[#dc2626] text-white
-                                       hover:bg-[#b91c1c] transition-colors duration-200 cursor-pointer inline-flex items-center gap-1.5">
-                        <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
-                        </svg>
-                        Bayar Denda
-                    </button>
                 </div>
                 <div class="flex items-start gap-2 mt-2 px-1">
                     <svg class="w-3.5 h-3.5 text-[#c2410c] flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" />
                     </svg>
                     <p class="text-[11px] text-[#c2410c] font-semibold leading-relaxed">
-                        Denda dibayar secara <strong>cash</strong> di tempat. Klik tombol di atas setelah membayar.
+                        Denda dibayar secara <strong>cash</strong>
                     </p>
-                </div>
-
-                {{-- MODAL BAYAR DENDA --}}
-                <div id="modal-bayar-denda-{{ $rental->id }}" tabindex="-1" aria-hidden="true" class="hidden fixed inset-0 z-[999] flex items-center justify-center">
-                    <div class="absolute inset-0 bg-black/50" onclick="closeDendaModal({{ $rental->id }})"></div>
-                    <div class="relative bg-white rounded-2xl w-full max-w-[400px] mx-4 p-6 shadow-2xl">
-                        <div class="flex items-center gap-3 mb-5">
-                            <div class="w-11 h-11 bg-[#fef2f2] rounded-xl flex items-center justify-center flex-shrink-0">
-                                <svg class="w-5 h-5 text-[#dc2626]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                </svg>
-                            </div>
-                            <div>
-                                <div class="text-sm font-extrabold text-[#1a1a1a]">Pembayaran Denda</div>
-                                <div class="text-[11px] text-[#6b7280]">Pembayaran dilakukan secara cash di tempat</div>
-                            </div>
-                        </div>
-                        <div class="bg-[#f5f6f4] rounded-xl p-4 mb-5 space-y-2.5">
-                            <div class="flex justify-between text-xs">
-                                <span class="text-[#6b7280] font-medium">Terlambat</span>
-                                <span class="font-bold text-[#1a1a1a]">{{ $hariTerlambat }} hari</span>
-                            </div>
-                            <div class="border-t border-[#e5e7eb]"></div>
-                            <div class="flex justify-between text-xs">
-                                <span class="text-[#6b7280] font-medium">Total Denda</span>
-                                <span class="font-extrabold text-[#dc2626] text-sm">Rp {{ number_format($totalDenda, 0, ',', '.') }}</span>
-                            </div>
-                        </div>
-                        <div class="flex items-start gap-2 mb-5 bg-[#fffbeb] border border-[#fde68a] rounded-lg px-3 py-2.5">
-                            <svg class="w-4 h-4 text-[#b45309] flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" />
-                            </svg>
-                            <p class="text-[11px] text-[#92400e] font-semibold leading-relaxed">
-                                Pastikan Anda sudah membayar denda secara <strong>cash</strong> sebelum menekan tombol konfirmasi.
-                            </p>
-                        </div>
-                        <div class="flex gap-2.5">
-                            <button type="button" onclick="closeDendaModal({{ $rental->id }})"
-                                class="flex-1 px-4 py-2.5 rounded-xl text-xs font-bold bg-white border-[1.5px] border-[#e5e7eb] text-[#6b7280] hover:border-[#1a1a1a] hover:text-[#1a1a1a] transition-all duration-200 cursor-pointer">
-                                Batal
-                            </button>
-                            <button type="button" onclick="konfirmasiBayarDenda('{{ $rental->order_id }}', {{ $rental->id }})"
-                                id="btn-konfirmasi-denda-{{ $rental->id }}"
-                                class="flex-1 px-4 py-2.5 rounded-xl text-xs font-bold bg-[#dc2626] text-white hover:bg-[#b91c1c] transition-all duration-200 cursor-pointer inline-flex items-center justify-center gap-1.5">
-                                <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                                </svg>
-                                Konfirmasi Bayar
-                            </button>
-                        </div>
-                    </div>
                 </div>
                 @endif
                 @else
@@ -764,60 +716,6 @@
                     alert('Terjadi kesalahan koneksi.');
                 });
         };
-
-        window.openDendaModal = function(rentalId) {
-            var modal = document.getElementById('modal-bayar-denda-' + rentalId);
-            if (modal) {
-                modal.classList.remove('hidden');
-                modal.classList.add('flex');
-                document.body.style.overflow = 'hidden';
-            }
-        };
-
-        window.closeDendaModal = function(rentalId) {
-            var modal = document.getElementById('modal-bayar-denda-' + rentalId);
-            if (modal) {
-                modal.classList.add('hidden');
-                modal.classList.remove('flex');
-                document.body.style.overflow = '';
-            }
-        };
-
-        window.konfirmasiBayarDenda = function(orderId, rentalId) {
-            var btn = document.getElementById('btn-konfirmasi-denda-' + rentalId);
-            btn.disabled = true;
-            btn.innerHTML = '<svg class="w-3.5 h-3.5 animate-spin" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path></svg> Memproses...';
-
-            fetch('{{ url("/pesanan/bayar-denda-cash") }}', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
-                        'Accept': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        order_id: orderId
-                    })
-                })
-                .then(function(r) {
-                    return r.json();
-                })
-                .then(function(data) {
-                    if (data.status === 'success') {
-                        window.location.reload();
-                    } else {
-                        alert('Gagal: ' + (data.message || 'Coba lagi.'));
-                        btn.disabled = false;
-                        btn.innerHTML = '<svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg> Konfirmasi Bayar';
-                    }
-                })
-                .catch(function() {
-                    alert('Terjadi kesalahan koneksi.');
-                    btn.disabled = false;
-                    btn.innerHTML = '<svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg> Konfirmasi Bayar';
-                });
-        };
-
     });
 </script>
 @endpush
