@@ -98,13 +98,18 @@ $section = 'Pengembalian';
                     // Tiga kondisi status berdasarkan tanggal batas kembali
                     $isBelumJatuhTempo = $tglKembali ? $tglKembali->gt($hariIni) : false;
                     $isJatuhTempoHariIni = $tglKembali ? $tglKembali->equalTo($hariIni) : false;
-                    $isOverdue = $tglKembali ? $hariIni->gt($tglKembali) : false;
+                    $isOverdue = $tglKembali
+    ? $hariIni->gt($tglKembali->copy()->addDay())
+    : false;
 
                     // Tombol konfirmasi hanya tampil kalau sudah jatuh tempo (hari ini atau lewat)
                     $bisaKonfirmasi = $isJatuhTempoHariIni || $isOverdue;
 
-                    $hariTerlambat = $isOverdue ? $hariIni->diffInDays($tglKembali) : 0;
-                    $totalDenda = $isOverdue ? ($hariTerlambat * 10000) : 0;
+                    $hariTerlambat = $isOverdue
+    ? $hariIni->diffInDays($tglKembali) - 1
+    : 0;
+
+$totalDenda = $hariTerlambat * 10000;
 
                     $tglFormatted = $tglKembali ? $tglKembali->format('d M Y') : '-';
                     $products = collect($item->products ?? []);

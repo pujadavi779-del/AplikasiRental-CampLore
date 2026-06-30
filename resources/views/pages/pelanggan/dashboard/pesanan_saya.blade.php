@@ -287,8 +287,8 @@
                     $returnDate = \Carbon\Carbon::parse($rental->return_date);
                     $daysLeft = (int) now()->startOfDay()->diffInDays($returnDate->startOfDay(), false);
                     $isUrgent = $daysLeft <= 1;
-                    @endphp
-                    <div class="mt-3 rounded-[10px] px-3.5 py-[10px] flex items-start gap-2.5
+                        @endphp
+                        <div class="mt-3 rounded-[10px] px-3.5 py-[10px] flex items-start gap-2.5
                         {{ $isUrgent ? 'bg-[#fef2f2] border border-[#fecaca]' : 'bg-[#fffbeb] border border-[#fde68a]' }}">
                         <svg class="w-[15px] h-[15px] flex-shrink-0 mt-px {{ $isUrgent ? 'text-[#dc2626]' : 'text-[#b45309]' }}"
                             fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -308,296 +308,301 @@
                             &mdash; <strong>Sudah lewat batas!</strong>
                             @endif
                         </div>
-                    </div>
-                    @endif
+                </div>
+                @endif
 
-                    {{-- ============================================= --}}
-                    {{-- PENGEMBALIAN: DENDA LOGIC (BERSIH, TANPA DUPLIKAT) --}}
-                    {{-- ============================================= --}}
-                    @if($status === 'pengembalian')
-                    @php
-                    $endDate = isset($items[0]) ? \Carbon\Carbon::parse($items[0]->end_date)->startOfDay() : null;
-                    $today = \Carbon\Carbon::now()->startOfDay();
+                {{-- ============================================= --}}
+                {{-- PENGEMBALIAN: DENDA LOGIC --}}
+                {{-- ============================================= --}}
+                @if($status === 'pengembalian')
+                @php
+                $endDate = isset($items[0]) ? \Carbon\Carbon::parse($items[0]->end_date)->startOfDay() : null;
+                $today = \Carbon\Carbon::now()->startOfDay();
 
-                    $hariTerlambat = 0;
-                    if ($endDate && $today->gt($endDate)) {
-                        $hariTerlambat = $today->diffInDays($endDate);
-                    }
+                $hariTerlambat = 0;
 
-                    $totalDenda = 0;
-                    foreach($items as $item) {
-                        $totalDenda += $hariTerlambat * ($item->denda_per_hari ?? 0) * ($item->quantity ?? 1);
-                    }
+                if ($endDate) {
+                // Selisih hari dari batas pengembalian
+                $selisihHari = $endDate->diffInDays($today, false);
 
-                    $isOverdue = $hariTerlambat > 0;
-                    $dendaDibayar = isset($items[0]) ? ($items[0]->denda_dibayar ?? false) : false;                    @endphp
+                // H+1 masih toleransi
+                if ($selisihHari >= 2) {
+                $hariTerlambat = $selisihHari - 1;
+                }
+                }
 
-                    @if($isOverdue)
-                        @if($dendaDibayar)
-                        {{-- DENDA SUDAH DIBAYAR --}}
-                        <div class="mt-3.5 bg-[#f0fdf4] border border-[#86efac] rounded-xl px-3.5 py-3 flex items-center gap-3">
-                            <div class="w-8 h-8 bg-[#166534] rounded-full flex items-center justify-center flex-shrink-0">
-                                <svg class="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7" />
-                                </svg>
-                            </div>
-                            <div>
-                                <div class="text-xs font-bold text-[#166534]">Denda Sudah Dibayar</div>
-                                <div class="text-[11px] text-[#15803d]">Rp {{ number_format($totalDenda, 0, ',', '.') }} &bull; Terlambat {{ $hariTerlambat }} hari &bull; Menunggu admin memproses.</div>
-                            </div>
-                        </div>
-                        @else
-                        {{-- OVERDUE + BELUM BAYAR --}}
-                        <div class="grid grid-cols-2 gap-2.5 mt-3.5">
-                            <div class="bg-[#fef2f2] border border-[#fecaca] rounded-xl px-3.5 py-3">
-                                <div class="text-[11px] font-semibold text-[#dc2626] mb-1">Batas Pengembalian</div>
-                                <div class="text-[15px] font-extrabold text-[#dc2626]">
-                                    {{ $endDate ? $endDate->translatedFormat('d M Y') : '-' }}
-                                </div>
-                            </div>
-                            <div class="bg-[#fef2f2] border border-[#fecaca] rounded-xl px-3.5 py-3">
-                                <div class="text-[11px] font-semibold text-[#dc2626] mb-1">Keterlambatan</div>
-                                <div class="text-[15px] font-extrabold text-[#dc2626]">
-                                    {{ $hariTerlambat }} hari
-                                </div>
-                            </div>
-                        </div>
-                        <div class="flex items-center justify-between mt-2.5 px-3.5 py-3 bg-[#f5f6f4] rounded-xl border border-[#e5e7eb]">
-                            <div>
-                                <div class="text-xs text-[#6b7280] font-medium mb-0.5">Total denda (Bayar Cash)</div>
-                                <div class="text-base font-black text-[#dc2626]">Rp {{ number_format($totalDenda, 0, ',', '.') }}</div>
-                            </div>
-                            <button type="button" onclick="openDendaModal({{ $rental->id }})"
-                                class="px-[18px] py-[9px] rounded-[10px] text-xs font-bold bg-[#dc2626] text-white
-                                       hover:bg-[#b91c1c] transition-colors duration-200 cursor-pointer inline-flex items-center gap-1.5">
-                                <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"/>
-                                </svg>
-                                Bayar Denda
-                            </button>
-                        </div>
-                        <div class="flex items-start gap-2 mt-2 px-1">
-                            <svg class="w-3.5 h-3.5 text-[#c2410c] flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/>
-                            </svg>
-                            <p class="text-[11px] text-[#c2410c] font-semibold leading-relaxed">
-                                Denda dibayar secara <strong>cash</strong> di tempat. Klik tombol di atas setelah membayar.
-                            </p>
-                        </div>
+                $totalDenda = $hariTerlambat * 10000;
 
-                        {{-- MODAL BAYAR DENDA --}}
-                        <div id="modal-bayar-denda-{{ $rental->id }}" tabindex="-1" aria-hidden="true" class="hidden fixed inset-0 z-[999] flex items-center justify-center">
-                            <div class="absolute inset-0 bg-black/50" onclick="closeDendaModal({{ $rental->id }})"></div>
-                            <div class="relative bg-white rounded-2xl w-full max-w-[400px] mx-4 p-6 shadow-2xl">
-                                <div class="flex items-center gap-3 mb-5">
-                                    <div class="w-11 h-11 bg-[#fef2f2] rounded-xl flex items-center justify-center flex-shrink-0">
-                                        <svg class="w-5 h-5 text-[#dc2626]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                                        </svg>
-                                    </div>
-                                    <div>
-                                        <div class="text-sm font-extrabold text-[#1a1a1a]">Pembayaran Denda</div>
-                                        <div class="text-[11px] text-[#6b7280]">Pembayaran dilakukan secara cash di tempat</div>
-                                    </div>
-                                </div>
-                                <div class="bg-[#f5f6f4] rounded-xl p-4 mb-5 space-y-2.5">
-                                    <div class="flex justify-between text-xs">
-                                        <span class="text-[#6b7280] font-medium">Terlambat</span>
-                                        <span class="font-bold text-[#1a1a1a]">{{ $hariTerlambat }} hari</span>
-                                    </div>
-                                    <div class="border-t border-[#e5e7eb]"></div>
-                                    <div class="flex justify-between text-xs">
-                                        <span class="text-[#6b7280] font-medium">Total Denda</span>
-                                        <span class="font-extrabold text-[#dc2626] text-sm">Rp {{ number_format($totalDenda, 0, ',', '.') }}</span>
-                                    </div>
-                                </div>
-                                <div class="flex items-start gap-2 mb-5 bg-[#fffbeb] border border-[#fde68a] rounded-lg px-3 py-2.5">
-                                    <svg class="w-4 h-4 text-[#b45309] flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/>
-                                    </svg>
-                                    <p class="text-[11px] text-[#92400e] font-semibold leading-relaxed">
-                                        Pastikan Anda sudah membayar denda secara <strong>cash</strong> sebelum menekan tombol konfirmasi.
-                                    </p>
-                                </div>
-                                <div class="flex gap-2.5">
-                                    <button type="button" onclick="closeDendaModal({{ $rental->id }})"
-                                        class="flex-1 px-4 py-2.5 rounded-xl text-xs font-bold bg-white border-[1.5px] border-[#e5e7eb] text-[#6b7280] hover:border-[#1a1a1a] hover:text-[#1a1a1a] transition-all duration-200 cursor-pointer">
-                                        Batal
-                                    </button>
-                                    <button type="button" onclick="konfirmasiBayarDenda('{{ $rental->order_id }}', {{ $rental->id }})"
-                                        id="btn-konfirmasi-denda-{{ $rental->id }}"
-                                        class="flex-1 px-4 py-2.5 rounded-xl text-xs font-bold bg-[#dc2626] text-white hover:bg-[#b91c1c] transition-all duration-200 cursor-pointer inline-flex items-center justify-center gap-1.5">
-                                        <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
-                                        </svg>
-                                        Konfirmasi Bayar
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                        @endif
-                    @else
-                    {{-- BELUM OVERDUE --}}
-                    <div class="mt-3.5 bg-[#eff6ff] border border-[#bfdbfe] rounded-xl px-3.5 py-3 flex items-center gap-2.5">
-                        <svg class="w-[15px] h-[15px] text-[#1d4ed8] flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                $isOverdue = $hariTerlambat > 0;
+                $dendaDibayar = isset($items[0]) ? ($items[0]->denda_dibayar ?? false) : false;
+                @endphp
+
+                @if($isOverdue)
+                @if($dendaDibayar)
+                {{-- DENDA SUDAH DIBAYAR --}}
+                <div class="mt-3.5 bg-[#f0fdf4] border border-[#86efac] rounded-xl px-3.5 py-3 flex items-center gap-3">
+                    <div class="w-8 h-8 bg-[#166534] rounded-full flex items-center justify-center flex-shrink-0">
+                        <svg class="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7" />
                         </svg>
-                        <span class="text-xs font-semibold text-[#1e40af]">
-                            Batas pengembalian: <strong>{{ $endDate ? $endDate->translatedFormat('d M Y') : '-' }}</strong>. Harap kembalikan tepat waktu.
-                        </span>
                     </div>
-                    @endif
-                    @endif
-                    {{-- ============================================= --}}
-                    {{-- END PENGEMBALIAN --}}
-                    {{-- ============================================= --}}
-
-                    {{-- Order info --}}
-                    <div class="text-[11px] text-[#9ca3af] mt-2.5">
-                        No. pemesanan: {{ $rental->order_number ?? 'CPL-' . str_pad($rental->id, 8, '0', STR_PAD_LEFT) }}
-                        &bull; {{ $itemCount }} produk, {{ $totalQty }} item
-                    </div>
-
-                    {{-- Dikirim info --}}
-                    @if($status === 'dikirim')
-                    <div class="mt-3 bg-[#eff6ff] border border-[#bfdbfe] rounded-[10px] px-3.5 py-[10px] flex items-center gap-2.5">
-                        <svg class="w-[15px] h-[15px] text-[#1d4ed8] flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8l1 12a2 2 0 002 2h8a2 2 0 002-2l1-12M10 12a1 1 0 100 2 1 1 0 000-2zm4 0a1 1 0 100 2 1 1 0 000-2z" />
-                        </svg>
-                        <span class="text-xs font-semibold text-[#1e40af]">Barang sedang dalam perjalanan menuju lokasi Anda.</span>
-                    </div>
-                    @endif
-
-                    {{-- Progress bar --}}
-                    @if($showProgress)
-                    @php
-                    $stepIndex = 0;
-                    if (in_array($status, ['dikemas', 'dikirim', 'pengembalian', 'selesai'])) $stepIndex = 1;
-                    if (in_array($status, ['dikirim', 'pengembalian', 'selesai'])) $stepIndex = 2;
-                    if (in_array($status, ['pengembalian','selesai'])) $stepIndex = 3;
-                    if ($status === 'selesai') $stepIndex = 4;
-                    @endphp
-                    <div class="mt-3.5">
-                        <div class="flex items-center">
-                            <div class="w-[13px] h-[13px] rounded-full bg-[#1a5c3a] flex-shrink-0"></div>
-                            <div class="{{ $stepIndex >= 1 ? 'prog-line-on' : 'prog-line-off' }}"></div>
-                            <div class="w-[13px] h-[13px] rounded-full flex-shrink-0 {{ $stepIndex >= 1 ? 'bg-[#1a5c3a]' : 'bg-[#e5e7eb]' }}"></div>
-                            <div class="{{ $stepIndex >= 2 ? 'prog-line-on' : 'prog-line-off' }}"></div>
-                            <div class="w-[13px] h-[13px] rounded-full flex-shrink-0 {{ $stepIndex >= 2 ? 'bg-[#1a5c3a]' : 'bg-[#e5e7eb]' }}"></div>
-                            <div class="{{ $stepIndex >= 3 ? 'prog-line-on' : 'prog-line-off' }}"></div>
-                            <div class="w-[13px] h-[13px] rounded-full flex-shrink-0 {{ $stepIndex >= 3 ? 'bg-[#1a5c3a]' : 'bg-[#e5e7eb]' }}"></div>
-                            <div class="{{ $stepIndex >= 4 ? 'prog-line-on' : 'prog-line-off' }}"></div>
-                            <div class="w-[13px] h-[13px] rounded-full flex-shrink-0 {{ $stepIndex >= 4 ? 'bg-[#1a5c3a]' : 'bg-[#e5e7eb]' }}"></div>
-                        </div>
-                        <div class="flex mt-1.5">
-                            <div class="flex-1 text-center text-[10px] font-bold text-[#1a5c3a]">Pesanan dibuat</div>
-                            <div class="flex-1 text-center text-[10px] {{ $stepIndex >= 1 ? 'font-bold text-[#1a5c3a]' : 'font-semibold text-[#9ca3af]' }}">Dikemas</div>
-                            <div class="flex-1 text-center text-[10px] {{ $stepIndex >= 2 ? 'font-bold text-[#1a5c3a]' : 'font-semibold text-[#9ca3af]' }}">Dikirim</div>
-                            <div class="flex-1 text-center text-[10px] {{ $stepIndex >= 3 ? 'font-bold text-[#1a5c3a]' : 'font-semibold text-[#9ca3af]' }}">Pengembalian</div>
-                            <div class="flex-1 text-center text-[10px] {{ $stepIndex >= 4 ? 'font-bold text-[#1a5c3a]' : 'font-semibold text-[#9ca3af]' }}">Selesai</div>
-                        </div>
-                    </div>
-                    @endif
-
-                </div>{{-- end card-body --}}
-
-                {{-- Card Footer --}}
-                <div class="border-t border-[#e5e7eb] px-4 py-3 flex items-center justify-between gap-3">
                     <div>
-                        <div class="text-xs text-[#6b7280] font-medium">Total sewa:</div>
-                        <div class="text-[17px] font-black text-[#1a1a1a] mt-px">
-                            Rp {{ number_format($rental->total_harga ?? 0, 0, ',', '.') }}
-                        </div>
-                        <div class="text-[11px] text-[#9ca3af] mt-0.5">{{ $itemCount }} produk &bull; {{ $totalQty }} item</div>
-                    </div>
-                    <div class="flex gap-2 items-center flex-wrap justify-end">
-
-                        @if($status === 'belum_bayar')
-                        <button onclick="batalkanPesanan('{{ $rental->order_id }}')"
-                            class="px-[18px] py-[9px] rounded-[10px] text-xs font-bold cursor-pointer transition-all duration-200
-                                       bg-white border-[1.5px] border-[#fecaca] text-[#dc2626] hover:bg-[#fef2f2]">
-                            Batalkan
-                        </button>
-                        <button onclick="bayarSekarang('{{ $rental->order_id }}')"
-                            class="px-[18px] py-[9px] rounded-[10px] text-xs font-bold cursor-pointer
-                                       bg-[#1a5c3a] text-white hover:bg-[#2d7a52] transition-colors duration-200">
-                            Bayar Sekarang
-                        </button>
-                        @endif
-
-                        @if($status === 'dikirim')
-                        <a href="https://wa.me/6281276903211" target="_blank"
-                            class="px-[18px] py-[9px] rounded-[10px] text-xs font-bold no-underline inline-flex items-center gap-1.5
-                                      bg-white border-[1.5px] border-[#e5e7eb] text-[#1a1a1a]
-                                      hover:border-[#1a5c3a] hover:text-[#1a5c3a] transition-all duration-200">
-                            Hubungi Penjual
-                        </a>
-                        @endif
-
-                        @if($status === 'selesai')
-                        @php
-                        $firstProductId = $items[0]->product_id ?? null;
-                        $sudahReview = $firstProductId
-                        ? \App\Models\Review::where('user_id', auth()->id())
-                        ->where('product_id', $firstProductId)
-                        ->exists()
-                        : true;
-                        @endphp
-                        <a href="/catalog"
-                            class="px-[18px] py-[9px] rounded-[10px] text-xs font-bold no-underline inline-flex items-center gap-1.5
-                                    bg-[#e8567a] text-white hover:bg-[#d4466a] transition-colors duration-200">
-                            Sewa Lagi
-                        </a>
-                        @if(!$sudahReview)
-                        @php
-                        $productId = $items[0]->product_id ?? null;
-                        $productCategory = null;
-                        if ($productId) {
-                        $prod = \App\Models\Barang::find($productId);
-                        $productCategory = $prod ? strtolower($prod->Kategori_data) : null;
-                        }
-                        $reviewRoute = $productCategory === 'kamera'
-                        ? route('camera.show', $productId)
-                        : route('camping.show', $productId);
-                        @endphp
-                        <a href="{{ $reviewRoute }}"
-                            class="px-[18px] py-[9px] rounded-[10px] text-xs font-bold no-underline inline-flex items-center gap-1.5
-                                    bg-white border-[1.5px] border-[#1a5c3a] text-[#1a5c3a]
-                                    hover:bg-[#eef5f0] transition-colors duration-200">
-                            <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
-                            </svg>
-                            Tulis Ulasan
-                        </a>
-                        @else
-                        @php
-                        $myReview = \App\Models\Review::where('user_id', auth()->id())
-                        ->where('product_id', $firstProductId)
-                        ->first();
-                        @endphp
-                        @if($myReview)
-                        <a href="{{ route('pelanggan.ulasan.show', $myReview->id_review) }}"
-                            class="px-[18px] py-[9px] rounded-[10px] text-xs font-bold no-underline inline-flex items-center gap-1.5
-                                    bg-white border-[1.5px] border-[#6b7280] text-[#6b7280]
-                                    hover:border-[#1a5c3a] hover:text-[#1a5c3a] transition-colors duration-200">
-                            <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                            </svg>
-                            Lihat Penilaian
-                        </a>
-                        @endif
-                        @endif
-                        @endif
-
+                        <div class="text-xs font-bold text-[#166534]">Denda Sudah Dibayar</div>
+                        <div class="text-[11px] text-[#15803d]">Rp {{ number_format($totalDenda, 0, ',', '.') }} &bull; Terlambat {{ $hariTerlambat }} hari &bull; Menunggu admin memproses.</div>
                     </div>
                 </div>
+                @else
+                {{-- OVERDUE + BELUM BAYAR --}}
+                <div class="grid grid-cols-2 gap-2.5 mt-3.5">
+                    <div class="bg-[#fef2f2] border border-[#fecaca] rounded-xl px-3.5 py-3">
+                        <div class="text-[11px] font-semibold text-[#dc2626] mb-1">Batas Pengembalian</div>
+                        <div class="text-[15px] font-extrabold text-[#dc2626]">
+                            {{ $endDate ? $endDate->translatedFormat('d M Y') : '-' }}
+                        </div>
+                    </div>
+                    <div class="bg-[#fef2f2] border border-[#fecaca] rounded-xl px-3.5 py-3">
+                        <div class="text-[11px] font-semibold text-[#dc2626] mb-1">Keterlambatan</div>
+                        <div class="text-[15px] font-extrabold text-[#dc2626]">
+                            {{ $hariTerlambat }} hari
+                        </div>
+                    </div>
+                </div>
+                <div class="flex items-center justify-between mt-2.5 px-3.5 py-3 bg-[#f5f6f4] rounded-xl border border-[#e5e7eb]">
+                    <div>
+                        <div class="text-xs text-[#6b7280] font-medium mb-0.5">Total denda (Bayar Cash)</div>
+                        <div class="text-base font-black text-[#dc2626]">Rp {{ number_format($totalDenda, 0, ',', '.') }}</div>
+                    </div>
+                    <button type="button" onclick="openDendaModal({{ $rental->id }})"
+                        class="px-[18px] py-[9px] rounded-[10px] text-xs font-bold bg-[#dc2626] text-white
+                                       hover:bg-[#b91c1c] transition-colors duration-200 cursor-pointer inline-flex items-center gap-1.5">
+                        <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
+                        </svg>
+                        Bayar Denda
+                    </button>
+                </div>
+                <div class="flex items-start gap-2 mt-2 px-1">
+                    <svg class="w-3.5 h-3.5 text-[#c2410c] flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" />
+                    </svg>
+                    <p class="text-[11px] text-[#c2410c] font-semibold leading-relaxed">
+                        Denda dibayar secara <strong>cash</strong> di tempat. Klik tombol di atas setelah membayar.
+                    </p>
+                </div>
 
-            </div>{{-- end rental-card --}}
+                {{-- MODAL BAYAR DENDA --}}
+                <div id="modal-bayar-denda-{{ $rental->id }}" tabindex="-1" aria-hidden="true" class="hidden fixed inset-0 z-[999] flex items-center justify-center">
+                    <div class="absolute inset-0 bg-black/50" onclick="closeDendaModal({{ $rental->id }})"></div>
+                    <div class="relative bg-white rounded-2xl w-full max-w-[400px] mx-4 p-6 shadow-2xl">
+                        <div class="flex items-center gap-3 mb-5">
+                            <div class="w-11 h-11 bg-[#fef2f2] rounded-xl flex items-center justify-center flex-shrink-0">
+                                <svg class="w-5 h-5 text-[#dc2626]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                            </div>
+                            <div>
+                                <div class="text-sm font-extrabold text-[#1a1a1a]">Pembayaran Denda</div>
+                                <div class="text-[11px] text-[#6b7280]">Pembayaran dilakukan secara cash di tempat</div>
+                            </div>
+                        </div>
+                        <div class="bg-[#f5f6f4] rounded-xl p-4 mb-5 space-y-2.5">
+                            <div class="flex justify-between text-xs">
+                                <span class="text-[#6b7280] font-medium">Terlambat</span>
+                                <span class="font-bold text-[#1a1a1a]">{{ $hariTerlambat }} hari</span>
+                            </div>
+                            <div class="border-t border-[#e5e7eb]"></div>
+                            <div class="flex justify-between text-xs">
+                                <span class="text-[#6b7280] font-medium">Total Denda</span>
+                                <span class="font-extrabold text-[#dc2626] text-sm">Rp {{ number_format($totalDenda, 0, ',', '.') }}</span>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-2 mb-5 bg-[#fffbeb] border border-[#fde68a] rounded-lg px-3 py-2.5">
+                            <svg class="w-4 h-4 text-[#b45309] flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" />
+                            </svg>
+                            <p class="text-[11px] text-[#92400e] font-semibold leading-relaxed">
+                                Pastikan Anda sudah membayar denda secara <strong>cash</strong> sebelum menekan tombol konfirmasi.
+                            </p>
+                        </div>
+                        <div class="flex gap-2.5">
+                            <button type="button" onclick="closeDendaModal({{ $rental->id }})"
+                                class="flex-1 px-4 py-2.5 rounded-xl text-xs font-bold bg-white border-[1.5px] border-[#e5e7eb] text-[#6b7280] hover:border-[#1a1a1a] hover:text-[#1a1a1a] transition-all duration-200 cursor-pointer">
+                                Batal
+                            </button>
+                            <button type="button" onclick="konfirmasiBayarDenda('{{ $rental->order_id }}', {{ $rental->id }})"
+                                id="btn-konfirmasi-denda-{{ $rental->id }}"
+                                class="flex-1 px-4 py-2.5 rounded-xl text-xs font-bold bg-[#dc2626] text-white hover:bg-[#b91c1c] transition-all duration-200 cursor-pointer inline-flex items-center justify-center gap-1.5">
+                                <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                                </svg>
+                                Konfirmasi Bayar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                @endif
+                @else
+                {{-- BELUM OVERDUE --}}
+                <div class="mt-3.5 bg-[#eff6ff] border border-[#bfdbfe] rounded-xl px-3.5 py-3 flex items-center gap-2.5">
+                    <svg class="w-[15px] h-[15px] text-[#1d4ed8] flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <span class="text-xs font-semibold text-[#1e40af]">
+                        Batas pengembalian: <strong>{{ $endDate ? $endDate->translatedFormat('d M Y') : '-' }}</strong>. Harap kembalikan tepat waktu.
+                    </span>
+                </div>
+                @endif
+                @endif
+                {{-- ============================================= --}}
+                {{-- END PENGEMBALIAN --}}
+                {{-- ============================================= --}}
+
+                {{-- Order info --}}
+                <div class="text-[11px] text-[#9ca3af] mt-2.5">
+                    No. pemesanan: {{ $rental->order_number ?? 'CPL-' . str_pad($rental->id, 8, '0', STR_PAD_LEFT) }}
+                    &bull; {{ $itemCount }} produk, {{ $totalQty }} item
+                </div>
+
+                {{-- Dikirim info --}}
+                @if($status === 'dikirim')
+                <div class="mt-3 bg-[#eff6ff] border border-[#bfdbfe] rounded-[10px] px-3.5 py-[10px] flex items-center gap-2.5">
+                    <svg class="w-[15px] h-[15px] text-[#1d4ed8] flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8l1 12a2 2 0 002 2h8a2 2 0 002-2l1-12M10 12a1 1 0 100 2 1 1 0 000-2zm4 0a1 1 0 100 2 1 1 0 000-2z" />
+                    </svg>
+                    <span class="text-xs font-semibold text-[#1e40af]">Barang sedang dalam perjalanan menuju lokasi Anda.</span>
+                </div>
+                @endif
+
+                {{-- Progress bar --}}
+                @if($showProgress)
+                @php
+                $stepIndex = 0;
+                if (in_array($status, ['dikemas', 'dikirim', 'pengembalian', 'selesai'])) $stepIndex = 1;
+                if (in_array($status, ['dikirim', 'pengembalian', 'selesai'])) $stepIndex = 2;
+                if (in_array($status, ['pengembalian','selesai'])) $stepIndex = 3;
+                if ($status === 'selesai') $stepIndex = 4;
+                @endphp
+                <div class="mt-3.5">
+                    <div class="flex items-center">
+                        <div class="w-[13px] h-[13px] rounded-full bg-[#1a5c3a] flex-shrink-0"></div>
+                        <div class="{{ $stepIndex >= 1 ? 'prog-line-on' : 'prog-line-off' }}"></div>
+                        <div class="w-[13px] h-[13px] rounded-full flex-shrink-0 {{ $stepIndex >= 1 ? 'bg-[#1a5c3a]' : 'bg-[#e5e7eb]' }}"></div>
+                        <div class="{{ $stepIndex >= 2 ? 'prog-line-on' : 'prog-line-off' }}"></div>
+                        <div class="w-[13px] h-[13px] rounded-full flex-shrink-0 {{ $stepIndex >= 2 ? 'bg-[#1a5c3a]' : 'bg-[#e5e7eb]' }}"></div>
+                        <div class="{{ $stepIndex >= 3 ? 'prog-line-on' : 'prog-line-off' }}"></div>
+                        <div class="w-[13px] h-[13px] rounded-full flex-shrink-0 {{ $stepIndex >= 3 ? 'bg-[#1a5c3a]' : 'bg-[#e5e7eb]' }}"></div>
+                        <div class="{{ $stepIndex >= 4 ? 'prog-line-on' : 'prog-line-off' }}"></div>
+                        <div class="w-[13px] h-[13px] rounded-full flex-shrink-0 {{ $stepIndex >= 4 ? 'bg-[#1a5c3a]' : 'bg-[#e5e7eb]' }}"></div>
+                    </div>
+                    <div class="flex mt-1.5">
+                        <div class="flex-1 text-center text-[10px] font-bold text-[#1a5c3a]">Pesanan dibuat</div>
+                        <div class="flex-1 text-center text-[10px] {{ $stepIndex >= 1 ? 'font-bold text-[#1a5c3a]' : 'font-semibold text-[#9ca3af]' }}">Dikemas</div>
+                        <div class="flex-1 text-center text-[10px] {{ $stepIndex >= 2 ? 'font-bold text-[#1a5c3a]' : 'font-semibold text-[#9ca3af]' }}">Dikirim</div>
+                        <div class="flex-1 text-center text-[10px] {{ $stepIndex >= 3 ? 'font-bold text-[#1a5c3a]' : 'font-semibold text-[#9ca3af]' }}">Pengembalian</div>
+                        <div class="flex-1 text-center text-[10px] {{ $stepIndex >= 4 ? 'font-bold text-[#1a5c3a]' : 'font-semibold text-[#9ca3af]' }}">Selesai</div>
+                    </div>
+                </div>
+                @endif
+
+            </div>{{-- end card-body --}}
+
+            {{-- Card Footer --}}
+            <div class="border-t border-[#e5e7eb] px-4 py-3 flex items-center justify-between gap-3">
+                <div>
+                    <div class="text-xs text-[#6b7280] font-medium">Total sewa:</div>
+                    <div class="text-[17px] font-black text-[#1a1a1a] mt-px">
+                        Rp {{ number_format($rental->total_harga ?? 0, 0, ',', '.') }}
+                    </div>
+                    <div class="text-[11px] text-[#9ca3af] mt-0.5">{{ $itemCount }} produk &bull; {{ $totalQty }} item</div>
+                </div>
+                <div class="flex gap-2 items-center flex-wrap justify-end">
+
+                    @if($status === 'belum_bayar')
+                    <button onclick="batalkanPesanan('{{ $rental->order_id }}')"
+                        class="px-[18px] py-[9px] rounded-[10px] text-xs font-bold cursor-pointer transition-all duration-200
+                                       bg-white border-[1.5px] border-[#fecaca] text-[#dc2626] hover:bg-[#fef2f2]">
+                        Batalkan
+                    </button>
+                    <button onclick="bayarSekarang('{{ $rental->order_id }}')"
+                        class="px-[18px] py-[9px] rounded-[10px] text-xs font-bold cursor-pointer
+                                       bg-[#1a5c3a] text-white hover:bg-[#2d7a52] transition-colors duration-200">
+                        Bayar Sekarang
+                    </button>
+                    @endif
+
+                    @if($status === 'dikirim')
+                    <a href="https://wa.me/6281276903211" target="_blank"
+                        class="px-[18px] py-[9px] rounded-[10px] text-xs font-bold no-underline inline-flex items-center gap-1.5
+                                      bg-white border-[1.5px] border-[#e5e7eb] text-[#1a1a1a]
+                                      hover:border-[#1a5c3a] hover:text-[#1a5c3a] transition-all duration-200">
+                        Hubungi Penjual
+                    </a>
+                    @endif
+
+                    @if($status === 'selesai')
+                    @php
+                    $firstProductId = $items[0]->product_id ?? null;
+                    $sudahReview = $firstProductId
+                    ? \App\Models\Review::where('user_id', auth()->id())
+                    ->where('product_id', $firstProductId)
+                    ->exists()
+                    : true;
+                    @endphp
+                    <a href="/catalog"
+                        class="px-[18px] py-[9px] rounded-[10px] text-xs font-bold no-underline inline-flex items-center gap-1.5
+                                    bg-[#e8567a] text-white hover:bg-[#d4466a] transition-colors duration-200">
+                        Sewa Lagi
+                    </a>
+                    @if(!$sudahReview)
+                    @php
+                    $productId = $items[0]->product_id ?? null;
+                    $productCategory = null;
+                    if ($productId) {
+                    $prod = \App\Models\Barang::find($productId);
+                    $productCategory = $prod ? strtolower($prod->Kategori_data) : null;
+                    }
+                    $reviewRoute = $productCategory === 'kamera'
+                    ? route('camera.show', $productId)
+                    : route('camping.show', $productId);
+                    @endphp
+                    <a href="{{ $reviewRoute }}"
+                        class="px-[18px] py-[9px] rounded-[10px] text-xs font-bold no-underline inline-flex items-center gap-1.5
+                                    bg-white border-[1.5px] border-[#1a5c3a] text-[#1a5c3a]
+                                    hover:bg-[#eef5f0] transition-colors duration-200">
+                        <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
+                        </svg>
+                        Tulis Ulasan
+                    </a>
+                    @else
+                    @php
+                    $myReview = \App\Models\Review::where('user_id', auth()->id())
+                    ->where('product_id', $firstProductId)
+                    ->first();
+                    @endphp
+                    @if($myReview)
+                    <a href="{{ route('pelanggan.ulasan.show', $myReview->id_review) }}"
+                        class="px-[18px] py-[9px] rounded-[10px] text-xs font-bold no-underline inline-flex items-center gap-1.5
+                                    bg-white border-[1.5px] border-[#6b7280] text-[#6b7280]
+                                    hover:border-[#1a5c3a] hover:text-[#1a5c3a] transition-colors duration-200">
+                        <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                        </svg>
+                        Lihat Penilaian
+                    </a>
+                    @endif
+                    @endif
+                    @endif
+
+                </div>
+            </div>
+
+    </div>{{-- end rental-card --}}
 
     @empty
     <div class="bg-white rounded-[18px] border-[1.5px] border-[#e5e7eb] px-8 py-16 text-center">
@@ -642,7 +647,9 @@
             if (el) {
                 el.style.transition = 'opacity 0.4s';
                 el.style.opacity = '0';
-                setTimeout(function() { el.remove(); }, 400);
+                setTimeout(function() {
+                    el.remove();
+                }, 400);
             }
         }, 4000);
 
@@ -652,7 +659,10 @@
                 var el = els[i];
                 var deadline = parseInt(el.getAttribute('data-deadline')) * 1000;
                 var diff = Math.max(0, Math.floor((deadline - Date.now()) / 1000));
-                if (diff <= 0) { el.textContent = '00:00:00'; continue; }
+                if (diff <= 0) {
+                    el.textContent = '00:00:00';
+                    continue;
+                }
                 var h = String(Math.floor(diff / 3600)).padStart(2, '0');
                 var m = String(Math.floor((diff % 3600) / 60)).padStart(2, '0');
                 var s = String(diff % 60).padStart(2, '0');
@@ -686,9 +696,13 @@
                         'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
                         'Accept': 'application/json'
                     },
-                    body: JSON.stringify({ order_id: orderId })
+                    body: JSON.stringify({
+                        order_id: orderId
+                    })
                 })
-                .then(function(r) { return r.json(); })
+                .then(function(r) {
+                    return r.json();
+                })
                 .then(function(data) {
                     if (data.snapToken) {
                         window.snap.pay(data.snapToken, {
@@ -700,19 +714,27 @@
                                         'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
                                         'Accept': 'application/json'
                                     },
-                                    body: JSON.stringify({ order_id: orderId })
+                                    body: JSON.stringify({
+                                        order_id: orderId
+                                    })
                                 });
                                 window.location.href = '/sewa?status=dikemas';
                             },
-                            onPending: function() { window.location.reload(); },
-                            onError: function() { alert('Pembayaran gagal, silahkan coba lagi.'); },
+                            onPending: function() {
+                                window.location.reload();
+                            },
+                            onError: function() {
+                                alert('Pembayaran gagal, silahkan coba lagi.');
+                            },
                             onClose: function() {}
                         });
                     } else {
                         alert('Gagal memuat pembayaran: ' + (data.message || 'Coba lagi.'));
                     }
                 })
-                .catch(function() { alert('Terjadi kesalahan koneksi.'); });
+                .catch(function() {
+                    alert('Terjadi kesalahan koneksi.');
+                });
         };
 
         window.batalkanPesanan = function(orderId) {
@@ -724,9 +746,13 @@
                         'X-CSRF-TOKEN': '{{ csrf_token() }}',
                         'Accept': 'application/json'
                     },
-                    body: JSON.stringify({ order_id: orderId })
+                    body: JSON.stringify({
+                        order_id: orderId
+                    })
                 })
-                .then(function(r) { return r.json(); })
+                .then(function(r) {
+                    return r.json();
+                })
                 .then(function(data) {
                     if (data.status === 'success') {
                         window.location.reload();
@@ -734,7 +760,9 @@
                         alert('Gagal membatalkan: ' + (data.message || ''));
                     }
                 })
-                .catch(function() { alert('Terjadi kesalahan koneksi.'); });
+                .catch(function() {
+                    alert('Terjadi kesalahan koneksi.');
+                });
         };
 
         window.openDendaModal = function(rentalId) {
@@ -761,29 +789,33 @@
             btn.innerHTML = '<svg class="w-3.5 h-3.5 animate-spin" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path></svg> Memproses...';
 
             fetch('{{ url("/pesanan/bayar-denda-cash") }}', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
-                    'Accept': 'application/json'
-                },
-                body: JSON.stringify({ order_id: orderId })
-            })
-            .then(function(r) { return r.json(); })
-            .then(function(data) {
-                if (data.status === 'success') {
-                    window.location.reload();
-                } else {
-                    alert('Gagal: ' + (data.message || 'Coba lagi.'));
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        order_id: orderId
+                    })
+                })
+                .then(function(r) {
+                    return r.json();
+                })
+                .then(function(data) {
+                    if (data.status === 'success') {
+                        window.location.reload();
+                    } else {
+                        alert('Gagal: ' + (data.message || 'Coba lagi.'));
+                        btn.disabled = false;
+                        btn.innerHTML = '<svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg> Konfirmasi Bayar';
+                    }
+                })
+                .catch(function() {
+                    alert('Terjadi kesalahan koneksi.');
                     btn.disabled = false;
                     btn.innerHTML = '<svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg> Konfirmasi Bayar';
-                }
-            })
-            .catch(function() {
-                alert('Terjadi kesalahan koneksi.');
-                btn.disabled = false;
-                btn.innerHTML = '<svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg> Konfirmasi Bayar';
-            });
+                });
         };
 
     });
