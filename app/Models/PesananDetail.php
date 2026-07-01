@@ -21,7 +21,6 @@ class PesananDetail extends Model
         'hari_lama_sewa',
         'harga_per_hari',
         'subtotal',
-        'note',
         'bukti_pengiriman',
         'hari_terlambat',
         'keterlambatan_biaya',

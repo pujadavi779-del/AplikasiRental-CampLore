@@ -360,8 +360,6 @@
             totalBottom.innerText     = formatRupiah(newTotal);
         }
 
-        // Sync tampilan dengan radio yang aktif saat halaman load
-        // (fix: browser kadang restore state radio tanpa trigger onchange)
         document.addEventListener('DOMContentLoaded', function () {
             const selected = document.querySelector('input[name="metode_pengiriman"]:checked');
             if (selected) {
@@ -424,10 +422,7 @@
             const totalAmount = parseInt(totalText.replace(/[^0-9]/g, ''));
             const csrfToken   = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 
-            const finalItems = cartItems.map(item => {
-                const noteElement = document.getElementById('note-' + item.id);
-                return { ...item, note: noteElement ? noteElement.value.trim() : '' };
-            });
+            const finalItems = cartItems;
 
             fetch('{{ route("pesanan.store") }}', {
                 method: 'POST',

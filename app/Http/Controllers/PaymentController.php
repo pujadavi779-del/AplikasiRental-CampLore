@@ -39,7 +39,7 @@ class PaymentController extends Controller
             $orderId = 'CAMP-' . time() . '-' . (auth()->id() ?? rand(10, 99));
 
             $transaction_details = [
-                'order_id'     => $orderId,
+                'order_id'     => $order_id,
                 'gross_amount' => $totalPayment,
             ];
 
@@ -98,72 +98,114 @@ class PaymentController extends Controller
     }
 
     public function getSnapToken(Request $request)
-    {
-        \Midtrans\Config::$serverKey = env('MIDTRANS_SERVER_KEY');
-        \Midtrans\Config::$isProduction = false;
-        \Midtrans\Config::$isSanitized = true;
-        \Midtrans\Config::$is3ds = true;
+{
+    Config::$serverKey = env('MIDTRANS_SERVER_KEY');
+    Config::$isProduction = false;
+    Config::$isSanitized = true;
+    Config::$is3ds = true;
 
-        try {
-            $orderId = $request->input('order_id');
-            
-            // FIX: Sekarang 1 order_id = 1 baris header pesanan
-            $pesanan = \App\Models\Pesanan::where('order_id', $orderId)
-                ->where('user_id', auth()->id())
-                ->with('details.barang')
-                ->first();
+    try {
 
-            if (!$pesanan) {
-                return response()->json(['status' => 'error', 'message' => 'Pesanan tidak ditemukan'], 404);
-            }
+        $orderId = $request->input('order_id');
 
-            // Kalau snap_token sudah ada, langsung pakai
-            if ($pesanan->snap_token) {
-                return response()->json(['snapToken' => $pesanan->snap_token]);
-            }
+        $pesanan = \App\Models\Pesanan::where('order_id', $orderId)
+            ->where('user_id', auth()->id())
+            ->with(['details.barang', 'pelanggan'])
+            ->first();
 
-            // FIX: Map item details dari relasi 'details'
-            $itemDetails = $pesanan->details->map(fn($d) => [
-                'id'       => 'prod-' . $d->product_id,
-                'price'    => (int) ($d->harga_per_hari * $d->quantity * $d->hari_lama_sewa),
-                'quantity' => 1,
-                'name'     => substr($d->barang->name ?? 'Produk', 0, 50),
-            ])->toArray();
-
-            $total = collect($itemDetails)->sum('price');
-
-            if ($pesanan->biaya_layanan > 0) {
-                $itemDetails[] = ['id' => 'service', 'price' => (int)$pesanan->biaya_layanan, 'quantity' => 1, 'name' => 'Biaya Layanan'];
-                $total += (int)$pesanan->biaya_layanan;
-            }
-            if ($pesanan->biaya_pengiriman > 0) {
-                $itemDetails[] = ['id' => 'shipping', 'price' => (int)$pesanan->biaya_pengiriman, 'quantity' => 1, 'name' => 'Biaya Pengantaran'];
-                $total += (int)$pesanan->biaya_pengiriman;
-            }
-
-            $params = [
-                'transaction_details' => [
-                    'order_id'     => $orderId,
-                    'gross_amount' => $total,
-                ],
-                'item_details'     => $itemDetails,
-                'customer_details' => [
-                    'first_name' => $pesanan->pelanggan->nama_lengkap ?? 'Pelanggan',
-                    'email'      => auth()->user()->email,
-                    'phone'      => $pesanan->pelanggan->no_tlp ?? '',
-                ],
-            ];
-
-            $snapToken = \Midtrans\Snap::getSnapToken($params);
-
-            // Simpan snap_token
-            $pesanan->update(['snap_token' => $snapToken]);
-
-            return response()->json(['snapToken' => $snapToken]);
-        } catch (\Exception $e) {
-            return response()->json(['status' => 'error', 'message' => $e->getMessage()], 500);
+        if (!$pesanan) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Pesanan tidak ditemukan'
+            ], 404);
         }
+
+        // Jika token sudah ada, langsung gunakan
+        if ($pesanan->snap_token) {
+            return response()->json([
+                'snapToken' => $pesanan->snap_token
+            ]);
+        }
+
+        // =====================
+        // ITEM DETAILS
+        // =====================
+        $itemDetails = [];
+
+        foreach ($pesanan->details as $detail) {
+
+            $itemDetails[] = [
+                'id'       => 'prod-' . $detail->product_id,
+                'price'    => (int) $detail->harga_per_hari,
+                'quantity' => (int) $detail->jumlah * (int) $detail->hari_lama_sewa,
+                'name'     => substr(
+                    $detail->barang->name ?? 'Produk',
+                    0,
+                    50
+                ),
+            ];
+        }
+
+        // Biaya layanan
+        if ($pesanan->biaya_layanan > 0) {
+
+            $itemDetails[] = [
+                'id'       => 'service',
+                'price'    => (int) $pesanan->biaya_layanan,
+                'quantity' => 1,
+                'name'     => 'Biaya Layanan',
+            ];
+        }
+
+        // Biaya pengiriman
+        if ($pesanan->biaya_pengiriman > 0) {
+
+            $itemDetails[] = [
+                'id'       => 'shipping',
+                'price'    => (int) $pesanan->biaya_pengiriman,
+                'quantity' => 1,
+                'name'     => 'Biaya Pengantaran',
+            ];
+        }
+
+        // =====================
+        // PARAMETER MIDTRANS
+        // =====================
+        $params = [
+
+            'transaction_details' => [
+                'order_id'     => $pesanan->order_id,
+                'gross_amount' => (int) $pesanan->total_harga,
+            ],
+
+            'item_details' => $itemDetails,
+
+            'customer_details' => [
+                'first_name' => $pesanan->pelanggan->nama_lengkap ?? 'Pelanggan',
+                'email'      => $pesanan->pelanggan->email
+                                    ?? auth()->user()->email,
+                'phone'      => $pesanan->pelanggan->no_tlp ?? '',
+            ],
+        ];
+
+        $snapToken = Snap::getSnapToken($params);
+
+        $pesanan->update([
+            'snap_token' => $snapToken
+        ]);
+
+        return response()->json([
+            'snapToken' => $snapToken
+        ]);
+
+    } catch (\Exception $e) {
+
+        return response()->json([
+            'status'  => 'error',
+            'message' => $e->getMessage()
+        ], 500);
     }
+}
 
     public function webhook(Request $request)
     {
