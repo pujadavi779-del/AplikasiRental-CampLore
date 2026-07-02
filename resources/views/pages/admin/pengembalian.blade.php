@@ -21,184 +21,187 @@ $section = 'Pengembalian';
 
     // Belum jatuh tempo: tanggal_kembali > hari ini
     $sedangDisewa = $col->filter(function($i) use ($hariIni) {
-        if (empty($i->tanggal_kembali)) return false;
-        return Carbon::parse($i->tanggal_kembali)->startOfDay()->gt($hariIni);
+    if (empty($i->tanggal_kembali)) return false;
+    return Carbon::parse($i->tanggal_kembali)->startOfDay()->gt($hariIni);
     })->count();
 
     // Jatuh tempo hari ini: tanggal_kembali == hari ini
     $menungguPengembalian = $col->filter(function($i) use ($hariIni) {
-        if (empty($i->tanggal_kembali)) return false;
-        return Carbon::parse($i->tanggal_kembali)->startOfDay()->equalTo($hariIni);
+    if (empty($i->tanggal_kembali)) return false;
+    return Carbon::parse($i->tanggal_kembali)->startOfDay()->equalTo($hariIni);
     })->count();
 
     // Lewat jatuh tempo: tanggal_kembali < hari ini
-    $terlambat = $col->filter(function($i) use ($hariIni) {
+        $terlambat=$col->filter(function($i) use ($hariIni) {
         if (empty($i->tanggal_kembali)) return false;
         return $hariIni->gt(Carbon::parse($i->tanggal_kembali)->startOfDay());
-    })->count();
-    @endphp
+        })->count();
+        @endphp
 
-    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-        <div class="bg-white border border-gray-200 rounded-xl p-5">
-            <p class="text-xs font-semibold text-gray-400 uppercase tracking-wide">Total Pengembalian</p>
-            <p class="text-3xl font-bold text-gray-900 mt-1">{{ $totalAktif }}</p>
-            <p class="text-xs text-gray-400 mt-1">Belum dikonfirmasi admin</p>
-        </div>
-        <div class="bg-white border border-gray-200 rounded-xl p-5">
-            <p class="text-xs font-semibold text-gray-400 uppercase tracking-wide">Sedang Disewa</p>
-            <p class="text-3xl font-bold text-blue-500 mt-1">{{ $sedangDisewa }}</p>
-            <p class="text-xs text-gray-400 mt-1">Belum jatuh tempo</p>
-        </div>
-        <div class="bg-white border border-gray-200 rounded-xl p-5">
-            <p class="text-xs font-semibold text-gray-400 uppercase tracking-wide">Menunggu Pengembalian</p>
-            <p class="text-3xl font-bold text-orange-500 mt-1">{{ $menungguPengembalian }}</p>
-            <p class="text-xs text-gray-400 mt-1">Batas kembali hari ini</p>
-        </div>
-        <div class="bg-white border border-gray-200 rounded-xl p-5">
-            <p class="text-xs font-semibold text-gray-400 uppercase tracking-wide">Terlambat</p>
-            <p class="text-3xl font-bold text-red-500 mt-1">{{ $terlambat }}</p>
-            <p class="text-xs text-gray-400 mt-1">Melewati batas waktu</p>
-        </div>
-    </div>
-
-    {{-- ══════════ TABLE CARD ══════════ --}}
-    <div class="bg-white border border-gray-200 rounded-3xl shadow-sm overflow-hidden">
-
-        <div class="p-6 border-b border-gray-100 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-            <div>
-                <h1 class="text-xl font-bold text-slate-800">Daftar Pengembalian</h1>
-                <p class="text-sm text-gray-400 mt-0.5">Konfirmasi barang yang sudah dikembalikan pelanggan.</p>
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+            <div class="bg-white border border-gray-200 rounded-xl p-5">
+                <p class="text-xs font-semibold text-gray-400 uppercase tracking-wide">Total Pengembalian</p>
+                <p class="text-3xl font-bold text-gray-900 mt-1">{{ $totalAktif }}</p>
+                <p class="text-xs text-gray-400 mt-1">Belum dikonfirmasi admin</p>
             </div>
-            <div class="relative w-full md:w-64">
-                <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-4.35-4.35M17 11A6 6 0 1 1 5 11a6 6 0 0 1 12 0z" />
-                </svg>
-                <input type="text" id="searchInput" placeholder="Cari nama atau produk..."
-                    class="w-full pl-9 pr-4 py-2 text-sm bg-gray-50 border border-gray-200 rounded-xl text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-200 transition-all">
+            <div class="bg-white border border-gray-200 rounded-xl p-5">
+                <p class="text-xs font-semibold text-gray-400 uppercase tracking-wide">Sedang Disewa</p>
+                <p class="text-3xl font-bold text-blue-500 mt-1">{{ $sedangDisewa }}</p>
+                <p class="text-xs text-gray-400 mt-1">Belum jatuh tempo</p>
+            </div>
+            <div class="bg-white border border-gray-200 rounded-xl p-5">
+                <p class="text-xs font-semibold text-gray-400 uppercase tracking-wide">Menunggu Pengembalian</p>
+                <p class="text-3xl font-bold text-orange-500 mt-1">{{ $menungguPengembalian }}</p>
+                <p class="text-xs text-gray-400 mt-1">Batas kembali hari ini</p>
+            </div>
+            <div class="bg-white border border-gray-200 rounded-xl p-5">
+                <p class="text-xs font-semibold text-gray-400 uppercase tracking-wide">Terlambat</p>
+                <p class="text-3xl font-bold text-red-500 mt-1">{{ $terlambat }}</p>
+                <p class="text-xs text-gray-400 mt-1">Melewati batas waktu</p>
             </div>
         </div>
 
-        <div class="overflow-x-auto">
-            <table class="w-full text-sm text-left">
-                <thead class="bg-gray-50 border-b border-gray-200">
-                    <tr>
-                        <th class="px-6 py-3.5 text-xs font-bold text-gray-400 uppercase tracking-wider">Penyewa</th>
-                        <th class="px-6 py-3.5 text-xs font-bold text-gray-400 uppercase tracking-wider">ID Order</th>
-                        <th class="px-6 py-3.5 text-xs font-bold text-gray-400 uppercase tracking-wider">Produk</th>
-                        <th class="px-6 py-3.5 text-xs font-bold text-gray-400 uppercase tracking-wider">Batas Kembali</th>
-                        <th class="px-6 py-3.5 text-xs font-bold text-gray-400 uppercase tracking-wider">Status</th>
-                        <th class="px-6 py-3.5 text-xs font-bold text-gray-400 uppercase tracking-wider">Aksi</th>
-                    </tr>
-                </thead>
-                <tbody class="divide-y divide-gray-100" id="tableBody">
-                    @forelse($data_pengembalian as $item)
-                    @php
-                    $tglKembali = !empty($item->tanggal_kembali) ? Carbon::parse($item->tanggal_kembali)->startOfDay() : null;
+        {{-- ══════════ TABLE CARD ══════════ --}}
+        <div class="bg-white border border-gray-200 rounded-3xl shadow-sm overflow-hidden">
 
-                    // Tiga kondisi status berdasarkan tanggal batas kembali
-                    $isBelumJatuhTempo = $tglKembali ? $tglKembali->gt($hariIni) : false;
-                    $isJatuhTempoHariIni = $tglKembali ? $tglKembali->equalTo($hariIni) : false;
-                    $isOverdue = $tglKembali
-    ? $hariIni->gt($tglKembali->copy()->addDay())
-    : false;
+            <div class="p-6 border-b border-gray-100 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                <div>
+                    <h1 class="text-xl font-bold text-slate-800">Daftar Pengembalian</h1>
+                    <p class="text-sm text-gray-400 mt-0.5">Konfirmasi barang yang sudah dikembalikan pelanggan.</p>
+                </div>
+                <div class="relative w-full md:w-64">
+                    <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-4.35-4.35M17 11A6 6 0 1 1 5 11a6 6 0 0 1 12 0z" />
+                    </svg>
+                    <input type="text" id="searchInput" placeholder="Cari nama atau produk..."
+                        class="w-full pl-9 pr-4 py-2 text-sm bg-gray-50 border border-gray-200 rounded-xl text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-200 transition-all">
+                </div>
+            </div>
 
-                    // Tombol konfirmasi hanya tampil kalau sudah jatuh tempo (hari ini atau lewat)
-                    $bisaKonfirmasi = $isJatuhTempoHariIni || $isOverdue;
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm text-left">
+                    <thead class="bg-gray-50 border-b border-gray-200">
+                        <tr>
+                            <th class="px-6 py-3.5 text-xs font-bold text-gray-400 uppercase tracking-wider">Penyewa</th>
+                            <th class="px-6 py-3.5 text-xs font-bold text-gray-400 uppercase tracking-wider">ID Order</th>
+                            <th class="px-6 py-3.5 text-xs font-bold text-gray-400 uppercase tracking-wider">Produk</th>
+                            <th class="px-6 py-3.5 text-xs font-bold text-gray-400 uppercase tracking-wider">Batas Kembali</th>
+                            <th class="px-6 py-3.5 text-xs font-bold text-gray-400 uppercase tracking-wider">Status</th>
+                            <th class="px-6 py-3.5 text-xs font-bold text-gray-400 uppercase tracking-wider">Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-100" id="tableBody">
+                        @forelse($data_pengembalian as $item)
+                        @php
+                        $tglKembali = !empty($item->tanggal_kembali) ? Carbon::parse($item->tanggal_kembali)->startOfDay() : null;
 
-                    $hariTerlambat = $isOverdue
-    ? $hariIni->diffInDays($tglKembali) - 1
-    : 0;
+                        // Tiga kondisi status berdasarkan tanggal batas kembali
+                        $isBelumJatuhTempo = $tglKembali ? $tglKembali->gt($hariIni) : false;
+                        $isJatuhTempoHariIni = $tglKembali ? $tglKembali->equalTo($hariIni) : false;
+                        $isOverdue = $tglKembali
+                        ? $hariIni->gt($tglKembali->copy()->addDay())
+                        : false;
 
-$totalDenda = $hariTerlambat * 10000;
+                        // Tombol konfirmasi hanya tampil kalau sudah jatuh tempo (hari ini atau lewat)
+                        $bisaKonfirmasi = $isJatuhTempoHariIni || $isOverdue;
 
-                    $tglFormatted = $tglKembali ? $tglKembali->format('d M Y') : '-';
-                    $products = collect($item->products ?? []);
+                        $hariTerlambat = $isOverdue
+                        ? $hariIni->diffInDays($tglKembali) - 1
+                        : 0;
 
-                    // VALIDASI EXTRA: Memastikan nama_lengkap ditarik dengan benar dari objek atau array relasi
-                    $namaUser = '-';
-                    if (isset($item->pelanggan)) {
+                        $totalDenda = $hariTerlambat * 10000;
+
+                        $tglFormatted = $tglKembali ? $tglKembali->format('d M Y') : '-';
+                        $products = collect($item->products ?? []);
+
+                        // VALIDASI EXTRA: Memastikan nama_lengkap ditarik dengan benar dari objek atau array relasi
+                        $namaUser = '-';
+                        if (isset($item->pelanggan)) {
                         $namaUser = is_array($item->pelanggan)
-                            ? ($item->pelanggan['nama_lengkap'] ?? $item->pelanggan['name'] ?? '-')
-                            : ($item->pelanggan->nama_lengkap ?? $item->pelanggan->name ?? '-');
-                    }
+                        ? ($item->pelanggan['nama_lengkap'] ?? $item->pelanggan['name'] ?? '-')
+                        : ($item->pelanggan->nama_lengkap ?? $item->pelanggan->name ?? '-');
+                        }
 
-                    // Jika relasi langsung null, kita coba fallback mencari alternatif properti di model utama (misal ada duplikasi kolom)
-                    if($namaUser == '-') {
+                        // Jika relasi langsung null, kita coba fallback mencari alternatif properti di model utama (misal ada duplikasi kolom)
+                        if($namaUser == '-') {
                         $namaUser = $item->nama_lengkap ?? $item->nama_pelanggan ?? '-';
-                    }
+                        }
 
-                    $initial = strtoupper(substr(($namaUser && $namaUser != '-') ? $namaUser : 'U', 0, 1));
+                        $initial = strtoupper(substr(($namaUser && $namaUser != '-') ? $namaUser : 'U', 0, 1));
 
-                    $avatarBgs = ['bg-blue-100 text-blue-700','bg-pink-100 text-pink-700','bg-emerald-100 text-emerald-700','bg-violet-100 text-violet-700','bg-amber-100 text-amber-700'];
-                    $avatarClass = $avatarBgs[$loop->index % count($avatarBgs)];
+                        $avatarBgs = ['bg-blue-100 text-blue-700','bg-pink-100 text-pink-700','bg-emerald-100 text-emerald-700','bg-violet-100 text-violet-700','bg-amber-100 text-amber-700'];
+                        $avatarClass = $avatarBgs[$loop->index % count($avatarBgs)];
 
-                    $emailUser = is_array($item->pelanggan ?? null)
+                        $emailUser = is_array($item->pelanggan ?? null)
                         ? ($item->pelanggan['email'] ?? '-')
                         : ($item->pelanggan->email ?? $item->email ?? '-');
-                    @endphp
-                    <tr class="hover:bg-gray-50 transition-colors return-row">
+                        @endphp
+                        <tr class="hover:bg-gray-50 transition-colors return-row">
 
-                        {{-- Penyewa --}}
-                        <td class="px-6 py-4">
-                            <div class="flex items-center gap-3">
-                                <div>
-                                    <div class="font-semibold text-gray-900 text-sm">{{ $namaUser }}</div>
-                                    <div class="text-xs text-gray-400">{{ $emailUser }}</div>
+                            {{-- Penyewa --}}
+                            <td class="px-6 py-4">
+                                <div class="flex items-center gap-3">
+                                    <div>
+                                        <div class="font-semibold text-gray-900 text-sm">{{ $namaUser }}</div>
+                                        <div class="text-xs text-gray-400">{{ $emailUser }}</div>
+                                    </div>
                                 </div>
-                            </div>
-                        </td>
+                            </td>
 
-                        {{-- ID Order --}}
-                        <td class="px-6 py-4">
-                            <span class="text-sm font-bold text-gray-900">#{{ $item->id_pesanan }}</span>
-                        </td>
+                            {{-- ID Order --}}
+                            <td class="px-6 py-4">
+                                <span class="text-sm font-bold text-gray-900">#{{ $item->id_pesanan }}</span>
+                            </td>
 
-                        {{-- Produk --}}
-                        <td class="px-6 py-4">
-                            @foreach($products->take(1) as $p)
-                            <div class="text-sm font-semibold text-gray-900">{{ $p->name ?? '-' }}</div>
-                            @endforeach
-                            @if($products->count() > 1)
-                            <div class="text-xs text-gray-400 mt-0.5">+ {{ $products->count() - 1 }} item lainnya</div>
-                            @endif
-                        </td>
+                            {{-- Produk --}}
+                            <td class="px-6 py-4">
+                                @foreach($products->take(1) as $p)
+                                <div class="text-sm font-semibold text-gray-900">{{ $p->name ?? '-' }}</div>
+                                @endforeach
+                                @if($products->count() > 1)
+                                <div class="text-xs text-gray-400 mt-0.5">+ {{ $products->count() - 1 }} item lainnya</div>
+                                @endif
+                            </td>
 
-                        {{-- Batas Kembali --}}
-                        <td class="px-6 py-4">
-                            <div class="text-sm font-semibold {{ $isOverdue ? 'text-red-500' : 'text-gray-700' }}">
-                                {{ $tglFormatted }}
-                            </div>
-                            @if($isOverdue)
-                            <div class="text-xs text-red-400 mt-0.5">Telat {{ $hariTerlambat }} hari</div>
-                            @elseif($isJatuhTempoHariIni)
-                            <div class="text-xs text-orange-400 mt-0.5">Hari ini</div>
-                            @else
-                            <div class="text-xs text-gray-400 mt-0.5">Belum jatuh tempo</div>
-                            @endif
-                        </td>
+                            {{-- Batas Kembali --}}
+                            <td class="px-6 py-4">
+                                <div class="text-sm font-semibold {{ $isOverdue ? 'text-red-500' : 'text-gray-700' }}">
+                                    {{ $tglFormatted }}
+                                </div>
+                                @if($isOverdue)
+                                <div class="text-xs text-red-400 mt-0.5">Telat {{ $hariTerlambat }} hari</div>
+                                @elseif($isJatuhTempoHariIni)
+                                <div class="text-xs text-orange-400 mt-0.5">Hari ini</div>
+                                @else
+                                <div class="text-xs text-gray-400 mt-0.5">Belum jatuh tempo</div>
+                                @endif
+                            </td>
 
-                        {{-- Status --}}
-                        <td class="px-6 py-4">
-                            @if($isOverdue)
-                            <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold text-red-700 bg-red-50 border border-red-100">
-                                <span class="w-1.5 h-1.5 rounded-full bg-red-500"></span>Terlambat
-                            </span>
-                            @elseif($isJatuhTempoHariIni)
-                            <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold text-orange-700 bg-orange-50 border border-orange-100">
-                                <span class="w-1.5 h-1.5 rounded-full bg-orange-500"></span>Menunggu Pengembalian
-                            </span>
-                            @else
-                            <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold text-blue-700 bg-blue-50 border border-blue-100">
-                                <span class="w-1.5 h-1.5 rounded-full bg-blue-500"></span>Sedang Disewa
-                            </span>
-                            @endif
-                        </td>
+                            {{-- Status --}}
+                            <td class="px-6 py-4">
+                                @if($isOverdue)
+                                <span class="inline-flex items-center gap-1.5 text-xs font-semibold text-red-600">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-red-400"></span>
+                                    Terlambat
+                                </span>
+                                @elseif($isJatuhTempoHariIni)
+                                <span class="inline-flex items-center gap-1.5 text-xs font-semibold text-orange-600">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-orange-400"></span>
+                                    Menunggu Pengembalian
+                                </span>
+                                @else
+                                <span class="inline-flex items-center gap-1.5 text-xs font-semibold text-blue-600">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-blue-400"></span>
+                                    Sedang Disewa
+                                </span>
+                                @endif
+                            </td>
 
-                        {{-- Aksi --}}
-                        <td class="px-6 py-4">
-                            @if($bisaKonfirmasi)
-                            <button type="button"
-                                onclick="bukaModalKonfirmasi(
+                            {{-- Aksi --}}
+                            <td class="px-6 py-4">
+                                @if($bisaKonfirmasi)
+                                <button type="button"
+                                    onclick="bukaModalKonfirmasi(
                                 '{{ addslashes($namaUser) }}',
                                 '{{ $emailUser }}',
                                 '{{ $item->id_pesanan }}',
@@ -208,40 +211,40 @@ $totalDenda = $hariTerlambat * 10000;
                                 {{ (int)$hariTerlambat }},
                                 {{ (int)$totalDenda }}
                                 )"
-                                class="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-bold rounded-xl transition-colors
+                                    class="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-bold rounded-xl transition-colors
                             {{ $isOverdue ? 'text-white bg-red-500 hover:bg-red-600' : 'text-white bg-[#22543D] hover:bg-[#1a4230]' }}">
-                                @if($isOverdue)
-                                ⚠ Konfirmasi + Denda
+                                    @if($isOverdue)
+                                    ⚠ Konfirmasi + Denda
+                                    @else
+                                    ✓ Konfirmasi Kembali
+                                    @endif
+                                </button>
                                 @else
-                                ✓ Konfirmasi Kembali
+                                <span class="text-xs text-gray-400 italic">Belum bisa dikonfirmasi</span>
                                 @endif
-                            </button>
-                            @else
-                            <span class="text-xs text-gray-400 italic">Belum bisa dikonfirmasi</span>
-                            @endif
-                        </td>
+                            </td>
 
-                    </tr>
-                    @empty
-                    <tr>
-                        <td colspan="6" class="px-6 py-16 text-center text-sm text-gray-400">
-                            <div class="flex flex-col items-center gap-2">
-                                <svg class="w-10 h-10 text-gray-200" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                </svg>
-                                <p>Tidak ada data pengembalian.</p>
-                            </div>
-                        </td>
-                    </tr>
-                    @endforelse
-                </tbody>
-            </table>
-        </div>
+                        </tr>
+                        @empty
+                        <tr>
+                            <td colspan="6" class="px-6 py-16 text-center text-sm text-gray-400">
+                                <div class="flex flex-col items-center gap-2">
+                                    <svg class="w-10 h-10 text-gray-200" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    </svg>
+                                    <p>Tidak ada data pengembalian.</p>
+                                </div>
+                            </td>
+                        </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
 
-        <div class="flex items-center justify-between px-6 py-4 bg-gray-50 border-t border-gray-200">
-            <p class="text-xs text-gray-400">Menampilkan {{ $col->count() }} data pengembalian</p>
+            <div class="flex items-center justify-between px-6 py-4 bg-gray-50 border-t border-gray-200">
+                <p class="text-xs text-gray-400">Menampilkan {{ $col->count() }} data pengembalian</p>
+            </div>
         </div>
-    </div>
 </div>
 
 {{-- ══════════ MODAL KONFIRMASI KEMBALI ══════════ --}}

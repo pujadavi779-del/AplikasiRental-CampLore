@@ -82,7 +82,7 @@
             {{-- Info banner sesuai status --}}
             @if($selesai)
                 {{-- Selesai / pengembalian --}}
-                <div class="flex items-center gap-3 px-5 py-4 rounded-2xl bg-purple-50 border border-purple-200">
+                <div class="flex items-center gap-3 px-5 py-4 rounded-2xl border border-purple-200">
                     <div class="w-9 h-9 rounded-xl bg-purple-100 flex items-center justify-center flex-shrink-0">
                         <svg class="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" d="{{ $isPickup ? 'M5 13l4 4L19 7' : 'M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6' }}" />
@@ -96,7 +96,7 @@
 
             @elseif($status === 'jalan')
                 {{-- Kurir sedang jalan --}}
-                <div class="flex items-center gap-3 px-5 py-4 rounded-2xl bg-blue-50 border border-blue-200">
+                <div class="flex items-center gap-3 px-5 py-4 rounded-2xl border border-blue-200">
                     <div class="w-9 h-9 rounded-xl bg-blue-100 flex items-center justify-center flex-shrink-0">
                         <svg class="w-5 h-5 text-blue-600 animate-pulse" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14M12 5l7 7-7 7" />
@@ -110,7 +110,7 @@
 
             @else
                 {{-- Menunggu (proses) --}}
-                <div class="flex items-center gap-3 px-5 py-4 rounded-2xl bg-amber-50 border border-amber-200">
+                <div class="flex items-center gap-3 px-5 py-4 rounded-2xl border border-amber-200">
                     <div class="w-9 h-9 rounded-xl bg-amber-100 flex items-center justify-center flex-shrink-0">
                         <svg class="w-5 h-5 text-amber-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" d="{{ $isPickup ? 'M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z' : 'M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z' }}" />
@@ -401,7 +401,7 @@
                             </div>
                             <div class="text-center">
                                 <div class="text-sm font-semibold text-[#22543D]">Klik atau seret foto ke sini</div>
-                                <div class="text-[11px] text-gray-400 mt-0.5">JPG, PNG, WEBP · Maks. 5MB</div>
+                                <div class="text-[11px] text-gray-400 mt-0.5">JPG, PNG · Maks. 5MB</div>
                             </div>
                         </div>
                         <div id="previewFoto" class="hidden">

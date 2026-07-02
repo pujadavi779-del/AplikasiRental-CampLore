@@ -3,15 +3,15 @@
 @section('title', 'Pengiriman - Camplore Admin')
 
 @php
- $NavParent = 'Manajemen Operasional';
- $section = 'Pengiriman';
- 
- // Urutkan data: pengembalian di bawah, lainnya di atas
- $pengirimanSorted = collect($pengiriman)->sortBy(function($item) {
-     $status = $item['status'] ?? '';
-     // Pengembalian paling bawah (nilai 1), lainnya di atas (nilai 0)
-     return $status === 'pengembalian' ? 1 : 0;
- })->values()->all();
+$NavParent = 'Manajemen Operasional';
+$section = 'Pengiriman';
+
+// Urutkan data: pengembalian di bawah, lainnya di atas
+$pengirimanSorted = collect($pengiriman)->sortBy(function($item) {
+$status = $item['status'] ?? '';
+// Pengembalian paling bawah (nilai 1), lainnya di atas (nilai 0)
+return $status === 'pengembalian' ? 1 : 0;
+})->values()->all();
 @endphp
 
 @section('content')
@@ -29,27 +29,6 @@
             <div>
                 <p class="text-[11px] font-semibold text-gray-400 uppercase tracking-widest">Total Permintaan</p>
                 <p class="text-3xl font-bold text-gray-900 leading-tight">{{ $stats['total'] ?? 0 }}</p>
-                @php
-                    $totalKemarin = $stats['total_kemarin'] ?? 0;
-                    $totalHariIni = $stats['total'] ?? 0;
-                    
-                    if ($totalKemarin > 0) {
-                        $persenPerubahan = round((($totalHariIni - $totalKemarin) / $totalKemarin) * 100, 1);
-                    } elseif ($totalHariIni > 0) {
-                        $persenPerubahan = 100;
-                    } else {
-                        $persenPerubahan = 0;
-                    }
-                @endphp
-                <p class="text-[11px] font-semibold mt-0.5 {{ $persenPerubahan > 0 ? 'text-emerald-500' : ($persenPerubahan < 0 ? 'text-red-500' : 'text-gray-400') }}">
-                    @if($persenPerubahan > 0)
-                        ↑ +{{ $persenPerubahan }}% hari ini
-                    @elseif($persenPerubahan < 0)
-                        ↓ {{ $persenPerubahan }}% hari ini
-                    @else
-                        — Tidak ada perubahan hari ini
-                    @endif
-                </p>
             </div>
         </div>
 
@@ -185,13 +164,9 @@
                         {{-- Metode --}}
                         <td class="px-6 py-4">
                             @if($isPickup)
-                            <span class="inline-flex items-center px-2.5 py-1 rounded-md text-[11px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-100">
-                                AMBIL DI TOKO
-                            </span>
+                            <span class="text-[11px] font-bold text-emerald-600">AMBIL DI TOKO</span>
                             @else
-                            <span class="inline-flex items-center px-2.5 py-1 rounded-md text-[11px] font-bold bg-blue-50 text-blue-600 border border-blue-100">
-                                KURIR
-                            </span>
+                            <span class="text-[11px] font-bold text-pink-600">KURIR</span>
                             @endif
                         </td>
 
@@ -223,23 +198,23 @@
                         {{-- Status --}}
                         <td class="px-6 py-4">
                             @if($statusItem === 'pengembalian')
-                            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-semibold bg-emerald-50 text-emerald-700">
-                                <span class="w-2 h-2 rounded-full bg-emerald-400 inline-block"></span>
+                            <span class="inline-flex items-center gap-1.5 text-[11px] font-semibold text-emerald-600">
+                                <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
                                 Pengembalian
                             </span>
                             @elseif($statusItem === 'dikemas' || $statusItem === 'proses')
-                            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-semibold bg-amber-50 text-amber-700">
-                                <span class="w-2 h-2 rounded-full bg-amber-400 inline-block"></span>
+                            <span class="inline-flex items-center gap-1.5 text-[11px] font-semibold text-amber-600">
+                                <span class="w-1.5 h-1.5 rounded-full bg-amber-400"></span>
                                 Menunggu
                             </span>
                             @elseif($statusItem === 'jalan' || $statusItem === 'dikirim')
-                            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-semibold bg-blue-50 text-blue-600">
-                                <span class="w-2 h-2 rounded-full bg-blue-400 inline-block animate-pulse"></span>
+                            <span class="inline-flex items-center gap-1.5 text-[11px] font-semibold text-blue-600">
+                                <span class="w-1.5 h-1.5 rounded-full bg-blue-400 animate-pulse"></span>
                                 Sedang Diantar
                             </span>
                             @else
-                            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-semibold bg-gray-100 text-gray-500">
-                                <span class="w-2 h-2 rounded-full bg-gray-400 inline-block"></span>
+                            <span class="inline-flex items-center gap-1.5 text-[11px] font-semibold text-gray-500">
+                                <span class="w-1.5 h-1.5 rounded-full bg-gray-400"></span>
                                 {{ ucfirst($statusItem) }}
                             </span>
                             @endif
@@ -248,8 +223,20 @@
                         {{-- Aksi --}}
                         <td class="px-6 py-4">
                             <a href="{{ route('admin.pengiriman.detail', $idPesanan) }}"
-                                class="text-sm font-semibold text-gray-500 hover:text-gray-800 transition-colors">
-                                {{ $statusItem === 'pengembalian' ? 'Detail' : 'Lacak' }}
+                                class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[11px] font-bold border border-gray-200 text-gray-600 hover:bg-gray-900 hover:text-white hover:border-gray-900 transition-all duration-200">
+                                @if($statusItem === 'pengembalian')
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                </svg>
+                                Detail
+                                @else
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                                </svg>
+                                Lacak
+                                @endif
                             </a>
                         </td>
 
