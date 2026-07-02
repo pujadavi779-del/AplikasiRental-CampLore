@@ -11,8 +11,13 @@ class Admin extends Authenticatable
     protected $fillable = [
         'name',
         'nama_pengguna',
-        'password',
+        'kata_sandi',
     ];
 
-    protected $hidden = ['password', 'remember_token'];
+    protected $hidden = ['kata_sandi', 'remember_token'];
+
+    public function getAuthPassword()
+    {
+        return $this->kata_sandi;
+    }
 }
