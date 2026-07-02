@@ -13,7 +13,7 @@ class Cart extends Model
     protected $fillable = [
         'user_id',
         'product_id',
-        'quantity',
+        'jumlah',
         'start_date',
         'end_date',
     ];
@@ -40,6 +40,6 @@ class Cart extends Model
 
         return $this->product->harga_per_hari
             * $this->days
-            * $this->quantity;
+            * $this->jumlah;
     }
 }

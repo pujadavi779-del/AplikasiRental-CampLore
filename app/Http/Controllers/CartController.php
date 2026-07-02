@@ -35,7 +35,7 @@ class CartController extends Controller
     {
         $request->validate([
             'product_id' => 'required',
-            'quantity'   => 'required|integer|min:1',
+            'jumlah'   => 'required|integer|min:1',
         ]);
 
         $userId = $this->currentUserId();
@@ -56,7 +56,7 @@ class CartController extends Controller
         // add() pakai updateOrCreate, artinya quantity request akan MENIMPA
         // (bukan menambah) quantity yang sudah ada di cart untuk produk ini.
         // Jadi validasi cukup terhadap quantity baru, bukan quantity lama + baru.
-        if ($request->quantity > $barang->stok) {
+        if ($request->jumlah > $barang->stok) {
             return response()->json([
                 'success' => false,
                 'message' => "Stok {$barang->name} tidak mencukupi. Sisa stok: {$barang->stok}.",
@@ -69,7 +69,7 @@ class CartController extends Controller
                 'product_id' => $request->product_id,
             ],
             [
-                'quantity'   => $request->quantity,
+                'jumlah'   => $request->jumlah,
                 'start_date' => $request->start_date,
                 'end_date'   => $request->end_date,
             ]
@@ -91,7 +91,7 @@ class CartController extends Controller
             ->where('user_id', $userId)
             ->firstOrFail();
 
-        if ($request->has('quantity')) {
+        if ($request->has('jumlah')) {
             $requestedQty = max(1, (int) $request->quantity);
 
             $barang = Barang::where('id_barang', $cart->product_id)
@@ -113,7 +113,7 @@ class CartController extends Controller
                 ], 422);
             }
 
-            $cart->quantity = $requestedQty;
+            $cart->jumlah = $requestedQty;
         }
 
         if ($request->has('start_date')) {
@@ -126,7 +126,7 @@ class CartController extends Controller
 
         $cart->save();
 
-        return response()->json(['success' => true, 'quantity' => $cart->quantity]);
+        return response()->json(['success' => true, 'jumlah' => $cart->jumlah]);
     }
 
     public function destroy($cartId)
