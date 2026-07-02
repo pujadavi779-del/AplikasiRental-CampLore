@@ -147,7 +147,7 @@ function addToCart(itemId) {
             'Accept': 'application/json',
             'X-CSRF-TOKEN': CSRF_TOKEN
         },
-        body: JSON.stringify({ product_id: itemId, quantity: qty, start_date: startDate, end_date: endDate })
+        body: JSON.stringify({ product_id: itemId, jumlah: qty, start_date: startDate, end_date: endDate })
     })
     .then(r => {
         if (r.status === 401) { window.location.href = LOGIN_URL; return null; }
@@ -188,7 +188,7 @@ function rentNow(idBarang) {
             'X-CSRF-TOKEN': CSRF_TOKEN,
             'Accept': 'application/json'
         },
-        body: JSON.stringify({ product_id: idBarang, quantity: qty, start_date: startDate, end_date: endDate })
+        body: JSON.stringify({ product_id: idBarang, jumlah: qty, start_date: startDate, end_date: endDate })
     })
     .then(r => {
         if (r.status === 401) { window.location.href = LOGIN_URL; return null; }

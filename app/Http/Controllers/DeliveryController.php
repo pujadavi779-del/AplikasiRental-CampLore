@@ -57,7 +57,7 @@ class DeliveryController extends Controller
                 'status'            => $statusPengiriman,
                 'barang'            => $pesanan->details->map(fn($detail) => [
                     'nama'   => $detail->barang->name ?? 'Produk',
-                    'jumlah' => $detail->quantity ?? 1,
+                    'jumlah' => $detail->jumlah ?? 1,
                 ])->toArray(),
             ];
         })->values()->all();
@@ -109,7 +109,7 @@ class DeliveryController extends Controller
             'barang'            => $pesanan->details->map(fn($detail) => [
                 'nama'     => $detail->barang->name ?? 'Produk Dihapus',
                 'kategori' => $detail->barang->kategori ?? '-',
-                'jumlah'   => $detail->quantity ?? 1,
+                'jumlah'   => $detail->jumlah ?? 1,
             ])->toArray(),
         ];
 

@@ -42,7 +42,7 @@ class PengembalianController extends Controller
                     'kategori' => $d->barang->kategori ?? '-',
                     'tipe'     => '-',
                     'merek'    => '-',
-                    'quantity' => $d->quantity ?? 1,
+                    'quantity' => $d->jumlah ?? 1,
                 ])->values()->all(),
                 'hari_terlambat'     => $overdueDays,
                 'keterlambatan_biaya'=> $lateFee,

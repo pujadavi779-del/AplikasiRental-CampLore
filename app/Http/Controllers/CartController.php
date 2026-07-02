@@ -92,7 +92,7 @@ class CartController extends Controller
             ->firstOrFail();
 
         if ($request->has('jumlah')) {
-            $requestedQty = max(1, (int) $request->quantity);
+            $requestedQty = max(1, (int) $request->jumlah);
 
             $barang = Barang::where('id_barang', $cart->product_id)
                 ->lockForUpdate()

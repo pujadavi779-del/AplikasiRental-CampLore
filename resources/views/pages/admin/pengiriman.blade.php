@@ -5,6 +5,13 @@
 @php
  $NavParent = 'Manajemen Operasional';
  $section = 'Pengiriman';
+ 
+ // Urutkan data: pengembalian di bawah, lainnya di atas
+ $pengirimanSorted = collect($pengiriman)->sortBy(function($item) {
+     $status = $item['status'] ?? '';
+     // Pengembalian paling bawah (nilai 1), lainnya di atas (nilai 0)
+     return $status === 'pengembalian' ? 1 : 0;
+ })->values()->all();
 @endphp
 
 @section('content')
@@ -20,9 +27,29 @@
                 </svg>
             </div>
             <div>
-                <p class="text-[11px] font-semibold text-gray-400 uppercase tracking-widest">Total Request</p>
+                <p class="text-[11px] font-semibold text-gray-400 uppercase tracking-widest">Total Permintaan</p>
                 <p class="text-3xl font-bold text-gray-900 leading-tight">{{ $stats['total'] ?? 0 }}</p>
-                <p class="text-[11px] text-emerald-500 font-semibold mt-0.5">↑ +5% hari ini</p>
+                @php
+                    $totalKemarin = $stats['total_kemarin'] ?? 0;
+                    $totalHariIni = $stats['total'] ?? 0;
+                    
+                    if ($totalKemarin > 0) {
+                        $persenPerubahan = round((($totalHariIni - $totalKemarin) / $totalKemarin) * 100, 1);
+                    } elseif ($totalHariIni > 0) {
+                        $persenPerubahan = 100;
+                    } else {
+                        $persenPerubahan = 0;
+                    }
+                @endphp
+                <p class="text-[11px] font-semibold mt-0.5 {{ $persenPerubahan > 0 ? 'text-emerald-500' : ($persenPerubahan < 0 ? 'text-red-500' : 'text-gray-400') }}">
+                    @if($persenPerubahan > 0)
+                        ↑ +{{ $persenPerubahan }}% hari ini
+                    @elseif($persenPerubahan < 0)
+                        ↓ {{ $persenPerubahan }}% hari ini
+                    @else
+                        — Tidak ada perubahan hari ini
+                    @endif
+                </p>
             </div>
         </div>
 
@@ -46,7 +73,7 @@
                 </svg>
             </div>
             <div>
-                <p class="text-[11px] font-semibold text-gray-400 uppercase tracking-widest">Total Pickup</p>
+                <p class="text-[11px] font-semibold text-gray-400 uppercase tracking-widest">Total Ambil di Toko</p>
                 <p class="text-3xl font-bold text-gray-900 leading-tight">{{ $stats['pickup'] ?? 0 }}</p>
                 <p class="text-[11px] text-gray-400 font-semibold mt-0.5">⊙ Siap diambil hari ini</p>
             </div>
@@ -138,17 +165,17 @@
                 </thead>
                 <tbody class="divide-y divide-[#f3f4f6]">
 
-                    @forelse($pengiriman as $item)
+                    @forelse($pengirimanSorted as $item)
                     @php
-                    $status = $item['status'] ?? 'proses';
+                    $statusItem = $item['status'] ?? 'proses';
                     $idPesanan = $item['id_pesanan'] ?? '-';
                     $alamat = $item['alamat'] ?? '-';
-                    $metode = $item['metode_pengiriman'] ?? 'delivery';
-                    $isPickup = $metode === 'pickup';
+                    $metodeItem = $item['metode_pengiriman'] ?? 'delivery';
+                    $isPickup = $metodeItem === 'pickup';
                     @endphp
 
-                    <tr class="hover:bg-gray-50 transition-colors delivery-row"
-                        data-metode="{{ $metode }}">
+                    <tr class="hover:bg-gray-50 transition-colors delivery-row {{ $statusItem === 'pengembalian' ? 'opacity-70' : '' }}"
+                        data-metode="{{ $metodeItem }}">
 
                         {{-- ID --}}
                         <td class="px-6 py-4">
@@ -159,7 +186,7 @@
                         <td class="px-6 py-4">
                             @if($isPickup)
                             <span class="inline-flex items-center px-2.5 py-1 rounded-md text-[11px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-100">
-                                PICKUP
+                                AMBIL DI TOKO
                             </span>
                             @else
                             <span class="inline-flex items-center px-2.5 py-1 rounded-md text-[11px] font-bold bg-blue-50 text-blue-600 border border-blue-100">
@@ -195,25 +222,25 @@
 
                         {{-- Status --}}
                         <td class="px-6 py-4">
-                            @if($status === 'dikemas' || $status === 'proses')
+                            @if($statusItem === 'pengembalian')
+                            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-semibold bg-emerald-50 text-emerald-700">
+                                <span class="w-2 h-2 rounded-full bg-emerald-400 inline-block"></span>
+                                Pengembalian
+                            </span>
+                            @elseif($statusItem === 'dikemas' || $statusItem === 'proses')
                             <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-semibold bg-amber-50 text-amber-700">
                                 <span class="w-2 h-2 rounded-full bg-amber-400 inline-block"></span>
                                 Menunggu
                             </span>
-                            @elseif($status === 'jalan' || $status === 'dikirim')
+                            @elseif($statusItem === 'jalan' || $statusItem === 'dikirim')
                             <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-semibold bg-blue-50 text-blue-600">
                                 <span class="w-2 h-2 rounded-full bg-blue-400 inline-block animate-pulse"></span>
                                 Sedang Diantar
                             </span>
-                            @elseif($status === 'pengembalian')
-                            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-semibold bg-emerald-50 text-emerald-700">
-                                <span class="w-2 h-2 rounded-full bg-emerald-400 inline-block animate-pulse"></span>
-                                Pengembalian
-                            </span>
                             @else
                             <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-semibold bg-gray-100 text-gray-500">
                                 <span class="w-2 h-2 rounded-full bg-gray-400 inline-block"></span>
-                                {{ ucfirst($status) }}
+                                {{ ucfirst($statusItem) }}
                             </span>
                             @endif
                         </td>
@@ -222,7 +249,7 @@
                         <td class="px-6 py-4">
                             <a href="{{ route('admin.pengiriman.detail', $idPesanan) }}"
                                 class="text-sm font-semibold text-gray-500 hover:text-gray-800 transition-colors">
-                                {{ in_array($status, ['tiba', 'selesai']) ? 'Detail' : 'Lacak' }}
+                                {{ $statusItem === 'pengembalian' ? 'Detail' : 'Lacak' }}
                             </a>
                         </td>
 

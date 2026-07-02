@@ -25,7 +25,7 @@
         $days = ($cart->start_date && $cart->end_date)
         ? max(1, \Carbon\Carbon::parse($cart->start_date)->diffInDays($cart->end_date))
         : 1;
-        $subtotal = ($cart->product->harga_per_hari ?? 0) * $cart->quantity * $days;
+        $subtotal = ($cart->product->harga_per_hari ?? 0) * $cart->jumlah * $days;
         $rawImage = $cart->product->gambar_barang ?? null;
         $cleanImage = $rawImage ? trim($rawImage) : null;
         $imgSrc = $cleanImage
@@ -72,7 +72,7 @@
                 <div class="flex flex-col items-center justify-center gap-1">
                     <div class="flex items-center border border-gray-200 rounded-xl h-8 overflow-hidden">
                         <button onclick="changeQty(this, -1)" class="w-7 h-8 flex items-center justify-center text-gray-600 font-bold text-sm hover:bg-gray-100 transition">−</button>
-                        <span class="qty-val px-2 text-sm font-bold text-gray-800 min-w-[24px] text-center">{{ $cart->quantity }}</span>
+                        <span class="qty-val px-2 text-sm font-bold text-gray-800 min-w-[24px] text-center">{{ $cart->jumlah ?? 0 }}</span>
                         <button onclick="changeQty(this, 1)" class="w-7 h-8 flex items-center justify-center text-gray-600 font-bold text-sm hover:bg-gray-100 transition">+</button>
                     </div>
                     <span class="stok-warning hidden text-[10px] font-bold text-red-500">Stok maks. {{ $stok }}</span>
@@ -124,7 +124,7 @@
             <div class="flex flex-col gap-1">
                 <div class="flex items-center border border-gray-200 rounded-xl h-9 overflow-hidden">
                     <button onclick="changeQty(this, -1)" class="w-9 h-9 flex items-center justify-center text-gray-600 text-base hover:bg-gray-100 transition">−</button>
-                    <span class="qty-val px-3 text-sm font-bold text-gray-800 min-w-[28px] text-center">{{ $cart->quantity }}</span>
+                    <span class="qty-val px-3 text-sm font-bold text-gray-800 min-w-[28px] text-center">{{ $cart->jumlah ?? 0 }}</span>
                     <button onclick="changeQty(this, 1)" class="w-9 h-9 flex items-center justify-center text-gray-600 text-base hover:bg-gray-100 transition">+</button>
                 </div>
                 <span class="stok-warning hidden text-[10px] font-bold text-red-500">Stok maks. {{ $stok }}</span>
@@ -448,7 +448,7 @@
                 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
             },
             body: JSON.stringify({
-                quantity: val
+                jumlah: val
             })
         }).then(async r => {
             if (!r.ok) {
