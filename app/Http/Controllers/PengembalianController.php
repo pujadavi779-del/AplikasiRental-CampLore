@@ -21,7 +21,7 @@ class PengembalianController extends Controller
         $data_pengembalian = $pesanan->map(function ($rental) use ($today) {
             // FIX: Ambil data dari detail pertama untuk keperluan tampilan
             $firstDetail = $rental->details->first();
-            
+
             $endDate     = $firstDetail ? Carbon::parse($firstDetail->end_date)->startOfDay() : null;
             $overdueDays = $rental->details->sum('hari_terlambat');
             $lateFee     = $rental->details->sum('keterlambatan_biaya');
@@ -35,6 +35,9 @@ class PengembalianController extends Controller
                     'nama_lengkap' => $rental->pelanggan->nama_lengkap ?? '-',
                     'email'        => $rental->pelanggan->email ?? '-',
                     'no_hp'        => $rental->pelanggan->no_tlp ?? '-',
+                    'foto_profil'  => $rental->pelanggan->foto_profile
+                        ? asset('storage/' . $rental->pelanggan->foto_profile)
+                        : null,
                 ],
                 // FIX: Map dari details
                 'products' => $rental->details->map(fn($d) => (object) [
@@ -62,9 +65,9 @@ class PengembalianController extends Controller
         }
 
         $pesanan->update(['status' => 'selesai']);
-        
+
         $phone = $pesanan->pelanggan->no_tlp ?? null;
-        
+
         if ($phone) {
             if (str_starts_with($phone, '0')) {
                 $phone = '62' . substr($phone, 1);

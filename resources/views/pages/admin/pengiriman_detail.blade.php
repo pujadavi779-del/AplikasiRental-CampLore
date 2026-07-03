@@ -9,6 +9,7 @@
     $pemesan   = $pengiriman['pemesan'] ?? '-';
     $noHp      = $pengiriman['no_hp'] ?? '-';
     $alamat    = $pengiriman['alamat'] ?? '-';
+    $fotoProfil= $pengiriman['foto_profil'] ?? null;
     $tglMulai  = $pengiriman['tanggal_mulai'] ?? '-';
     $tglSelesai= $pengiriman['tanggal_selesai'] ?? '-';
     $isPickup  = ($pengiriman['metode_pengiriman'] ?? 'delivery') === 'pickup';
@@ -312,8 +313,12 @@
     <div class="bg-white rounded-[24px] border border-[#d7e6de] shadow-sm p-5">
         <div class="text-[10px] font-bold uppercase tracking-widest text-[#7c8b84] mb-4">Informasi Penerima</div>
         <div class="flex items-center gap-3 mb-4">
-            <div class="w-10 h-10 rounded-xl bg-[#22543D] flex items-center justify-center text-white font-bold text-sm flex-shrink-0">
-                {{ strtoupper(substr($pemesan, 0, 1)) }}
+            <div class="w-10 h-10 rounded-xl overflow-hidden bg-[#22543D] flex items-center justify-center text-white font-bold text-sm flex-shrink-0">
+                @if($fotoProfil)
+                    <img src="{{ $fotoProfil }}" alt="{{ $pemesan }}" class="w-full h-full object-cover">
+                @else
+                    {{ strtoupper(substr($pemesan, 0, 1)) }}
+                @endif
             </div>
             <div>
                 <div class="font-bold text-sm text-gray-800">{{ $pemesan }}</div>

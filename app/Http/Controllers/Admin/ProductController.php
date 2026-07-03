@@ -146,7 +146,7 @@ class ProductController extends Controller
     {
         $product = Barang::findOrFail($id_barang);
 
-        $activeOrderCount = \DB::table('pesanan_detail')
+        $activeOrderCount = DB::table('pesanan_detail')
             ->join('pesanan', 'pesanan_detail.pesanan_id', '=', 'pesanan.id_pesanan')
             ->where('pesanan_detail.product_id', $id_barang)
             ->whereNotIn('pesanan.status', ['selesai', 'dibatalkan'])

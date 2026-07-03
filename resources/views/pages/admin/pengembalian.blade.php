@@ -135,12 +135,24 @@ $section = 'Pengembalian';
                         $emailUser = is_array($item->pelanggan ?? null)
                         ? ($item->pelanggan['email'] ?? '-')
                         : ($item->pelanggan->email ?? $item->email ?? '-');
+
+                        // Foto profil pelanggan
+                        $fotoProfil = is_array($item->pelanggan ?? null)
+                        ? ($item->pelanggan['foto_profil'] ?? null)
+                        : ($item->pelanggan->foto_profil ?? null);
                         @endphp
                         <tr class="hover:bg-gray-50 transition-colors return-row">
 
                             {{-- Penyewa --}}
                             <td class="px-6 py-4">
                                 <div class="flex items-center gap-3">
+                                    <div class="w-9 h-9 rounded-xl overflow-hidden flex items-center justify-center font-bold text-xs flex-shrink-0 {{ $avatarClass }}">
+                                        @if($fotoProfil)
+                                            <img src="{{ $fotoProfil }}" alt="{{ $namaUser }}" class="w-full h-full object-cover">
+                                        @else
+                                            {{ $initial }}
+                                        @endif
+                                    </div>
                                     <div>
                                         <div class="font-semibold text-gray-900 text-sm">{{ $namaUser }}</div>
                                         <div class="text-xs text-gray-400">{{ $emailUser }}</div>
@@ -209,7 +221,8 @@ $section = 'Pengembalian';
                                 '{{ $tglFormatted }}',
                                 {{ $isOverdue ? 'true' : 'false' }},
                                 {{ (int)$hariTerlambat }},
-                                {{ (int)$totalDenda }}
+                                {{ (int)$totalDenda }},
+                                {{ $fotoProfil ? "'" . $fotoProfil . "'" : 'null' }}
                                 )"
                                     class="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-bold rounded-xl transition-colors
                             {{ $isOverdue ? 'text-white bg-red-500 hover:bg-red-600' : 'text-white bg-[#22543D] hover:bg-[#1a4230]' }}">
@@ -267,7 +280,7 @@ $section = 'Pengembalian';
         {{-- Info Penyewa --}}
         <div class="px-6 py-4 bg-gray-50 border-b border-gray-100">
             <div class="flex items-center gap-3">
-                <div id="mkAvatar" class="w-10 h-10 rounded-xl bg-[#22543D] text-white flex items-center justify-center font-bold text-sm flex-shrink-0"></div>
+                <div id="mkAvatar" class="w-10 h-10 rounded-xl overflow-hidden bg-[#22543D] text-white flex items-center justify-center font-bold text-sm flex-shrink-0"></div>
                 <div>
                     <div id="mkNama" class="text-sm font-bold text-gray-900"></div>
                     <div id="mkKontak" class="text-xs text-gray-400 mt-0.5"></div>
@@ -342,7 +355,7 @@ $section = 'Pengembalian';
         });
     });
 
-    function bukaModalKonfirmasi(nama, kontak, idPesanan, produk, tglKembali, isOverdue, hariTerlambat, totalDenda) {
+    function bukaModalKonfirmasi(nama, kontak, idPesanan, produk, tglKembali, isOverdue, hariTerlambat, totalDenda, fotoProfil) {
         currentOrderId = idPesanan;
         isOverdueModal = isOverdue;
 
@@ -350,7 +363,14 @@ $section = 'Pengembalian';
         document.getElementById('check2').checked = false;
         document.getElementById('check3').checked = false;
 
-        document.getElementById('mkAvatar').textContent = nama.charAt(0).toUpperCase();
+        var mkAvatar = document.getElementById('mkAvatar');
+        if (fotoProfil) {
+            mkAvatar.innerHTML = '<img src="' + fotoProfil + '" alt="' + nama + '" class="w-full h-full object-cover">';
+        } else {
+            mkAvatar.innerHTML = '';
+            mkAvatar.textContent = nama.charAt(0).toUpperCase();
+        }
+
         document.getElementById('mkNama').textContent = nama;
         document.getElementById('mkKontak').textContent = kontak;
         document.getElementById('mkIdPesanan').textContent = 'ID: ' + idPesanan;

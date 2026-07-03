@@ -218,6 +218,11 @@ $section = 'Transaksi Pembayaran';
                     $parts = explode(' ', $namaUser);
                     $inisial = strtoupper(substr($parts[0],0,1).(isset($parts[1])?substr($parts[1],0,1):''));
 
+                    // Foto profil pelanggan
+                    $fotoProfil = $pesanan->pelanggan && $pesanan->pelanggan->foto_profile
+                        ? asset('storage/' . $pesanan->pelanggan->foto_profile)
+                        : null;
+
                     // Load relasi details jika belum ter-load
                     if (!$pesanan->relationLoaded('details')) {
                         $pesanan->load('details.barang');
@@ -245,6 +250,13 @@ $section = 'Transaksi Pembayaran';
                         {{-- Pelanggan --}}
                         <td class="px-5 py-3.5">
                             <div class="flex items-center gap-2.5">
+                                <div class="w-7 h-7 rounded-full overflow-hidden bg-[var(--greenlt)] flex items-center justify-center text-[10px] font-bold text-[var(--green)] shrink-0">
+                                    @if($fotoProfil)
+                                        <img src="{{ $fotoProfil }}" alt="{{ $namaUser }}" class="w-full h-full object-cover">
+                                    @else
+                                        {{ $inisial }}
+                                    @endif
+                                </div>
                                 <span class="text-xs text-gray-700 font-medium truncate max-w-[120px]">{{ $namaUser }}</span>
                             </div>
                         </td>
@@ -277,6 +289,7 @@ $section = 'Transaksi Pembayaran';
                                     nama:        '{{ addslashes($namaUser) }}',
                                     email:       '{{ $pesanan->pelanggan->email ?? '' }}',
                                     inisial:     '{{ $inisial }}',
+                                    foto:        {{ $fotoProfil ? "'" . $fotoProfil . "'" : 'null' }},
                                     status:      '{{ $st['label'] }}',
                                     statusColor: '{{ $st['color'] }}',
                                     metode:      'QRIS / Transfer',
@@ -387,9 +400,15 @@ $section = 'Transaksi Pembayaran';
 
                 {{-- Pelanggan --}}
                 <div class="flex items-center gap-3 p-3 bg-gray-50 rounded-xl border border-gray-100">
-                    <div class="w-10 h-10 rounded-full bg-[var(--greenlt)] flex items-center justify-center
-                                text-sm font-bold text-[var(--green)] shrink-0"
-                        x-text="selectedData.inisial"></div>
+                    <div class="w-10 h-10 rounded-full bg-[var(--greenlt)] overflow-hidden flex items-center justify-center
+                                text-sm font-bold text-[var(--green)] shrink-0">
+                        <template x-if="selectedData.foto">
+                            <img :src="selectedData.foto" :alt="selectedData.nama" class="w-full h-full object-cover">
+                        </template>
+                        <template x-if="!selectedData.foto">
+                            <span x-text="selectedData.inisial"></span>
+                        </template>
+                    </div>
                     <div class="flex-1 min-w-0">
                         <p class="text-sm font-semibold text-gray-800" x-text="selectedData.nama"></p>
                         <p class="text-[11px] text-gray-400 truncate" x-text="selectedData.email"></p>

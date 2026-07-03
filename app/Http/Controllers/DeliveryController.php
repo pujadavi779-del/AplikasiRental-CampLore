@@ -53,6 +53,9 @@ class DeliveryController extends Controller
                 'pemesan'           => $pesanan->pelanggan->nama_lengkap ?? '-',
                 'alamat'            => $alamat,
                 'no_tlp'            => $pesanan->pelanggan->no_tlp ?? '-',
+                'foto_profil'       => $pesanan->pelanggan->foto_profile
+                    ? asset('storage/' . $pesanan->pelanggan->foto_profile)
+                    : null,
                 'metode_pengiriman' => $shippingMethod,
                 'status'            => $statusPengiriman,
                 'barang'            => $pesanan->details->map(fn($detail) => [
@@ -64,7 +67,7 @@ class DeliveryController extends Controller
 
         return view('pages.admin.pengiriman', compact('pengiriman', 'stats', 'metode', 'status'));
     }
-    
+
     public function detail($id)
     {
         // FIX: Pakai first() karena 1 order_id = 1 baris
@@ -99,6 +102,9 @@ class DeliveryController extends Controller
             'pemesan'           => $pesanan->pelanggan->nama_lengkap ?? '-',
             'alamat'            => $alamat,
             'no_hp'             => $pesanan->pelanggan->no_tlp ?? '-',
+            'foto_profil'       => $pesanan->pelanggan->foto_profile
+                ? asset('storage/' . $pesanan->pelanggan->foto_profile)
+                : null,
             'metode_pengiriman' => $shippingMethod,
             'tanggal_mulai'     => $firstDetail ? \Carbon\Carbon::parse($firstDetail->start_date)->format('d M Y') : '-',
             'tanggal_selesai'   => $firstDetail ? \Carbon\Carbon::parse($firstDetail->end_date)->format('d M Y') : '-',
@@ -119,7 +125,7 @@ class DeliveryController extends Controller
     public function updateStatus(Request $request, $id)
     {
         $statusBaru = $request->input('status');
-        
+
         // FIX: Pakai first() karena 1 order_id = 1 baris
         $pesanan = Pesanan::where('order_id', $id)->first();
 

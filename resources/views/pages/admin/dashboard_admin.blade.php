@@ -185,12 +185,19 @@
                             default               => 'bg-gray-100 text-gray-400 border border-gray-200',
                         };
                         $initials = strtoupper(substr($trx->pelanggan->nama_lengkap ?? '-', 0, 2));
+                        $fotoProfil = $trx->pelanggan && $trx->pelanggan->foto_profile
+                            ? asset('storage/' . $trx->pelanggan->foto_profile)
+                            : null;
                         @endphp
                         <tr class="group hover:bg-gray-50 transition-all">
                             <td class="py-5 px-2">
                                 <div class="flex items-center gap-3">
-                                    <div class="w-9 h-9 rounded-full bg-gray-100 flex items-center justify-center font-bold text-xs text-[#22543D]">
-                                        {{ $initials }}
+                                    <div class="w-9 h-9 rounded-full overflow-hidden bg-gray-100 flex items-center justify-center font-bold text-xs text-[#22543D]">
+                                        @if($fotoProfil)
+                                            <img src="{{ $fotoProfil }}" alt="{{ $trx->pelanggan->nama_lengkap ?? '-' }}" class="w-full h-full object-cover">
+                                        @else
+                                            {{ $initials }}
+                                        @endif
                                     </div>
                                     <span class="font-bold text-sm text-[#1a1a1a]">{{ $trx->pelanggan->nama_lengkap ?? '-' }}</span>
                                 </div>
