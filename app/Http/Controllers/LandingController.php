@@ -39,9 +39,12 @@ class LandingController extends Controller
                     ? route('camera.show', $item->id_barang)
                     : route('camping.show', $item->id_barang),
             ];
-        });
+        })->filter()->values();
 
-        return view('pages.landing.landing', compact('products'));
+        $jumlahKamera  = Barang::where('kategori', 'Kamera')->where('stok', '>', 0)->count();
+        $jumlahCamping = Barang::where('kategori', 'Camping')->where('stok', '>', 0)->count();
+
+        return view('pages.landing.landing', compact('products', 'jumlahKamera', 'jumlahCamping'));
     }
 
     public function rental()

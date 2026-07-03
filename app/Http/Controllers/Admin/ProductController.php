@@ -160,4 +160,4 @@ class ProductController extends Controller
 
         return back()->with('success', 'Produk "' . $product->name . '" berhasil dihapus.');
     }
-j}
+}

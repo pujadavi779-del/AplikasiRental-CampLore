@@ -200,20 +200,20 @@
             @php
             $cats = [
                 [
-                    'label'    => 'Kamera',
-                    'sub'      => 'Mirrorless · Action Cam · Lensa',
-                    'img'      => 'https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&w=800&q=80',
-                    'link'     => route('camera.LP'),
-                    'accent'   => 'bg-[#ED64A6]',
-                    'badge'    => '20+ Item',
+                    'label'  => 'Kamera',
+                    'sub'    => 'Mirrorless · Action Cam · Lensa',
+                    'img'    => 'https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&w=800&q=80',
+                    'link'   => route('camera.LP'),
+                    'accent' => 'bg-[#ED64A6]',
+                    'badge'  => $jumlahKamera . '+ Item',   // ← dinamis
                 ],
                 [
-                    'label'    => 'Camping',
-                    'sub'      => 'Tenda · Sleeping Bag · Masak',
-                    'img'      => 'https://images.unsplash.com/photo-1504280390367-361c6d9f38f4?auto=format&fit=crop&w=800&q=80',
-                    'link'     => route('camping.LP'),
-                    'accent'   => 'bg-white',
-                    'badge'    => '30+ Item',
+                    'label'  => 'Camping',
+                    'sub'    => 'Tenda · Sleeping Bag · Masak',
+                    'img'    => 'https://images.unsplash.com/photo-1504280390367-361c6d9f38f4?auto=format&fit=crop&w=800&q=80',
+                    'link'   => route('camping.LP'),
+                    'accent' => 'bg-white',
+                    'badge'  => $jumlahCamping . '+ Item',  // ← dinamis
                 ],
             ];
             @endphp
@@ -323,7 +323,7 @@
         </div>
     </section>
 
-    {{-- ============================================================ --}}
+    <!-- {{-- ============================================================ --}}
     {{-- COMMUNITY GALLERY --}}
     {{-- ============================================================ --}}
     <section>
@@ -354,7 +354,7 @@
             </div>
             @endforeach
         </div>
-    </section>
+    </section> -->
 
     {{-- ============================================================ --}}
     {{-- FAQ --}}
