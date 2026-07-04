@@ -140,7 +140,7 @@ class RegisterController extends Controller
             'nama_lengkap' => ['required', 'string', 'max:100', 'regex:/^[A-Za-z\s.]+$/'],
             'nama_pengguna' => ['required', 'string', 'min:3', 'max:30', 'unique:pelanggan,nama_pengguna'],
             'nik'          => ['required', 'digits:16', 'unique:pelanggan,nik'],
-            'email'        => ['required|email|max:255|unique:pelanggan,email'],
+            'email' => ['required', 'email', 'max:255', 'unique:pelanggan,email'],
             'password'     => ['required', 'confirmed', Password::min(8)
                 ->letters()
                 ->numbers()],
