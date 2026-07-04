@@ -27,16 +27,29 @@ class ProductController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'name'              => 'required|string|max:255',
-            'stok'              => 'required|integer|min:0',
-            'kategori'          => 'required|string',
-            'harga_per_hari'    => 'required|numeric|min:0',
+            'name' => 'required|string|min:3|max:50|regex:/^[a-zA-Z0-9\s\.\-]+$/',
+            'stok'             => 'required|integer|min:0|max:100',
+            'kategori'         => 'required|string|max:50',
+            'harga_per_hari'   => 'required|numeric|min:0|max:1000000',
             'deskripsi'         => 'required|string',
             'sorotan'           => 'required|string',
             'isi_paket'         => 'required|string',
             'id_tipe_kategori'  => 'nullable|exists:data_kategori,id_kategori',
             'id_merek_kategori' => 'nullable|exists:data_kategori,id_kategori',
             'gambar_barang'     => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+        ], [
+            'name.required' => 'Nama produk wajib diisi.',
+            'name.min'      => 'Nama produk minimal 3 karakter.',
+            'name.max'      => 'Nama produk tidak boleh lebih dari 50 karakter.',
+            'name.regex'    => 'Nama produk hanya boleh berisi huruf, angka, spasi, titik, dan tanda hubung.',
+            'stok.max'            => 'Stok tidak boleh lebih dari 100.',
+            'stok.required'       => 'Stok wajib diisi.',
+            'stok.integer'        => 'Stok harus berupa angka.',
+            'stok.min'            => 'Stok tidak boleh kurang dari 0.',
+            'harga_per_hari.max'      => 'Harga per hari tidak boleh lebih dari Rp 1.000.000.',
+            'harga_per_hari.required' => 'Harga per hari wajib diisi.',
+            'harga_per_hari.numeric'  => 'Harga per hari harus berupa angka.',
+            'harga_per_hari.min'      => 'Harga per hari tidak boleh kurang dari 0.',
         ]);
 
         $imagePath = null;
@@ -97,16 +110,29 @@ class ProductController extends Controller
         $product = Barang::findOrFail($id_barang);
 
         $request->validate([
-            'name'              => 'required|string|max:255',
-            'stok'              => 'required|numeric|min:0',
-            'kategori'          => 'required|string',
-            'harga_per_hari'    => 'required|numeric|min:0',
+            'name'             => 'required|string|min:3|max:50|regex:/^[a-zA-Z0-9\s\.\-]+$/',
+            'stok'             => 'required|integer|min:0|max:100',
+            'kategori'         => 'required|string|max:50',
+            'harga_per_hari'   => 'required|numeric|min:0|max:1000000',
             'deskripsi'         => 'required|string',
             'sorotan'           => 'nullable|string',
             'isi_paket'         => 'nullable|string',
-            'id_tipe_kategori'  => 'nullable|exists:data_kategori,id_kategori', // ← UPDATE
-            'id_merek_kategori' => 'nullable|exists:data_kategori,id_kategori', // ← UPDATE
+            'id_tipe_kategori'  => 'nullable|exists:data_kategori,id_kategori',
+            'id_merek_kategori' => 'nullable|exists:data_kategori,id_kategori',
             'gambar_barang'     => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+        ], [
+            'name.required' => 'Nama produk wajib diisi.',
+            'name.min'      => 'Nama produk minimal 3 karakter.',
+            'name.max'      => 'Nama produk tidak boleh lebih dari 50 karakter.',
+            'name.regex'    => 'Nama produk hanya boleh berisi huruf, angka, spasi, titik, dan tanda hubung.',
+            'stok.max'            => 'Stok tidak boleh lebih dari 100.',
+            'stok.required'       => 'Stok wajib diisi.',
+            'stok.integer'        => 'Stok harus berupa angka.',
+            'stok.min'            => 'Stok tidak boleh kurang dari 0.',
+            'harga_per_hari.max'      => 'Harga per hari tidak boleh lebih dari Rp 1.000.000.',
+            'harga_per_hari.required' => 'Harga per hari wajib diisi.',
+            'harga_per_hari.numeric'  => 'Harga per hari harus berupa angka.',
+            'harga_per_hari.min'      => 'Harga per hari tidak boleh kurang dari 0.',
         ]);
 
         $data = [

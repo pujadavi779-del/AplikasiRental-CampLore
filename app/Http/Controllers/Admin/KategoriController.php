@@ -49,7 +49,7 @@ class KategoriController extends Controller
     public function storeType(Request $request)
     {
         $request->validate([
-            'nama_kategori'  => 'required|string|max:255',
+            'nama_kategori' => 'required|string|max:100',
             'kategori_utama' => 'required|in:Kamera,Camping',
             'denda_per_hari' => 'required|numeric|min:0',
         ]);
@@ -84,7 +84,7 @@ class KategoriController extends Controller
     public function updateType(Request $request, Kategori_data $kategori)
     {
         $request->validate([
-            'nama_kategori'  => 'required|string|max:255',
+            'nama_kategori' => 'required|string|max:100',
             'denda_per_hari' => 'required|numeric|min:0',
         ]);
 
@@ -102,7 +102,7 @@ class KategoriController extends Controller
     public function storeBrand(Request $request)
     {
         $request->validate([
-            'nama_kategori'  => 'required|string|max:255',
+            'nama_kategori'  => 'required|string|max:100',
             'kategori_utama' => 'required|in:Kamera,Camping',
             'foto_logo' => 'nullable|image|mimes:png,jpg,jpeg|max:2048',
         ]);

@@ -65,7 +65,7 @@
         <div class="p-5 flex items-start justify-between gap-3 border-b border-[#eef4f0]">
             <div>
                 <div class="text-[10px] font-bold uppercase tracking-widest text-[#7c8b84] mb-1">
-                    {{ $isPickup ? 'Status Pickup' : 'Status Pengiriman' }}
+                    {{ $isPickup ? 'Status Ambil di Toko' : 'Status Pengiriman' }}
                 </div>
                 <h2 class="text-xl font-bold text-[#22543D]" style="font-family:'Playfair Display',Georgia,serif;">
                     {{ $statusLabel }}
@@ -322,7 +322,7 @@
             </div>
             <div>
                 <div class="font-bold text-sm text-gray-800">{{ $pemesan }}</div>
-                <div class="text-[11px] text-gray-500">{{ $isPickup ? 'Pickup' : 'Penerima' }}</div>
+                <div class="text-[11px] text-gray-500">{{ $isPickup ? 'Ambil di Toko' : 'Penerima' }}</div>
             </div>
         </div>
         <div class="flex flex-col gap-3">
@@ -347,7 +347,7 @@
             <div class="flex justify-between items-start">
                 <span class="text-[11px] text-gray-500">Metode</span>
                 <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold {{ $isPickup ? 'bg-emerald-50 text-emerald-700' : 'bg-blue-50 text-blue-600' }}">
-                    {{ $isPickup ? 'PICKUP' : 'KURIR' }}
+                    {{ $isPickup ? 'AMBIL DI TOKO' : 'KURIR' }}
                 </span>
             </div>
         </div>

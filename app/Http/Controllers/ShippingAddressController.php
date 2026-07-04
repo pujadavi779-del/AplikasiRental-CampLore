@@ -20,7 +20,7 @@ class ShippingAddressController extends Controller
             'alamat_lengkap' => 'required|string',
             'kota'           => 'required|string',
             'daerah'         => 'required|string',
-            'kode_pos'       => 'required|string',
+            'kode_pos'       => 'required|string|max:10',
         ]);
 
         AlamatPengiriman::updateOrCreate(

@@ -23,7 +23,7 @@ class ProfileController extends Controller
 
         $request->validate([
     // DIUBAH: tambah aturan regex biar gak bisa diisi simbol
-    'nama_lengkap'            => ['required', 'string', 'max:255', 'regex:/^[A-Za-z\s.]+$/'],
+    'nama_lengkap' => ['required', 'string', 'max:100', 'regex:/^[A-Za-z\s.]+$/'],
     'email'           => 'required|email|unique:pelanggan,email,' . $idPelanggan . ',id_pelanggan',
     'no_tlp'          => 'nullable|string|max:20',
     'nik'             => 'nullable|string|max:20',

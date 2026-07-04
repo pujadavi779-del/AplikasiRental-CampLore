@@ -24,18 +24,6 @@
 
 
 <div class="max-w-full">
-
-    {{-- Error bag --}}
-    @if($errors->any())
-    <div class="mb-4 p-4 bg-red-50 border border-red-200 text-red-700 rounded-xl text-xs font-bold">
-        <ul class="list-disc list-inside space-y-1">
-            @foreach($errors->all() as $error)
-            <li>{{ $error }}</li>
-            @endforeach
-        </ul>
-    </div>
-    @endif
-
     <div class="bg-white rounded-[28px] border border-[#d7e6de] shadow-sm overflow-hidden">
 
         {{-- Header --}}
@@ -80,7 +68,7 @@
                                      focus:ring-2 focus:ring-[#22543D]/20 focus:border-[#22543D] outline-none transition-all
                                      @error('name') border-red-400 @enderror">
                         @error('name')
-                        <p class="mt-1 text-[10px] text-red-500 font-bold">{{ $message }}</p>
+                        <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                         @enderror
                     </div>
 
@@ -91,7 +79,11 @@
                         </label>
                         <input type="number" name="stok" required min="0"
                             value="{{ old('stok', $product->stok) }}"
-                            class="w-full px-4 py-3 bg-gray-50 border border-[#eef4f0] rounded-xl text-sm">
+                            class="w-full px-4 py-3 bg-gray-50 border border-[#eef4f0] rounded-xl text-sm
+                                   @error('stok') border-red-400 @enderror">
+                        @error('stok')
+                        <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                        @enderror
                     </div>
 
                     {{-- Kategori --}}
