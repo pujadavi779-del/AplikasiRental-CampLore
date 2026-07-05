@@ -65,9 +65,7 @@
                     <div>
                         <div class="flex items-center gap-2">
                             <span class="text-sm font-bold text-[#1a1a1a]">{{ optional($review->pelanggan)->nama_lengkap ?? '-' }}</span>
-                            <span class="text-[10px] font-bold text-[#22543D] bg-[#d1fae5] px-2 py-0.5 rounded-full">
-                                ✓ Terverifikasi
-                            </span>
+                            
                         </div>
                         <div class="text-[11px] text-[#9ca3af] mt-0.5">{{ $review->created_at->diffForHumans() }}</div>
                     </div>

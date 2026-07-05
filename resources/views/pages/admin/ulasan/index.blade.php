@@ -109,14 +109,14 @@
         </div>
 
         {{-- Badge kategori --}}
-        @if($product)
+        <!-- @if($product)
         <span class="flex-shrink-0 px-3 py-1 rounded-full text-[11px] font-bold
             {{ strtolower($product->Kategori_data ?? '') === 'kamera'
                 ? 'bg-blue-50 text-blue-600'
                 : 'bg-emerald-50 text-emerald-700' }}">
             {{ $product->Kategori_data ?? 'Produk' }}
         </span>
-        @endif
+        @endif -->
     </div>
 
     {{-- List komentar --}}

@@ -384,7 +384,7 @@ if (!isset($accordions)) {
                     <div>
                         <div class="flex items-center gap-2">
                             <span class="text-sm font-bold text-gray-900">{{ $review->pelanggan->nama_lengkap ?? $review->pelanggan->name ?? 'Pengguna' }}</span>
-                            <span class="text-[10px] font-bold text-[#22543D] bg-[#d1fae5] px-2 py-0.5 rounded-full">✓ Terverifikasi</span>
+                            <!-- <span class="text-[10px] font-bold text-[#22543D] bg-[#d1fae5] px-2 py-0.5 rounded-full">✓ Terverifikasi</span> -->
                         </div>
                         <div class="flex items-center gap-0.5 mt-0.5">
                             @for($i = 1; $i <= 5; $i++)
