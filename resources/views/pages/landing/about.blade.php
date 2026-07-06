@@ -384,7 +384,7 @@
     </section>
 
     @vite('resources/js/landing.js')
-    @include('layouts.footer_lp')
+    @include('layouts.footer_LP')
 
 </body>
 </html>

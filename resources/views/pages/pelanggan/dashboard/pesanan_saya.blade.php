@@ -501,11 +501,6 @@
                     ->exists()
                     : true;
                     @endphp
-                    <a href="/catalog"
-                        class="px-[18px] py-[9px] rounded-[10px] text-xs font-bold no-underline inline-flex items-center gap-1.5
-                                    bg-[#e8567a] text-white hover:bg-[#d4466a] transition-colors duration-200">
-                        Sewa Lagi
-                    </a>
                     @if(!$sudahReview)
                     @php
                     $productId = $items[0]->product_id ?? null;
@@ -567,7 +562,7 @@
         <div class="text-xl font-black text-[#1a5c3a] mb-2" style="font-family:'Playfair Display',Georgia,serif;">
             Belum Ada Riwayat Sewa
         </div>
-        <a href="{{ url('/catalog') }}"
+        <a href="{{ url('/camera') }}"
             class="inline-flex items-center gap-2 bg-[#1a5c3a] text-white px-7 py-3 rounded-full
                       font-bold text-[13px] no-underline mt-1
                       shadow-[0_4px_14px_rgba(26,92,58,0.25)] hover:bg-[#e8567a]
