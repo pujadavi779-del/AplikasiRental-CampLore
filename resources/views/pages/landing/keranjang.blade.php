@@ -97,98 +97,98 @@
                     class="item-checkbox"
                     onchange="syncCheckbox(this)">
 
-                    <div class="w-16 h-16 rounded-xl bg-gray-100 flex-shrink-0 overflow-hidden">
-                @if($imgSrc)
-                <img src="{{ $imgSrc }}" class="w-full h-full object-cover" alt="{{ $cart->product->name ?? '' }}"
-                    onerror="this.src='https://ui-avatars.com/api/?name={{ urlencode($cart->product->name ?? '?') }}&background=FF6B95&color=fff'">
-                @else
-                <div class="w-full h-full flex items-center justify-center bg-pink-100 text-[#FF6B95] font-bold text-lg">
-                    {{ substr($cart->product->name?? '?', 0, 1) }}
-                </div>
-                @endif
-            </div>
-            <div class="flex-1 min-w-0">
-                <p class="text-sm font-bold text-gray-900 truncate">{{ $cart->product->name ?? '-' }}</p>
-                <p class="text-[11px] font-semibold text-[#FF6B95] uppercase tracking-wide mt-0.5">{{ $cart->product->kategori ?? '-' }}</p>
-                <p class="text-sm font-bold text-gray-800 mt-1">Rp{{ number_format($cart->product->harga_per_hari ?? 0, 0, ',', '.') }}<span class="text-xs font-normal text-gray-400">/hari</span></p>
-            </div>
-            <button onclick="removeItem(this)" class="p-1.5 text-gray-300 hover:text-red-500 transition flex-shrink-0">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                </svg>
-            </button>
-        </div>
-
-        {{-- Qty + Subtotal (mobile only) --}}
-        <div class="md:hidden flex items-center justify-between px-4 pb-3">
-            <div class="flex flex-col gap-1">
-                <div class="flex items-center border border-gray-200 rounded-xl h-9 overflow-hidden">
-                    <button onclick="changeQty(this, -1)" class="w-9 h-9 flex items-center justify-center text-gray-600 text-base hover:bg-gray-100 transition">−</button>
-                    <span class="qty-val px-3 text-sm font-bold text-gray-800 min-w-[28px] text-center">{{ $cart->jumlah ?? 0 }}</span>
-                    <button onclick="changeQty(this, 1)" class="w-9 h-9 flex items-center justify-center text-gray-600 text-base hover:bg-gray-100 transition">+</button>
-                </div>
-                <span class="stok-warning hidden text-[10px] font-bold text-red-500">Stok maks. {{ $stok }}</span>
-            </div>
-            <div class="text-right">
-                <p class="text-[10px] text-gray-400 font-semibold">Subtotal</p>
-                <p class="text-sm font-extrabold text-[#FF6B95]">Rp<span class="subtotal-detail">{{ number_format($subtotal, 0, ',', '.') }}</span></p>
-            </div>
-        </div>
-
-        {{-- Tanggal strip (shared) --}}
-        <div class="flex items-center justify-between px-4 py-2.5 border-t border-gray-100 cursor-pointer hover:bg-gray-50 transition"
-            onclick="toggleDate(this)">
-            <div class="flex items-center gap-2 flex-wrap">
-                <svg class="w-4 h-4 text-gray-300 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <rect x="3" y="4" width="18" height="18" rx="2" stroke-width="2" />
-                    <path stroke-width="2" d="M16 2v4M8 2v4M3 10h18" />
-                </svg>
-                <span class="text-[11px] text-gray-400 font-medium">Tanggal sewa:</span>
-                <span class="date-summary text-[11px] font-bold text-[#FF6B95]">
-                    @if($cart->start_date && $cart->end_date)
-                    {{ \Carbon\Carbon::parse($cart->start_date)->format('d/m/Y') }} – {{ \Carbon\Carbon::parse($cart->end_date)->format('d/m/Y') }}
+                <div class="w-16 h-16 rounded-xl bg-gray-100 flex-shrink-0 overflow-hidden">
+                    @if($imgSrc)
+                    <img src="{{ $imgSrc }}" class="w-full h-full object-cover" alt="{{ $cart->product->name ?? '' }}"
+                        onerror="this.src='https://ui-avatars.com/api/?name={{ urlencode($cart->product->name ?? '?') }}&background=FF6B95&color=fff'">
                     @else
-                    <span class="text-gray-300 font-normal">— Belum ada tanggal</span>
+                    <div class="w-full h-full flex items-center justify-center bg-pink-100 text-[#FF6B95] font-bold text-lg">
+                        {{ substr($cart->product->name?? '?', 0, 1) }}
+                    </div>
                     @endif
-                </span>
-                @if($cart->start_date && $cart->end_date)
-                <span class="strip-pill bg-pink-100 text-[#FF6B95] text-[10px] font-bold px-2.5 py-0.5 rounded-full">{{ $days }} hari</span>
-                @endif
+                </div>
+                <div class="flex-1 min-w-0">
+                    <p class="text-sm font-bold text-gray-900 truncate">{{ $cart->product->name ?? '-' }}</p>
+                    <p class="text-[11px] font-semibold text-[#FF6B95] uppercase tracking-wide mt-0.5">{{ $cart->product->kategori ?? '-' }}</p>
+                    <p class="text-sm font-bold text-gray-800 mt-1">Rp{{ number_format($cart->product->harga_per_hari ?? 0, 0, ',', '.') }}<span class="text-xs font-normal text-gray-400">/hari</span></p>
+                </div>
+                <button onclick="removeItem(this)" class="p-1.5 text-gray-300 hover:text-red-500 transition flex-shrink-0">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                    </svg>
+                </button>
             </div>
-            <svg class="toggle-arrow w-3.5 h-3.5 text-gray-400 transition-transform flex-shrink-0"
-                fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7" />
-            </svg>
-        </div>
 
-        {{-- Panel edit tanggal --}}
-        <div class="date-row hidden border-t border-gray-100 px-4 py-4 bg-gray-50">
-            <div class="flex flex-col sm:flex-row gap-3 max-w-lg">
-                <div class="flex-1">
-                    <label class="block text-[10px] font-bold uppercase text-gray-400 tracking-widest mb-1.5">Mulai</label>
-                    <input type="date" class="start-date w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm text-gray-800 focus:border-[#FF6B95] focus:outline-none bg-white transition"
-                        value="{{ $cart->start_date ? \Carbon\Carbon::parse($cart->start_date)->format('Y-m-d') : '' }}"
-                        onchange="onDateChange(this)">
+            {{-- Qty + Subtotal (mobile only) --}}
+            <div class="md:hidden flex items-center justify-between px-4 pb-3">
+                <div class="flex flex-col gap-1">
+                    <div class="flex items-center border border-gray-200 rounded-xl h-9 overflow-hidden">
+                        <button onclick="changeQty(this, -1)" class="w-9 h-9 flex items-center justify-center text-gray-600 text-base hover:bg-gray-100 transition">−</button>
+                        <span class="qty-val px-3 text-sm font-bold text-gray-800 min-w-[28px] text-center">{{ $cart->jumlah ?? 0 }}</span>
+                        <button onclick="changeQty(this, 1)" class="w-9 h-9 flex items-center justify-center text-gray-600 text-base hover:bg-gray-100 transition">+</button>
+                    </div>
+                    <span class="stok-warning hidden text-[10px] font-bold text-red-500">Stok maks. {{ $stok }}</span>
                 </div>
-                <div class="flex-1">
-                    <label class="block text-[10px] font-bold uppercase text-gray-400 tracking-widest mb-1.5">Selesai</label>
-                    <input type="date" class="end-date w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm text-gray-800 focus:border-[#FF6B95] focus:outline-none bg-white transition"
-                        value="{{ $cart->end_date ? \Carbon\Carbon::parse($cart->end_date)->format('Y-m-d') : '' }}"
-                        onchange="onDateChange(this)">
+                <div class="text-right">
+                    <p class="text-[10px] text-gray-400 font-semibold">Subtotal</p>
+                    <p class="text-sm font-extrabold text-[#FF6B95]">Rp<span class="subtotal-detail">{{ number_format($subtotal, 0, ',', '.') }}</span></p>
                 </div>
             </div>
-            <div class="flex items-center gap-2 mt-3">
-                <span class="days-badge bg-pink-100 text-[#FF6B95] text-[11px] font-bold px-3 py-1.5 rounded-lg {{ $cart->start_date && $cart->end_date ? '' : 'hidden' }}">{{ $days }} hari</span>
-                <span class="date-error hidden text-xs text-red-500">Tanggal tidak valid</span>
+
+            {{-- Tanggal strip (shared) --}}
+            <div class="flex items-center justify-between px-4 py-2.5 border-t border-gray-100 cursor-pointer hover:bg-gray-50 transition"
+                onclick="toggleDate(this)">
+                <div class="flex items-center gap-2 flex-wrap">
+                    <svg class="w-4 h-4 text-gray-300 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <rect x="3" y="4" width="18" height="18" rx="2" stroke-width="2" />
+                        <path stroke-width="2" d="M16 2v4M8 2v4M3 10h18" />
+                    </svg>
+                    <span class="text-[11px] text-gray-400 font-medium">Tanggal sewa:</span>
+                    <span class="date-summary text-[11px] font-bold text-[#FF6B95]">
+                        @if($cart->start_date && $cart->end_date)
+                        {{ \Carbon\Carbon::parse($cart->start_date)->format('d/m/Y') }} – {{ \Carbon\Carbon::parse($cart->end_date)->format('d/m/Y') }}
+                        @else
+                        <span class="text-gray-300 font-normal">— Belum ada tanggal</span>
+                        @endif
+                    </span>
+                    @if($cart->start_date && $cart->end_date)
+                    <span class="strip-pill bg-pink-100 text-[#FF6B95] text-[10px] font-bold px-2.5 py-0.5 rounded-full">{{ $days }} hari</span>
+                    @endif
+                </div>
+                <svg class="toggle-arrow w-3.5 h-3.5 text-gray-400 transition-transform flex-shrink-0"
+                    fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7" />
+                </svg>
             </div>
+
+            {{-- Panel edit tanggal --}}
+            <div class="date-row hidden border-t border-gray-100 px-4 py-4 bg-gray-50">
+                <div class="flex flex-col sm:flex-row gap-3 max-w-lg">
+                    <div class="flex-1">
+                        <label class="block text-[10px] font-bold uppercase text-gray-400 tracking-widest mb-1.5">Mulai</label>
+                        <input type="date" class="start-date w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm text-gray-800 focus:border-[#FF6B95] focus:outline-none bg-white transition"
+                            value="{{ $cart->start_date ? \Carbon\Carbon::parse($cart->start_date)->format('Y-m-d') : '' }}"
+                            onchange="onDateChange(this)">
+                    </div>
+                    <div class="flex-1">
+                        <label class="block text-[10px] font-bold uppercase text-gray-400 tracking-widest mb-1.5">Selesai</label>
+                        <input type="date" class="end-date w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm text-gray-800 focus:border-[#FF6B95] focus:outline-none bg-white transition"
+                            value="{{ $cart->end_date ? \Carbon\Carbon::parse($cart->end_date)->format('Y-m-d') : '' }}"
+                            onchange="onDateChange(this)">
+                    </div>
+                </div>
+                <div class="flex items-center gap-2 mt-3">
+                    <span class="days-badge bg-pink-100 text-[#FF6B95] text-[11px] font-bold px-3 py-1.5 rounded-lg {{ $cart->start_date && $cart->end_date ? '' : 'hidden' }}">{{ $days }} hari</span>
+                    <span class="date-error hidden text-xs text-red-500">Tanggal tidak valid</span>
+                </div>
+            </div>
+
         </div>
+        @empty
+        <div class="py-20 text-center text-gray-400 italic">Keranjang kosong.</div>
+        @endforelse
 
     </div>
-    @empty
-    <div class="py-20 text-center text-gray-400 italic">Keranjang kosong.</div>
-    @endforelse
-
-</div>
 </div>
 
 {{-- Bottom bar --}}
@@ -203,7 +203,7 @@
         </div>
         <div class="flex items-center gap-4">
             <div class="text-right">
-                <p class="text-xs text-gray-500 font-semibold">Total Sewa (<span id="countItems">0</span> Item)</p>
+                <p class="text-xs text-gray-500 font-semibold">Total Sewa (<span id="countItems">0</span>/5 Unit)</p>
                 <p class="text-2xl font-extrabold text-[#FF6B95]" id="grandTotal">Rp0</p>
             </div>
             <button onclick="goToCheckout()"
@@ -305,34 +305,34 @@
 
     function updateSummary() {
         let total = 0,
-            count = 0,
-            activeCardsCount = 0;
+            totalQty = 0,
+            activeCardsCount = 0,
+            checkedCount = 0;
 
         document.querySelectorAll('.card-item').forEach(card => {
             const checkbox = card.querySelector('.item-checkbox');
-            
+
             if (checkbox && !checkbox.disabled) {
                 activeCardsCount++;
-                
+
                 if (checkbox.checked) {
                     const price = parseFloat(card.dataset.price) || 0;
                     const qty = parseInt(card.querySelector('.qty-val').textContent) || 1;
                     const days = getDays(card);
                     total += price * qty * days;
-                    count++;
+                    totalQty += qty; // ✅ hitung total unit, bukan jumlah item
+                    checkedCount++;
                 }
             }
         });
 
         document.getElementById('grandTotal').textContent = 'Rp' + total.toLocaleString('id-ID');
-        document.getElementById('countItems').textContent = count;
-        document.getElementById('totalChecked').textContent = count;
+        document.getElementById('countItems').textContent = totalQty; // ✅ tampilkan total unit
+        document.getElementById('totalChecked').textContent = checkedCount;
 
         const selectAllCb = document.getElementById('selectAll');
-        
-        selectAllCb.checked = activeCardsCount > 0 && count === activeCardsCount;
-        
-        selectAllCb.indeterminate = false; 
+        selectAllCb.checked = activeCardsCount > 0 && checkedCount === activeCardsCount;
+        selectAllCb.indeterminate = false;
     }
 
     function toggleDate(strip) {
@@ -424,6 +424,27 @@
         let val = parseInt(span.textContent) + delta;
 
         if (val < 1) val = 1;
+        // ✅ Cegah total unit melebihi 5
+        if (delta > 0) {
+            let otherQty = 0;
+            document.querySelectorAll('.card-item').forEach(c => {
+                if (c !== card) {
+                    const cb = c.querySelector('.item-checkbox');
+                    if (cb && cb.checked && !cb.disabled) {
+                        otherQty += parseInt(c.querySelector('.qty-val').textContent) || 1;
+                    }
+                }
+            });
+            const maxAllowed = 5 - otherQty;
+            if (val > maxAllowed) {
+                val = maxAllowed;
+                if (val <= parseInt(span.textContent)) {
+                    showToast('Maksimal total rental hanya 5 unit barang');
+                    return;
+                }
+                showToast('Sisa kuota rental: ' + maxAllowed + ' unit');
+            }
+        }
 
         // Jangan biarkan qty di UI melebihi stok yang tersedia
         if (!isNaN(stok) && val > stok) {
@@ -548,8 +569,14 @@
             return;
         }
 
-        if (checkedCards.length > 5) {
-            alert('Maksimal checkout hanya 5 barang dalam satu transaksi.');
+        // ✅ Hitung total unit dari semua item yang dicentang
+        let totalQty = 0;
+        checkedCards.forEach(card => {
+            totalQty += parseInt(card.querySelector('.qty-val').textContent) || 1;
+        });
+
+        if (totalQty > 5) {
+            alert('Maksimal total rental hanya 5 unit barang dalam satu transaksi.\nSaat ini: ' + totalQty + ' unit.\nSilakan kurangi jumlah barang.');
             return;
         }
 
@@ -559,7 +586,7 @@
                 params.append('ids[]', card.dataset.id);
             }
         });
-        
+
         window.location.href = `/checkout?${params.toString()}`;
     }
 
