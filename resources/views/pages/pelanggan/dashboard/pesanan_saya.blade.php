@@ -500,7 +500,7 @@
                     ->where('product_id', $firstProductId)
                     ->exists()
                     : true;
-                    @endphp
+                    @endphp 
                     @if(!$sudahReview)
                     @php
                     $productId = $items[0]->product_id ?? null;

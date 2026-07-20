@@ -58,11 +58,18 @@ class PengembalianController extends Controller
     public function konfirmasi(Request $request, $orderId)
     {
         // FIX: Cukup pakai first() karena 1 order_id = 1 baris
-        $pesanan = Pesanan::where('order_id', $orderId)->with('pelanggan')->first();
+        $pesanan = Pesanan::where('order_id', $orderId)
+            ->with(['pelanggan', 'details'])
+            ->first();
 
         if (!$pesanan) {
             return response()->json(['success' => false, 'message' => 'Pesanan tidak ditemukan'], 404);
         }
+
+        // Hitung status keterlambatan & denda dari data details
+        $hariTerlambat = $pesanan->details->sum('hari_terlambat');
+        $totalDenda    = $pesanan->details->sum('keterlambatan_biaya');
+        $isOverdue     = $hariTerlambat > 0 || $totalDenda > 0;
 
         $pesanan->update(['status' => 'selesai']);
 
@@ -72,8 +79,21 @@ class PengembalianController extends Controller
             if (str_starts_with($phone, '0')) {
                 $phone = '62' . substr($phone, 1);
             }
+
+            if ($isOverdue) {
+                $dendaFormatted = 'Rp ' . number_format($totalDenda, 0, ',', '.');
+                $pesan = "Pengembalian barang sewa Anda dari Camplore telah kami konfirmasi. ✅\n\n"
+                    . "Namun tercatat keterlambatan pengembalian selama *{$hariTerlambat} hari*, "
+                    . "dengan total denda sebesar *{$dendaFormatted}*.\n\n"
+                    . "Mohon segera melunasi denda tersebut (jika belum) di toko. "
+                    . "Terima kasih telah menyewa di Camplore! 🏕️";
+            } else {
+                $pesan = "Pesanan sewa Anda telah selesai! 🎉 Terima kasih telah mempercayakan kebutuhan "
+                    . "petualangan Anda kepada Camplore. Sampai jumpa di petualangan berikutnya! 🏕️";
+            }
+
             if (function_exists('sendWhatsapp')) {
-                sendWhatsapp($phone, "Pesanan sewa Anda telah selesai! 🎉 Terima kasih telah mempercayakan kebutuhan petualangan Anda kepada Camplore. Sampai jumpa di petualangan berikutnya! 🏕️");
+                sendWhatsapp($phone, $pesan);
             }
         }
 

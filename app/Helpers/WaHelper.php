@@ -19,7 +19,7 @@ if (!function_exists('sendWhatsapp')) {
             'target'  => $phone,
             'message' => $message,
         ]);
-
+        
         \Log::info('Fonnte response', [
             'target' => $phone,
             'status' => $response->status(),
