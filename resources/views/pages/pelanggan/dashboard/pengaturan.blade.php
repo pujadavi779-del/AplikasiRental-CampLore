@@ -179,7 +179,7 @@ $fotoProfil = $pelanggan->foto_profile
                     </p>
                     @elseif($pelanggan->ktp_status === 'rejected')
                     <p class="text-[10px] text-red-500 font-bold flex items-center gap-1">
-                        <span>✕</span> NIK Ditolak — {{ $pelanggan->ktp_note ?? 'Silakan unggah ulang KTP.' }}
+                        <span>✕</span> {{ $pelanggan->ktp_note ?? 'Silakan unggah ulang KTP.' }}
                     </p>
                     @endif
                 </div>
