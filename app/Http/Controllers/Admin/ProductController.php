@@ -7,6 +7,7 @@ use App\Models\Barang;
 use App\Models\Kategori_data;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
 class ProductController extends Controller
