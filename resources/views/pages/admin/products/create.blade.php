@@ -167,8 +167,12 @@ $section = 'Tambah Produk';
                             <p class="text-[10px] text-[#7c8b84] mt-1 uppercase tracking-wider">PNG, JPG, JPEG (Max 2MB)</p>
                         </div>
 
-                        <input type="file" name="gambar_barang" id="product_image" class="absolute inset-0 opacity-0 cursor-pointer" accept="image/*" onchange="previewImage(this)">
+                        <input type="file" name="gambar_barang" id="product_image" required class="absolute inset-0 opacity-0 cursor-pointer" accept="image/*" onchange="previewImage(this)">
                     </div>
+                    @error('gambar_barang')
+                    <p class="mt-2 text-[10px] text-red-500 font-bold">{{ $message }}</p>
+                    @enderror
+
                 </div>
 
             </div>

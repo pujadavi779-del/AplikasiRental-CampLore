@@ -37,7 +37,7 @@ class ProductController extends Controller
             'isi_paket'         => 'required|string',
             'id_tipe_kategori'  => 'nullable|exists:data_kategori,id_kategori',
             'id_merek_kategori' => 'nullable|exists:data_kategori,id_kategori',
-            'gambar_barang'     => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'gambar_barang'     => 'required|image|mimes:jpeg,png,jpg|max:2048',
         ], [
             'name.required' => 'Nama produk wajib diisi.',
             'name.min'      => 'Nama produk minimal 3 karakter.',
@@ -51,6 +51,10 @@ class ProductController extends Controller
             'harga_per_hari.required' => 'Harga per hari wajib diisi.',
             'harga_per_hari.numeric'  => 'Harga per hari harus berupa angka.',
             'harga_per_hari.min'      => 'Harga per hari tidak boleh kurang dari 0.',
+            'gambar_barang.required' => 'Gambar produk wajib diunggah.',
+            'gambar_barang.image'    => 'File harus berupa gambar.',
+            'gambar_barang.mimes'    => 'Format gambar harus JPG, JPEG, atau PNG.',
+            'gambar_barang.max'      => 'Ukuran gambar maksimal 2MB.',
         ]);
 
         $imagePath = null;
