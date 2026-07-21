@@ -180,7 +180,7 @@ $section = 'Transaksi Pembayaran';
                 </div>
                 <div class="flex items-center gap-1.5 px-3 py-1.5 bg-red-50 border border-red-100 rounded-xl">
                     <span class="w-2 h-2 bg-red-400 rounded-full"></span>
-                    <span class="text-[10px] font-bold text-red-700">{{ $totalBatal }} Batal</span>
+                    <span class="text-[10px] font-bold text-red-700">{{ $totalBatal }} Dibatalkan</span>
                 </div>
             </div>
         </div>
